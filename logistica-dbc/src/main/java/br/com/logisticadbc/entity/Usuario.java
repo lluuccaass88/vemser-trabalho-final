@@ -1,4 +1,4 @@
-package br.com.logisticadbc.model;
+package br.com.logisticadbc.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
