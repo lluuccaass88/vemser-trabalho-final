@@ -6,6 +6,7 @@ import lombok.Data;
 @Data
 public class UsuarioCreateDTO {
 
+
     private String nome;
     private String usuario;
     private String senha;

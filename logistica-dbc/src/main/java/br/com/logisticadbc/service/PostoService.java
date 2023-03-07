@@ -20,13 +20,13 @@ public class PostoService {
     }
 
 //    //Criar
-    public PostoDTO create(PostoCreateDTO posto) throws RegraDeNegocioException {
-        Posto postoEntity = objectMapper.convertValue(posto, Posto.class);
-
-        Posto postoSalvo = postoRepository.create(postoEntity);
-
-        return objectMapper.convertValue(postoSalvo, PostoDTO.class);
-    }
+//    public PostoDTO create(PostoCreateDTO posto) throws RegraDeNegocioException {
+//        Posto postoEntity = objectMapper.convertValue(posto, Posto.class);
+//
+//        Posto postoSalvo = postoRepository.create(postoEntity);
+//
+//        return objectMapper.convertValue(postoSalvo, PostoDTO.class);
+//    }
 //
 //    //Listat por  id de endereco
 //    public List<EnderecoDTO> listByIdEndereco(int id) throws RegraDeNegocioException {
