@@ -12,7 +12,7 @@ public class ConexaoBancoDeDados {
     // Configuração dos parâmetros de autenticação
     private static final String USER = "LOGISTICA";
     private static final String PASSWORD = "UozdFoKcSiLn";
-    private static final String SCHEMA = "VEM_SER";
+    private static final String SCHEMA = "LOGISTICA";
 
     public static Connection getConnection() throws SQLException {
         String url = "jdbc:oracle:thin:@" + SERVER + ":" + PORT + ":" + DATABASE;
