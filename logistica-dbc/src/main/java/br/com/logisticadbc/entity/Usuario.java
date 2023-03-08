@@ -15,4 +15,5 @@ public class Usuario {
     private Perfil perfil; // 1 - Colaborador, 2 - Motorista
     private String cpf;
     private String cnh;
+    private String email;
 }
