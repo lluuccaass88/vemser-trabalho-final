@@ -32,9 +32,9 @@ public class UsuarioRepository {
             Integer proximoId = this.getProximoId(con);
             usuario.setId(proximoId);
 
-            String sql = "INSERT INTO USUARIO\n" +
-                    "(ID_USUARIO, NOME, USUARIO, SENHA, PERFIL, CPF, CNH)\n" +
-                    "VALUES(?, ?, ?, ?, ?, ?, ?)\n";
+            String sql = "INSERT INTO LOGISTICA.USUARIO\n" +
+                    "(ID_USUARIO, NOME, USUARIO, SENHA, PERFIL, CPF, CNH, EMAIL)\n" +
+                    "VALUES(?, ?, ?, ?, ?, ?, ?, ?)\n";
 
             PreparedStatement stmt = con.prepareStatement(sql);
 
@@ -45,6 +45,7 @@ public class UsuarioRepository {
             stmt.setInt(5, usuario.getPerfil().getPerfil());
             stmt.setString(6, usuario.getCpf());
             stmt.setString(7, usuario.getCnh());
+            stmt.setString(8, usuario.getEmail());
 
             int res = stmt.executeUpdate();
             if (res > 0) {

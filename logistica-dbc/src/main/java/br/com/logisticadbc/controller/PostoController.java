@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/posto") // localhost:8080/contato
 @Validated
 public class PostoController {
-    private final PostoController postoController;
-
-    public PostoController(PostoController postoController) {
-        this.postoController = postoController;
-    }
+//    private final PostoController postoController;
+//
+//    public PostoController(PostoController postoController) {
+//        this.postoController = postoController;
+//    }
 }
