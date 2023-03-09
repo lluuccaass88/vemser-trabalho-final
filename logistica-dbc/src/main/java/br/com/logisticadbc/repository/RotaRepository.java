@@ -1,5 +1,6 @@
 package br.com.logisticadbc.repository;
 
+import br.com.logisticadbc.dto.RotaDTO;
 import br.com.logisticadbc.entity.Posto;
 import br.com.logisticadbc.entity.Rota;
 import br.com.logisticadbc.exceptions.BancoDeDadosException;
@@ -143,7 +144,6 @@ public class RotaRepository {
             }
         }
     }
-
 
     public boolean remover(Integer id) throws BancoDeDadosException {
         Connection con = null;

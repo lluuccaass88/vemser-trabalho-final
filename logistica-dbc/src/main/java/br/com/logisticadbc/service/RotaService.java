@@ -1,5 +1,8 @@
 package br.com.logisticadbc.service;
 
+import br.com.logisticadbc.dto.PostoDTO;
+import br.com.logisticadbc.dto.RotaCreateDTO;
+import br.com.logisticadbc.dto.RotaDTO;
 import br.com.logisticadbc.entity.Posto;
 import br.com.logisticadbc.entity.Rota;
 import br.com.logisticadbc.exceptions.BancoDeDadosException;
@@ -9,6 +12,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class RotaService {
 
@@ -23,15 +28,19 @@ public class RotaService {
         this.objectMapper = objectMapper;
     }
 
-    public void adicionaRota(Rota rota) {
+    public RotaDTO adicionaRota(int idPosto, Rota rota) {
+        Rota rotaAdicionado = null;
         try {
-            Rota rotaAdicionado = rotaRepository.adicionar(rota);
+            rotaAdicionado = rotaRepository.adicionar(rota);
+            adicionaRotaXPosto(rota);
             System.out.println("Dados da rota adicionada: \n" + rotaAdicionado);
         } catch (BancoDeDadosException e) {
             e.printStackTrace();
         } catch (Exception e) {
             System.out.println("ERRO SQL-> " + e.getMessage());
         }
+
+        return objectMapper.convertValue(rotaAdicionado, RotaDTO.class);
     }
 
     // adicionar Rota_X_Posto conforme tabela de relacionamento no banco de dados
@@ -81,22 +90,16 @@ public class RotaService {
     }
 
     // listando todos os colaboradores
-    public void listarRotas() {
+    public List<RotaDTO> listarRotas() {
         try {
-            List<Rota> listar = rotaRepository.listar();
-
-            for(Rota itemRota : listar){
-                System.out.println("========== Informações da rota: ==========");
-                System.out.println(itemRota.toString());
-                System.out.println("========== Postos Cadastrados na rota " + itemRota.getIdRota() + " ==========");
-                for (Posto itemPosto : itemRota.getListaPostoCadastrado()){
-                    System.out.println(itemPosto.toString());
-                }
-                System.out.println("\n");
-            }
+            return rotaRepository.listar().stream()
+                    .map(rota -> objectMapper.convertValue(rota, RotaDTO.class))
+                    .collect(Collectors.toList());
         } catch (BancoDeDadosException e ) {
             e.printStackTrace();
         }
+
+        return null;
     }
 
     public Rota retornaPorId(int index){

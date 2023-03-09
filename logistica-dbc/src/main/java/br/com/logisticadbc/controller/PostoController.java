@@ -19,7 +19,6 @@ import java.util.List;
 @RequestMapping("/posto") // localhost:8080/contato
 @Validated
 public class PostoController {
-<<<<<<< HEAD
     private final PostoService postoService;
 
     public PostoController(PostoService postoService) {
@@ -53,11 +52,4 @@ public class PostoController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-=======
-//    private final PostoController postoController;
-//
-//    public PostoController(PostoController postoController) {
-//        this.postoController = postoController;
-//    }
->>>>>>> 8f00254fbb34183953b57165cea158aaee19dd1f
 }
