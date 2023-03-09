@@ -10,6 +10,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Repository
 public class RotaRepository {
 
     public Integer getProximoId(Connection connection) throws SQLException {

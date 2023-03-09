@@ -1,6 +1,7 @@
 package br.com.logisticadbc.dto;
 
 import br.com.logisticadbc.entity.Posto;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,10 +16,13 @@ public class RotaCreateDTO {
     @NotNull
     private int idRota;
     @NotBlank
+    @Schema(description = "Descrição da rota", example = "Rota de São Paulo até Brasilia", required = true)
     private String descricao;
     @NotBlank
+    @Schema(description = "Cidade de partida da rota", example = "São Paulo", required = true)
     private String localPartida;
     @NotBlank
+    @Schema(description = "Cidade de destino da rota", example = "Brasilia", required = true)
     private String localDestino;
     private ArrayList<Posto> listaPostoCadastrado = new ArrayList();
 }

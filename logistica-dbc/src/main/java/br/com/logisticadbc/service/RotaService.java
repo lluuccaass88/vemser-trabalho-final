@@ -6,9 +6,10 @@ import br.com.logisticadbc.exceptions.BancoDeDadosException;
 import br.com.logisticadbc.repository.PostoRepository;
 import br.com.logisticadbc.repository.RotaRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
-
+@Service
 public class RotaService {
 
     private  final RotaRepository rotaRepository;
