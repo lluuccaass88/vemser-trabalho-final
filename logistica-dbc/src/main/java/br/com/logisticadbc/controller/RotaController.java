@@ -10,11 +10,11 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/rota") // localhost:8080/contato
 @Validated
 public class RotaController {
-    private final RotaService rotaService;
+//    private final RotaService rotaService;
 
-
-    public RotaController(RotaService rotaService) {
-        this.rotaService = rotaService;
-    }
+//
+//    public RotaController(RotaService rotaService) {
+//        this.rotaService = rotaService;
+//    }
 
 }

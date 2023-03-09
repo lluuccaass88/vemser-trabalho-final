@@ -12,36 +12,35 @@ import javax.validation.constraints.Size;
 @Data
 public class UsuarioCreateDTO {
 
-    @NotEmpty(message = "nome não pode ser vazio")
-    @NotBlank(message = "nome não pode ser em branco")
+    @NotEmpty(message = "Nome não pode ser vazio")
+    @NotBlank(message = "Nome não pode ser em branco")
     @Schema(description = "Nome da Pessoa", example = "Marcklen Guimarães", required = true)
     private String nome;
 
-    @NotEmpty(message = "nome não pode ser vazio")
-    @NotBlank(message = "nome não pode ser em branco")
+    @NotEmpty(message = "Usuário não pode ser vazio")
+    @NotBlank(message = "Usuário não pode ser em branco")
     @Schema(description = "Usuário que será logado no sistema", example = "marcklen", required = true)
     private String usuario;
 
-    @NotEmpty(message = "nome não pode ser vazio")
-    @NotBlank(message = "nome não pode ser em branco")
+    @NotEmpty(message = "Senha não pode ser vazio")
+    @NotBlank(message = "Senha não pode ser em branco")
     @Schema(description = "Senha do usuário", example = "123abc", required = true)
     private String senha;
 
-    @NotEmpty(message = "nome não pode ser vazio")
-    @NotBlank(message = "nome não pode ser em branco")
+    @NotNull(message = "Perfil não pode ser vazio")
     @Schema(description = "Perfil do Funcionário", example = "Colaborador ou Motorista", required = true)
     private Perfil perfil; // 1 - Colaborador, 2 - Motorista
 
     @Size(max = 11, min = 11, message = "cpf deve conter 11 caracteres")
-    @NotEmpty(message = "nome não pode ser vazio")
-    @NotBlank(message = "nome não pode ser em branco")
-    @Schema(description = "Senha do usuário", example = "123abc", required = true)
+    @NotEmpty(message = "CPF não pode ser vazio")
+    @NotBlank(message = "CPF não pode ser em branco")
+    @Schema(description = "CPF do usuário", example = "123abc", required = true)
     private String cpf;
 
     @Size(max = 11, min = 11, message = "cpf deve conter 11 caracteres")
-    @NotEmpty(message = "nome não pode ser vazio")
-    @NotBlank(message = "nome não pode ser em branco")
-    @Schema(description = "Senha do usuário", example = "123abc", required = true)
+    @NotEmpty(message = "CNH não pode ser vazio")
+    @NotBlank(message = "CNH não pode ser em branco")
+    @Schema(description = "CNH do usuário", example = "123abc", required = true)
     private String cnh;
 
     @NotNull(message = "email não pode ser nulo")
