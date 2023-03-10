@@ -32,7 +32,6 @@ public class ViagemRepository {
         }
     }
 
-
     public Viagem adicionar(Viagem viagem) throws BancoDeDadosException {
         Connection con = null;
         try {

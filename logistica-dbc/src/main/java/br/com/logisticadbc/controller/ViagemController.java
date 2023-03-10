@@ -29,11 +29,11 @@ public class ViagemController {
         return new ResponseEntity<>(viagemService.adicionarViagem(viagemCreateDTO), HttpStatus.CREATED);
     }
 
-//    @GetMapping
-//    public ResponseEntity<List<ViagemDTO>> listar() throws Exception {
-//        log.info("Recebendo requisição para listar todos os usuários");
-//        return new ResponseEntity<>(viagemService.listarViagens(), HttpStatus.OK);
-//    }
+    @GetMapping
+    public ResponseEntity<List<ViagemDTO>> listar() throws Exception {
+        log.info("Recebendo requisição para listar todos os usuários");
+        return new ResponseEntity<>(viagemService.listarViagens(), HttpStatus.OK);
+    }
 
     @GetMapping("/listarPostos/{idViagem}")
     public ResponseEntity<List<PostoDTO>> listarPostos(@PathVariable("idRota") Integer id) throws Exception {

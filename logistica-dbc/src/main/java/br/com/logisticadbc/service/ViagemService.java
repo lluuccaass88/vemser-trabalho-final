@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -55,14 +56,16 @@ public class ViagemService {
         return null;
     }
 
-//    public List<ViagemDTO> listarViagens() {
-//        try {
-//            List<Viagem> listar = viagemRepository.listar();
-//            listar.forEach(System.out::println);
-//        } catch (BancoDeDadosException e) {
-//            e.printStackTrace();
-//        }
-//    }
+    public List<ViagemDTO> listarViagens() {
+        try {
+            return viagemRepository.listar().stream()
+                    .map(pessoa -> objectMapper.convertValue(pessoa, ViagemDTO.class))
+                    .collect(Collectors.toList());
+        } catch (BancoDeDadosException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
 
     public List<PostoDTO> listarPostosEmViagem(int iDviagem){ //Se der tempo fazer isso para fazer verificação
