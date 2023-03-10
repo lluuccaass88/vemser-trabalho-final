@@ -1,5 +1,6 @@
 package br.com.logisticadbc.entity;
 
+import br.com.logisticadbc.dto.CaminhaoDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

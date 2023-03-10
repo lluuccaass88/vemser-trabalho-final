@@ -1,6 +1,7 @@
 package br.com.logisticadbc.controller;
 
 
+import br.com.logisticadbc.controller.impl.CaminhaoInterface;
 import br.com.logisticadbc.dto.CaminhaoCreateDTO;
 import br.com.logisticadbc.dto.CaminhaoDTO;
 import br.com.logisticadbc.service.CaminhaoService;
@@ -17,7 +18,7 @@ import java.util.List;
 @RequestMapping("/caminhao") // http://localhost:8080/caminhao
 @Validated
 @Slf4j
-public class CaminhaoController {
+public class CaminhaoController implements CaminhaoInterface {
 
     private final CaminhaoService caminhaoService;
 
@@ -25,7 +26,7 @@ public class CaminhaoController {
         this.caminhaoService = caminhaoService;
     }
 
-    @PostMapping // http://localhost:8080/caminhao
+    @PostMapping
     public ResponseEntity<CaminhaoDTO> adicionar(@Valid @RequestBody CaminhaoCreateDTO caminhao) throws Exception {
 
         log.info("Recebendo requisição para adicionar um novo caminhão");
@@ -56,5 +57,16 @@ public class CaminhaoController {
         caminhaoService.deletar(id);
         log.info("Caminhão removido com sucesso");
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PutMapping("/abastecer/{id}")
+    public ResponseEntity<CaminhaoDTO> abastecer(@PathVariable Integer id,
+                                              @Valid @RequestBody CaminhaoCreateDTO caminhao, Integer gasolina) throws Exception {
+//        log.info("Recebendo requisição para abastecer um caminhão");
+//        CaminhaoDTO caminhaoDTO = caminhaoService.abastecerCaminhao(id, caminhao.setGasolina(caminhao.getGasolina())+ gasolina);
+//        log.info("Caminhão atualizado com sucesso" + caminhaoDTO);
+//        return new ResponseEntity<>(caminhaoDTO, HttpStatus.OK);
+//    }
+        return null;
     }
 }

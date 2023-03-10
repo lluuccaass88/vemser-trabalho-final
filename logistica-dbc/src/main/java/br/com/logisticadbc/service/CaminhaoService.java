@@ -2,13 +2,20 @@ package br.com.logisticadbc.service;
 
 import br.com.logisticadbc.dto.*;
 import br.com.logisticadbc.entity.Caminhao;
+import br.com.logisticadbc.entity.Usuario;
 import br.com.logisticadbc.exceptions.BancoDeDadosException;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.repository.CaminhaoRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
+import javax.validation.Valid;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
@@ -36,9 +43,16 @@ public class CaminhaoService {
                 .collect(toList());
     }
 
-    public CaminhaoDTO editar(Integer id, CaminhaoCreateDTO caminhao) throws BancoDeDadosException {
-        Caminhao caminhaoEntity = objectMapper.convertValue(caminhao, Caminhao.class);
-        return caminhaoRepository.editar(id, caminhaoEntity);
+    public CaminhaoDTO editar(Integer id, CaminhaoCreateDTO caminhao) throws Exception {
+        Caminhao caminhaoRecuperado  = getCaminhao(id);
+        Integer idCaminhao = getCaminhao(id).getIdCaminhao();
+        caminhaoRecuperado.setGasolina(caminhao.getGasolina());
+        caminhaoRecuperado.setPlaca(caminhao.getPlaca());
+        caminhaoRecuperado.setModelo(caminhao.getModelo());
+        caminhaoRecuperado.setEmViagem(caminhao.getEmViagem());
+        caminhaoRepository.editar(idCaminhao,caminhaoRecuperado);
+        CaminhaoDTO dto = objectMapper.convertValue(caminhaoRecuperado, CaminhaoDTO.class);
+        return dto;
     }
 
     public void deletar(Integer id) throws Exception {
@@ -70,22 +84,9 @@ public class CaminhaoService {
 
     // abastercer o caminhão somente em postos e se tiver em rota, se nao tiver em rota nao
     // pode abastercer em qualquer posto independente de ser ou nao posto cadastrado.
-    public void abastecerCaminhao(int index, int gasolina) {
-        try {
-            Caminhao caminhao = caminhaoRepository.buscaPorId(index);
-            Integer totalGasolinaEmTanque = caminhao.getGasolina() + gasolina;
-            System.out.println(totalGasolinaEmTanque);
-            if (caminhao.getEmViagem().getOpcao().equals(1)) {
-                if (caminhao.getGasolina() + gasolina <= 100) {
-                    caminhao = caminhaoRepository.abastecerCaminhao(index, totalGasolinaEmTanque);
-                    caminhao.setGasolina(totalGasolinaEmTanque);
-                    System.out.println("Caminhão abastecido com sucesso");
-                } else {
-                    System.out.println("Caminhão com tanque cheio, não é necessário abastecer");
-                }
-            }
-        } catch (BancoDeDadosException e) {
-            e.printStackTrace();
-        }
-    }
+
+//    public ResponseEntity<CaminhaoDTO> abastecer( Integer id, CaminhaoCreateDTO caminhao, Integer gasolina) throws Exception {
+//        CaminhaoDTO caminhaoDTO = abastecerCaminhao(id, caminhao.setGasolina(caminhao.getGasolina())+ gasolina);
+//        return new ResponseEntity<>(caminhaoDTO, HttpStatus.OK);
+//    }
 }

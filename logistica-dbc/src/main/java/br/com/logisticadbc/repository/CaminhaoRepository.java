@@ -1,6 +1,5 @@
 package br.com.logisticadbc.repository;
 
-import br.com.logisticadbc.dto.CaminhaoDTO;
 import br.com.logisticadbc.entity.Caminhao;
 import br.com.logisticadbc.entity.EmViagem;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +12,7 @@ import java.util.List;
 @Repository
 @Slf4j
 public class CaminhaoRepository{
+
 
     public Integer getProximoId(Connection connection) throws SQLException {
         try {
@@ -104,7 +104,7 @@ public class CaminhaoRepository{
     }
 
 
-    public CaminhaoDTO editar(Integer id, Caminhao caminhao) throws BancoDeDadosException {
+    public boolean editar(Integer id, Caminhao caminhao) throws BancoDeDadosException {
         Connection con = null;
 
         try {
