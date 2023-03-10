@@ -32,11 +32,24 @@ public class RotaController {
         return rotaService.listarRotas();
     }
 
-//    @PostMapping("/idPosto")// POST localhost:8080/posto ----------- PROBLEMA - Como vamos adicionar mais de um posto aqui
-//    public ResponseEntity<RotaDTO> create(@PathVariable("idPosto") Integer idPosto,
-//                                          @Valid @RequestBody RotaCreateDTO rotaCreateDTO) throws RegraDeNegocioException, BancoDeDadosException {
-//        log.info("Rota cirada com sucesso!");
-//        return new ResponseEntity<>(rotaService.adicionaRota(idPosto, rotaCreateDTO), HttpStatus.OK);
-//    }
+    @PostMapping// POST localhost:8080/posto ----------- PROBLEMA - Como vamos adicionar mais de um posto aqui
+    public ResponseEntity<RotaDTO> create(@Valid @RequestBody RotaCreateDTO rotaCreateDTO) throws RegraDeNegocioException, BancoDeDadosException {
+        log.info("Criando rota");
+        return new ResponseEntity<>(rotaService.adicionaRota(rotaCreateDTO), HttpStatus.OK);
+    }
+
+    @PutMapping("/{idRota}") // PUT localhost:8080/pessoa/4
+    public  ResponseEntity<RotaDTO> update(@PathVariable("idRota") Integer id, //Recuperando o id a ser editado por parametro
+                                           @Valid @RequestBody RotaCreateDTO rotaUpdateDTO) throws RegraDeNegocioException, BancoDeDadosException { //Recuperando os dados que serão editados pelo o body
+        log.info("Contato editado com sucesso!");
+        return new ResponseEntity<> (rotaService.editarRota(id, rotaUpdateDTO), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{idRota}") // DELETE localhost:8080/contato/2
+    public ResponseEntity<Boolean> delete(@PathVariable("idRota") Integer id) throws RegraDeNegocioException {
+        rotaService.removerRota(id);
+        log.info("Contato deletado com sucesso!");
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 
 }

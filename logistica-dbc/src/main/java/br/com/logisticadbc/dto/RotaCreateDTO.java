@@ -13,8 +13,7 @@ import java.util.ArrayList;
 
 @Data
 public class RotaCreateDTO {
-    @NotNull
-    private int idRota;
+
     @NotBlank
     @Schema(description = "Descrição da rota", example = "Rota de São Paulo até Brasilia", required = true)
     private String descricao;
@@ -24,5 +23,35 @@ public class RotaCreateDTO {
     @NotBlank
     @Schema(description = "Cidade de destino da rota", example = "Brasilia", required = true)
     private String localDestino;
-    private ArrayList<Posto> listaPostoCadastrado = new ArrayList();
+    @NotNull
+    @Schema(description = "Array com os ids dos postos presentes nesta rota", example = "11, 7, 8", required = true)
+    private ArrayList<Integer> listaIdPostoCadastrado = new ArrayList();
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
