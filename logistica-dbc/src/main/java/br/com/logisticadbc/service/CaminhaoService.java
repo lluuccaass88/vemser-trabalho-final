@@ -2,8 +2,10 @@ package br.com.logisticadbc.service;
 
 import br.com.logisticadbc.dto.CaminhaoCreateDTO;
 import br.com.logisticadbc.dto.CaminhaoDTO;
+import br.com.logisticadbc.dto.ViagemDTO;
 import br.com.logisticadbc.entity.Caminhao;
 import br.com.logisticadbc.entity.EmViagem;
+import br.com.logisticadbc.entity.Viagem;
 import br.com.logisticadbc.exceptions.BancoDeDadosException;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.repository.CaminhaoRepository;
@@ -35,7 +37,8 @@ public class CaminhaoService {
                 .map(caminhao -> objectMapper.convertValue(caminhao, CaminhaoDTO.class))
                 .collect(toList());
     }
-//
+
+    //
     public CaminhaoDTO editar(Integer id, CaminhaoCreateDTO caminhao) throws Exception {
         Caminhao caminhaoRecuperado = getCaminhao(id);
         Integer idCaminhao = getCaminhao(id).getIdCaminhao();
@@ -90,13 +93,30 @@ public class CaminhaoService {
                 .findFirst()
                 .orElseThrow(() -> new RegraDeNegocioException("Caminhão não encontrado"));
     }
-}
 
     // abastercer o caminhão somente em postos e se tiver em rota, se nao tiver em rota nao
     // pode abastercer em qualquer posto independente de ser ou nao posto cadastrado.
+    // se tiver em rota, so pode abastercer em posto cadastrado.
+    public void abastecerCaminhao(Integer id, Integer gasolina) throws Exception {
+        ViagemDTO viagemRecuperada = buscarViagem(id);
+        CaminhaoDTO caminhaoDTORecuperado = buscarPorId(viagemRecuperada.getIdCaminhao());
+        Caminhao caminhaoRecuperado = getCaminhao(id);
+        Integer totalGasolina = caminhaoDTORecuperado.getGasolina() + gasolina;
+        if (totalGasolina > 100) {
+            throw new RegraDeNegocioException("O caminhão não pode ter mais de 100% de abastecimento do seu tanque");
+        } else {
+            caminhaoDTORecuperado.setGasolina(totalGasolina);
+        }
+        caminhaoRepository.editar(id, caminhaoRecuperado);
+    }
 
-//    public ResponseEntity<CaminhaoDTO> abastecer( Integer id, CaminhaoCreateDTO caminhao, Integer gasolina) throws Exception {
-//        CaminhaoDTO caminhaoDTO = abastecerCaminhao(id, caminhao.setGasolina(caminhao.getGasolina())+ gasolina);
-//        return new ResponseEntity<>(caminhaoDTO, HttpStatus.OK);
-//    }
-//}
+    public CaminhaoDTO buscarPorId(Integer id) throws Exception {
+        Caminhao caminhaoRecuperado = getCaminhao(id);
+        return objectMapper.convertValue(caminhaoRecuperado, CaminhaoDTO.class);
+    }
+
+    public ViagemDTO buscarViagem(Integer id) throws Exception {
+        Caminhao caminhaoRecuperado = getCaminhao(id);
+        return objectMapper.convertValue(caminhaoRecuperado.getEmViagem(), ViagemDTO.class);
+    }
+}

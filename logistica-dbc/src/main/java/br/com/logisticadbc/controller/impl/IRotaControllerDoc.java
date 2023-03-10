@@ -17,7 +17,7 @@ public interface IRotaControllerDoc {
     @Operation(summary = "Listar Rotas", description = "Lista todas as rotas no banco de dados")
     @ApiResponses(
             value = {
-                    @ApiResponse(responseCode = "201", description = "Retorna a lista de rotas"),
+                    @ApiResponse(responseCode = "200", description = "Retorna a lista de rotas"),
                     @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
@@ -39,7 +39,7 @@ public interface IRotaControllerDoc {
     @Operation(summary = "Editar Rota", description = "Edita uma rota ao banco de dados")
     @ApiResponses(
             value = {
-                    @ApiResponse(responseCode = "201", description = "Retorna os dados da rota editada"),
+                    @ApiResponse(responseCode = "200", description = "Retorna os dados da rota editada"),
                     @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
@@ -51,7 +51,7 @@ public interface IRotaControllerDoc {
     @Operation(summary = "Deleta Rota", description = "Excui uma rota ao banco de dados")
     @ApiResponses(
             value = {
-                    @ApiResponse(responseCode = "201", description = "Retorna verdadeiro caso tenha deletado a rota com sucesso"),
+                    @ApiResponse(responseCode = "204", description = "Retorna verdadeiro caso tenha deletado a rota com sucesso"),
                     @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }

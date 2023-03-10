@@ -17,7 +17,7 @@ public interface IPostoControllerDoc {
     @Operation(summary = "Listar Postos", description = "Lista todas os postos no banco de dados")
     @ApiResponses(
             value = {
-                    @ApiResponse(responseCode = "201", description = "Retorna a lista de postos"),
+                    @ApiResponse(responseCode = "200", description = "Retorna a lista de postos"),
                     @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
@@ -40,7 +40,7 @@ public interface IPostoControllerDoc {
     @Operation(summary = "Editar Posto", description = "Edita um posto do banco de dados")
     @ApiResponses(
             value = {
-                    @ApiResponse(responseCode = "201", description = "Retorna os dados do posto editado"),
+                    @ApiResponse(responseCode = "200", description = "Retorna os dados do posto editado"),
                     @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
@@ -52,7 +52,7 @@ public interface IPostoControllerDoc {
     @Operation(summary = "Deleta Posto", description = "Exclui um posto do banco de dados")
     @ApiResponses(
             value = {
-                    @ApiResponse(responseCode = "201", description = "Retorna verdadeiro caso tenha deletado o posto com sucesso"),
+                    @ApiResponse(responseCode = "204", description = "Retorna verdadeiro caso tenha deletado o posto com sucesso"),
                     @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }

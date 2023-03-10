@@ -27,7 +27,7 @@ public interface ICaminhaoControllerDoc {
     @Operation(summary = "Listar Caminhões", description = "Listar os caminhões do banco de dados")
     @ApiResponses(
             value = {
-                    @ApiResponse(responseCode = "201", description = "Retorna os dados dos Caminões  do banco de dados"),
+                    @ApiResponse(responseCode = "200", description = "Retorna os dados dos Caminões  do banco de dados"),
                     @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
@@ -38,7 +38,7 @@ public interface ICaminhaoControllerDoc {
     @Operation(summary = "Editar Caminhão", description = "Edita os dados do caminhão do banco de dados")
     @ApiResponses(
             value = {
-                    @ApiResponse(responseCode = "201", description = "Retorna os dados do Caminhão editado"),
+                    @ApiResponse(responseCode = "200", description = "Retorna os dados do Caminhão editado"),
                     @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
@@ -49,7 +49,7 @@ public interface ICaminhaoControllerDoc {
     @Operation(summary = "Deletar Caminhão", description = "Deletar Caminhão do banco de dados")
     @ApiResponses(
             value = {
-                    @ApiResponse(responseCode = "201", description = "Retorna a confirmação da exclusão do caminhão"),
+                    @ApiResponse(responseCode = "204", description = "Retorna a confirmação da exclusão do caminhão"),
                     @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
@@ -60,7 +60,7 @@ public interface ICaminhaoControllerDoc {
     @Operation(summary = "Abastecer caminhão", description = "Abastecer caminhão")
     @ApiResponses(
             value = {
-                    @ApiResponse(responseCode = "201", description = "Retorna a quantidade de gasolina alterada do caminhao no banco de dados"),
+                    @ApiResponse(responseCode = "200", description = "Retorna a quantidade de gasolina alterada do caminhao no banco de dados"),
                     @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
@@ -71,7 +71,7 @@ public interface ICaminhaoControllerDoc {
     @Operation(summary = "Listar caminhões disponiveis", description = "Listar caminhões disponiveis no banco de dados")
     @ApiResponses(
             value = {
-                    @ApiResponse(responseCode = "201", description = "Retorna os dados do caminhões disponiveis"),
+                    @ApiResponse(responseCode = "200", description = "Retorna os dados do caminhões disponiveis"),
                     @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
