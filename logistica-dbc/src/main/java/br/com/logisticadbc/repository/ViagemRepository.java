@@ -41,10 +41,15 @@ public class ViagemRepository {
             PreparedStatement stmt = con.prepareStatement(sql);
 
             stmt.setInt(1, viagem.getIdViagem());
-            stmt.setInt(2, viagem.getCaminhao().getIdCaminhao());
-            stmt.setInt(3, viagem.getRota().getIdRota());
-            stmt.setInt(4, viagem.getUsuario().getId());
-//            stmt.setInt(5, viagem.se);
+            stmt.setInt(2, viagem.getIdCaminhao());
+            stmt.setInt(3, viagem.getIdRota());
+            stmt.setInt(4, viagem.getIdUsuario());
+            if(viagem.isFinalizada()){
+                stmt.setInt(5, 1);
+            }else{
+                stmt.setInt(5, 2);
+            }
+
 
             int res = stmt.executeUpdate();
             if (res == 0) {

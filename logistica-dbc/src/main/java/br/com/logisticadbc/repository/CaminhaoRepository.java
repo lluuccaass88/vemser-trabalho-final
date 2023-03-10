@@ -105,7 +105,7 @@ public class CaminhaoRepository{
 
     public boolean editar(Integer id, Caminhao caminhao) throws BancoDeDadosException {
         Connection con = null;
-
+        System.out.println(caminhao);
         try {
             con = ConexaoBancoDeDados.getConnection();
             StringBuilder sql = new StringBuilder();
@@ -113,13 +113,16 @@ public class CaminhaoRepository{
             sql.append("MODELO = ?, ");
             sql.append("PLACA = ?, ");
             sql.append("GASOLINA = ? ");
+            sql.append("EMVIAGEM = ? ");
             sql.append("WHERE ID_CAMINHAO = ?");
             PreparedStatement stmt = con.prepareStatement(sql.toString());
 
             stmt.setString(1, caminhao.getModelo());
             stmt.setString(2, caminhao.getPlaca());
             stmt.setInt(3, caminhao.getGasolina());
+            stmt.setInt(5, caminhao.getEmViagem().getOpcao());
             stmt.setInt(4, id);
+
 
             // Executa-se a consulta
             int res = stmt.executeUpdate();
@@ -144,7 +147,6 @@ public class CaminhaoRepository{
             }
         }
     }
-
 
     public List<Caminhao> listar() throws BancoDeDadosException {
         List<Caminhao> caminhoes = new ArrayList<>();

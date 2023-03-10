@@ -1,5 +1,6 @@
 package br.com.logisticadbc.service;
 
+import br.com.logisticadbc.dto.CaminhaoCreateDTO;
 import br.com.logisticadbc.dto.ViagemCreateDTO;
 import br.com.logisticadbc.dto.ViagemDTO;
 import br.com.logisticadbc.entity.Caminhao;
@@ -23,25 +24,27 @@ public class ViagemService {
 
     public ViagemDTO adicionarViagem(ViagemCreateDTO viagem) throws BancoDeDadosException {
         try {
-            Viagem viagemEntity = objectMapper.convertValue(viagem, Viagem.class);
-
-            viagemEntity.setFinalizada(false);
-
-            Viagem viagemAdicionada = viagemRepository.adicionar(viagemEntity);
-
             Caminhao caminhaoRecuperado = caminhaoService.getCaminhao(viagem.getIdCaminhao());
-
+            Viagem viagemAdicionada;
             if(caminhaoRecuperado.getEmViagem() == EmViagem.EM_VIAGEM){
                 throw new RegraDeNegocioException("O caminhão escolhido já esta em uma viagem."); //Pq eu consegui usar sem passar ele no método?
             }else{
-              caminhaoService.editar(viagem.getIdCaminhao());
+
                 caminhaoRecuperado.setEmViagem(EmViagem.EM_VIAGEM);
+
+                caminhaoService.editar(viagem.getIdCaminhao(), objectMapper.convertValue(caminhaoRecuperado, CaminhaoCreateDTO.class));
+
+                Viagem viagemEntity = objectMapper.convertValue(viagem, Viagem.class);
+
+                viagemEntity.setFinalizada(false);
+
+                viagemAdicionada = viagemRepository.adicionar(viagemEntity);
             }
             return objectMapper.convertValue(viagemAdicionada, ViagemDTO.class);
-
         } catch (BancoDeDadosException e) {
             throw new BancoDeDadosException("Erro no banco de dados.");
         } catch (Exception e) {
+            e.printStackTrace();
             System.out.println("ERRO SQL-> " + e.getMessage());
         }
 
