@@ -50,26 +50,19 @@ public class CaminhaoService {
         return dto;
     }
 
-//    public CaminhaoDTO editar(Integer id) throws Exception {
-//        Caminhao caminhaoRecuperado = getCaminhao(id);
-//        if (caminhaoRecuperado.getEmViagem() == EmViagem.ESTACIONADO) {
-//            caminhaoRecuperado.setEmViagem(EmViagem.EM_VIAGEM);
-//        } else {
-//            caminhaoRecuperado.setEmViagem(EmViagem.ESTACIONADO);
-//        }
-//        caminhaoRepository.editar(id, caminhaoRecuperado);
-//        CaminhaoDTO dto = objectMapper.convertValue(caminhaoRecuperado, CaminhaoDTO.class);
-//        return dto;
-//        Caminhao caminhaoRecuperado = getCaminhao(id);
-//        if (caminhaoRecuperado.getEmViagem().equals(emViagem.ESTACIONADO)) {
-//            caminhaoRecuperado.setEmViagem(emViagem.EM_VIAGEM);
-//        } else {
-//            caminhaoRecuperado.setEmViagem(emViagem.ESTACIONADO);
-//        }
-//        caminhaoRepository.editar(id, caminhaoRecuperado);
-//        CaminhaoDTO dto = objectMapper.convertValue(caminhaoRecuperado, CaminhaoDTO.class);
-//        return dto;
-//    }
+    public CaminhaoDTO editar(Integer id) throws Exception {
+        Caminhao caminhaoRecuperado = getCaminhao(id);
+
+        if (caminhaoRecuperado.getEmViagem() == EmViagem.ESTACIONADO) {
+            caminhaoRecuperado.setEmViagem(EmViagem.EM_VIAGEM);
+        } else {
+            caminhaoRecuperado.setEmViagem(EmViagem.ESTACIONADO);
+        }
+
+        caminhaoRepository.editar(id, caminhaoRecuperado);
+
+        return objectMapper.convertValue(caminhaoRecuperado, CaminhaoDTO.class);
+    }
 
     public void deletar(Integer id) throws Exception {
         Caminhao caminhaoRecuperado = getCaminhao(id);

@@ -16,7 +16,7 @@ public class RotaRepository {
 
     public Integer getProximoId(Connection connection) throws SQLException {
         try {
-            String sql = "SELECT LOGISTICA.SEQ_ROTA.NEXTVAL mysequence FROM DUAL";
+            String sql = "SELECT SEQ_ROTA.NEXTVAL mysequence FROM DUAL";
 
             Statement stmt = connection.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
@@ -38,7 +38,7 @@ public class RotaRepository {
             rota.setIdRota(proximoId);
 
             //Adicionando a rota na sua respectiva tabela do banco de dados
-            String sql = "INSERT INTO LOGISTICA.ROTA\n" +
+            String sql = "INSERT INTO ROTA\n" +
                     "(ID_ROTA, DESCRICAO, LOCALPARTIDA, LOCALDESTINO)\n" +
                     "VALUES(?, ?, ?, ?)\n";
 
@@ -75,7 +75,7 @@ public class RotaRepository {
         try {
             con = ConexaoBancoDeDados.getConnection();
 
-            String sql = "INSERT INTO LOGISTICA.ROTA_X_POSTO\n" +
+            String sql = "INSERT INTO ROTA_X_POSTO\n" +
                     "(ID_ROTA, ID_POSTO)\n" +
                     "VALUES(?, ?)\n";
 
@@ -109,7 +109,7 @@ public class RotaRepository {
             con = ConexaoBancoDeDados.getConnection();
 
             String sql = "  SELECT r.ID_ROTA, r.DESCRICAO, r.LOCALPARTIDA, r.LOCALDESTINO,  p.ID_POSTO, p.NOMEPOSTO, p.VALORCOMBUSTIVEL  \n" +
-                    "\tFROM LOGISTICA.ROTA r\n" +
+                    "\tFROM ROTA r\n" +
                     "\t\tINNER JOIN LOGISTICA.ROTA_X_POSTO rxp ON r.ID_ROTA  = rxp.ID_ROTA  \n" +
                     "\t\tINNER JOIN LOGISTICA.POSTO p ON p.ID_POSTO = rxp.ID_POSTO \n" +
                     "\t\tORDER BY r.ID_ROTA \n";
@@ -169,7 +169,7 @@ public class RotaRepository {
             con = ConexaoBancoDeDados.getConnection();
 
             StringBuilder sql = new StringBuilder();
-            sql.append("UPDATE LOGISTICA.ROTA SET ");
+            sql.append("UPDATE ROTA SET ");
             sql.append("DESCRICAO = ?, ");
             sql.append("LOCALPARTIDA = ?, ");
             sql.append("LOCALDESTINO = ? ");
@@ -209,7 +209,7 @@ public class RotaRepository {
         try {
             con = ConexaoBancoDeDados.getConnection();
 
-            String sql = "DELETE FROM LOGISTICA.ROTA_X_POSTO WHERE ID_ROTA = ?";
+            String sql = "DELETE FROM ROTA_X_POSTO WHERE ID_ROTA = ?";
 
             PreparedStatement stmt = con.prepareStatement(sql);
             stmt.setInt(1, id);
@@ -242,7 +242,7 @@ public class RotaRepository {
         try {
             con = ConexaoBancoDeDados.getConnection();
 
-            String sql = "DELETE FROM LOGISTICA.ROTA WHERE ID_ROTA = ?";
+            String sql = "DELETE FROM ROTA WHERE ID_ROTA = ?";
 
             PreparedStatement stmt = con.prepareStatement(sql);
             stmt.setInt(1, id);

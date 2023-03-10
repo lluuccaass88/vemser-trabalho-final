@@ -14,7 +14,7 @@ import java.util.List;
 public class PostoRepository{
     public Integer getProximoId(Connection connection) throws SQLException {
         try {
-            String sql = "SELECT LOGISTICA.SEQ_POSTO.NEXTVAL mysequence FROM DUAL";
+            String sql = "SELECT SEQ_POSTO.NEXTVAL mysequence FROM DUAL";
 
             Statement stmt = connection.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
@@ -35,7 +35,7 @@ public class PostoRepository{
             Integer proximoId = this.getProximoId(con);
             posto.setIdPosto(proximoId);
 
-            String sql = "INSERT INTO LOGISTICA.POSTO\n" +
+            String sql = "INSERT INTO POSTO\n" +
                     "(ID_POSTO, NOMEPOSTO, VALORCOMBUSTIVEL)\n" +
                     "VALUES(?, ?, ?)";
 
@@ -73,7 +73,7 @@ public class PostoRepository{
         try {
             con = ConexaoBancoDeDados.getConnection();
 
-            String sql = "DELETE FROM LOGISTICA.ROTA_X_POSTO WHERE ID_POSTO = ?";
+            String sql = "DELETE FROM ROTA_X_POSTO WHERE ID_POSTO = ?";
 
             PreparedStatement stmt = con.prepareStatement(sql);
             stmt.setInt(1, id);
@@ -106,7 +106,7 @@ public class PostoRepository{
         try {
             con = ConexaoBancoDeDados.getConnection();
 
-            String sql = "DELETE FROM LOGISTICA.POSTO WHERE ID_POSTO = ?";
+            String sql = "DELETE FROM POSTO WHERE ID_POSTO = ?";
 
             PreparedStatement stmt = con.prepareStatement(sql);
             stmt.setInt(1, id);
@@ -140,7 +140,7 @@ public class PostoRepository{
             con = ConexaoBancoDeDados.getConnection();
 
             StringBuilder sql = new StringBuilder();
-            sql.append("UPDATE LOGISTICA.POSTO SET ");
+            sql.append("UPDATE POSTO SET ");
             sql.append("NOMEPOSTO = ?, ");
             sql.append("VALORCOMBUSTIVEL = ? ");
             sql.append("WHERE ID_POSTO =  ?");
@@ -181,7 +181,7 @@ public class PostoRepository{
         try {
             con = ConexaoBancoDeDados.getConnection();
 
-            String sql = "SELECT * FROM LOGISTICA.POSTO";
+            String sql = "SELECT * FROM POSTO";
 
             PreparedStatement stmt = con.prepareStatement(sql);
             // Executa-se a consulta
@@ -215,7 +215,7 @@ public class PostoRepository{
         try {
             con = ConexaoBancoDeDados.getConnection();
 
-            String sql = "SELECT * FROM LOGISTICA.POSTO WHERE ID_POSTO = ?";
+            String sql = "SELECT * FROM POSTO WHERE ID_POSTO = ?";
 
             PreparedStatement stmt = con.prepareStatement(sql);
             stmt.setInt(1, id);

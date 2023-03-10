@@ -37,9 +37,17 @@ public class CaminhaoRepository{
             Integer proximoId = this.getProximoId(con);
             caminhao.setIdCaminhao(proximoId);
 
+            System.out.println(caminhao.toString());
+
+
             String sql = "INSERT INTO LOGISTICA.CAMINHAO\n" +
-                    "(ID_CAMINHAO, MODELO, PLACA, GASOLINA, EMVIAGEM)\n" +
-                    "VALUES(?, ?, ?, ?, ?)\n";
+                    "(ID_CAMINHAO, PLACA, MODELO, GASOLINA, EMVIAGEM)\n" +
+                    "VALUES(?, '?', '?', ?, ?)";
+
+
+//            String sql = "INSERT INTO LOGISTICA.CAMINHAO\n" +
+//                    "(ID_CAMINHAO, MODELO, PLACA, GASOLINA, EMVIAGEM)\n" +
+//                    "VALUES(?, ?, ?, ?, ?)\n";
 
             PreparedStatement stmt = con.prepareStatement(sql);
 
@@ -51,7 +59,7 @@ public class CaminhaoRepository{
 
             int res = stmt.executeUpdate();
             if (res == 0) {
-                throw new BancoDeDadosException("Erro ao adicionar caminhão");
+                throw new BancoDeDadosException("Erro ao adicionar caminhão no banco de dados");
             } else {
                 System.out.println("Caminhão cadastrado com sucesso!" +
                         "\nadicionarCaminhão.res=" + res);
