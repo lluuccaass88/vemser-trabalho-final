@@ -1,12 +1,7 @@
 package br.com.logisticadbc.service;
 
-import br.com.logisticadbc.dto.CaminhaoCreateDTO;
-import br.com.logisticadbc.dto.PostoDTO;
-import br.com.logisticadbc.dto.ViagemCreateDTO;
-import br.com.logisticadbc.dto.ViagemDTO;
-import br.com.logisticadbc.entity.Caminhao;
-import br.com.logisticadbc.entity.EmViagem;
-import br.com.logisticadbc.entity.Viagem;
+import br.com.logisticadbc.dto.*;
+import br.com.logisticadbc.entity.*;
 import br.com.logisticadbc.exceptions.BancoDeDadosException;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.repository.CaminhaoRepository;
@@ -24,6 +19,10 @@ public class ViagemService {
     private final CaminhaoService caminhaoService;
     private final ViagemRepository viagemRepository;
     private final ObjectMapper objectMapper;
+    private final EmailService emailService;
+    private final UsuarioService usuarioService;
+    private final RotaService rotaService;
+
 
 
     public ViagemDTO adicionarViagem(ViagemCreateDTO viagem) throws BancoDeDadosException {
@@ -43,6 +42,12 @@ public class ViagemService {
                 viagemEntity.setFinalizada(false);
 
                 viagemAdicionada = viagemRepository.adicionar(viagemEntity);
+                // metodo utilizado para fazer as conversões e tentar buscar o usuario e a rota
+                Usuario user = usuarioService.getUsuario(viagemAdicionada.getIdUsuario());
+                UsuarioDTO usuario = objectMapper.convertValue(user, UsuarioDTO.class);
+                Rota rotaBuscar = caminhaoService.buscarViagem(viagemAdicionada.getIdCaminhao()).getRota();
+                RotaDTO rota = objectMapper.convertValue(rotaBuscar, RotaDTO.class);
+                emailService.enviarEmailParaMotoristaComRota(usuario, rota);
             }
             return objectMapper.convertValue(viagemAdicionada, ViagemDTO.class);
         } catch (BancoDeDadosException e) {

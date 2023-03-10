@@ -53,7 +53,7 @@ public class EmailService {
 
     public void enviarEmailParaMotorista(UsuarioDTO usuario) throws RegraDeNegocioException {
         MimeMessage mimeMessage = emailSender.createMimeMessage();
-        Integer op = 1;
+        Integer op = 2;
         try {
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
             mimeMessageHelper.setFrom(from);
@@ -67,6 +67,34 @@ public class EmailService {
             e.printStackTrace();
             throw new RegraDeNegocioException("Erro ao enviar email para o motorsita: " + usuario.getNome());
         }
+    }
+
+    public void enviarEmailParaMotoristaComRota(UsuarioDTO usuario, RotaDTO rota) throws RegraDeNegocioException {
+        MimeMessage mimeMessage = emailSender.createMimeMessage();
+        try {
+            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
+            mimeMessageHelper.setFrom(from);
+            mimeMessageHelper.setTo(usuario.getEmail());
+            mimeMessageHelper.setSubject("Rota de Viagem - DBC Logística");
+
+            mimeMessageHelper.setText(getRotaTemplate(usuario, rota), true);
+
+            emailSender.send(mimeMessageHelper.getMimeMessage());
+        } catch (MessagingException | IOException | TemplateException e) {
+            e.printStackTrace();
+            throw new RegraDeNegocioException("Erro ao enviar email para o motorsita: " + usuario.getNome());
+        }
+    }
+
+    public String getRotaTemplate(UsuarioDTO usuario, RotaDTO rota) throws IOException, TemplateException {
+        Map<String, Object> dados = new HashMap<>();
+        dados.put("nome", "Sistema de Logística DBC Company");
+        dados.put("usuario", usuario);
+        dados.put("rota", rota);
+
+        Template template = fmConfiguration.getTemplate("email-template-rota.ftl");
+        String html = FreeMarkerTemplateUtils.processTemplateIntoString(template, dados);
+        return html;
     }
 
     public String getUsuarioTemplate(UsuarioDTO usuario, Integer opc) throws IOException, TemplateException {
