@@ -3,6 +3,7 @@ package br.com.logisticadbc.dto;
 import br.com.logisticadbc.entity.EmViagem;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import org.hibernate.validator.constraints.UniqueElements;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -13,7 +14,7 @@ public class CaminhaoCreateDTO {
     @Schema(description = "Modelo do Caminhão", example = "Mercedes", required = true)
     private String modelo;
     @NotBlank
-    @Schema(description = "Placa do caminhao", example = "ABC1234", required = true)
+    @Schema(description = "Placa do caminhao ( UNICA )", example = "ABC1234", required = true)
     private String placa;
     @NotNull
     @Schema(description = "Quantidade de Gasolina no Caminhão", example = "20", required = true)

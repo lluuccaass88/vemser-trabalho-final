@@ -12,7 +12,7 @@ import java.util.Arrays;
 @Getter
 public enum EmViagem {
 
-    ESTACIONADO(1), EM_VIAGEM(2);
+    ESTACIONADO(2), EM_VIAGEM(1);
 
     private Integer opcao;
 
