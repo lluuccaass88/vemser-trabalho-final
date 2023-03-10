@@ -13,9 +13,9 @@ public class Viagem {
     private Caminhao caminhao;
     private Rota rota;
     private Usuario usuario;
-    private int finalizada;
+    private boolean finalizada;
 
-    public Viagem() { this.finalizada = 0; } // 0 - em viagem e 1 - finalizada
+    //public Viagem() { this.finalizada = 0; } // 0 - em viagem e 1 - finalizada
 
 //    @Override
 //    public String toString() {

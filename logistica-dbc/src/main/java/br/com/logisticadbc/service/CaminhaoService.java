@@ -2,6 +2,7 @@ package br.com.logisticadbc.service;
 
 import br.com.logisticadbc.dto.*;
 import br.com.logisticadbc.entity.Caminhao;
+import br.com.logisticadbc.entity.EmViagem;
 import br.com.logisticadbc.entity.Usuario;
 import br.com.logisticadbc.exceptions.BancoDeDadosException;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
@@ -25,7 +26,7 @@ import static java.util.stream.Collectors.toList;
 public class CaminhaoService {
 
     private final CaminhaoRepository caminhaoRepository;
-
+private final EmViagem emViagem;
     private final ObjectMapper objectMapper;
 
     public CaminhaoDTO adicionar(CaminhaoCreateDTO caminhao) throws BancoDeDadosException{
@@ -51,6 +52,18 @@ public class CaminhaoService {
         caminhaoRecuperado.setModelo(caminhao.getModelo());
         caminhaoRecuperado.setEmViagem(caminhao.getEmViagem());
         caminhaoRepository.editar(idCaminhao,caminhaoRecuperado);
+        CaminhaoDTO dto = objectMapper.convertValue(caminhaoRecuperado, CaminhaoDTO.class);
+        return dto;
+    }
+
+    public CaminhaoDTO editar(Integer id) throws Exception {
+        Caminhao caminhaoRecuperado  = getCaminhao(id);
+        if (caminhaoRecuperado.getEmViagem() == EmViagem.ESTACIONADO){
+            caminhaoRecuperado.setEmViagem(EmViagem.EM_VIAGEM);
+        }else{
+            caminhaoRecuperado.setEmViagem(EmViagem.ESTACIONADO);
+        }
+        caminhaoRepository.editar(id,caminhaoRecuperado);
         CaminhaoDTO dto = objectMapper.convertValue(caminhaoRecuperado, CaminhaoDTO.class);
         return dto;
     }
