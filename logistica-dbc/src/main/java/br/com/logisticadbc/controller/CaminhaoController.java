@@ -69,4 +69,10 @@ public class CaminhaoController implements CaminhaoInterface {
 //    }
         return null;
     }
+
+    @GetMapping("/caminhoesdisponiveis")
+    public ResponseEntity<List<CaminhaoDTO>> listarCaminhoesDisponiveis() throws Exception {
+        log.info("Recebendo requisição para listar todos os caminhões disponiveis");
+        return new ResponseEntity<>(caminhaoService.listarCaminhoesLivres(), HttpStatus.OK);
+    }
 }
