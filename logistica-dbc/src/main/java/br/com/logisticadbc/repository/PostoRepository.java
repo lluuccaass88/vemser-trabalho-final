@@ -2,6 +2,7 @@ package br.com.logisticadbc.repository;
 
 import br.com.logisticadbc.entity.Posto;
 import br.com.logisticadbc.exceptions.BancoDeDadosException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
@@ -9,9 +10,13 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@RequiredArgsConstructor
 @Repository
 @Slf4j
 public class PostoRepository{
+
+    private final ConexaoBancoDeDados conexaoBancoDeDados;
+
     public Integer getProximoId(Connection connection) throws SQLException {
         try {
             String sql = "SELECT SEQ_POSTO.NEXTVAL mysequence FROM DUAL";
@@ -31,7 +36,7 @@ public class PostoRepository{
     public Posto adicionar(Posto posto) throws BancoDeDadosException {
         Connection con = null;
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
             Integer proximoId = this.getProximoId(con);
             posto.setIdPosto(proximoId);
 
@@ -71,7 +76,7 @@ public class PostoRepository{
     public boolean removerPostoXRota(Integer id) throws BancoDeDadosException {
         Connection con = null;
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
 
             String sql = "DELETE FROM ROTA_X_POSTO WHERE ID_POSTO = ?";
 
@@ -104,7 +109,7 @@ public class PostoRepository{
     public boolean remover(Integer id) throws BancoDeDadosException {
         Connection con = null;
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
 
             String sql = "DELETE FROM POSTO WHERE ID_POSTO = ?";
 
@@ -137,7 +142,7 @@ public class PostoRepository{
     public boolean editar(Integer id, Posto posto) throws BancoDeDadosException {
         Connection con = null;
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
 
             StringBuilder sql = new StringBuilder();
             sql.append("UPDATE POSTO SET ");
@@ -179,7 +184,7 @@ public class PostoRepository{
         List<Posto> postos = new ArrayList<>();
         Connection con = null;
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
 
             String sql = "SELECT * FROM POSTO";
 
@@ -213,7 +218,7 @@ public class PostoRepository{
         Posto posto = new Posto();
 
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
 
             String sql = "SELECT * FROM POSTO WHERE ID_POSTO = ?";
 

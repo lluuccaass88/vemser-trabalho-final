@@ -4,15 +4,20 @@ import br.com.logisticadbc.dto.RotaDTO;
 import br.com.logisticadbc.entity.Posto;
 import br.com.logisticadbc.entity.Rota;
 import br.com.logisticadbc.exceptions.BancoDeDadosException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+
+@RequiredArgsConstructor
 @Slf4j
 @Repository
 public class RotaRepository {
+
+    private final ConexaoBancoDeDados conexaoBancoDeDados;
 
     public Integer getProximoId(Connection connection) throws SQLException {
         try {
@@ -33,7 +38,7 @@ public class RotaRepository {
     public Rota adicionar(Rota rota) throws BancoDeDadosException {
         Connection con = null;
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
             Integer proximoId = this.getProximoId(con);
             rota.setIdRota(proximoId);
 
@@ -73,7 +78,7 @@ public class RotaRepository {
 
         Connection con = null;
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
 
             String sql = "INSERT INTO ROTA_X_POSTO\n" +
                     "(ID_ROTA, ID_POSTO)\n" +
@@ -106,7 +111,7 @@ public class RotaRepository {
         List<Rota> rotas = new ArrayList<>();
         Connection con = null;
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
 
             String sql = "  SELECT r.ID_ROTA, r.DESCRICAO, r.LOCALPARTIDA, r.LOCALDESTINO,  p.ID_POSTO, p.NOMEPOSTO, p.VALORCOMBUSTIVEL  \n" +
                     "\tFROM ROTA r\n" +
@@ -166,7 +171,7 @@ public class RotaRepository {
     public Rota editar(Integer id, Rota rota) throws BancoDeDadosException {
         Connection con = null;
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
 
             StringBuilder sql = new StringBuilder();
             sql.append("UPDATE ROTA SET ");
@@ -207,7 +212,7 @@ public class RotaRepository {
     public boolean removerPostoXRota(Integer id) throws BancoDeDadosException {
         Connection con = null;
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
 
             String sql = "DELETE FROM ROTA_X_POSTO WHERE ID_ROTA = ?";
 
@@ -240,7 +245,7 @@ public class RotaRepository {
     public boolean remover(Integer id) throws BancoDeDadosException {
         Connection con = null;
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
 
             String sql = "DELETE FROM ROTA WHERE ID_ROTA = ?";
 
