@@ -7,14 +7,13 @@ import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
 
-public interface PostoControllerInterface {
+public interface IPostoControllerDoc {
     @Operation(summary = "Listar Postos", description = "Lista todas os postos no banco de dados")
     @ApiResponses(
             value = {

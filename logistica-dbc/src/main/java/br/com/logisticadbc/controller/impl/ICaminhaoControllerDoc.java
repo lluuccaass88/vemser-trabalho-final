@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
-public interface CaminhaoInterface {
+public interface ICaminhaoControllerDoc {
 
     @Operation(summary = "Adicionar Caminhão", description = "Adicionar um caminhão no banco de dados")
     @ApiResponses(

@@ -35,7 +35,7 @@ public class RotaController {
     @PostMapping// POST localhost:8080/posto ----------- PROBLEMA - Como vamos adicionar mais de um posto aqui
     public ResponseEntity<RotaDTO> create(@Valid @RequestBody RotaCreateDTO rotaCreateDTO) throws RegraDeNegocioException, BancoDeDadosException {
         log.info("Criando rota");
-        return new ResponseEntity<>(rotaService.adicionaRota(rotaCreateDTO), HttpStatus.OK);
+        return new ResponseEntity<>(rotaService.adicionaRota(rotaCreateDTO), HttpStatus.CREATED);
     }
 
     @PutMapping("/{idRota}") // PUT localhost:8080/pessoa/4
@@ -49,7 +49,7 @@ public class RotaController {
     public ResponseEntity<Boolean> delete(@PathVariable("idRota") Integer id) throws RegraDeNegocioException {
         rotaService.removerRota(id);
         log.info("Contato deletado com sucesso!");
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 }

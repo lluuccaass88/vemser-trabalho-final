@@ -35,7 +35,7 @@ public class PostoController {
     public ResponseEntity<PostoDTO> create(@Valid @RequestBody PostoCreateDTO postoCreateDTO)
             throws RegraDeNegocioException, BancoDeDadosException {
         log.info("Contato criado com sucesso!");
-        return new ResponseEntity<>(postoService.adicionaPosto(postoCreateDTO), HttpStatus.OK);
+        return new ResponseEntity<>(postoService.adicionaPosto(postoCreateDTO), HttpStatus.CREATED);
     }
 
     @PutMapping("/{idPosto}") // PUT localhost:8080/pessoa/4
@@ -49,7 +49,7 @@ public class PostoController {
     public ResponseEntity<Boolean> delete(@PathVariable("idPosto") Integer id) throws RegraDeNegocioException {
         postoService.removerPosto(id);
         log.info("Contato deletado com sucesso!");
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 }

@@ -8,13 +8,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
 import java.util.List;
 
 // classe responsável por documentar o controlador de usuários e definir os métodos que serão implementados
-public interface IUsuarioController {
+public interface IUsuarioControllerDoc {
 
     // EXEMPLO
     @Operation(summary = "Adicionar Usuários", description = "Adicionar um usuário do tipo Colaborador ou Motorista")
