@@ -51,7 +51,7 @@ public class EmailService {
         }
     }
 
-    public void enviarEmailParaMotorista(UsuarioDTO usuario, RotaDTO rota) throws RegraDeNegocioException {
+    public void enviarEmailParaMotorista(UsuarioDTO usuario) throws RegraDeNegocioException {
         MimeMessage mimeMessage = emailSender.createMimeMessage();
         Integer op = 1;
         try {
@@ -61,10 +61,7 @@ public class EmailService {
             mimeMessageHelper.setSubject("Bem vindo ao DBC Logística - Painel de Motorista");
 
             mimeMessageHelper.setText(getUsuarioTemplate(usuario, op), true);
-            mimeMessageHelper.setText("Abaixo as rotas disponíveis para você: ");
-            mimeMessageHelper.setText("Rota: " + rota.getIdRota());
-            mimeMessageHelper.setText(rota.getLocalPartida());
-            mimeMessageHelper.setText(rota.getLocalDestino());
+
             emailSender.send(mimeMessageHelper.getMimeMessage());
         } catch (MessagingException | IOException | TemplateException e) {
             e.printStackTrace();
