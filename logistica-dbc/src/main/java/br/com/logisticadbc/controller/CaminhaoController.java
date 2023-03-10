@@ -1,7 +1,7 @@
 package br.com.logisticadbc.controller;
 
 
-import br.com.logisticadbc.controller.impl.CaminhaoInterface;
+import br.com.logisticadbc.controller.impl.ICaminhaoControllerDoc;
 import br.com.logisticadbc.dto.CaminhaoCreateDTO;
 import br.com.logisticadbc.dto.CaminhaoDTO;
 import br.com.logisticadbc.service.CaminhaoService;
@@ -20,7 +20,7 @@ import java.util.List;
 @RequestMapping("/caminhao") // http://localhost:8080/caminhao
 @Validated
 @Slf4j
-public class CaminhaoController implements CaminhaoInterface {
+public class CaminhaoController implements ICaminhaoControllerDoc {
 
     private final CaminhaoService caminhaoService;
 

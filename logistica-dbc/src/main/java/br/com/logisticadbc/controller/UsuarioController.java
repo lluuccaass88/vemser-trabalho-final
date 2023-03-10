@@ -1,6 +1,6 @@
 package br.com.logisticadbc.controller;
 
-import br.com.logisticadbc.controller.impl.IUsuarioController;
+import br.com.logisticadbc.controller.impl.IUsuarioControllerDoc;
 import br.com.logisticadbc.dto.UsuarioCreateDTO;
 import br.com.logisticadbc.dto.UsuarioDTO;
 import br.com.logisticadbc.service.UsuarioService;
@@ -17,7 +17,7 @@ import java.util.List;
 @RequestMapping("/usuario") // http://localhost:8080/usuario
 @Validated
 @Slf4j
-public class UsuarioController implements IUsuarioController {
+public class UsuarioController implements IUsuarioControllerDoc {
 
     private final UsuarioService usuarioService;
 

@@ -30,7 +30,7 @@ public class ViagemController {
     @PostMapping// POST localhost:8080/posto ----------- PROBLEMA - Como vamos adicionar mais de um posto aqui
     public ResponseEntity<ViagemDTO> create(@Valid @RequestBody ViagemCreateDTO viagemCreateDTO) throws RegraDeNegocioException, BancoDeDadosException {
         log.info("Criando viagem");
-        return new ResponseEntity<>(viagemService.adicionarViagem(viagemCreateDTO), HttpStatus.OK);
+        return new ResponseEntity<>(viagemService.adicionarViagem(viagemCreateDTO), HttpStatus.CREATED);
     }
 
 }
