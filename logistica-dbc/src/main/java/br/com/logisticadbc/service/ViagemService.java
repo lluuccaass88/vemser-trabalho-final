@@ -42,6 +42,7 @@ public class ViagemService {
             }
             return objectMapper.convertValue(viagemAdicionada, ViagemDTO.class);
         } catch (BancoDeDadosException e) {
+            e.printStackTrace();
             throw new BancoDeDadosException("Erro no banco de dados.");
         } catch (Exception e) {
             e.printStackTrace();

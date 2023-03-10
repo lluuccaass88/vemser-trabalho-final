@@ -2,6 +2,7 @@ package br.com.logisticadbc.repository;
 
 import br.com.logisticadbc.entity.Caminhao;
 import br.com.logisticadbc.entity.EmViagem;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import br.com.logisticadbc.exceptions.BancoDeDadosException;
@@ -9,10 +10,12 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@RequiredArgsConstructor
 @Repository
 @Slf4j
 public class CaminhaoRepository{
-    
+
+    private final ConexaoBancoDeDados conexaoBancoDeDados;
     public Integer getProximoId(Connection connection) throws SQLException {
         try {
             String sql = "SELECT SEQ_CAMINHAO.NEXTVAL mysequence FROM DUAL";
@@ -33,7 +36,7 @@ public class CaminhaoRepository{
     public Caminhao adicionar(Caminhao caminhao) throws BancoDeDadosException {
         Connection con = null;
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
             Integer proximoId = this.getProximoId(con);
             caminhao.setIdCaminhao(proximoId);
 
@@ -74,7 +77,7 @@ public class CaminhaoRepository{
     public boolean remover(Integer id) throws BancoDeDadosException {
         Connection con = null;
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
 
             String sql = "DELETE FROM CAMINHAO WHERE ID_CAMINHAO = ?";
 
@@ -107,12 +110,12 @@ public class CaminhaoRepository{
         Connection con = null;
         System.out.println(caminhao);
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
             StringBuilder sql = new StringBuilder();
             sql.append("UPDATE CAMINHAO SET ");
             sql.append("MODELO = ?, ");
             sql.append("PLACA = ?, ");
-            sql.append("GASOLINA = ? ");
+            sql.append("GASOLINA = ?, ");
             sql.append("EMVIAGEM = ? ");
             sql.append("WHERE ID_CAMINHAO = ?");
             PreparedStatement stmt = con.prepareStatement(sql.toString());
@@ -120,15 +123,15 @@ public class CaminhaoRepository{
             stmt.setString(1, caminhao.getModelo());
             stmt.setString(2, caminhao.getPlaca());
             stmt.setInt(3, caminhao.getGasolina());
-            stmt.setInt(5, caminhao.getEmViagem().getOpcao());
-            stmt.setInt(4, id);
+            stmt.setInt(4, caminhao.getEmViagem().getOpcao());
+            stmt.setInt(5, id);
 
 
             // Executa-se a consulta
             int res = stmt.executeUpdate();
             System.out.println("editarCaminhao.res=" + res);
             if (res == 0) {
-                throw new BancoDeDadosException("Erro ao editar caminhão");
+                throw new BancoDeDadosException("Erro ao editar caminhão!");
             } else {
 //                System.out.println("Caminhão editado com sucesso!" +
 //                        "\neditarCaminhão.res=" + res);
@@ -153,7 +156,7 @@ public class CaminhaoRepository{
         Connection con = null;
         try {
 
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
 
             String sql = "SELECT * FROM CAMINHAO";
 
@@ -188,7 +191,7 @@ public class CaminhaoRepository{
         Connection con = null;
         Caminhao caminhao = new Caminhao();
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
 
 //            String sql = "SELECT * FROM CAMINHAO c \n" +
 //                    "\tWHERE ID_CAMINHAO = ?";
@@ -228,7 +231,7 @@ public class CaminhaoRepository{
         Connection con = null;
 
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
             StringBuilder sql = new StringBuilder();
             sql.append("UPDATE CAMINHAO SET ");
             sql.append("EMVIAGEM = 1 ");
@@ -267,7 +270,7 @@ public class CaminhaoRepository{
         Connection con = null;
 
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
             StringBuilder sql = new StringBuilder();
             sql.append("UPDATE CAMINHAO SET ");
             sql.append("EMVIAGEM = 2 ");
@@ -305,7 +308,7 @@ public class CaminhaoRepository{
         Connection con = null;
         Caminhao caminhao = new Caminhao();
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
             StringBuilder sql = new StringBuilder();
             sql.append("UPDATE CAMINHAO SET ");
             sql.append("GASOLINA = ? ");

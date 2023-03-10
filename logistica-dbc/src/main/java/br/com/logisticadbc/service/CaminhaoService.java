@@ -77,7 +77,7 @@ public class CaminhaoService {
         List<Caminhao> listar = caminhaoRepository.listar();
 
         List<Caminhao> caminhaoDisponivel = listar.stream()
-                .filter(elemento -> elemento.getEmViagem().getOpcao().equals(1))
+                .filter(elemento -> elemento.getEmViagem().getOpcao().equals(2))
                 .toList();
 
         return caminhaoDisponivel.stream()

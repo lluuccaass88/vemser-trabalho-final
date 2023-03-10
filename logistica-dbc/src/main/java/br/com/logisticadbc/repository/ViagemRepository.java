@@ -3,12 +3,16 @@ package br.com.logisticadbc.repository;
 import br.com.logisticadbc.entity.Caminhao;
 import br.com.logisticadbc.entity.Viagem;
 import br.com.logisticadbc.exceptions.BancoDeDadosException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 
+@RequiredArgsConstructor
 @Repository
 public class ViagemRepository {
+
+    private final ConexaoBancoDeDados conexaoBancoDeDados;
 
     public Integer getProximoId(Connection connection) throws SQLException {
         try {
@@ -30,7 +34,7 @@ public class ViagemRepository {
     public Viagem adicionar(Viagem viagem) throws BancoDeDadosException {
         Connection con = null;
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
             Integer proximoId = this.getProximoId(con);
             viagem.setIdViagem(proximoId);
 

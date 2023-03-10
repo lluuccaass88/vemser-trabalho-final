@@ -3,14 +3,18 @@ package br.com.logisticadbc.repository;
 import br.com.logisticadbc.entity.Perfil;
 import br.com.logisticadbc.entity.Usuario;
 import br.com.logisticadbc.exceptions.BancoDeDadosException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@RequiredArgsConstructor
 @Repository
 public class UsuarioRepository {
+
+    private final ConexaoBancoDeDados conexaoBancoDeDados;
 
     public Integer getProximoId(Connection connection) throws SQLException {
         try {
@@ -31,7 +35,7 @@ public class UsuarioRepository {
     public Usuario adicionar(Usuario usuario) throws BancoDeDadosException {
         Connection con = null;
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
             Integer proximoId = this.getProximoId(con);
             usuario.setId(proximoId);
 
@@ -72,7 +76,7 @@ public class UsuarioRepository {
     public boolean remover(Integer id) throws BancoDeDadosException {
         Connection con = null;
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
 
             String sql = "DELETE FROM USUARIO WHERE ID_USUARIO = ?";
 
@@ -100,7 +104,7 @@ public class UsuarioRepository {
     public boolean editar(Integer id, Usuario usuario) throws BancoDeDadosException {
         Connection con = null;
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
 
             StringBuilder sql = new StringBuilder();
             sql.append("UPDATE USUARIO SET ");
@@ -144,7 +148,7 @@ public class UsuarioRepository {
         List<Usuario> usuarios = new ArrayList<>();
         Connection con = null;
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
             Statement stmt = con.createStatement();
 
             String sql = "SELECT * FROM USUARIO"; // Consulta SQL no banco
@@ -181,7 +185,7 @@ public class UsuarioRepository {
         Usuario usuario = new Usuario();
         Connection con = null;
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
 
             String sql = "SELECT * FROM USUARIO u \n" +
                     "\tWHERE u.USUARIO = ? AND u.SENHA = ?"; // Consulta SQL no banco
