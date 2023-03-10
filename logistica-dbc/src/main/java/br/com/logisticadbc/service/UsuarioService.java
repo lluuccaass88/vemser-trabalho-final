@@ -1,5 +1,6 @@
 package br.com.logisticadbc.service;
 
+import br.com.logisticadbc.dto.RotaDTO;
 import br.com.logisticadbc.dto.UsuarioCreateDTO;
 import br.com.logisticadbc.dto.UsuarioDTO;
 import br.com.logisticadbc.entity.Usuario;
@@ -18,6 +19,8 @@ public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
     private final ObjectMapper objectMapper;
+    private final EmailService emailService;
+    private final RotaService rotaService;
 
     public UsuarioDTO adicionar(UsuarioCreateDTO usuario) throws Exception {
 
@@ -25,7 +28,21 @@ public class UsuarioService {
         Usuario usuarioCriado = usuarioRepository.adicionar(entity);
         UsuarioDTO usuarioDTO = objectMapper.convertValue(usuarioCriado, UsuarioDTO.class);
 
+        RotaDTO rota = getRota();
+
+        if (usuarioCriado.getPerfil().equals("COLABORADOR")) {
+            emailService.enviarEmailParaColaborador(usuarioDTO);
+        } else {
+            emailService.enviarEmailParaMotorista(usuarioDTO, rota);
+        }
+
         return usuarioDTO;
+    }
+
+    public RotaDTO getRota() {
+        List<RotaDTO> rotas = rotaService.listarRotas().stream().toList();
+        RotaDTO rota = rotas.get(0);
+        return rota;
     }
 
     public List<UsuarioDTO> listar() throws Exception {
@@ -36,7 +53,7 @@ public class UsuarioService {
                 .collect(Collectors.toList());
     }
 
-    public UsuarioDTO editar (Integer id, UsuarioCreateDTO usuarioAtualizar) throws Exception {
+    public UsuarioDTO editar(Integer id, UsuarioCreateDTO usuarioAtualizar) throws Exception {
 
         Usuario usuarioRecuperado = getUsuario(id);
         Integer idUsuario = getUsuario(id).getId();
@@ -62,24 +79,6 @@ public class UsuarioService {
 
         usuarioRepository.remover(idUsuario);
     }
-
-//    public Usuario loginUsuario(String usurario, String senha){
-//        Usuario usuarioLogado = new Usuario();
-//        try {
-//            usuarioLogado = usuarioRepository.login(usurario, senha);
-//            if(usuarioLogado.getId() == null){
-//                throw new Exception("Erro ao fazer o login, verifique seu usuario ou senha");
-//            }else{
-//                System.out.println("Entrando...");
-//                return usuarioLogado;
-//            }
-//        } catch (BancoDeDadosException e) {
-//            e.printStackTrace();
-//        } catch (Exception e) {
-//            System.out.println("ERRO LOGIN -> " + e.getMessage());
-//        }
-//        return usuarioLogado;
-//    }
 
     public Usuario getUsuario(Integer id) throws Exception {
         Usuario recuperarUsuario = usuarioRepository.listar().stream()
