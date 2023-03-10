@@ -82,7 +82,7 @@ public class ViagemRepository {
         List<Viagem> viagens = new ArrayList<>();
         Connection con = null;
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
 
             String sql = "SELECT * \n" +
                     "\tFROM LOGISTICA.VIAGEM v\n" +
