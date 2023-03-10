@@ -12,8 +12,7 @@ import java.util.List;
 @Repository
 @Slf4j
 public class CaminhaoRepository{
-
-
+    
     public Integer getProximoId(Connection connection) throws SQLException {
         try {
             String sql = "SELECT LOGISTICA.SEQ_CAMINHAO.NEXTVAL mysequence FROM DUAL";

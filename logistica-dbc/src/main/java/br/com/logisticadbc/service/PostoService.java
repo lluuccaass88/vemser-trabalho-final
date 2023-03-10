@@ -6,20 +6,22 @@ import br.com.logisticadbc.entity.Posto;
 import br.com.logisticadbc.exceptions.BancoDeDadosException;
 import br.com.logisticadbc.repository.PostoRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
 @Service
 public class PostoService {
     private  final PostoRepository postoRepository;
     private final ObjectMapper objectMapper;
-
-    public PostoService(PostoRepository postoRepository, ObjectMapper objectMapper) {
-        this.postoRepository = postoRepository;
-        this.objectMapper = objectMapper;
-    }
+//
+//    public PostoService(PostoRepository postoRepository, ObjectMapper objectMapper) {
+//        this.postoRepository = postoRepository;
+//        this.objectMapper = objectMapper;
+//    }
 
 
     public PostoDTO adicionaPosto(PostoCreateDTO posto) throws BancoDeDadosException {

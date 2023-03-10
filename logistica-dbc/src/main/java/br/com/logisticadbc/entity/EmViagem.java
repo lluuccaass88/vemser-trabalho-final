@@ -2,10 +2,13 @@ package br.com.logisticadbc.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.Arrays;
 
 @AllArgsConstructor
+@NoArgsConstructor
+//@Data
 @Getter
 public enum EmViagem {
 

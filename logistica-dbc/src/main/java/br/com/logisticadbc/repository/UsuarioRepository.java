@@ -103,13 +103,13 @@ public class UsuarioRepository {
             con = ConexaoBancoDeDados.getConnection();
 
             StringBuilder sql = new StringBuilder();
-            sql.append(" UPDATE USUARIO SET ");
+            sql.append("UPDATE USUARIO SET ");
             sql.append(" NOME = ?, ");
             sql.append(" USUARIO = ?, ");
             sql.append(" SENHA = ?, ");
             sql.append(" PERFIL = ?, ");
             sql.append(" CPF = ?, ");
-            sql.append(" CNH = ? ");
+            sql.append(" CNH = ?, ");
             sql.append(" EMAIL = ? ");
             sql.append(" WHERE ID_USUARIO = ? ");
 
@@ -127,6 +127,7 @@ public class UsuarioRepository {
             int res = stmt.executeUpdate();
             return res > 0;
         } catch (SQLException e) {
+            e.printStackTrace();
             throw new BancoDeDadosException("Erro ao editar usuário" + e);
         } finally {
             try {
