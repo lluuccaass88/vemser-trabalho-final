@@ -28,18 +28,16 @@ public class CaminhaoController implements CaminhaoInterface {
     public ResponseEntity<CaminhaoDTO> adicionar(@Valid @RequestBody CaminhaoCreateDTO caminhao) throws Exception {
 
         log.info("Recebendo requisição para adicionar um novo caminhão");
-//        CaminhaoDTO caminhaoDTO = caminhaoService.adicionar(caminhao);
-//        log.info("Caminhão adicionado com sucesso" + caminhaoDTO);
-//        return new ResponseEntity<>(caminhaoDTO, HttpStatus.CREATED);
+        CaminhaoDTO caminhaoDTO = caminhaoService.adicionar(caminhao);
+        log.info("Caminhão adicionado com sucesso" + caminhaoDTO);
+        return new ResponseEntity<>(caminhaoDTO, HttpStatus.CREATED);
 
-        return null;
     }
 
     @GetMapping
     public ResponseEntity<List<CaminhaoDTO>> listar() throws Exception {
         log.info("Recebendo requisição para listar todos os caminhões");
-//        return new ResponseEntity<>(caminhaoService.listar(), HttpStatus.OK);
-        return null;
+        return new ResponseEntity<>(caminhaoService.listar(), HttpStatus.OK);
     }
 
 
@@ -47,16 +45,15 @@ public class CaminhaoController implements CaminhaoInterface {
     public ResponseEntity<CaminhaoDTO> editar(@PathVariable Integer id,
                                               @Valid @RequestBody CaminhaoCreateDTO caminhao) throws Exception {
         log.info("Recebendo requisição para atualizar um caminhão");
-//        CaminhaoDTO caminhaoDTO = caminhaoService.editar(id, caminhao);
-//        log.info("Caminhão atualizado com sucesso" + caminhaoDTO);
-//        return new ResponseEntity<>(caminhaoDTO, HttpStatus.OK);
-        return null;
+        CaminhaoDTO caminhaoDTO = caminhaoService.editar(id, caminhao);
+        log.info("Caminhão atualizado com sucesso" + caminhaoDTO);
+        return new ResponseEntity<>(caminhaoDTO, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletar(@PathVariable Integer id) throws Exception {
         log.info("Recebendo requisição para remover um caminhão");
-//        caminhaoService.deletar(id);
+        caminhaoService.deletar(id);
         log.info("Caminhão removido com sucesso");
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
@@ -75,7 +72,6 @@ public class CaminhaoController implements CaminhaoInterface {
     @GetMapping("/caminhoesdisponiveis")
     public ResponseEntity<List<CaminhaoDTO>> listarCaminhoesDisponiveis() throws Exception {
         log.info("Recebendo requisição para listar todos os caminhões disponiveis");
-//        return new ResponseEntity<>(caminhaoService.listarCaminhoesLivres(), HttpStatus.OK);
-        return null;
+        return new ResponseEntity<>(caminhaoService.listarCaminhoesLivres(), HttpStatus.OK);
     }
 }

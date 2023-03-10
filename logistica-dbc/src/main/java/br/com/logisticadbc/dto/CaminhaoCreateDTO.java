@@ -19,6 +19,6 @@ public class CaminhaoCreateDTO {
     @Schema(description = "Quantidade de Gasolina no Caminhão", example = "20", required = true)
     private Integer gasolina;
     @NotNull
-    @Schema(description = "Se o caminhao já está viajando", example = "2", required = true)
+    @Schema(description = "Se o caminhao já está viajando", example = "ESTACIONADO ou EM_VIAGEM", required = true)
     private EmViagem emViagem; // 1 - estacionado | 2 - em viagem
 }
