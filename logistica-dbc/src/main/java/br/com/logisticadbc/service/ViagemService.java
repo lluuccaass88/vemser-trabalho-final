@@ -1,6 +1,7 @@
 package br.com.logisticadbc.service;
 
 import br.com.logisticadbc.dto.CaminhaoCreateDTO;
+import br.com.logisticadbc.dto.PostoDTO;
 import br.com.logisticadbc.dto.ViagemCreateDTO;
 import br.com.logisticadbc.dto.ViagemDTO;
 import br.com.logisticadbc.entity.Caminhao;
@@ -13,6 +14,8 @@ import br.com.logisticadbc.repository.ViagemRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -51,4 +54,26 @@ public class ViagemService {
 
         return null;
     }
+
+//    public List<ViagemDTO> listarViagens() {
+//        try {
+//            List<Viagem> listar = viagemRepository.listar();
+//            listar.forEach(System.out::println);
+//        } catch (BancoDeDadosException e) {
+//            e.printStackTrace();
+//        }
+//    }
+
+
+    public List<PostoDTO> listarPostosEmViagem(int iDviagem){
+        return null;
+    }
+
+    public Viagem getViagem(Integer id) throws Exception {
+        return viagemRepository.listar().stream()
+                .filter(u -> u.getIdViagem() == id)
+                .findFirst()
+                .orElseThrow(() -> new RegraDeNegocioException("Caminhão não encontrado"));
+    }
+
 }

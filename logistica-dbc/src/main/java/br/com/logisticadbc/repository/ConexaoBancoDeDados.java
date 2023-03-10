@@ -26,7 +26,7 @@ public class ConexaoBancoDeDados {
     @Value("${bd.schema}")
     private String schema;
 
-    public Connection getConnection() throws SQLException {
+    public static Connection getConnection() throws SQLException {
         String url = "jdbc:oracle:thin:@" + server + ":" + port + ":" + database;
         // abrindo a conexão com o banco de dados
         Connection connection = DriverManager.getConnection(url, user, password);

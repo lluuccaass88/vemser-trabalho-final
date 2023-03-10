@@ -49,7 +49,7 @@ public class CaminhaoService {
     }
 
 
-    public CaminhaoDTO editar(Integer id) throws Exception {
+    public CaminhaoDTO editar(Integer id) throws Exception { //Fução utilizada para editar o status de caminhção. Chamada no finalizarViagem e criarViagem
         Caminhao caminhaoRecuperado = getCaminhao(id);
 
         if (caminhaoRecuperado.getEmViagem() == EmViagem.ESTACIONADO) {
