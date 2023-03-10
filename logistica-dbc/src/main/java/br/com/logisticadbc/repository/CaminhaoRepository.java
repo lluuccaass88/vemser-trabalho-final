@@ -15,7 +15,7 @@ public class CaminhaoRepository{
     
     public Integer getProximoId(Connection connection) throws SQLException {
         try {
-            String sql = "SELECT LOGISTICA.SEQ_CAMINHAO.NEXTVAL mysequence FROM DUAL";
+            String sql = "SELECT SEQ_CAMINHAO.NEXTVAL mysequence FROM DUAL";
 
             Statement stmt = connection.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
@@ -37,17 +37,9 @@ public class CaminhaoRepository{
             Integer proximoId = this.getProximoId(con);
             caminhao.setIdCaminhao(proximoId);
 
-            System.out.println(caminhao.toString());
-
-
-            String sql = "INSERT INTO LOGISTICA.CAMINHAO\n" +
-                    "(ID_CAMINHAO, PLACA, MODELO, GASOLINA, EMVIAGEM)\n" +
-                    "VALUES(?, '?', '?', ?, ?)";
-
-
-//            String sql = "INSERT INTO LOGISTICA.CAMINHAO\n" +
-//                    "(ID_CAMINHAO, MODELO, PLACA, GASOLINA, EMVIAGEM)\n" +
-//                    "VALUES(?, ?, ?, ?, ?)\n";
+            String sql = "INSERT INTO CAMINHAO\n" +
+                    "(ID_CAMINHAO, MODELO, PLACA, GASOLINA, EMVIAGEM)\n" +
+                    "VALUES(?, ?, ?, ?, ?)\n";
 
             PreparedStatement stmt = con.prepareStatement(sql);
 
@@ -84,7 +76,7 @@ public class CaminhaoRepository{
         try {
             con = ConexaoBancoDeDados.getConnection();
 
-            String sql = "DELETE FROM LOGISTICA.CAMINHAO WHERE ID_CAMINHAO = ?";
+            String sql = "DELETE FROM CAMINHAO WHERE ID_CAMINHAO = ?";
 
             PreparedStatement stmt = con.prepareStatement(sql);
             stmt.setInt(1, id);
@@ -117,7 +109,7 @@ public class CaminhaoRepository{
         try {
             con = ConexaoBancoDeDados.getConnection();
             StringBuilder sql = new StringBuilder();
-            sql.append("UPDATE LOGISTICA.CAMINHAO SET ");
+            sql.append("UPDATE CAMINHAO SET ");
             sql.append("MODELO = ?, ");
             sql.append("PLACA = ?, ");
             sql.append("GASOLINA = ? ");
@@ -161,7 +153,7 @@ public class CaminhaoRepository{
 
             con = ConexaoBancoDeDados.getConnection();
 
-            String sql = "SELECT * FROM LOGISTICA.CAMINHAO";
+            String sql = "SELECT * FROM CAMINHAO";
 
             PreparedStatement stmt = con.prepareStatement(sql);
             // Executa-se a consulta
@@ -196,9 +188,9 @@ public class CaminhaoRepository{
         try {
             con = ConexaoBancoDeDados.getConnection();
 
-//            String sql = "SELECT * FROM LOGISTICA.CAMINHAO c \n" +
+//            String sql = "SELECT * FROM CAMINHAO c \n" +
 //                    "\tWHERE ID_CAMINHAO = ?";
-            String sql = "SELECT * FROM LOGISTICA.CAMINHAO \n" +
+            String sql = "SELECT * FROM CAMINHAO \n" +
                     "WHERE ID_CAMINHAO = ?";
 
             PreparedStatement stmt = con.prepareStatement(sql);
@@ -236,7 +228,7 @@ public class CaminhaoRepository{
         try {
             con = ConexaoBancoDeDados.getConnection();
             StringBuilder sql = new StringBuilder();
-            sql.append("UPDATE LOGISTICA.CAMINHAO SET ");
+            sql.append("UPDATE CAMINHAO SET ");
             sql.append("EMVIAGEM = 1 ");
             sql.append("WHERE ID_CAMINHAO = ?");
             PreparedStatement stmt = con.prepareStatement(sql.toString());
@@ -275,7 +267,7 @@ public class CaminhaoRepository{
         try {
             con = ConexaoBancoDeDados.getConnection();
             StringBuilder sql = new StringBuilder();
-            sql.append("UPDATE LOGISTICA.CAMINHAO SET ");
+            sql.append("UPDATE CAMINHAO SET ");
             sql.append("EMVIAGEM = 2 ");
             sql.append("WHERE ID_CAMINHAO = ?");
             PreparedStatement stmt = con.prepareStatement(sql.toString());
@@ -313,7 +305,7 @@ public class CaminhaoRepository{
         try {
             con = ConexaoBancoDeDados.getConnection();
             StringBuilder sql = new StringBuilder();
-            sql.append("UPDATE LOGISTICA.CAMINHAO SET ");
+            sql.append("UPDATE CAMINHAO SET ");
             sql.append("GASOLINA = ? ");
             sql.append("WHERE ID_CAMINHAO = ?");
             PreparedStatement stmt = con.prepareStatement(sql.toString());

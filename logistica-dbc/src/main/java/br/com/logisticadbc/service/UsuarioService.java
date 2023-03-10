@@ -28,21 +28,13 @@ public class UsuarioService {
         Usuario usuarioCriado = usuarioRepository.adicionar(entity);
         UsuarioDTO usuarioDTO = objectMapper.convertValue(usuarioCriado, UsuarioDTO.class);
 
-        RotaDTO rota = getRota();
-
         if (usuarioCriado.getPerfil().equals("COLABORADOR")) {
             emailService.enviarEmailParaColaborador(usuarioDTO);
         } else {
-            emailService.enviarEmailParaMotorista(usuarioDTO, rota);
+            emailService.enviarEmailParaMotorista(usuarioDTO);
         }
 
         return usuarioDTO;
-    }
-
-    public RotaDTO getRota() {
-        List<RotaDTO> rotas = rotaService.listarRotas().stream().toList();
-        RotaDTO rota = rotas.get(0);
-        return rota;
     }
 
     public List<UsuarioDTO> listar() throws Exception {

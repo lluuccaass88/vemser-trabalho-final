@@ -23,9 +23,8 @@
                         </div>
                         <div>
                             <br>"Estamos felizes em ter você em nosso sistema :)" <br>
-                            <br>"Seu cadastro foi realizado com sucesso e o seu ID é: " ${usuario.getIdPessoa()}<br> <br>
+                            <br>"Seu cadastro foi realizado com sucesso e o seu ID é: " ${usuario.getId()}<br> <br>
                             <br>"Qualquer duvida é só contatar o suporte pelo email -> " ${usuario.getEmail()}<br> <br>
-                            <br>"Em Breve você receberá os Caminhões Disponiveis e as Rotas que deverá fazer " ${rota.getRotas()}<br> <br>
                             <br>"Att,"<br>
                             <br><b>${nome}</b>
                             <br>

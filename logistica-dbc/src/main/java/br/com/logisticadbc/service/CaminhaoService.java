@@ -18,14 +18,12 @@ import static java.util.stream.Collectors.toList;
 @RequiredArgsConstructor
 @Service
 public class CaminhaoService {
-//
+
     private final CaminhaoRepository caminhaoRepository;
-//    private final EmViagem emViagem;
     private final ObjectMapper objectMapper;
 
     public CaminhaoDTO adicionar(CaminhaoCreateDTO caminhao) throws BancoDeDadosException {
         Caminhao caminhaoEntity = objectMapper.convertValue(caminhao, Caminhao.class);
-
         Caminhao caminhaoSalvo = caminhaoRepository.adicionar(caminhaoEntity);
 
         return objectMapper.convertValue(caminhaoSalvo, CaminhaoDTO.class);
@@ -50,6 +48,7 @@ public class CaminhaoService {
         return dto;
     }
 
+
     public CaminhaoDTO editar(Integer id) throws Exception {
         Caminhao caminhaoRecuperado = getCaminhao(id);
 
@@ -63,6 +62,7 @@ public class CaminhaoService {
 
         return objectMapper.convertValue(caminhaoRecuperado, CaminhaoDTO.class);
     }
+
 
     public void deletar(Integer id) throws Exception {
         Caminhao caminhaoRecuperado = getCaminhao(id);
