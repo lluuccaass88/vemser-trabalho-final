@@ -43,8 +43,13 @@ public class ViagemController {
         return new ResponseEntity<>(viagemService.listarViagensFinalizadas(), HttpStatus.OK);
     }
 
+    @GetMapping("/{idViagem}") // PUT localhost:8080/pessoa/4
+    public  ResponseEntity<ViagemDTO> update(@PathVariable("idViagem") Integer id) throws RegraDeNegocioException, BancoDeDadosException {
+        return new ResponseEntity<> (viagemService.listarPorId(id), HttpStatus.OK);
+    }
+
     @DeleteMapping("/finalizarViagem/{idViagem}") // DELETE localhost:8080/contato/2
-    public ResponseEntity<ViagemDTO> delete(@PathVariable("idViagem") Integer id) throws Exception {
+    public ResponseEntity<ViagemDTO> delete(@PathVariable("idViagem") Integer id) throws RegraDeNegocioException {
         return new ResponseEntity<>(viagemService.finalizarViagem(id), HttpStatus.NO_CONTENT);
     }
 

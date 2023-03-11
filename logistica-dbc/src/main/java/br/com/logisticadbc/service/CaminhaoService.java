@@ -39,7 +39,7 @@ public class CaminhaoService {
     }
 
     //
-    public CaminhaoDTO editar(Integer id, CaminhaoCreateDTO caminhao) throws Exception {
+    public CaminhaoDTO editar(Integer id, CaminhaoCreateDTO caminhao) throws RegraDeNegocioException, BancoDeDadosException {
         Caminhao caminhaoRecuperado = getCaminhao(id);
         Integer idCaminhao = getCaminhao(id).getIdCaminhao();
         caminhaoRecuperado.setGasolina(caminhao.getGasolina());
@@ -87,7 +87,7 @@ public class CaminhaoService {
                 .map(caminhao -> objectMapper.convertValue(caminhao, CaminhaoDTO.class)).toList();
     }
 
-    public Caminhao getCaminhao(Integer id) throws Exception {
+    public Caminhao getCaminhao(Integer id) throws RegraDeNegocioException, BancoDeDadosException {
         return caminhaoRepository.listar().stream()
                 .filter(u -> u.getIdCaminhao().equals(id))
                 .findFirst()
