@@ -4,6 +4,7 @@ import br.com.logisticadbc.entity.*;
 import br.com.logisticadbc.exceptions.BancoDeDadosException;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
@@ -12,6 +13,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Repository
+@Slf4j
 public class ViagemRepository {
 
     private final ConexaoBancoDeDados conexaoBancoDeDados;
@@ -156,4 +158,93 @@ public class ViagemRepository {
         return viagens;
     }
 
+    public Viagem finalarViagem(Integer id, Viagem viagem) throws BancoDeDadosException {
+        Connection con = null;
+        try {
+            con = conexaoBancoDeDados.getConnection();
+            StringBuilder sql = new StringBuilder();
+            sql.append("UPDATE LOGISTICA.VIAGEM SET\n");
+            sql.append(" ID_CAMINHAO = ?,");
+            sql.append(" ID_ROTA = ?,");
+            sql.append(" ID_USUARIO = ?,");
+            sql.append(" FINALIZADA = ?");
+            sql.append(" WHERE ID_VIAGEM = ?");
+
+            PreparedStatement stmt = con.prepareStatement(sql.toString());
+
+            stmt.setInt(1, viagem.getCaminhao().getIdCaminhao());
+            stmt.setInt(2, viagem.getRota().getIdRota());
+            stmt.setInt(3, viagem.getUsuario().getId());
+            if(viagem.isFinalizada()){
+                stmt.setInt(4, 1);
+            }else{
+                stmt.setInt(4, 0);
+            }
+            stmt.setInt(5, id);
+            int res = stmt.executeUpdate();
+
+            if (res == 0) {
+                throw new BancoDeDadosException("Erro ao editar viagem");
+            } else {
+                log.info("Viagem editada com sucesso!" +
+                        "\neditarViagem.res=" + res);
+                return viagem;
+            }
+        } catch (SQLException e) {
+            throw new BancoDeDadosException("Erro ao editar viagem" + e);
+        } finally {
+            try {
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public Viagem editar(Integer id, Viagem viagem) throws BancoDeDadosException {
+        Connection con = null;
+        try {
+            con = conexaoBancoDeDados.getConnection();
+            StringBuilder sql = new StringBuilder();
+            sql.append("UPDATE LOGISTICA.VIAGEM SET\n");
+            sql.append(" ID_CAMINHAO = ?,");
+            sql.append(" ID_ROTA = ?,");
+            sql.append(" ID_USUARIO = ?,");
+            sql.append(" FINALIZADA = ?");
+            sql.append(" WHERE ID_VIAGEM = ?");
+
+            PreparedStatement stmt = con.prepareStatement(sql.toString());
+
+            stmt.setInt(1, viagem.getIdCaminhao());
+            stmt.setInt(2, viagem.getIdRota());
+            stmt.setInt(3, viagem.getIdUsuario());
+            if(viagem.isFinalizada()){
+                stmt.setInt(4, 1);
+            }else{
+                stmt.setInt(4, 0);
+            }
+            stmt.setInt(5, id);
+            int res = stmt.executeUpdate();
+
+            if (res == 0) {
+                throw new BancoDeDadosException("Erro ao editar viagem");
+            } else {
+                log.info("Viagem editada com sucesso!" +
+                        "\neditarViagem.res=" + res);
+                return viagem;
+            }
+        } catch (SQLException e) {
+            throw new BancoDeDadosException("Erro ao editar viagem" + e);
+        } finally {
+            try {
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }

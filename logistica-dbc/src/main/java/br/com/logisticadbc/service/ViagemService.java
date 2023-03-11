@@ -72,10 +72,64 @@ public class ViagemService {
         return null;
     }
 
+    public ViagemDTO finalizarViagem(Integer id) throws Exception { //Precisa pegar o id co caminhão que esta ligado nessa viagem
+        try {
+            Viagem viagemRecuperada = getViagem(id);
+            viagemRecuperada.setFinalizada(true);
+            Viagem viagemEditada = viagemRepository.finalarViagem(viagemRecuperada.getIdViagem(), viagemRecuperada);
 
-    public List<PostoDTO> listarPostosEmViagem(int iDviagem){ //Se der tempo fazer isso para fazer verificação
+            Caminhao caminhaoRecuperado = caminhaoService.getCaminhao(viagemRecuperada.getCaminhao().getIdCaminhao());
+            caminhaoRecuperado.setEmViagem(EmViagem.ESTACIONADO);
+            caminhaoService.editar(caminhaoRecuperado.getIdCaminhao(), objectMapper.convertValue(caminhaoRecuperado, CaminhaoCreateDTO.class));
+
+            return objectMapper.convertValue(viagemEditada, ViagemDTO.class);
+        } catch (BancoDeDadosException e) {
+            e.printStackTrace();
+        }
         return null;
     }
+
+    public List<ViagemDTO> listarViagensFinalizadas() {
+        try {
+            List<Viagem> listar = viagemRepository.listar();
+            List<Viagem> viagensFinalizadas = listar.stream()
+                    .filter(elemento -> elemento.isFinalizada() == true)
+                    .toList();
+            return viagensFinalizadas.stream()
+                    .map(pessoa -> objectMapper.convertValue(pessoa, ViagemDTO.class))
+                    .collect(Collectors.toList());
+        } catch (BancoDeDadosException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public ViagemDTO editarViagem(Integer id, ViagemCreateDTO viagem) {
+        try {
+            Viagem viagemRecuperada = getViagem(id);
+
+            viagemRecuperada.setIdViagem(id);
+            viagemRecuperada.setIdCaminhao(viagem.getIdCaminhao());
+            viagemRecuperada.setIdRota(viagem.getIdRota());
+            viagemRecuperada.setIdUsuario(viagem.getIdUsuario());
+
+            viagemRepository.editar(id, viagemRecuperada);
+
+            Caminhao caminhaoRecuprado1 = caminhaoService.getCaminhao(viagemRecuperada.getIdCaminhao());//Não esta mudando o status do caminhão para estacionado
+            caminhaoRecuprado1.setEmViagem(EmViagem.ESTACIONADO);
+            caminhaoService.editar(caminhaoRecuprado1.getIdCaminhao(), objectMapper.convertValue(caminhaoRecuprado1, CaminhaoCreateDTO.class));
+
+            Caminhao caminhaoRecuprado2 = caminhaoService.getCaminhao(viagem.getIdCaminhao());
+            caminhaoRecuprado2.setEmViagem(EmViagem.EM_VIAGEM);
+            caminhaoService.editar(caminhaoRecuprado2.getIdCaminhao(), objectMapper.convertValue(caminhaoRecuprado2, CaminhaoCreateDTO.class));
+
+            return objectMapper.convertValue(viagemRecuperada, ViagemDTO.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 
     public Viagem getViagem(Integer id) throws Exception {
         return viagemRepository.listar().stream()
@@ -84,4 +138,14 @@ public class ViagemService {
                 .orElseThrow(() -> new RegraDeNegocioException("Caminhão não encontrado"));
     }
 
+
+
+
+
+
+
+
+    public List<PostoDTO> listarPostosEmViagem(int iDviagem){ //Se der tempo fazer isso para fazer verificação
+        return null;
+    }
 }

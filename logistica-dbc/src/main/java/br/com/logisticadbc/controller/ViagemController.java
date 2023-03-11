@@ -29,17 +29,38 @@ public class ViagemController {
         return new ResponseEntity<>(viagemService.adicionarViagem(viagemCreateDTO), HttpStatus.CREATED);
     }
 
+
+
     @GetMapping
     public ResponseEntity<List<ViagemDTO>> listar() throws Exception {
         log.info("Recebendo requisição para listar todos os usuários");
         return new ResponseEntity<>(viagemService.listarViagens(), HttpStatus.OK);
     }
 
-    @GetMapping("/listarPostos/{idViagem}")
-    public ResponseEntity<List<PostoDTO>> listarPostos(@PathVariable("idRota") Integer id) throws Exception {
-        log.info("Recebendo requisição para listar todos os usuários");
-        return new ResponseEntity<>(viagemService.listarPostosEmViagem(id), HttpStatus.OK);
+    @GetMapping("/viagemFinalizada")
+    public ResponseEntity<List<ViagemDTO>> listarViagensFinalizadas() throws Exception {
+        log.info("Recebendo requisição para listar todas as viagens finalizadas");
+        return new ResponseEntity<>(viagemService.listarViagensFinalizadas(), HttpStatus.OK);
     }
+
+    @DeleteMapping("/finalizarViagem/{idViagem}") // DELETE localhost:8080/contato/2
+    public ResponseEntity<ViagemDTO> delete(@PathVariable("idViagem") Integer id) throws Exception {
+        return new ResponseEntity<>(viagemService.finalizarViagem(id), HttpStatus.NO_CONTENT);
+    }
+
+    @PutMapping("/{idViagem}") // PUT localhost:8080/pessoa/4
+    public  ResponseEntity<ViagemDTO> update(@PathVariable("idViagem") Integer id, //Recuperando o id a ser editado por parametro
+                                           @Valid @RequestBody ViagemCreateDTO viagemUpdateDTO) throws RegraDeNegocioException, BancoDeDadosException { //Recuperando os dados que serão editados pelo o body
+        log.info("Viagem editada com sucesso!");
+        return new ResponseEntity<> (viagemService.editarViagem(id, viagemUpdateDTO), HttpStatus.OK);
+    }
+
+
+//    @GetMapping("/listarPostos/{idViagem}")
+//    public ResponseEntity<List<PostoDTO>> listarPostos(@PathVariable("idRota") Integer id) throws Exception {
+//        log.info("Recebendo requisição para listar todos os usuários");
+//        return new ResponseEntity<>(viagemService.listarPostosEmViagem(id), HttpStatus.OK);
+//    }
 
 
 
