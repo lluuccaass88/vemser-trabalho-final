@@ -25,13 +25,14 @@ public class ViagemService {
 
 
 
-    public ViagemDTO adicionarViagem(ViagemCreateDTO viagem) throws BancoDeDadosException, RegraDeNegocioException {
+    public ViagemDTO adicionarViagem(ViagemCreateDTO viagem) throws RegraDeNegocioException {
         try {
             Caminhao caminhaoRecuperado = caminhaoService.getCaminhao(viagem.getIdCaminhao());
 
             Viagem viagemAdicionada;
             if (caminhaoRecuperado.getEmViagem() == EmViagem.EM_VIAGEM) {
                 throw new RegraDeNegocioException("O caminhão escolhido já esta em uma viagem no momento."); //Pq eu consegui usar sem passar ele no método?
+
             } else {
 
                 caminhaoRecuperado.setEmViagem(EmViagem.EM_VIAGEM);

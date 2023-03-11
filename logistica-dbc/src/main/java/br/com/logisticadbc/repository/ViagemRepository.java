@@ -105,14 +105,14 @@ public class ViagemRepository {
                 Rota rota = new Rota();
                 Caminhao caminhao = new Caminhao();
 
-                usuario.setId(rs.getInt("ID_USUARIO"));
-                usuario.setNome(rs.getString("NOME"));
-                usuario.setUsuario(rs.getString("USUARIO"));
-                usuario.setSenha(rs.getString("SENHA"));
-                usuario.setPerfil(Perfil.ofTipoPerfil(rs.getInt("PERFIL")));
-                usuario.setCpf(rs.getString("CPF"));
-                usuario.setCnh(rs.getString("CNH"));
-                usuario.setEmail(rs.getString("EMAIL"));
+//                usuario.setId(rs.getInt("ID_USUARIO"));
+//                usuario.setNome(rs.getString("NOME"));
+//                usuario.setUsuario(rs.getString("USUARIO"));
+//                usuario.setSenha(rs.getString("SENHA"));
+//                usuario.setPerfil(Perfil.ofTipoPerfil(rs.getInt("PERFIL")));
+//                usuario.setCpf(rs.getString("CPF"));
+//                usuario.setCnh(rs.getString("CNH"));
+//                usuario.setEmail(rs.getString("EMAIL"));
 
                 rota.setIdRota(rs.getInt("ID_ROTA"));
                 rota.setDescricao(rs.getString("DESCRICAO"));
