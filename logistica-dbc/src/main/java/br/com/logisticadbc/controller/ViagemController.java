@@ -1,5 +1,6 @@
 package br.com.logisticadbc.controller;
 
+import br.com.logisticadbc.controller.impl.IUViagemControllerDoc;
 import br.com.logisticadbc.dto.*;
 import br.com.logisticadbc.exceptions.BancoDeDadosException;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
@@ -19,7 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/viagem") // localhost:8080/contato
 @Validated
-public class ViagemController {
+public class ViagemController implements IUViagemControllerDoc {
 
     private final ViagemService viagemService;
 
@@ -28,8 +29,6 @@ public class ViagemController {
         log.info("Criando viagem");
         return new ResponseEntity<>(viagemService.adicionarViagem(viagemCreateDTO), HttpStatus.CREATED);
     }
-
-
 
     @GetMapping
     public ResponseEntity<List<ViagemDTO>> listar() throws Exception {
