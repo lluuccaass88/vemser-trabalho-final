@@ -4,6 +4,9 @@ package br.com.logisticadbc.controller;
 import br.com.logisticadbc.controller.impl.ICaminhaoControllerDoc;
 import br.com.logisticadbc.dto.CaminhaoCreateDTO;
 import br.com.logisticadbc.dto.CaminhaoDTO;
+import br.com.logisticadbc.dto.ViagemDTO;
+import br.com.logisticadbc.entity.Caminhao;
+import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.service.CaminhaoService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -59,14 +62,9 @@ public class CaminhaoController implements ICaminhaoControllerDoc {
     }
 
     @PutMapping("/abastecer/{id}")
-    public ResponseEntity<CaminhaoDTO> abastecer(@PathVariable Integer id,
-                                                 @Valid @RequestBody CaminhaoCreateDTO caminhao, Integer gasolina) throws Exception {
-//        log.info("Recebendo requisição para abastecer um caminhão");
-//        CaminhaoDTO caminhaoDTO = caminhaoService.abastecerCaminhao(id, caminhao.setGasolina(caminhao.getGasolina())+ gasolina);
-//        log.info("Caminhão atualizado com sucesso" + caminhaoDTO);
-//        return new ResponseEntity<>(caminhaoDTO, HttpStatus.OK);
-//    }
-        return null;
+    public ResponseEntity<CaminhaoDTO> abastecer(@PathVariable Integer id,@Valid @RequestBody CaminhaoCreateDTO caminhao, Integer gasolina) throws Exception {
+        CaminhaoDTO caminhaoDTO = caminhaoService.abastecerCaminhao(id,gasolina);
+        return new ResponseEntity<>(caminhaoDTO, HttpStatus.OK);
     }
 
     @GetMapping("/caminhoesdisponiveis")
