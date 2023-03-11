@@ -28,20 +28,19 @@ public class ViagemService {
     public ViagemDTO adicionarViagem(ViagemCreateDTO viagem) throws BancoDeDadosException, RegraDeNegocioException {
         try {
             Caminhao caminhaoRecuperado = caminhaoService.getCaminhao(viagem.getIdCaminhao());
+
             Viagem viagemAdicionada;
-            if(caminhaoRecuperado.getEmViagem() == EmViagem.EM_VIAGEM){
+            if (caminhaoRecuperado.getEmViagem() == EmViagem.EM_VIAGEM) {
                 throw new RegraDeNegocioException("O caminhão escolhido já esta em uma viagem no momento."); //Pq eu consegui usar sem passar ele no método?
-            }else{
+            } else {
 
                 caminhaoRecuperado.setEmViagem(EmViagem.EM_VIAGEM);
-
                 caminhaoService.editar(viagem.getIdCaminhao(), objectMapper.convertValue(caminhaoRecuperado, CaminhaoCreateDTO.class));
 
                 Viagem viagemEntity = objectMapper.convertValue(viagem, Viagem.class);
-
                 viagemEntity.setFinalizada(false);
-
                 viagemAdicionada = viagemRepository.adicionar(viagemEntity);
+
                 // metodo utilizado para fazer as conversões e tentar buscar o usuario e a rota
                 Usuario user = usuarioService.getUsuario(viagemAdicionada.getIdUsuario());
                 UsuarioDTO usuario = objectMapper.convertValue(user, UsuarioDTO.class);
@@ -51,12 +50,11 @@ public class ViagemService {
             }
             return objectMapper.convertValue(viagemAdicionada, ViagemDTO.class);
         } catch (BancoDeDadosException e) {
-            throw new RegraDeNegocioException("Erro no banco de dados" + e.getMessage());
+            throw new RegraDeNegocioException("Erro no banco de dados ao adicionar viagem");
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("ERRO SQL-> " + e.getMessage());
+            System.out.println(e.getMessage());
         }
-
         return null;
     }
 

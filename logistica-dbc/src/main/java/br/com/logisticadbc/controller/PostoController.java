@@ -27,7 +27,7 @@ public class PostoController {
 
 
     @GetMapping // GET localhost:8080/posto
-    public List<PostoDTO> list() throws BancoDeDadosException {
+    public List<PostoDTO> list() throws BancoDeDadosException, RegraDeNegocioException {
         return postoService.listarPosto();
     }
 

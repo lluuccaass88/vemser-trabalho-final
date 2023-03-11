@@ -28,7 +28,7 @@ public class RotaController {
     private final RotaService rotaService;
 
     @GetMapping // GET localhost:8080/contato
-    public List<RotaDTO> list() {
+    public List<RotaDTO> list() throws RegraDeNegocioException {
         return rotaService.listarRotas();
     }
 

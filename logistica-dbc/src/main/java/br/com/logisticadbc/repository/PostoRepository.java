@@ -70,7 +70,6 @@ public class PostoRepository{
         }
     }
 
-    // removerPosto_X_Rota conforme está descrito na tabela
     public boolean removerPostoXRota(Integer id) throws BancoDeDadosException {
         Connection con = null;
         try {
@@ -84,15 +83,13 @@ public class PostoRepository{
             // Executa-se a consulta
             int res = stmt.executeUpdate();
             if (res == 0) {
-                throw new BancoDeDadosException("Erro ao remover posto");
+                throw new BancoDeDadosException("Erro ao remover relacionamento de rota e posto");
             } else {
-//                System.out.println("Relacionamento de rota com posto removida com sucesso!" +
-//                        "\nremoverRotaPorId.res=" + res);
-                System.out.println("Relacionamento de rota com posto removida com sucesso!");
+                log.info("Relacionamento de rota com posto removido com sucesso!");
                 return res > 0;
             }
         } catch (SQLException e) {
-            throw new BancoDeDadosException("Erro ao remover o relacionamento de rota e posto" + e);
+            throw new BancoDeDadosException(e.getMessage());
         } finally {
             try {
                 if (con != null) {
@@ -119,12 +116,11 @@ public class PostoRepository{
             if (res == 0) {
                 throw new BancoDeDadosException("Erro ao remover posto");
             } else {
-                System.out.println("Posto removida com sucesso!" +
-                        "\nremoverPostoPorId.res=" + res);
+                log.info("Posto removida com sucesso!");
                 return res > 0;
             }
         } catch (SQLException e) {
-            throw new BancoDeDadosException("Erro ao remover posto" + e);
+            throw new BancoDeDadosException(e.getMessage());
         } finally {
             try {
                 if (con != null) {
@@ -135,7 +131,6 @@ public class PostoRepository{
             }
         }
     }
-
 
     public boolean editar(Integer id, Posto posto) throws BancoDeDadosException {
         Connection con = null;
@@ -160,12 +155,11 @@ public class PostoRepository{
             if (res == 0) {
                 throw new BancoDeDadosException("Erro ao editar posto.");
             } else {
-                System.out.println("Posto editado com sucesso!" +
-                        "\neditarPostoPorId.res=" + res);
+                System.out.println("Posto editado com sucesso!");
                 return res > 0;
             }
         } catch (SQLException e) {
-            throw new BancoDeDadosException("Erro ao editar posto: " + e);
+            throw new BancoDeDadosException(e.getMessage());
         } finally {
             try {
                 if (con != null) {
@@ -177,7 +171,6 @@ public class PostoRepository{
         }
     }
 
-
     public List<Posto> listar() throws BancoDeDadosException {
         List<Posto> postos = new ArrayList<>();
         Connection con = null;
@@ -187,9 +180,8 @@ public class PostoRepository{
             String sql = "SELECT * FROM POSTO";
 
             PreparedStatement stmt = con.prepareStatement(sql);
-            // Executa-se a consulta
-            ResultSet rs = stmt.executeQuery();
 
+            ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
                 Posto posto = new Posto();
                 posto.setIdPosto(rs.getInt("ID_POSTO"));
@@ -197,6 +189,7 @@ public class PostoRepository{
                 posto.setValorCombustível(rs.getDouble("VALORCOMBUSTIVEL"));
                 postos.add(posto);
             }
+            return postos;
         } catch (SQLException e) {
             throw new BancoDeDadosException("Erro ao listar postos" + e);
         } finally {
@@ -208,7 +201,6 @@ public class PostoRepository{
                 e.printStackTrace();
             }
         }
-        return postos;
     }
 
     public Posto buscarPorId(int id)throws BancoDeDadosException{

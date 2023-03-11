@@ -46,6 +46,7 @@ public interface IUViagemControllerDoc {
     )
     ResponseEntity<List<ViagemDTO>> listarViagensFinalizadas() throws Exception;
 
+
     @Operation(summary = "Listar Viagem a partir de um id", description = "Lista uma Viagem do banco a partir de um id")
     @ApiResponses(
             value = {
