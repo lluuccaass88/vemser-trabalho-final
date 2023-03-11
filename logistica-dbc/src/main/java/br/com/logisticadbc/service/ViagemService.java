@@ -25,7 +25,7 @@ public class ViagemService {
 
 
 
-    public ViagemDTO adicionarViagem(ViagemCreateDTO viagem) throws BancoDeDadosException {
+    public ViagemDTO adicionarViagem(ViagemCreateDTO viagem) throws BancoDeDadosException, RegraDeNegocioException {
         try {
             Caminhao caminhaoRecuperado = caminhaoService.getCaminhao(viagem.getIdCaminhao());
             Viagem viagemAdicionada;
@@ -51,8 +51,7 @@ public class ViagemService {
             }
             return objectMapper.convertValue(viagemAdicionada, ViagemDTO.class);
         } catch (BancoDeDadosException e) {
-            e.printStackTrace();
-            throw new BancoDeDadosException("Erro no banco de dados.");
+            throw new RegraDeNegocioException("Erro no banco de dados" + e.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("ERRO SQL-> " + e.getMessage());
@@ -61,15 +60,15 @@ public class ViagemService {
         return null;
     }
 
-    public List<ViagemDTO> listarViagens() {
+    public List<ViagemDTO> listarViagens() throws RegraDeNegocioException {
         try {
             return viagemRepository.listar().stream()
                     .map(pessoa -> objectMapper.convertValue(pessoa, ViagemDTO.class))
                     .collect(Collectors.toList());
         } catch (BancoDeDadosException e) {
             e.printStackTrace();
+            throw new RegraDeNegocioException("Erro no banco");
         }
-        return null;
     }
 
     public ViagemDTO finalizarViagem(Integer id) throws RegraDeNegocioException { //Precisa pegar o id co caminhão que esta ligado nessa viagem
@@ -146,13 +145,6 @@ public class ViagemService {
                 .findFirst()
                 .orElseThrow(() -> new RegraDeNegocioException("Viagem não encontrada"));
     }
-
-
-
-
-
-
-
 
     public List<PostoDTO> listarPostosEmViagem(int iDviagem){ //Se der tempo fazer isso para fazer verificação
         return null;

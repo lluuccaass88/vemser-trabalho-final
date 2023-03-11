@@ -54,13 +54,11 @@ public class PostoRepository{
             if (res == 0) {
                 throw new BancoDeDadosException("Erro ao adicionar posto");
             } else {
-//                System.out.println("Posto adicionada com sucesso!" +
-//                        "\nadicionarPosto.res=" + res);
-                System.out.println("Posto adicionada com sucesso!");
+                log.info("Posto adicionada com sucesso!");
             }
             return posto;
         } catch (SQLException e) {
-            throw new BancoDeDadosException("Erro ao adicionar posto" + e);
+            throw new BancoDeDadosException(e.getMessage());
         } finally {
             try {
                 if (con != null) {
