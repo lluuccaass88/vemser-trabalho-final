@@ -24,7 +24,7 @@ public interface IUViagemControllerDoc {
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-   ResponseEntity<ViagemDTO> create(@Valid @RequestBody ViagemCreateDTO viagemCreateDTO) throws RegraDeNegocioException, BancoDeDadosException;
+    ResponseEntity<ViagemDTO> create (@Valid @RequestBody ViagemCreateDTO viagemCreateDTO) throws RegraDeNegocioException;
 
     @Operation(summary = "Listar Usuários", description = "Lista todas as viagens do banco")
     @ApiResponses(
@@ -55,7 +55,7 @@ public interface IUViagemControllerDoc {
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-    ResponseEntity<ViagemDTO> update(@PathVariable("idViagem") Integer id) throws RegraDeNegocioException, BancoDeDadosException;
+    ResponseEntity<ViagemDTO> listarPorId(@PathVariable("idViagem") Integer id) throws RegraDeNegocioException, BancoDeDadosException;
 
     @Operation(summary = "Atualizar Usuário", description = "Atualiza uma Usuário no banco")
     @ApiResponses(

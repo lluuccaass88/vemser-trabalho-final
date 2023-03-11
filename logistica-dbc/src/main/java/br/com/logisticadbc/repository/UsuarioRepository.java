@@ -61,7 +61,8 @@ public class UsuarioRepository {
                 throw new BancoDeDadosException("Erro ao adicionar Usuário");
             }
         } catch (SQLException e) {
-            throw new BancoDeDadosException("Erro ao adicionar Usuário " + e);
+            e.printStackTrace();
+            throw new BancoDeDadosException("Erro ao adicionar Usuário ");
         } finally {
             try {
                 if (con != null) {
@@ -85,11 +86,10 @@ public class UsuarioRepository {
             int res = stmt.executeUpdate();
             if (res > 0) {
                 return true;
-            } else {
-                throw new BancoDeDadosException("Erro ao remover Usuário");
             }
         } catch (SQLException e) {
-            throw new BancoDeDadosException("Erro ao remover Usuário " + e);
+            e.printStackTrace();
+            throw new BancoDeDadosException("Erro ao remover Usuário ");
         } finally {
             try {
                 if (con != null) {
@@ -99,6 +99,7 @@ public class UsuarioRepository {
                 e.printStackTrace();
             }
         }
+        return false;
     }
 
     public boolean editar(Integer id, Usuario usuario) throws BancoDeDadosException {
@@ -132,7 +133,7 @@ public class UsuarioRepository {
             return res > 0;
         } catch (SQLException e) {
             e.printStackTrace();
-            throw new BancoDeDadosException("Erro ao editar usuário" + e);
+            throw new BancoDeDadosException("Erro ao editar usuário");
         } finally {
             try {
                 if (con != null) {
@@ -168,7 +169,8 @@ public class UsuarioRepository {
                 usuarios.add(usuario);
             }
         } catch (SQLException e) {
-            throw new BancoDeDadosException("Erro ao listar Usuários " + e);
+            e.printStackTrace();
+            throw new BancoDeDadosException("Erro ao listar Usuários ");
         } finally {
             try {
                 if (con != null) {

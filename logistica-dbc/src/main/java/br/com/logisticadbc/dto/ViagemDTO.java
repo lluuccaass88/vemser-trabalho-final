@@ -7,7 +7,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 @Data
-public class ViagemDTO extends ViagemCreateDTO{
+public class ViagemDTO  { // extends ViagemCreateDTO{
 
     @Schema(description = "id de viagem", example = "5", required = true)
     private int idViagem;
@@ -16,7 +16,12 @@ public class ViagemDTO extends ViagemCreateDTO{
     @Schema(description = "Objeto de rota vinculado com viagem", example = "Objeto de rota", required = true)
     private Rota rota;
     @Schema(description = "Objeto de usuario vinculado com viagem", example = "Objeto de usuario", required = true)
-    private Usuario usuario;
+//    private Usuario usuario;
+    private Usuario idUsuario;
+    private Usuario nomeUsuario;
+    private Usuario tipoUsuario;
+
+
 
     @Schema(description = "variavel para representar se a viagem esta ou não finalizada", example = "true ou false", required = true)
     private boolean finalizada;
