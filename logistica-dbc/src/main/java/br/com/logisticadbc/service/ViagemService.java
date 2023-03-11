@@ -64,9 +64,7 @@ public class ViagemService {
                     .map(pessoa -> objectMapper.convertValue(pessoa, ViagemDTO.class))
                     .collect(Collectors.toList());
         } catch (BancoDeDadosException e) {
-            e.printStackTrace();
-            throw new RegraDeNegocioException("Erro no banco");
-        }
+            throw new RegraDeNegocioException("Erro no banco de dados ao listar viagem");        }
     }
 
     public ViagemDTO finalizarViagem(Integer id) throws RegraDeNegocioException { //Precisa pegar o id co caminhão que esta ligado nessa viagem
