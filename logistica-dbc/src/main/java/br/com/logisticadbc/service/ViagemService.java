@@ -24,7 +24,6 @@ public class ViagemService {
     private final RotaService rotaService;
 
 
-
     public ViagemDTO adicionarViagem(ViagemCreateDTO viagem) throws RegraDeNegocioException {
         try {
             Caminhao caminhaoRecuperado = caminhaoService.getCaminhao(viagem.getIdCaminhao());
@@ -70,19 +69,19 @@ public class ViagemService {
     }
 
     public ViagemDTO finalizarViagem(Integer id) throws RegraDeNegocioException { //Precisa pegar o id co caminhão que esta ligado nessa viagem
-//        try {
-//            Viagem viagemRecuperada = getViagem(id);
-//            viagemRecuperada.setFinalizada(true);
-//            Viagem viagemEditada = viagemRepository.finalarViagem(viagemRecuperada.getIdViagem(), viagemRecuperada);
-//
-//            Caminhao caminhaoRecuperado = caminhaoService.getCaminhao(viagemRecuperada.getCaminhao().getIdCaminhao());
-//            caminhaoRecuperado.setEmViagem(EmViagem.ESTACIONADO);
-//            caminhaoService.editar(caminhaoRecuperado.getIdCaminhao(), objectMapper.convertValue(caminhaoRecuperado, CaminhaoCreateDTO.class));
-//
-//            return objectMapper.convertValue(viagemEditada, ViagemDTO.class);
-//        } catch (BancoDeDadosException e) {
-//            e.printStackTrace();
-//        }
+        try {
+            Viagem viagemRecuperada = getViagem(id);
+            viagemRecuperada.setFinalizada(true);
+            Viagem viagemEditada = viagemRepository.finalizarViagem(viagemRecuperada.getIdViagem(), viagemRecuperada);
+
+            Caminhao caminhaoRecuperado = caminhaoService.getCaminhao(viagemRecuperada.getCaminhao().getIdCaminhao());
+            caminhaoRecuperado.setEmViagem(EmViagem.ESTACIONADO);
+            caminhaoService.editar(caminhaoRecuperado.getIdCaminhao(), objectMapper.convertValue(caminhaoRecuperado, CaminhaoCreateDTO.class));
+
+            return objectMapper.convertValue(viagemEditada, ViagemDTO.class);
+        } catch (BancoDeDadosException e) {
+            e.printStackTrace();
+        }
         return null;
     }
 
