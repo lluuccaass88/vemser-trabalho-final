@@ -5,6 +5,6 @@ import lombok.Data;
 
 @Data
 public class UsuarioDTO extends UsuarioCreateDTO{
-    @Schema(description = "Id de usuario", example = "5,89", required = true)
+    @Schema(description = "Id de usuario", example = "5", required = true)
     private Integer id;
 }

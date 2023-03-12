@@ -62,6 +62,7 @@ public class RotaRepository {
             }
             return rota;
         } catch (SQLException e) {
+            e.printStackTrace();
             throw new BancoDeDadosException("Erro ao adicionar rota ao banco de dados" + e);
         } finally {
             try {
@@ -95,6 +96,7 @@ public class RotaRepository {
             }
             return true;
         } catch (SQLException e) {
+            e.printStackTrace();
             throw new BancoDeDadosException("Erro ao adicionar POSTO_X_ROTA" + e);
         } finally {
             try {
@@ -151,10 +153,9 @@ public class RotaRepository {
                 if (posto.getIdRota() == rota.getIdRota()) {
                     rotas.get(cont).setListaPostoCadastradoPosto(posto);
                 }
-
             }
-
         } catch (SQLException e) {
+            e.printStackTrace();
             throw new BancoDeDadosException("Erro ao listar rotas" + e);
         } finally {
             try {
@@ -197,6 +198,7 @@ public class RotaRepository {
             rota.setIdRota(id);
             return rota;
         } catch (SQLException e) {
+            e.printStackTrace();
             throw new BancoDeDadosException("Erro ao editar rota: " + e);
         } finally {
             try {
@@ -230,6 +232,7 @@ public class RotaRepository {
                 return res > 0;
             }
         } catch (SQLException e) {
+            e.printStackTrace();
             throw new BancoDeDadosException("Erro ao remover o relacionamento de rota e posto" + e);
         } finally {
             try {
@@ -262,6 +265,7 @@ public class RotaRepository {
                 return res > 0;
             }
         } catch (SQLException e) {
+            e.printStackTrace();
             throw new BancoDeDadosException("Erro ao remover rota" + e);
         } finally {
             try {
@@ -273,68 +277,4 @@ public class RotaRepository {
             }
         }
     }
-
-
-//
-
-//
-////    public Rota buscaPorId(int index) throws BancoDeDadosException{
-////        Connection con = null;
-////        List<Rota> rotas = new ArrayList<>();
-////        Rota rota = new Rota();
-////        try {
-////            con = ConexaoBancoDeDados.getConnection();
-////
-////            String sql = "  SELECT r.ID_ROTA, r.DESCRICAO, r.LOCALPARTIDA, r.LOCALDESTINO,  p.ID_POSTO, p.NOMEPOSTO, p.VALORCOMBUSTIVEL  \n" +
-////                    "\tFROM LOGISTICA.ROTA r\n" +
-////                    "\t\tINNER JOIN LOGISTICA.ROTA_X_POSTO rxp ON r.ID_ROTA  = rxp.ID_ROTA  \n" +
-////                    "\t\tINNER JOIN LOGISTICA.POSTO p ON p.ID_POSTO = rxp.ID_POSTO \n" +
-////                    "\t\tORDER BY r.ID_ROTA \n";
-////
-////            PreparedStatement stmt = con.prepareStatement(sql);
-////            // Executa-se a consulta
-////            ResultSet rs = stmt.executeQuery();
-////
-////            Rota rotaAnt = new Rota();
-////            rotaAnt.setIdRota(0);
-////            int cont = -1;
-////
-////            while (rs.next()) {
-////                Posto posto = new Posto();
-////
-////                rota.setIdRota(rs.getInt("ID_ROTA"));
-////                rota.setDescricao(rs.getString("DESCRICAO"));
-////                rota.setLocalDestino(rs.getString("LOCALPARTIDA"));
-////                rota.setLocalPartida(rs.getString("LOCALDESTINO"));
-////
-////                posto.setIdPosto(rs.getInt("ID_POSTO"));
-////                posto.setNomePosto(rs.getString("NOMEPOSTO"));
-////                posto.setValorCombustível(rs.getDouble("VALORCOMBUSTIVEL"));
-////                posto.setIdRota(rs.getInt("ID_ROTA"));
-////
-////                if (rotaAnt.getIdRota() != rota.getIdRota()) { //Faz com que não se crie rotas repetidas
-////                    rotas.add(rota);
-////                    rotaAnt.setIdRota(rota.getIdRota());
-////                    cont++;
-////                }
-////
-////                if (posto.getIdRota() == rota.getIdRota()) {
-////                    rotas.get(cont).setListaPostoCadastradoPosto(posto);
-////                }
-////
-////            }
-////
-////        } catch (SQLException e) {
-////            throw new BancoDeDadosException("Erro ao listar rotas" + e);
-////        } finally {
-////            try {
-////                if (con != null) {
-////                    con.close();
-////                }
-////            } catch (SQLException e) {
-////                e.printStackTrace();
-////            }
-////        }
-////        return rotas.get(0);
-////    }
 }

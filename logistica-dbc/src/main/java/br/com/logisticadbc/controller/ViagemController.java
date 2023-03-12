@@ -25,7 +25,7 @@ public class ViagemController implements IUViagemControllerDoc {
     private final ViagemService viagemService;
 
     @PostMapping
-    public ResponseEntity<ViagemDTO> create(@Valid @RequestBody ViagemCreateDTO viagemCreateDTO) throws RegraDeNegocioException {
+    public ResponseEntity<ViagemDTO> create(@Valid @RequestBody ViagemCreateDTO viagemCreateDTO) throws Exception {
         log.info("Criando viagem");
         return new ResponseEntity<>(viagemService.adicionarViagem(viagemCreateDTO), HttpStatus.CREATED);
     }

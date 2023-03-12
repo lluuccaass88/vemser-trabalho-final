@@ -6,10 +6,12 @@ import lombok.Data;
 
 @Data
 public class ViagemUsuarioDTO {
-    @Schema(description = "id do usuario", example = "1", required = true)
+
+    @Schema(description = "Id do Usuário que está em Rota", example = "1", required = true)
     private int idUsuario;
-    @Schema(description = "Nome do usuario", example = "Lucas Alves", required = true)
+    @Schema(description = "Nome do Usuário que está em Rota", example = "Bino", required = true)
     private String nomeUsuario;
-    @Schema(description = "Tido de usuario", example = "Motorista ou Colaborador", required = true)
+    @Schema(description = "Tipo do Usuário", example = "Colaborador", required = true)
+
     private Perfil tipoUsuario;
 }

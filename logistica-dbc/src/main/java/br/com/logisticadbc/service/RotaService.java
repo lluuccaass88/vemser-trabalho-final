@@ -21,7 +21,7 @@ public class RotaService {
     private  final RotaRepository rotaRepository;
     private final ObjectMapper objectMapper;
 
-    public RotaDTO adicionaRota(RotaCreateDTO rota) throws BancoDeDadosException {
+    public RotaDTO adicionaRota(RotaCreateDTO rota) throws RegraDeNegocioException, BancoDeDadosException {
         try {
             Rota rotaEntity = objectMapper.convertValue(rota, Rota.class);
 
@@ -29,12 +29,11 @@ public class RotaService {
             adicionaRotaXPosto(rotaEntity);
 
             return objectMapper.convertValue(rotaAdicionada, RotaDTO.class);
-        } catch (BancoDeDadosException e) {
-            e.printStackTrace();
+        }catch (BancoDeDadosException e) {
+            throw new RegraDeNegocioException("Erro no banco de dados ao adicionar rota");
         } catch (Exception e) {
-            throw new BancoDeDadosException("Erro no banco de dados ao adicionar rota");
+            throw new RegraDeNegocioException(e.getMessage());
         }
-        return null;
     }
 
     public void adicionaRotaXPosto(Rota rota) throws RegraDeNegocioException, BancoDeDadosException {
@@ -44,8 +43,6 @@ public class RotaService {
             }
         } catch (BancoDeDadosException e) {
             throw new RegraDeNegocioException("Erro no banco de dados ao adicionar o relacionamento de posto e rota");
-        } catch (Exception e) {
-            throw new BancoDeDadosException(e.getMessage());
         }
     }
 
@@ -55,8 +52,9 @@ public class RotaService {
                     .map(rota -> objectMapper.convertValue(rota, RotaDTO.class))
                     .collect(Collectors.toList());
         } catch (BancoDeDadosException e ) {
-            e.printStackTrace();
             throw new RegraDeNegocioException("Erro no banco de dados ao listar rotas");
+        }catch (Exception e){
+            throw new RegraDeNegocioException(e.getMessage());
         }
     }
 

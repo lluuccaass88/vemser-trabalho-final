@@ -24,14 +24,13 @@ public class ViagemService {
     private final RotaService rotaService;
 
 
-
     public ViagemDTO adicionarViagem(ViagemCreateDTO viagem) throws RegraDeNegocioException {
         try {
             Caminhao caminhaoRecuperado = caminhaoService.getCaminhao(viagem.getIdCaminhao());
 
             Viagem viagemAdicionada;
             if (caminhaoRecuperado.getEmViagem() == EmViagem.EM_VIAGEM) {
-                throw new RegraDeNegocioException("O caminhão escolhido já esta em uma viagem no momento."); //Pq eu consegui usar sem passar ele no método?
+                throw new RegraDeNegocioException("O caminhão escolhido já esta em uma viagem no momento.");
 
             } else {
 
@@ -46,18 +45,17 @@ public class ViagemService {
                 Usuario user = usuarioService.getUsuario(viagemAdicionada.getIdUsuario());
                 UsuarioDTO usuario = objectMapper.convertValue(user, UsuarioDTO.class);
                 //Rota rotaBuscar = caminhaoService.buscarViagem(viagemAdicionada.getIdCaminhao()).getRota();
-                Rota rotaBuscar = rotaService.getRota(viagemAdicionada.getRota().getIdRota()); //Buscando a rota
+                Rota rotaBuscar = rotaService.getRota(viagemAdicionada.getIdRota()); //Buscando a rota
                 RotaDTO rota = objectMapper.convertValue(rotaBuscar, RotaDTO.class);
-                emailService.enviarEmailParaMotoristaComRota(usuario, rota);
+                emailService.enviarEmailParaMotoristaComRota(usuario, rota); // Enviando o email para o motorista
+                //emailService.enviarEmailParaColaboradorComInfoRota(usuario, rota); // Enviando o email para o colaborador
             }
             return objectMapper.convertValue(viagemAdicionada, ViagemDTO.class);
         } catch (BancoDeDadosException e) {
             throw new RegraDeNegocioException("Erro no banco de dados ao adicionar viagem");
         } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println(e.getMessage());
+            throw new RegraDeNegocioException(e.getMessage());
         }
-        return null;
     }
 
     public List<ViagemDTO> listarViagens() throws RegraDeNegocioException {
@@ -70,19 +68,19 @@ public class ViagemService {
     }
 
     public ViagemDTO finalizarViagem(Integer id) throws RegraDeNegocioException { //Precisa pegar o id co caminhão que esta ligado nessa viagem
-//        try {
-//            Viagem viagemRecuperada = getViagem(id);
-//            viagemRecuperada.setFinalizada(true);
-//            Viagem viagemEditada = viagemRepository.finalarViagem(viagemRecuperada.getIdViagem(), viagemRecuperada);
-//
-//            Caminhao caminhaoRecuperado = caminhaoService.getCaminhao(viagemRecuperada.getCaminhao().getIdCaminhao());
-//            caminhaoRecuperado.setEmViagem(EmViagem.ESTACIONADO);
-//            caminhaoService.editar(caminhaoRecuperado.getIdCaminhao(), objectMapper.convertValue(caminhaoRecuperado, CaminhaoCreateDTO.class));
-//
-//            return objectMapper.convertValue(viagemEditada, ViagemDTO.class);
-//        } catch (BancoDeDadosException e) {
-//            e.printStackTrace();
-//        }
+        try {
+            Viagem viagemRecuperada = getViagem(id);
+            viagemRecuperada.setFinalizada(true);
+            Viagem viagemEditada = viagemRepository.finalizarViagem(viagemRecuperada.getIdViagem(), viagemRecuperada);
+
+            Caminhao caminhaoRecuperado = caminhaoService.getCaminhao(viagemRecuperada.getCaminhao().getIdCaminhao());
+            caminhaoRecuperado.setEmViagem(EmViagem.ESTACIONADO);
+            caminhaoService.editar(caminhaoRecuperado.getIdCaminhao(), objectMapper.convertValue(caminhaoRecuperado, CaminhaoCreateDTO.class));
+
+            return objectMapper.convertValue(viagemEditada, ViagemDTO.class);
+        } catch (BancoDeDadosException e) {
+            e.printStackTrace();
+        }
         return null;
     }
 

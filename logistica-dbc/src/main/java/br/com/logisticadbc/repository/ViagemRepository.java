@@ -59,17 +59,15 @@ public class ViagemRepository {
                 stmt.setInt(5, 0);
             }
 
-
             int res = stmt.executeUpdate();
-            if (res == 0) {
-                throw new BancoDeDadosException("Erro ao adicionar viagem");
+            if (res > 0) {
+                return viagem;
             } else {
-                System.out.println("Viagem cadastrada com sucesso!" +
-                        "\nadicionarViagem.res=" + res);
+                throw new BancoDeDadosException("Erro ao adicionar viagem");
             }
-            return viagem;
         } catch (SQLException e) {
-            throw new BancoDeDadosException("Erro ao adicionar viagem: " + e);
+            e.printStackTrace();
+            throw new BancoDeDadosException("Erro ao adicionar viagem: ");
         } finally {
             try {
                 if (con != null) {
@@ -103,28 +101,11 @@ public class ViagemRepository {
 
             while (rs.next()) {
                 Viagem viagem = new Viagem();
-                //Usuario usuario = new Usuario();
-                //Rota rota = new Rota();
                 Caminhao caminhao = new Caminhao();
 
-                //Teste
                 ViagemUsuarioDTO viagemUsuarioDTO = new ViagemUsuarioDTO();
                 ViagemRotaDTO viagemRotaDTO = new ViagemRotaDTO();
-                //Teste
 
-
-
-
-//                usuario.setId(rs.getInt("ID_USUARIO"));
-//                usuario.setNome(rs.getString("NOME"));
-//                usuario.setUsuario(rs.getString("USUARIO"));
-//                usuario.setSenha(rs.getString("SENHA"));
-//                usuario.setPerfil(Perfil.ofTipoPerfil(rs.getInt("PERFIL")));
-//                usuario.setCpf(rs.getString("CPF"));
-//                usuario.setCnh(rs.getString("CNH"));
-//                usuario.setEmail(rs.getString("EMAIL"));
-
-                //Teste
                 viagemUsuarioDTO.setNomeUsuario(rs.getString("NOME"));
                 viagemUsuarioDTO.setIdUsuario(rs.getInt("ID_USUARIO"));
                 viagemUsuarioDTO.setTipoUsuario(Perfil.ofTipoPerfil(rs.getInt("PERFIL")));
@@ -132,13 +113,6 @@ public class ViagemRepository {
                 viagemRotaDTO.setIdRota(rs.getInt("ID_ROTA"));
                 viagemRotaDTO.setLocalDestino(rs.getString("LOCALDESTINO"));
                 viagemRotaDTO.setLocalPartida(rs.getString("LOCALPARTIDA"));
-
-                //Teste
-
-//                rota.setIdRota(rs.getInt("ID_ROTA"));
-//                rota.setDescricao(rs.getString("DESCRICAO"));
-//                rota.setLocalDestino(rs.getString("LOCALPARTIDA"));
-//                rota.setLocalPartida(rs.getString("LOCALDESTINO"));
 
                 caminhao.setIdCaminhao(rs.getInt("ID_CAMINHAO"));
                 caminhao.setModelo(rs.getString("MODELO"));
@@ -153,25 +127,18 @@ public class ViagemRepository {
                 }else{
                     viagem.setFinalizada(false);
                 }
-
-                //viagem.setUsuario(usuario);
-                //viagem.setRota(rota);
                 viagem.setCaminhao(caminhao);
-
-                //Teste
                 viagem.setUsuario(viagemUsuarioDTO);
                 viagem.setRota(viagemRotaDTO);
-                //Teste
 
                 if (viagemAnt.getIdViagem() != viagem.getIdViagem()) { //Faz com que não se crie rotas repetidas
                     viagens.add(viagem);
                     viagemAnt.setIdViagem(viagem.getIdViagem());
                 }
-
             }
-
         } catch (SQLException e) {
-            throw new BancoDeDadosException("Erro ao listar caminhoes cadastrados: " + e);
+            e.printStackTrace();
+            throw new BancoDeDadosException("Falha ao listar viagens cadastradas");
         } finally {
             try {
                 if (con != null) {
@@ -184,50 +151,52 @@ public class ViagemRepository {
         return viagens;
     }
 
-//    public Viagem finalarViagem(Integer id, Viagem viagem) throws BancoDeDadosException {
-//        Connection con = null;
-//        try {
-//            con = conexaoBancoDeDados.getConnection();
-//            StringBuilder sql = new StringBuilder();
-//            sql.append("UPDATE LOGISTICA.VIAGEM SET\n");
-//            sql.append(" ID_CAMINHAO = ?,");
-//            sql.append(" ID_ROTA = ?,");
-//            sql.append(" ID_USUARIO = ?,");
-//            sql.append(" FINALIZADA = ?");
-//            sql.append(" WHERE ID_VIAGEM = ?");
-//
-//            PreparedStatement stmt = con.prepareStatement(sql.toString());
-//
-//            stmt.setInt(1, viagem.getCaminhao().getIdCaminhao());
-//            stmt.setInt(2, viagem.getRota().getIdRota());
-//            stmt.setInt(3, viagem.getUsuario().getId());
-//            if(viagem.isFinalizada()){
-//                stmt.setInt(4, 1);
-//            }else{
-//                stmt.setInt(4, 0);
-//            }
-//            stmt.setInt(5, id);
-//            int res = stmt.executeUpdate();
-//
-//            if (res == 0) {
-//                throw new BancoDeDadosException("Erro ao editar viagem");
-//            } else {
-//                log.info("Viagem editada com sucesso!" +
-//                        "\neditarViagem.res=" + res);
-//                return viagem;
-//            }
-//        } catch (SQLException e) {
-//            throw new BancoDeDadosException("Erro ao editar viagem" + e);
-//        } finally {
-//            try {
-//                if (con != null) {
-//                    con.close();
-//                }
-//            } catch (SQLException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//    }
+    public Viagem finalizarViagem(Integer id, Viagem viagem) throws BancoDeDadosException {
+        Connection con = null;
+        try {
+            con = conexaoBancoDeDados.getConnection();
+            StringBuilder sql = new StringBuilder();
+            sql.append("UPDATE LOGISTICA.VIAGEM SET\n");
+            sql.append(" ID_CAMINHAO = ?,");
+            sql.append(" ID_ROTA = ?,");
+            sql.append(" ID_USUARIO = ?,");
+            sql.append(" FINALIZADA = ?");
+            sql.append(" WHERE ID_VIAGEM = ?");
+
+            PreparedStatement stmt = con.prepareStatement(sql.toString());
+
+            stmt.setInt(1, viagem.getCaminhao().getIdCaminhao());
+            stmt.setInt(2, viagem.getRota().getIdRota());
+            stmt.setInt(3, viagem.getUsuario().getIdUsuario());
+
+            if(viagem.isFinalizada()){
+                stmt.setInt(4, 1);
+            }else{
+                stmt.setInt(4, 0);
+            }
+            stmt.setInt(5, id);
+            int res = stmt.executeUpdate();
+
+            if (res == 0) {
+                throw new BancoDeDadosException("Erro ao editar viagem");
+            } else {
+                log.info("Viagem editada com sucesso!" +
+                        "\neditarViagem.res=" + res);
+                return viagem;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new BancoDeDadosException("Falha ao tentar implementar o metodo finalizar viagem");
+        } finally {
+            try {
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
     public Viagem editar(Integer id, Viagem viagem) throws BancoDeDadosException {
         Connection con = null;

@@ -93,28 +93,17 @@ public class CaminhaoService {
                 .orElseThrow(() -> new RegraDeNegocioException("Caminhão não encontrado"));
     }
 
-    // abastercer o caminhão somente em postos e se tiver em rota, se nao tiver em rota nao
-    // pode abastercer em qualquer posto independente de ser ou nao posto cadastrado.
-    // se tiver em rota, so pode abastercer em posto cadastrado.
-//    public void abastecerCaminhao(Integer id, Integer gasolina) throws Exception {
-//        ViagemDTO viagemRecuperada = buscarViagem(id);
-//        CaminhaoDTO caminhaoDTORecuperado = buscarPorId(viagemRecuperada.getIdCaminhao());
-//        Caminhao caminhaoRecuperado = getCaminhao(id);
-//        Integer totalGasolina = caminhaoDTORecuperado.getGasolina() + gasolina;
-//        if (totalGasolina > 100) {
-//            throw new RegraDeNegocioException("O caminhão não pode ter mais de 100% de abastecimento do seu tanque");
-//        } else {
-//            caminhaoDTORecuperado.setGasolina(totalGasolina);
-//        }
-//        caminhaoRepository.editar(id, caminhaoRecuperado);
-//    }
-
     public CaminhaoDTO abastecerCaminhao(Integer id, Integer gasolina) throws Exception {
         Caminhao caminhaoRecuperado = getCaminhao(id);
+
         Integer totalGasolina = caminhaoRecuperado.getGasolina() + gasolina;
-        if (totalGasolina > 100) {
+        if ( gasolina < 0){
+            throw new RegraDeNegocioException("O caminhão não pode ser abastecido com um número negativo!");
+        }
+        else if (totalGasolina > 100) {
             throw new RegraDeNegocioException("O caminhão não pode ter mais de 100% de abastecimento do seu tanque");
-        } else {
+        }
+        else {
             caminhaoRecuperado.setGasolina(totalGasolina);
         }
         caminhaoRepository.editar(id, caminhaoRecuperado);

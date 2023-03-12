@@ -66,7 +66,7 @@ public interface ICaminhaoControllerDoc {
             }
     )
     @PutMapping("/abastecer/{id}")
-    public ResponseEntity<CaminhaoDTO> abastecer(@PathVariable Integer id, @Valid @RequestBody CaminhaoCreateDTO caminhao, Integer gasolina) throws Exception;
+    public ResponseEntity<CaminhaoDTO> abastecer(@PathVariable Integer id,  Integer gasolina) throws Exception;
 
     @Operation(summary = "Listar caminhões disponiveis", description = "Listar caminhões disponiveis no banco de dados")
     @ApiResponses(

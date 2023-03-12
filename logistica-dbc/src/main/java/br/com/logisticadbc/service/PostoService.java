@@ -61,28 +61,25 @@ public class PostoService {
         try {
             boolean conseguiuRemoverRelacionamento = postoRepository.removerPostoXRota(id);
             boolean conseguiuRemover = postoRepository.remover(id);
-            if (conseguiuRemover && conseguiuRemoverRelacionamento) {
-
-            }
         } catch (BancoDeDadosException e) {
-            e.printStackTrace();
             throw new RegraDeNegocioException("Erro no banco de dados ao remover posto");
         }
     }
 
-    public Posto buscarPostoId(int id) {
+    public Posto buscarPostoId(int id) throws RegraDeNegocioException {
         try {
             Posto retornoBusca = postoRepository.buscarPorId(id);
             if(retornoBusca == null){
-                System.out.println("Não foi encontrar o posto com o id " + id);
+                throw new RegraDeNegocioException("Não foi encontrar o posto com o id " + id);
             }else{
                 System.out.println("Posto: \n "+ retornoBusca);
                 return retornoBusca;
             }
         } catch (BancoDeDadosException e ) {
-            e.printStackTrace();
+            throw new RegraDeNegocioException("Erro no banco de dados ao buscar id");
+        } catch (Exception e){
+            throw new RegraDeNegocioException(e.getMessage());
         }
-        return null;
     }
 
 }
