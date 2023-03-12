@@ -64,12 +64,18 @@ public class ViagemService {
                     .map(pessoa -> objectMapper.convertValue(pessoa, ViagemDTO.class))
                     .collect(Collectors.toList());
         } catch (BancoDeDadosException e) {
-            throw new RegraDeNegocioException("Erro no banco de dados ao listar viagem" + e.getMessage());        }
+            throw new RegraDeNegocioException("Erro no banco de dados ao listar viagem" + e.getMessage());
+        }
     }
 
     public ViagemDTO finalizarViagem(Integer id) throws RegraDeNegocioException { //Precisa pegar o id co caminhão que esta ligado nessa viagem
         try {
             Viagem viagemRecuperada = getViagem(id);
+
+            if(viagemRecuperada.isFinalizada() == true){
+                throw new RegraDeNegocioException("Não é possivel finalizar uma viagem que já esta finalizada.");
+            }
+
             viagemRecuperada.setFinalizada(true);
             Viagem viagemEditada = viagemRepository.finalizarViagem(viagemRecuperada.getIdViagem(), viagemRecuperada);
 
@@ -79,22 +85,28 @@ public class ViagemService {
 
             return objectMapper.convertValue(viagemEditada, ViagemDTO.class);
         } catch (BancoDeDadosException e) {
-            e.printStackTrace();
+            throw new RegraDeNegocioException("Erro no banco de dados ao finalizar viagem" + e.getMessage());
+        }catch (Exception e){
+            throw new RegraDeNegocioException(e.getMessage());
         }
-        return null;
     }
 
-    public List<ViagemDTO> listarViagensFinalizadas() {
+    public List<ViagemDTO> listarViagensFinalizadas() throws RegraDeNegocioException {
         try {
             List<Viagem> listar = viagemRepository.listar();
             List<Viagem> viagensFinalizadas = listar.stream()
                     .filter(elemento -> elemento.isFinalizada() == true)
                     .toList();
+            if (viagensFinalizadas.size() <= 0){
+                throw new RegraDeNegocioException("O sistema não possui nem uma viagem finalizada no momento.");
+            }
             return viagensFinalizadas.stream()
                     .map(pessoa -> objectMapper.convertValue(pessoa, ViagemDTO.class))
                     .collect(Collectors.toList());
         } catch (BancoDeDadosException e) {
             e.printStackTrace();
+        }catch (Exception e){
+            throw new RegraDeNegocioException(e.getMessage());
         }
         return null;
     }
@@ -122,7 +134,6 @@ public class ViagemService {
             Caminhao caminhaoRecuprado1 = caminhaoService.getCaminhao(viagemRecuperada.getCaminhao().getIdCaminhao());//Não esta mudando o status do caminhão para estacionado
             caminhaoRecuprado1.setEmViagem(EmViagem.ESTACIONADO);
             caminhaoService.editar(caminhaoRecuprado1.getIdCaminhao(), objectMapper.convertValue(caminhaoRecuprado1, CaminhaoCreateDTO.class));
-
 
             Caminhao caminhaoRecuprado2 = caminhaoService.getCaminhao(viagem.getIdCaminhao());
             caminhaoRecuprado2.setEmViagem(EmViagem.EM_VIAGEM);

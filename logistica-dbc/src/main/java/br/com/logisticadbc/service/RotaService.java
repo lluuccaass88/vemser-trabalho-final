@@ -64,8 +64,7 @@ public class RotaService {
             Rota rotaEditada = rotaRepository.editar(id, rotaEntity);
             return objectMapper.convertValue(rotaEditada, RotaDTO.class);
         } catch (BancoDeDadosException e) {
-            e.printStackTrace();
-            throw new RegraDeNegocioException("Erro no banco de dados ao editar posto");
+            throw new RegraDeNegocioException("Erro no banco de dados ao editar posto - " + e.getMessage());
         }
     }
 
@@ -75,7 +74,7 @@ public class RotaService {
             return rotaRepository.remover(id);
         } catch (BancoDeDadosException e) {
             e.printStackTrace();
-            throw new RegraDeNegocioException("Erro no banco de dados ao remover rota");
+            throw new RegraDeNegocioException("Erro no banco de dados ao remover rota - " + e.getMessage());
         }
     }
 
