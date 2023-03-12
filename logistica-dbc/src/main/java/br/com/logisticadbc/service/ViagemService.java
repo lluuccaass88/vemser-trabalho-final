@@ -45,7 +45,8 @@ public class ViagemService {
                 // metodo utilizado para fazer as conversões e tentar buscar o usuario e a rota
                 Usuario user = usuarioService.getUsuario(viagemAdicionada.getIdUsuario());
                 UsuarioDTO usuario = objectMapper.convertValue(user, UsuarioDTO.class);
-                Rota rotaBuscar = caminhaoService.buscarViagem(viagemAdicionada.getIdCaminhao()).getRota();
+                //Rota rotaBuscar = caminhaoService.buscarViagem(viagemAdicionada.getIdCaminhao()).getRota();
+                Rota rotaBuscar = rotaService.getRota(viagemAdicionada.getRota().getIdRota()); //Buscando a rota
                 RotaDTO rota = objectMapper.convertValue(rotaBuscar, RotaDTO.class);
                 emailService.enviarEmailParaMotoristaComRota(usuario, rota);
             }
@@ -65,23 +66,23 @@ public class ViagemService {
                     .map(pessoa -> objectMapper.convertValue(pessoa, ViagemDTO.class))
                     .collect(Collectors.toList());
         } catch (BancoDeDadosException e) {
-            throw new RegraDeNegocioException("Erro no banco de dados ao listar viagem");        }
+            throw new RegraDeNegocioException("Erro no banco de dados ao listar viagem" + e.getMessage());        }
     }
 
     public ViagemDTO finalizarViagem(Integer id) throws RegraDeNegocioException { //Precisa pegar o id co caminhão que esta ligado nessa viagem
-        try {
-            Viagem viagemRecuperada = getViagem(id);
-            viagemRecuperada.setFinalizada(true);
-            Viagem viagemEditada = viagemRepository.finalarViagem(viagemRecuperada.getIdViagem(), viagemRecuperada);
-
-            Caminhao caminhaoRecuperado = caminhaoService.getCaminhao(viagemRecuperada.getCaminhao().getIdCaminhao());
-            caminhaoRecuperado.setEmViagem(EmViagem.ESTACIONADO);
-            caminhaoService.editar(caminhaoRecuperado.getIdCaminhao(), objectMapper.convertValue(caminhaoRecuperado, CaminhaoCreateDTO.class));
-
-            return objectMapper.convertValue(viagemEditada, ViagemDTO.class);
-        } catch (BancoDeDadosException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            Viagem viagemRecuperada = getViagem(id);
+//            viagemRecuperada.setFinalizada(true);
+//            Viagem viagemEditada = viagemRepository.finalarViagem(viagemRecuperada.getIdViagem(), viagemRecuperada);
+//
+//            Caminhao caminhaoRecuperado = caminhaoService.getCaminhao(viagemRecuperada.getCaminhao().getIdCaminhao());
+//            caminhaoRecuperado.setEmViagem(EmViagem.ESTACIONADO);
+//            caminhaoService.editar(caminhaoRecuperado.getIdCaminhao(), objectMapper.convertValue(caminhaoRecuperado, CaminhaoCreateDTO.class));
+//
+//            return objectMapper.convertValue(viagemEditada, ViagemDTO.class);
+//        } catch (BancoDeDadosException e) {
+//            e.printStackTrace();
+//        }
         return null;
     }
 

@@ -26,7 +26,7 @@ public interface IUViagemControllerDoc {
     )
     ResponseEntity<ViagemDTO> create (@Valid @RequestBody ViagemCreateDTO viagemCreateDTO) throws RegraDeNegocioException;
 
-    @Operation(summary = "Listar Usuários", description = "Lista todas as viagens do banco")
+    @Operation(summary = "Listar Viagens", description = "Lista todas as viagens do banco")
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "200", description = "Retorna uma lista de Viagens"),
@@ -57,10 +57,10 @@ public interface IUViagemControllerDoc {
     )
     ResponseEntity<ViagemDTO> listarPorId(@PathVariable("idViagem") Integer id) throws RegraDeNegocioException, BancoDeDadosException;
 
-    @Operation(summary = "Atualizar Usuário", description = "Atualiza uma Usuário no banco")
+    @Operation(summary = "Atualizar Viagem", description = "Atualiza uma Viagem no banco")
     @ApiResponses(
             value = {
-                    @ApiResponse(responseCode = "200", description = "Retorna o Usuário atualizado"),
+                    @ApiResponse(responseCode = "200", description = "Retorna a Viagem atualizado"),
                     @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }

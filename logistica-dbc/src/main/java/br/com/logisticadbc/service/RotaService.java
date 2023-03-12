@@ -4,6 +4,7 @@ import br.com.logisticadbc.dto.RotaCreateDTO;
 import br.com.logisticadbc.dto.RotaDTO;
 import br.com.logisticadbc.entity.Posto;
 import br.com.logisticadbc.entity.Rota;
+import br.com.logisticadbc.entity.Viagem;
 import br.com.logisticadbc.exceptions.BancoDeDadosException;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.repository.RotaRepository;
@@ -80,7 +81,12 @@ public class RotaService {
         }
     }
 
-
+    public Rota getRota(Integer id) throws RegraDeNegocioException, BancoDeDadosException {
+        return rotaRepository.listar().stream()
+                .filter(u -> u.getIdRota() == id)
+                .findFirst()
+                .orElseThrow(() -> new RegraDeNegocioException("Viagem não encontrada"));
+    }
 
 
 
