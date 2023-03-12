@@ -59,17 +59,15 @@ public class ViagemRepository {
                 stmt.setInt(5, 0);
             }
 
-
             int res = stmt.executeUpdate();
-            if (res == 0) {
-                throw new BancoDeDadosException("Erro ao adicionar viagem");
+            if (res > 0) {
+                return viagem;
             } else {
-                System.out.println("Viagem cadastrada com sucesso!" +
-                        "\nadicionarViagem.res=" + res);
+                throw new BancoDeDadosException("Erro ao adicionar viagem");
             }
-            return viagem;
         } catch (SQLException e) {
-            throw new BancoDeDadosException("Erro ao adicionar viagem: " + e);
+            e.printStackTrace();
+            throw new BancoDeDadosException("Erro ao adicionar viagem: ");
         } finally {
             try {
                 if (con != null) {
@@ -137,11 +135,10 @@ public class ViagemRepository {
                     viagens.add(viagem);
                     viagemAnt.setIdViagem(viagem.getIdViagem());
                 }
-
             }
-
         } catch (SQLException e) {
-            throw new BancoDeDadosException("Erro ao listar caminhoes cadastrados: " + e);
+            e.printStackTrace();
+            throw new BancoDeDadosException("Falha ao listar viagens cadastradas");
         } finally {
             try {
                 if (con != null) {
@@ -188,7 +185,8 @@ public class ViagemRepository {
                 return viagem;
             }
         } catch (SQLException e) {
-            throw new BancoDeDadosException("Erro ao editar viagem" + e);
+            e.printStackTrace();
+            throw new BancoDeDadosException("Falha ao tentar implementar o metodo finalizar viagem");
         } finally {
             try {
                 if (con != null) {

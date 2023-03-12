@@ -58,6 +58,7 @@ public class PostoRepository{
             }
             return posto;
         } catch (SQLException e) {
+            e.printStackTrace();
             throw new BancoDeDadosException(e.getMessage());
         } finally {
             try {
@@ -89,6 +90,7 @@ public class PostoRepository{
                 return res > 0;
             }
         } catch (SQLException e) {
+            e.printStackTrace();
             throw new BancoDeDadosException(e.getMessage());
         } finally {
             try {
@@ -120,6 +122,7 @@ public class PostoRepository{
                 return res > 0;
             }
         } catch (SQLException e) {
+            e.printStackTrace();
             throw new BancoDeDadosException(e.getMessage());
         } finally {
             try {
@@ -152,13 +155,14 @@ public class PostoRepository{
             // Executa-se a consulta
             int res = stmt.executeUpdate();
 
-            if (res == 0) {
-                throw new BancoDeDadosException("Erro ao editar posto.");
+            if (res > 0) {
+                log.info("Posto editado com sucesso!");
+                return true;
             } else {
-                System.out.println("Posto editado com sucesso!");
-                return res > 0;
+                throw new BancoDeDadosException("Erro ao editar posto");
             }
         } catch (SQLException e) {
+            e.printStackTrace();
             throw new BancoDeDadosException(e.getMessage());
         } finally {
             try {
@@ -191,6 +195,7 @@ public class PostoRepository{
             }
             return postos;
         } catch (SQLException e) {
+            e.printStackTrace();
             throw new BancoDeDadosException("Erro ao listar postos" + e);
         } finally {
             try {
@@ -225,6 +230,7 @@ public class PostoRepository{
             }
 
         } catch (SQLException e) {
+            e.printStackTrace();
             throw new BancoDeDadosException("Erro ao buscas o postos" + e);
         } finally {
             try {

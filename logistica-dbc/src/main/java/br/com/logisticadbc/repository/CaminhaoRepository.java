@@ -53,15 +53,14 @@ public class CaminhaoRepository{
             stmt.setInt(5, caminhao.getEmViagem().getOpcao());
 
             int res = stmt.executeUpdate();
-            if (res == 0) {
-                throw new BancoDeDadosException("Erro ao adicionar caminhão no banco de dados");
+            if (res > 0) {
+                return caminhao;
             } else {
-                System.out.println("Caminhão cadastrado com sucesso!" +
-                        "\nadicionarCaminhão.res=" + res);
+                throw new BancoDeDadosException("Erro ao adicionar caminhão");
             }
-            return caminhao;
         } catch (SQLException e) {
-            throw new BancoDeDadosException("Erro ao adicionar caminhão: " + e);
+            e.printStackTrace();
+            throw new BancoDeDadosException("Erro ao adicionar caminhão: ");
         } finally {
             try {
                 if (con != null) {
@@ -85,15 +84,12 @@ public class CaminhaoRepository{
             stmt.setInt(1, id);
             // Executa-se a consulta SQL
             int res = stmt.executeUpdate();
-            if (res == 0) {
-                throw new BancoDeDadosException("Erro ao remover caminhão");
-            } else {
-                System.out.println("Caminhão removido com sucesso!" +
-                        "\nremoverCaminhão.res=" + res);
-                return res > 0;
+            if (res > 0) {
+                return true;
             }
         } catch (SQLException e) {
-            throw new BancoDeDadosException("Erro ao remover caminhão" + e);
+            e.printStackTrace();
+            throw new BancoDeDadosException("Erro ao remover caminhão");
         } finally {
             try {
                 if (con != null) {
@@ -103,6 +99,7 @@ public class CaminhaoRepository{
                 e.printStackTrace();
             }
         }
+        return false;
     }
 
 
@@ -129,17 +126,10 @@ public class CaminhaoRepository{
 
             // Executa-se a consulta
             int res = stmt.executeUpdate();
-            System.out.println("editarCaminhao.res=" + res);
-            if (res == 0) {
-                throw new BancoDeDadosException("Erro ao editar caminhão!");
-            } else {
-//                System.out.println("Caminhão editado com sucesso!" +
-//                        "\neditarCaminhão.res=" + res);
-                System.out.println("Caminhão editado com sucesso!");
-                return res > 0;
-            }
+            return res > 0;
         } catch (SQLException e) {
-            throw new BancoDeDadosException("Erro ao editar caminhão" + e);
+            e.printStackTrace();
+            throw new BancoDeDadosException("Erro ao editar caminhão");
         } finally {
             try {
                 if (con != null) {
@@ -174,7 +164,8 @@ public class CaminhaoRepository{
             }
 
         } catch (SQLException e) {
-            throw new BancoDeDadosException("Erro ao listar caminhoes cadastrados: " + e);
+            e.printStackTrace();
+            throw new BancoDeDadosException("Erro ao listar caminhoes cadastrados");
         } finally {
             try {
                 if (con != null) {
@@ -214,7 +205,8 @@ public class CaminhaoRepository{
             }
 
         } catch (SQLException e) {
-            throw new BancoDeDadosException("Erro ao listar caminhoes cadastrados: " + e);
+            e.printStackTrace();
+            throw new BancoDeDadosException("Erro ao buscar caminhoes cadastrados por ID");
         } finally {
             try {
                 if (con != null) {
@@ -241,18 +233,12 @@ public class CaminhaoRepository{
             stmt.setInt(1, index);
             // Executa-se a consulta
             int res = stmt.executeUpdate();
-            System.out.println("EmVoiagemEditado.res=" + res);
-
-            if (res == 0) {
-                throw new BancoDeDadosException("Erro ao editar caminhão");
-            } else {
-                System.out.println("Caminhão editado com sucesso!" +
-                        "\neditarCaminhão.res=" + res);
+            if (res > 0) {
                 return true;
             }
-
         } catch (SQLException e) {
-            throw new BancoDeDadosException("Erro ao editar caminhão" + e);
+            e.printStackTrace();
+            throw new BancoDeDadosException("Falha ao estacionar caminhão");
         } finally {
             try {
                 if (con != null) {
@@ -262,11 +248,10 @@ public class CaminhaoRepository{
                 e.printStackTrace();
             }
         }
-
+        return false;
     }
 
     public boolean viajar(int index) throws BancoDeDadosException {
-
         Connection con = null;
 
         try {
@@ -282,16 +267,12 @@ public class CaminhaoRepository{
             int res = stmt.executeUpdate();
             System.out.println("EmVoiagemEditado.res=" + res);
 
-            if (res == 0) {
-                throw new BancoDeDadosException("Erro ao editar caminhão");
-            } else {
-                System.out.println("Caminhão editado com sucesso!" +
-                        "\neditarCaminhão.res=" + res);
+            if (res > 0) {
                 return true;
             }
-
         } catch (SQLException e) {
-            throw new BancoDeDadosException("Erro ao editar caminhão" + e);
+            e.printStackTrace();
+            throw new BancoDeDadosException("Falha ao tentar implementar viagem com caminhao");
         } finally {
             try {
                 if (con != null) {
@@ -301,12 +282,13 @@ public class CaminhaoRepository{
                 e.printStackTrace();
             }
         }
+        return false;
     }
 
     public Caminhao abastecerCaminhao(int index, int gasolina) throws BancoDeDadosException {
-
         Connection con = null;
         Caminhao caminhao = new Caminhao();
+
         try {
             con = conexaoBancoDeDados.getConnection();
             StringBuilder sql = new StringBuilder();
@@ -320,17 +302,14 @@ public class CaminhaoRepository{
 
             // Executa-se a consulta
             int res = stmt.executeUpdate();
-            System.out.println("abastecerCaminhao.res=" + res);
-
-            if (res == 0) {
-                throw new BancoDeDadosException("Erro ao abastecer caminhão");
-            } else {
-                System.out.println("Caminhão abastecido com sucesso!" +
-                        "\nabastecerCaminhao.res=" + res);
+            if (res > 0) {
                 return caminhao;
+            } else {
+                throw new BancoDeDadosException("Erro ao abastecer caminhão");
             }
         } catch (SQLException e) {
-            throw new BancoDeDadosException("Erro ao abastecer caminhão" + e);
+            e.printStackTrace();
+            throw new BancoDeDadosException("Falha ao implementar método para abastecer caminhão");
         } finally {
             try {
                 if (con != null) {
