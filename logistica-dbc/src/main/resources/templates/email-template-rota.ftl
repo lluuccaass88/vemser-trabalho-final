@@ -6,7 +6,7 @@
 </head>
 <body>
 <div style="background-color: #f2f2f2; padding: 20px;">
-    <div style="background-color: #dc1e1e; padding: 20px;">
+    <div style="background-color: #dc1e1e;">
         <h1 style="color: #f2f2f2;">DBC Logistica</h1>
     </div>
 
