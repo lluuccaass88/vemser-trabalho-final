@@ -86,6 +86,23 @@ public class EmailService {
         }
     }
 
+    public void enviarEmailParaColaboradorComInfoRota(UsuarioDTO usuario, RotaDTO rota) throws RegraDeNegocioException {
+        MimeMessage mimeMessage = emailSender.createMimeMessage();
+        try {
+            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
+            mimeMessageHelper.setFrom(from);
+            mimeMessageHelper.setTo(usuario.getEmail());
+            mimeMessageHelper.setSubject("Info com Rota de Viagem - DBC Logística");
+
+            mimeMessageHelper.setText(getRotaTemplate(usuario, rota), true);
+
+            emailSender.send(mimeMessageHelper.getMimeMessage());
+        } catch (MessagingException | IOException | TemplateException e) {
+            e.printStackTrace();
+            throw new RegraDeNegocioException("Erro ao enviar email para o colaborador: " + usuario.getNome());
+        }
+    }
+
     public String getRotaTemplate(UsuarioDTO usuario, RotaDTO rota) throws IOException, TemplateException {
         Map<String, Object> dados = new HashMap<>();
         dados.put("nome", "Sistema de Logística DBC Company");
@@ -115,4 +132,5 @@ public class EmailService {
                 return "Opção inválida!";
         }
     }
+
 }
