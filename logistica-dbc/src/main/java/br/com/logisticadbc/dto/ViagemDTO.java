@@ -27,7 +27,7 @@ public class ViagemDTO  { // extends ViagemCreateDTO{
     //Teste
     @Schema(description = "Objeto de usuarioViagemDTO vinculado com viagem", example = "Objeto de usuario porém somente com alguns dados", required = true)
     private ViagemUsuarioDTO usuario;
-
+    @Schema(description = "Objeto de usuarioRotaDTO vinculado com viagem", example = "Objeto de rota porém somente com alguns dados", required = true)
     private ViagemRotaDTO rota;
     //Teste
 
