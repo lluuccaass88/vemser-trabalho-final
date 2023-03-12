@@ -23,7 +23,7 @@ public interface IPostoControllerDoc {
             }
     )
     @GetMapping // GET localhost:8080/posto
-    public List<PostoDTO> list() throws BancoDeDadosException;
+    public List<PostoDTO> list() throws BancoDeDadosException, RegraDeNegocioException;
 
     @Operation(summary = "Adicionar Posto", description = "Adiciona um posto ao banco de dados")
     @ApiResponses(

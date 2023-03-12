@@ -23,7 +23,7 @@ public interface IRotaControllerDoc {
             }
     )
     @GetMapping
-    public List<RotaDTO> list();
+    public List<RotaDTO> list() throws Exception;
 
     @Operation(summary = "Adicionar Rotas", description = "Adicionar uma rota ao banco de dados")
     @ApiResponses(

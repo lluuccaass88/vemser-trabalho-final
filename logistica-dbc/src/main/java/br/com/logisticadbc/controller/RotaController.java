@@ -1,5 +1,6 @@
 package br.com.logisticadbc.controller;
 
+import br.com.logisticadbc.controller.impl.IRotaControllerDoc;
 import br.com.logisticadbc.dto.PostoCreateDTO;
 import br.com.logisticadbc.dto.PostoDTO;
 import br.com.logisticadbc.dto.RotaCreateDTO;
@@ -23,12 +24,12 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/rota") // localhost:8080/contato
 @Validated
-public class RotaController {
+public class RotaController implements IRotaControllerDoc {
 
     private final RotaService rotaService;
 
     @GetMapping // GET localhost:8080/contato
-    public List<RotaDTO> list() throws RegraDeNegocioException {
+    public List<RotaDTO> list() throws Exception {
         return rotaService.listarRotas();
     }
 

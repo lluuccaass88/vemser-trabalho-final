@@ -47,8 +47,8 @@ public class ViagemService {
                 //Rota rotaBuscar = caminhaoService.buscarViagem(viagemAdicionada.getIdCaminhao()).getRota();
                 Rota rotaBuscar = rotaService.getRota(viagemAdicionada.getIdRota()); //Buscando a rota
                 RotaDTO rota = objectMapper.convertValue(rotaBuscar, RotaDTO.class);
-                emailService.enviarEmailParaMotoristaComRota(usuario, rota); // Enviando o email para o motorista
-                //emailService.enviarEmailParaColaboradorComInfoRota(usuario, rota); // Enviando o email para o colaborador
+                //emailService.enviarEmailParaMotoristaComRota(usuario, rota); // Enviando o email para o motorista
+                emailService.enviarEmailParaColaboradorComInfoRota(usuario, rota); // Enviando o email para o colaborador
             }
             return objectMapper.convertValue(viagemAdicionada, ViagemDTO.class);
         } catch (BancoDeDadosException e) {

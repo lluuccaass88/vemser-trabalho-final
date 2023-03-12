@@ -7,7 +7,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 @Data
-public class ViagemDTO  { // extends ViagemCreateDTO{
+public class ViagemDTO  {
 
     @Schema(description = "id de viagem", example = "5", required = true)
     private int idViagem;

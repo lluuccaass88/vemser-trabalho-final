@@ -1,5 +1,6 @@
 package br.com.logisticadbc.controller;
 
+import br.com.logisticadbc.controller.impl.IPostoControllerDoc;
 import br.com.logisticadbc.dto.PostoCreateDTO;
 import br.com.logisticadbc.dto.PostoDTO;
 import br.com.logisticadbc.exceptions.BancoDeDadosException;
@@ -18,7 +19,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/posto") // localhost:8080/contato
 @Validated
-public class PostoController {
+public class PostoController implements IPostoControllerDoc {
     private final PostoService postoService;
 
     public PostoController(PostoService postoService) {
