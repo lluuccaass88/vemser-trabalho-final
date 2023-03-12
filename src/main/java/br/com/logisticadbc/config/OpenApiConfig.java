@@ -16,11 +16,20 @@ public class OpenApiConfig {
     public OpenAPI springShopOpenAPI() {
         String securitySchemeName = "bearerAuth";
         return new OpenAPI()
-                .info(new Info().title("LogisticaDBCApplication")
-                        .description("Logistica API documentação")
+                .info(new Info().title("LogisticaDbcApplication")
+                        .description("Logistica documentação")
                         .version("v1.0.0")
-                        .license(new License().name("Apache 2.0").url("http://springdoc.org")))
-                .addSecurityItem(new SecurityRequirement().addList(securitySchemeName)
+                        .license(new License().name("Apache 2.0").url("springdoc.org")))
+                .addSecurityItem(new SecurityRequirement().addList(securitySchemeName))
+                .components(
+                        new Components()
+                                .addSecuritySchemes(securitySchemeName,
+                                        new SecurityScheme()
+                                                .name(securitySchemeName)
+                                                .type(SecurityScheme.Type.HTTP)
+                                                .scheme("bearer")
+                                                .bearerFormat("JWT")
+                                )
                 );
     }
 }
