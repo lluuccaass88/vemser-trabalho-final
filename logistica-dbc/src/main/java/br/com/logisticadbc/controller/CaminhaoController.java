@@ -61,8 +61,8 @@ public class CaminhaoController implements ICaminhaoControllerDoc {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @PutMapping("/abastecer/{id}")
-    public ResponseEntity<CaminhaoDTO> abastecer(@PathVariable Integer id,@Valid @RequestBody CaminhaoCreateDTO caminhao, Integer gasolina) throws Exception {
+    @PutMapping("/abastecer/{id}/")
+    public ResponseEntity<CaminhaoDTO> abastecer(@PathVariable Integer id, Integer gasolina) throws Exception {
         CaminhaoDTO caminhaoDTO = caminhaoService.abastecerCaminhao(id,gasolina);
         return new ResponseEntity<>(caminhaoDTO, HttpStatus.OK);
     }

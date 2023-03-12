@@ -24,7 +24,7 @@ public interface IUViagemControllerDoc {
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-    ResponseEntity<ViagemDTO> create (@Valid @RequestBody ViagemCreateDTO viagemCreateDTO) throws RegraDeNegocioException;
+    ResponseEntity<ViagemDTO> create (@Valid @RequestBody ViagemCreateDTO viagemCreateDTO) throws Exception;
 
     @Operation(summary = "Listar Viagens", description = "Lista todas as viagens do banco")
     @ApiResponses(
