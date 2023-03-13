@@ -32,7 +32,7 @@ public class ViagemController implements IUViagemControllerDoc {
 
     @GetMapping
     public ResponseEntity<List<ViagemDTO>> listar() throws RegraDeNegocioException {
-        log.info("Recebendo requisição para listar todos os usuários");
+        log.info("Recebendo requisição para listar todas as viagens");
         return new ResponseEntity<>(viagemService.listarViagens(), HttpStatus.OK);
     }
 
