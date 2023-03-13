@@ -37,7 +37,6 @@ public class CaminhaoService {
                 .collect(toList());
     }
 
-    //
     public CaminhaoDTO editar(Integer id, CaminhaoCreateDTO caminhao) throws RegraDeNegocioException, BancoDeDadosException {
         Caminhao caminhaoRecuperado = getCaminhao(id);
         Integer idCaminhao = getCaminhao(id).getIdCaminhao();
@@ -49,7 +48,6 @@ public class CaminhaoService {
         CaminhaoDTO dto = objectMapper.convertValue(caminhaoRecuperado, CaminhaoDTO.class);
         return dto;
     }
-
 
     public CaminhaoDTO editar(Integer id) throws Exception { //Fução utilizada para editar o status de caminhção. Chamada no finalizarViagem e criarViagem
         Caminhao caminhaoRecuperado = getCaminhao(id);
@@ -64,7 +62,6 @@ public class CaminhaoService {
 
         return objectMapper.convertValue(caminhaoRecuperado, CaminhaoDTO.class);
     }
-
 
     public void deletar(Integer id) throws Exception {
         Caminhao caminhaoRecuperado = getCaminhao(id);

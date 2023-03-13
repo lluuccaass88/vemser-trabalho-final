@@ -1,10 +1,32 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Java Mail</title>
+    <title>DBC Logistical</title>
 </head>
 
 <body>
+<div style="background-color: #f2f2f2; padding: 20px;">
+    <div style="background-color: #dc1e1e; padding: 40px;">
+        <br>
+        <h1 style="color: #f2f2f2;"> DBC Logistica</h1>
+        <br>
+    </div>
+
+    <h2>Olá, ${usuario.getNome()}, seja bem vindo!</h2>
+    <p>É com grande prazer que lhe damos as boas-vindas à equipe da ${nome}!  </p>
+    <p>Nosso principal objetivo é fornecer aos nossos clientes os melhores serviços personalizados e soluções em logística.</p>
+    <p>E isto não seria possivel sem a contribuição dos nossos motoristas, que são peça chave neste processo!</p>
+    <p>Seguem seus dados cadastrados:</p>
+    <p>Id:  ${usuario.getId()}</p>
+    <p>Email:  ${usuario.getEmail()}</p>
+    <p>Qualquer duvida é só contatar o suporte pelo email -> " ${usuario.getEmail()}</p>
+    <p>Atenciosamente,</p>
+    <p><b>${nome}</p>
+</div>
+
+</body>
+</html>
+<#-- <body>
 <table width="100%" border="0" cellspacing="0" cellpadding="0">
     <tr>
         <td align="center" valign="top" bgcolor="#838383"
@@ -35,4 +57,4 @@
     </tr>
 </table>
 </body>
-</html>
+</html> -->

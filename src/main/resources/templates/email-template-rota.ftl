@@ -6,8 +6,10 @@
 </head>
 <body>
 <div style="background-color: #f2f2f2; padding: 20px;">
-    <div style="background-color: #dc1e1e;">
-        <h1 style="color: #f2f2f2;">DBC Logistica</h1>
+    <div style="background-color: #dc1e1e; padding: 40px;">
+        <br>
+        <h1 style="color: #f2f2f2; margin-left:5px">DBC Logistica</h1>
+        <br>
     </div>
 
     <h2>Olá, ${usuario.getNome()}!</h2>
@@ -20,6 +22,9 @@
 </div>
 </body>
 </html>
+
+
+
 <#--<html xmlns="http://www.w3.org/1999/xhtml">-->
 <#--<head>-->
 <#--    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />-->
