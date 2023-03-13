@@ -27,12 +27,14 @@ public class ViagemService {
     public ViagemDTO adicionarViagem(ViagemCreateDTO viagem) throws RegraDeNegocioException {
         try {
             Caminhao caminhaoRecuperado = caminhaoService.getCaminhao(viagem.getIdCaminhao());
+            Usuario usuarioRecuperado = usuarioService.getUsuario(viagem.getIdUsuario());
 
             Viagem viagemAdicionada;
             if (caminhaoRecuperado.getEmViagem() == EmViagem.EM_VIAGEM) {
                 throw new RegraDeNegocioException("O caminhão escolhido já esta em uma viagem no momento.");
-
-            } else {
+            }else if(usuarioRecuperado.getPerfil() == Perfil.COLABORADOR){
+                throw new RegraDeNegocioException("Somente um usuario do tipo motorista pode ser associado a uma viagem.");
+            }else {
 
                 caminhaoRecuperado.setEmViagem(EmViagem.EM_VIAGEM);
                 caminhaoService.editar(viagem.getIdCaminhao(), objectMapper.convertValue(caminhaoRecuperado, CaminhaoCreateDTO.class));
@@ -153,7 +155,4 @@ public class ViagemService {
                 .orElseThrow(() -> new RegraDeNegocioException("Viagem não encontrada"));
     }
 
-    public List<PostoDTO> listarPostosEmViagem(int iDviagem){ //Se der tempo fazer isso para fazer verificação
-        return null;
-    }
 }
