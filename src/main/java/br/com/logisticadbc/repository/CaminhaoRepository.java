@@ -56,8 +56,10 @@ public class CaminhaoRepository{
             if (res > 0) {
                 return caminhao;
             } else {
-                throw new BancoDeDadosException("Erro ao adicionar caminhão");
+                throw new BancoDeDadosException("Erro ");
             }
+        } catch(SQLIntegrityConstraintViolationException e){
+            throw new BancoDeDadosException("A placa do caminhão não pode ser igual a uma placa já cadastrada no sistema. ");
         } catch (SQLException e) {
             e.printStackTrace();
             throw new BancoDeDadosException("Erro ao adicionar caminhão: ");

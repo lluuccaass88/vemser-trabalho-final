@@ -3,6 +3,7 @@ package br.com.logisticadbc.service;
 import br.com.logisticadbc.dto.RotaDTO;
 import br.com.logisticadbc.dto.UsuarioCreateDTO;
 import br.com.logisticadbc.dto.UsuarioDTO;
+import br.com.logisticadbc.entity.Perfil;
 import br.com.logisticadbc.entity.Usuario;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.repository.UsuarioRepository;
@@ -28,7 +29,7 @@ public class UsuarioService {
         Usuario usuarioCriado = usuarioRepository.adicionar(entity);
         UsuarioDTO usuarioDTO = objectMapper.convertValue(usuarioCriado, UsuarioDTO.class);
 
-        if (usuarioCriado.getPerfil().equals("COLABORADOR")) {
+        if (usuarioCriado.getPerfil() == Perfil.COLABORADOR) {
             emailService.enviarEmailParaColaborador(usuarioDTO);
         } else {
             emailService.enviarEmailParaMotorista(usuarioDTO);
