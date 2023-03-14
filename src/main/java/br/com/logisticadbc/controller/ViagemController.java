@@ -36,7 +36,7 @@ public class ViagemController implements IUViagemControllerDoc {
         return new ResponseEntity<>(viagemService.listarViagens(), HttpStatus.OK);
     }
 
-    @GetMapping("/viagemFinalizada")
+    @GetMapping("/viagem-finalizada")
     public ResponseEntity<List<ViagemDTO>> listarViagensFinalizadas() throws RegraDeNegocioException {
         log.info("Recebendo requisição para listar todas as viagens finalizadas");
         return new ResponseEntity<>(viagemService.listarViagensFinalizadas(), HttpStatus.OK);
@@ -47,7 +47,7 @@ public class ViagemController implements IUViagemControllerDoc {
         return new ResponseEntity<>(viagemService.listarPorId(id), HttpStatus.OK);
     }
 
-    @DeleteMapping("/finalizarViagem/{idViagem}")
+    @DeleteMapping("/finalizar-viagem/{idViagem}")
     public ResponseEntity<ViagemDTO> delete(@PathVariable("idViagem") Integer id) throws RegraDeNegocioException {
         return new ResponseEntity<>(viagemService.finalizarViagem(id), HttpStatus.NO_CONTENT);
     }

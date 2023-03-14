@@ -10,10 +10,14 @@
         <module name="logistica-dbc" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="vemser-trabalho-final" target="17" />
+    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="logistica-dbc" options="-parameters" />
+      <module name="vemser-trabalho-final" options="-parameters" />
     </option>
   </component>
 </project>
