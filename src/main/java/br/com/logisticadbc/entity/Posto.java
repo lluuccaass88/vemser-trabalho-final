@@ -8,8 +8,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class Posto {
-    private int idPosto;
-    private int idRota;
+    private Integer idPosto;
+    private Integer idRota;
     private String nomePosto;
-    private double valorCombustível;
+    private Double valorCombustível;
 }
