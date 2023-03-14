@@ -1,8 +1,5 @@
 package br.com.logisticadbc.dto;
 
-import br.com.logisticadbc.entity.Caminhao;
-import br.com.logisticadbc.entity.Rota;
-import br.com.logisticadbc.entity.Usuario;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 

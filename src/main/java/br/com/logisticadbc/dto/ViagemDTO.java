@@ -1,8 +1,6 @@
 package br.com.logisticadbc.dto;
 
-import br.com.logisticadbc.entity.Caminhao;
-import br.com.logisticadbc.entity.Perfil;
-import br.com.logisticadbc.entity.Rota;
+import br.com.logisticadbc.entity.CaminhaoEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -16,7 +14,7 @@ public class ViagemDTO  {
     private boolean finalizada;
 
     @Schema(description = "Objeto de caminhão vinculado com viagem", example = "Objeto de caminhão", required = true)
-    private Caminhao caminhao;
+    private CaminhaoEntity caminhao;
 
     @Schema(description = "Objeto de usuarioViagemDTO vinculado com viagem", example = "Objeto de usuario porém somente com alguns dados", required = true)
     private ViagemUsuarioDTO usuario;

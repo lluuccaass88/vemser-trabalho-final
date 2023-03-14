@@ -1,20 +1,11 @@
 package br.com.logisticadbc.repository;
 
-import br.com.logisticadbc.dto.RotaDTO;
-import br.com.logisticadbc.entity.Posto;
-import br.com.logisticadbc.entity.Rota;
-import br.com.logisticadbc.exceptions.BancoDeDadosException;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import br.com.logisticadbc.entity.RotaEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
-
 @Repository
-public interface RotaRepository extends JpaRepository<Rota, Integer> {}
+public interface RotaRepository extends JpaRepository<RotaEntity, Integer> {}
 //
 //    private final ConexaoBancoDeDados conexaoBancoDeDados;
 //

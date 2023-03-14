@@ -4,7 +4,6 @@ import br.com.logisticadbc.dto.*;
 import br.com.logisticadbc.entity.*;
 import br.com.logisticadbc.exceptions.BancoDeDadosException;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
-import br.com.logisticadbc.repository.CaminhaoRepository;
 import br.com.logisticadbc.repository.ViagemRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -26,10 +25,10 @@ public class ViagemService {
 
     public ViagemDTO adicionarViagem(ViagemCreateDTO viagem) throws RegraDeNegocioException {
         try {
-            Caminhao caminhaoRecuperado = caminhaoService.getCaminhao(viagem.getIdCaminhao());
-            Usuario usuarioRecuperado = usuarioService.getUsuario(viagem.getIdUsuario());
+            CaminhaoEntity caminhaoRecuperado = caminhaoService.getCaminhao(viagem.getIdCaminhao());
+            UsuarioEntity usuarioRecuperado = usuarioService.getUsuario(viagem.getIdUsuario());
 
-            Viagem viagemAdicionada;
+            ViagemEntity viagemAdicionada;
             if (caminhaoRecuperado.getEmViagem() == EmViagem.EM_VIAGEM) {
                 throw new RegraDeNegocioException("O caminhão escolhido já esta em uma viagem no momento.");
             }else if(usuarioRecuperado.getPerfil() == Perfil.COLABORADOR){
@@ -39,15 +38,15 @@ public class ViagemService {
                 caminhaoRecuperado.setEmViagem(EmViagem.EM_VIAGEM);
                 caminhaoService.editar(viagem.getIdCaminhao(), objectMapper.convertValue(caminhaoRecuperado, CaminhaoCreateDTO.class));
 
-                Viagem viagemEntity = objectMapper.convertValue(viagem, Viagem.class);
+                ViagemEntity viagemEntity = objectMapper.convertValue(viagem, ViagemEntity.class);
                 viagemEntity.setFinalizada(false);
                 viagemAdicionada = viagemRepository.adicionar(viagemEntity);
 
                 // metodo utilizado para fazer as conversões e tentar buscar o usuario e a rota
-                Usuario user = usuarioService.getUsuario(viagemAdicionada.getIdUsuario());
+                UsuarioEntity user = usuarioService.getUsuario(viagemAdicionada.getIdUsuario());
                 UsuarioDTO usuario = objectMapper.convertValue(user, UsuarioDTO.class);
                 //Rota rotaBuscar = caminhaoService.buscarViagem(viagemAdicionada.getIdCaminhao()).getRota();
-                Rota rotaBuscar = rotaService.getRota(viagemAdicionada.getIdRota()); //Buscando a rota
+                RotaEntity rotaBuscar = rotaService.getRota(viagemAdicionada.getIdRota()); //Buscando a rota
                 RotaDTO rota = objectMapper.convertValue(rotaBuscar, RotaDTO.class);
                 //emailService.enviarEmailParaMotoristaComRota(usuario, rota); // Enviando o email para o motorista
                 emailService.enviarEmailParaColaboradorComInfoRota(usuario, rota); // Enviando o email para o colaborador
@@ -72,16 +71,16 @@ public class ViagemService {
 
     public ViagemDTO finalizarViagem(Integer id) throws RegraDeNegocioException { //Precisa pegar o id co caminhão que esta ligado nessa viagem
         try {
-            Viagem viagemRecuperada = getViagem(id);
+            ViagemEntity viagemRecuperada = getViagem(id);
 
             if(viagemRecuperada.isFinalizada() == true){
                 throw new RegraDeNegocioException("Não é possivel finalizar uma viagem que já esta finalizada.");
             }
 
             viagemRecuperada.setFinalizada(true);
-            Viagem viagemEditada = viagemRepository.finalizarViagem(viagemRecuperada.getIdViagem(), viagemRecuperada);
+            ViagemEntity viagemEditada = viagemRepository.finalizarViagem(viagemRecuperada.getIdViagem(), viagemRecuperada);
 
-            Caminhao caminhaoRecuperado = caminhaoService.getCaminhao(viagemRecuperada.getCaminhao().getIdCaminhao());
+            CaminhaoEntity caminhaoRecuperado = caminhaoService.getCaminhao(viagemRecuperada.getCaminhao().getIdCaminhao());
             caminhaoRecuperado.setEmViagem(EmViagem.ESTACIONADO);
             caminhaoService.editar(caminhaoRecuperado.getIdCaminhao(), objectMapper.convertValue(caminhaoRecuperado, CaminhaoCreateDTO.class));
 
@@ -95,8 +94,8 @@ public class ViagemService {
 
     public List<ViagemDTO> listarViagensFinalizadas() throws RegraDeNegocioException {
         try {
-            List<Viagem> listar = viagemRepository.listar();
-            List<Viagem> viagensFinalizadas = listar.stream()
+            List<ViagemEntity> listar = viagemRepository.listar();
+            List<ViagemEntity> viagensFinalizadas = listar.stream()
                     .filter(elemento -> elemento.isFinalizada() == true)
                     .toList();
             if (viagensFinalizadas.size() <= 0){
@@ -115,7 +114,7 @@ public class ViagemService {
 
     public ViagemDTO listarPorId(int id){
         try {
-            Viagem viagemRecuperada = getViagem(id);
+            ViagemEntity viagemRecuperada = getViagem(id);
             return objectMapper.convertValue(viagemRecuperada, ViagemDTO.class);
         } catch (Exception e) {
             e.printStackTrace();
@@ -125,7 +124,7 @@ public class ViagemService {
 
     public ViagemDTO editarViagem(Integer id, ViagemCreateDTO viagem) {
         try {
-            Viagem viagemRecuperada = getViagem(id);
+            ViagemEntity viagemRecuperada = getViagem(id);
 
             viagemRecuperada.setIdViagem(id);
             viagemRecuperada.setIdCaminhao(viagem.getIdCaminhao());
@@ -133,11 +132,11 @@ public class ViagemService {
             viagemRecuperada.setIdUsuario(viagem.getIdUsuario());
             viagemRepository.editar(id, viagemRecuperada);
 
-            Caminhao caminhaoRecuprado1 = caminhaoService.getCaminhao(viagemRecuperada.getCaminhao().getIdCaminhao());//Não esta mudando o status do caminhão para estacionado
+            CaminhaoEntity caminhaoRecuprado1 = caminhaoService.getCaminhao(viagemRecuperada.getCaminhao().getIdCaminhao());//Não esta mudando o status do caminhão para estacionado
             caminhaoRecuprado1.setEmViagem(EmViagem.ESTACIONADO);
             caminhaoService.editar(caminhaoRecuprado1.getIdCaminhao(), objectMapper.convertValue(caminhaoRecuprado1, CaminhaoCreateDTO.class));
 
-            Caminhao caminhaoRecuprado2 = caminhaoService.getCaminhao(viagem.getIdCaminhao());
+            CaminhaoEntity caminhaoRecuprado2 = caminhaoService.getCaminhao(viagem.getIdCaminhao());
             caminhaoRecuprado2.setEmViagem(EmViagem.EM_VIAGEM);
             caminhaoService.editar(caminhaoRecuprado2.getIdCaminhao(), objectMapper.convertValue(caminhaoRecuprado2, CaminhaoCreateDTO.class));
 
@@ -148,7 +147,7 @@ public class ViagemService {
         return null;
     }
 
-    public Viagem getViagem(Integer id) throws RegraDeNegocioException, BancoDeDadosException {
+    public ViagemEntity getViagem(Integer id) throws RegraDeNegocioException, BancoDeDadosException {
         return viagemRepository.listar().stream()
                 .filter(u -> u.getIdViagem() == id)
                 .findFirst()

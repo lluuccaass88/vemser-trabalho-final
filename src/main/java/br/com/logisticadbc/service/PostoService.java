@@ -2,14 +2,13 @@ package br.com.logisticadbc.service;
 
 import br.com.logisticadbc.dto.PostoCreateDTO;
 import br.com.logisticadbc.dto.PostoDTO;
-import br.com.logisticadbc.entity.Posto;
+import br.com.logisticadbc.entity.PostoEntity;
 import br.com.logisticadbc.exceptions.BancoDeDadosException;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.repository.PostoRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import lombok.extern.slf4j.XSlf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,9 +23,9 @@ public class PostoService {
 
     public PostoDTO adicionaPosto(PostoCreateDTO posto) throws RegraDeNegocioException {
         try {
-            Posto postoEntity = objectMapper.convertValue(posto, Posto.class);
+            PostoEntity postoEntity = objectMapper.convertValue(posto, PostoEntity.class);
 
-            Posto postoSalvo = postoRepository.adicionar(postoEntity);
+            PostoEntity postoSalvo = postoRepository.adicionar(postoEntity);
 
             return  objectMapper.convertValue(postoSalvo, PostoDTO.class);
         }catch (BancoDeDadosException e) {
@@ -48,7 +47,7 @@ public class PostoService {
 
     public boolean editarPosto(Integer id, PostoCreateDTO posto) throws RegraDeNegocioException {
         try {
-            Posto postoEntity = objectMapper.convertValue(posto, Posto.class);
+            PostoEntity postoEntity = objectMapper.convertValue(posto, PostoEntity.class);
 
             return postoRepository.editar(id, postoEntity);
         }catch (BancoDeDadosException e) {
@@ -66,9 +65,9 @@ public class PostoService {
         }
     }
 
-    public Posto buscarPostoId(int id) throws RegraDeNegocioException {
+    public PostoEntity buscarPostoId(int id) throws RegraDeNegocioException {
         try {
-            Posto retornoBusca = postoRepository.buscarPorId(id);
+            PostoEntity retornoBusca = postoRepository.buscarPorId(id);
             if(retornoBusca == null){
                 throw new RegraDeNegocioException("Não foi encontrar o posto com o id " + id);
             }else{

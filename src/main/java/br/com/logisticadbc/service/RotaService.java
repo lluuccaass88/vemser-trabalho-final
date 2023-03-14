@@ -2,9 +2,7 @@ package br.com.logisticadbc.service;
 
 import br.com.logisticadbc.dto.RotaCreateDTO;
 import br.com.logisticadbc.dto.RotaDTO;
-import br.com.logisticadbc.entity.Posto;
-import br.com.logisticadbc.entity.Rota;
-import br.com.logisticadbc.entity.Viagem;
+import br.com.logisticadbc.entity.RotaEntity;
 import br.com.logisticadbc.exceptions.BancoDeDadosException;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.repository.RotaRepository;
@@ -23,9 +21,9 @@ public class RotaService {
 
     public RotaDTO adicionaRota(RotaCreateDTO rota) throws RegraDeNegocioException, BancoDeDadosException {
         try {
-            Rota rotaEntity = objectMapper.convertValue(rota, Rota.class);
+            RotaEntity rotaEntity = objectMapper.convertValue(rota, RotaEntity.class);
 
-            Rota rotaAdicionada = rotaRepository.adicionar(rotaEntity);
+            RotaEntity rotaAdicionada = rotaRepository.adicionar(rotaEntity);
             adicionaRotaXPosto(rotaEntity);
 
             return objectMapper.convertValue(rotaAdicionada, RotaDTO.class);
@@ -36,7 +34,7 @@ public class RotaService {
         }
     }
 
-    public void adicionaRotaXPosto(Rota rota) throws RegraDeNegocioException, BancoDeDadosException {
+    public void adicionaRotaXPosto(RotaEntity rota) throws RegraDeNegocioException, BancoDeDadosException {
         try {
             for(int i = 0; i < rota.getListaIdPostoCadastrado().size(); i++){
                 rotaRepository.adicionarPostoXRota(rota.getIdRota(), rota.getListaIdPostoCadastrado().get(i));
@@ -60,8 +58,8 @@ public class RotaService {
 
     public RotaDTO editarRota(Integer id, RotaCreateDTO rota) throws RegraDeNegocioException {
         try {
-            Rota rotaEntity = objectMapper.convertValue(rota, Rota.class);
-            Rota rotaEditada = rotaRepository.editar(id, rotaEntity);
+            RotaEntity rotaEntity = objectMapper.convertValue(rota, RotaEntity.class);
+            RotaEntity rotaEditada = rotaRepository.editar(id, rotaEntity);
             return objectMapper.convertValue(rotaEditada, RotaDTO.class);
         } catch (BancoDeDadosException e) {
             throw new RegraDeNegocioException("Erro no banco de dados ao editar posto - " + e.getMessage());
@@ -78,7 +76,7 @@ public class RotaService {
         }
     }
 
-    public Rota getRota(Integer id) throws RegraDeNegocioException, BancoDeDadosException {
+    public RotaEntity getRota(Integer id) throws RegraDeNegocioException, BancoDeDadosException {
         return rotaRepository.listar().stream()
                 .filter(u -> u.getIdRota() == id)
                 .findFirst()

@@ -1,10 +1,9 @@
 package br.com.logisticadbc.service;
 
-import br.com.logisticadbc.dto.RotaDTO;
 import br.com.logisticadbc.dto.UsuarioCreateDTO;
 import br.com.logisticadbc.dto.UsuarioDTO;
 import br.com.logisticadbc.entity.Perfil;
-import br.com.logisticadbc.entity.Usuario;
+import br.com.logisticadbc.entity.UsuarioEntity;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.repository.UsuarioRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,8 +24,8 @@ public class UsuarioService {
 
     public UsuarioDTO adicionar(UsuarioCreateDTO usuario) throws Exception {
 
-        Usuario entity = objectMapper.convertValue(usuario, Usuario.class);
-        Usuario usuarioCriado = usuarioRepository.adicionar(entity);
+        UsuarioEntity entity = objectMapper.convertValue(usuario, UsuarioEntity.class);
+        UsuarioEntity usuarioCriado = usuarioRepository.adicionar(entity);
         UsuarioDTO usuarioDTO = objectMapper.convertValue(usuarioCriado, UsuarioDTO.class);
 
         if (usuarioCriado.getPerfil() == Perfil.COLABORADOR) {
@@ -48,7 +47,7 @@ public class UsuarioService {
 
     public UsuarioDTO editar(Integer id, UsuarioCreateDTO usuarioAtualizar) throws Exception {
 
-        Usuario usuarioRecuperado = getUsuario(id);
+        UsuarioEntity usuarioRecuperado = getUsuario(id);
         Integer idUsuario = getUsuario(id).getId();
 
         usuarioRecuperado.setNome(usuarioAtualizar.getNome());
@@ -66,15 +65,15 @@ public class UsuarioService {
     }
 
     public void deletar(Integer id) throws Exception {
-        Usuario usuarioRecuperado = getUsuario(id);
+        UsuarioEntity usuarioRecuperado = getUsuario(id);
         Integer idUsuario = getUsuario(id).getId();
         UsuarioDTO dto = objectMapper.convertValue(usuarioRecuperado, UsuarioDTO.class);
 
         usuarioRepository.remover(idUsuario);
     }
 
-    public Usuario getUsuario(Integer id) throws Exception {
-        Usuario recuperarUsuario = usuarioRepository.listar().stream()
+    public UsuarioEntity getUsuario(Integer id) throws Exception {
+        UsuarioEntity recuperarUsuario = usuarioRepository.listar().stream()
                 .filter(u -> u.getId().equals(id))
                 .findFirst()
                 .orElseThrow(() -> new RegraDeNegocioException("Usuário não encontrado"));

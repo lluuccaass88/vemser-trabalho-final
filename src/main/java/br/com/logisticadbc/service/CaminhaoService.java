@@ -3,7 +3,7 @@ package br.com.logisticadbc.service;
 import br.com.logisticadbc.dto.CaminhaoCreateDTO;
 import br.com.logisticadbc.dto.CaminhaoDTO;
 import br.com.logisticadbc.dto.ViagemDTO;
-import br.com.logisticadbc.entity.Caminhao;
+import br.com.logisticadbc.entity.CaminhaoEntity;
 import br.com.logisticadbc.entity.EmViagem;
 import br.com.logisticadbc.exceptions.BancoDeDadosException;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
@@ -24,8 +24,8 @@ public class CaminhaoService {
     private final ObjectMapper objectMapper;
 
     public CaminhaoDTO adicionar(CaminhaoCreateDTO caminhao) throws BancoDeDadosException {
-        Caminhao caminhaoEntity = objectMapper.convertValue(caminhao, Caminhao.class);
-        Caminhao caminhaoSalvo = caminhaoRepository.adicionar(caminhaoEntity);
+        CaminhaoEntity caminhaoEntity = objectMapper.convertValue(caminhao, CaminhaoEntity.class);
+        CaminhaoEntity caminhaoSalvo = caminhaoRepository.adicionar(caminhaoEntity);
 
         return objectMapper.convertValue(caminhaoSalvo, CaminhaoDTO.class);
     }
@@ -38,7 +38,7 @@ public class CaminhaoService {
     }
 
     public CaminhaoDTO editar(Integer id, CaminhaoCreateDTO caminhao) throws RegraDeNegocioException, BancoDeDadosException {
-        Caminhao caminhaoRecuperado = getCaminhao(id);
+        CaminhaoEntity caminhaoRecuperado = getCaminhao(id);
         Integer idCaminhao = getCaminhao(id).getIdCaminhao();
         caminhaoRecuperado.setGasolina(caminhao.getGasolina());
         caminhaoRecuperado.setPlaca(caminhao.getPlaca());
@@ -50,7 +50,7 @@ public class CaminhaoService {
     }
 
     public CaminhaoDTO editar(Integer id) throws Exception { //Fução utilizada para editar o status de caminhção. Chamada no finalizarViagem e criarViagem
-        Caminhao caminhaoRecuperado = getCaminhao(id);
+        CaminhaoEntity caminhaoRecuperado = getCaminhao(id);
 
         if (caminhaoRecuperado.getEmViagem() == EmViagem.ESTACIONADO) {
             caminhaoRecuperado.setEmViagem(EmViagem.EM_VIAGEM);
@@ -64,7 +64,7 @@ public class CaminhaoService {
     }
 
     public void deletar(Integer id) throws Exception {
-        Caminhao caminhaoRecuperado = getCaminhao(id);
+        CaminhaoEntity caminhaoRecuperado = getCaminhao(id);
         Integer idCaminhao = getCaminhao(id).getIdCaminhao();
         CaminhaoDTO dto = objectMapper.convertValue(caminhaoRepository, CaminhaoDTO.class);
 
@@ -73,9 +73,9 @@ public class CaminhaoService {
 
     public List<CaminhaoDTO> listarCaminhoesLivres() throws BancoDeDadosException {
 
-        List<Caminhao> listar = caminhaoRepository.listar();
+        List<CaminhaoEntity> listar = caminhaoRepository.listar();
 
-        List<Caminhao> caminhaoDisponivel = listar.stream()
+        List<CaminhaoEntity> caminhaoDisponivel = listar.stream()
                 .filter(elemento -> elemento.getEmViagem().getOpcao().equals(2))
                 .toList();
 
@@ -83,7 +83,7 @@ public class CaminhaoService {
                 .map(caminhao -> objectMapper.convertValue(caminhao, CaminhaoDTO.class)).toList();
     }
 
-    public Caminhao getCaminhao(Integer id) throws RegraDeNegocioException, BancoDeDadosException {
+    public CaminhaoEntity getCaminhao(Integer id) throws RegraDeNegocioException, BancoDeDadosException {
         return caminhaoRepository.listar().stream()
                 .filter(u -> u.getIdCaminhao().equals(id))
                 .findFirst()
@@ -91,7 +91,7 @@ public class CaminhaoService {
     }
 
     public CaminhaoDTO abastecerCaminhao(Integer id, Integer gasolina) throws Exception {
-        Caminhao caminhaoRecuperado = getCaminhao(id);
+        CaminhaoEntity caminhaoRecuperado = getCaminhao(id);
 
         Integer totalGasolina = caminhaoRecuperado.getGasolina() + gasolina;
         if ( gasolina < 0){
@@ -108,12 +108,12 @@ public class CaminhaoService {
     }
 
     public CaminhaoDTO buscarPorId(Integer id) throws Exception {
-        Caminhao caminhaoRecuperado = getCaminhao(id);
+        CaminhaoEntity caminhaoRecuperado = getCaminhao(id);
         return objectMapper.convertValue(caminhaoRecuperado, CaminhaoDTO.class);
     }
 
     public ViagemDTO buscarViagem(Integer id) throws Exception {
-        Caminhao caminhaoRecuperado = getCaminhao(id);
+        CaminhaoEntity caminhaoRecuperado = getCaminhao(id);
         return objectMapper.convertValue(caminhaoRecuperado.getEmViagem(), ViagemDTO.class);
     }
 }

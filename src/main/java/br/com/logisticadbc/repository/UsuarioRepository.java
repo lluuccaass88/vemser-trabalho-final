@@ -1,12 +1,11 @@
 package br.com.logisticadbc.repository;
 
-import br.com.logisticadbc.entity.Usuario;
-import lombok.RequiredArgsConstructor;
+import br.com.logisticadbc.entity.UsuarioEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {}
+public interface UsuarioRepository extends JpaRepository<UsuarioEntity, Integer> {}
 //
 //    private final ConexaoBancoDeDados conexaoBancoDeDados;
 //

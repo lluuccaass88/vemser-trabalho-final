@@ -1,11 +1,11 @@
 package br.com.logisticadbc.repository;
 
-import br.com.logisticadbc.entity.Caminhao;
+import br.com.logisticadbc.entity.CaminhaoEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface CaminhaoRepository extends JpaRepository<Caminhao, Integer> {}
+public interface CaminhaoRepository extends JpaRepository<CaminhaoEntity, Integer> {}
 //
 //    private final ConexaoBancoDeDados conexaoBancoDeDados;
 //    public Integer getProximoId(Connection connection) throws SQLException {

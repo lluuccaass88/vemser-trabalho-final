@@ -1,13 +1,11 @@
 package br.com.logisticadbc.repository;
 
-import br.com.logisticadbc.entity.Viagem;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import br.com.logisticadbc.entity.ViagemEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ViagemRepository extends JpaRepository<Viagem, Integer> {}
+public interface ViagemRepository extends JpaRepository<ViagemEntity, Integer> {}
 //
 //    private final ConexaoBancoDeDados conexaoBancoDeDados;
 //

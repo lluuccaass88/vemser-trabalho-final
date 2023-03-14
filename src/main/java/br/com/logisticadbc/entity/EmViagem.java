@@ -8,7 +8,6 @@ import java.util.Arrays;
 
 @AllArgsConstructor
 @NoArgsConstructor
-//@Data
 @Getter
 public enum EmViagem {
 

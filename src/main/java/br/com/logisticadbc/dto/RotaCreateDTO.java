@@ -1,11 +1,7 @@
 package br.com.logisticadbc.dto;
 
-import br.com.logisticadbc.entity.Posto;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
