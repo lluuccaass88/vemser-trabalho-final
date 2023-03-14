@@ -17,5 +17,5 @@ public class PostoCreateDTO {
     private String nomePosto;
     @NotNull
     @Schema(description = "Valor do combustivel no posto", example = "5,89", required = true)
-    private double valorCombustível;
+    private Double valorCombustível;
 }

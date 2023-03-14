@@ -16,7 +16,7 @@ public class UsuarioEntity {
     @SequenceGenerator(name = "USUARIO_SEQ", sequenceName = "seq_usuario", allocationSize = 1)
     @Column(name = "id_usuario")
     // Refatorar nome
-    private Integer id;
+    private Integer idUsuario;
 
     @Column(name = "nome")
     private String nome;

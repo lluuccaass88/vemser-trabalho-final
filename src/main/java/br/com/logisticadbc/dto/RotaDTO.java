@@ -4,12 +4,15 @@ import br.com.logisticadbc.entity.PostoEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 
 @Data
 public class RotaDTO extends RotaCreateDTO{
+
     @Schema(description = "id da rota", example = "1", required = true)
-    private int idRota;
-    @Schema(description = "Lista de objetos de postos cadastrados", example = "Objeto de posto", required = true)
-    private ArrayList<PostoEntity> listaPostoCadastrado = new ArrayList();
+    private Integer idRota;
+
+    @Schema(description = "Lista dos nomes dos postos cadastrados na rota", example = "Ipiranga", required = true)
+    private ArrayList<String> listaNomePostoCadastrado = new ArrayList();
 }

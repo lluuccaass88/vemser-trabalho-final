@@ -1,6 +1,7 @@
 package br.com.logisticadbc.dto;
 
 import br.com.logisticadbc.entity.Perfil;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -24,6 +25,7 @@ public class UsuarioCreateDTO {
 
     @NotEmpty(message = "Senha não pode ser vazio")
     @NotBlank(message = "Senha não pode ser em branco")
+    @JsonIgnore
     @Schema(description = "Senha do usuário", example = "123abc", required = true)
     private String senha;
 
