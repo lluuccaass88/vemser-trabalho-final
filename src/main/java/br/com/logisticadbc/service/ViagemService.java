@@ -2,6 +2,7 @@ package br.com.logisticadbc.service;
 
 import br.com.logisticadbc.dto.*;
 import br.com.logisticadbc.entity.*;
+import br.com.logisticadbc.entity.enums.StatusCaminhao;
 import br.com.logisticadbc.exceptions.BancoDeDadosException;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.repository.ViagemRepository;
@@ -29,13 +30,13 @@ public class ViagemService {
             UsuarioEntity usuarioRecuperado = usuarioService.getUsuario(viagem.getIdUsuario());
 
             ViagemEntity viagemAdicionada;
-            if (caminhaoRecuperado.getEmViagem() == EmViagem.EM_VIAGEM) {
+            if (caminhaoRecuperado.getEmViagem() == StatusCaminhao.EM_VIAGEM) {
                 throw new RegraDeNegocioException("O caminhão escolhido já esta em uma viagem no momento.");
             }else if(usuarioRecuperado.getPerfil() == Perfil.COLABORADOR){
                 throw new RegraDeNegocioException("Somente um usuario do tipo motorista pode ser associado a uma viagem.");
             }else {
 
-                caminhaoRecuperado.setEmViagem(EmViagem.EM_VIAGEM);
+                caminhaoRecuperado.setEmViagem(StatusCaminhao.EM_VIAGEM);
                 caminhaoService.editar(viagem.getIdCaminhao(), objectMapper.convertValue(caminhaoRecuperado, CaminhaoCreateDTO.class));
 
                 ViagemEntity viagemEntity = objectMapper.convertValue(viagem, ViagemEntity.class);
@@ -81,7 +82,7 @@ public class ViagemService {
             ViagemEntity viagemEditada = viagemRepository.finalizarViagem(viagemRecuperada.getIdViagem(), viagemRecuperada);
 
             CaminhaoEntity caminhaoRecuperado = caminhaoService.getCaminhao(viagemRecuperada.getCaminhao().getIdCaminhao());
-            caminhaoRecuperado.setEmViagem(EmViagem.ESTACIONADO);
+            caminhaoRecuperado.setEmViagem(StatusCaminhao.ESTACIONADO);
             caminhaoService.editar(caminhaoRecuperado.getIdCaminhao(), objectMapper.convertValue(caminhaoRecuperado, CaminhaoCreateDTO.class));
 
             return objectMapper.convertValue(viagemEditada, ViagemDTO.class);
@@ -133,11 +134,11 @@ public class ViagemService {
             viagemRepository.editar(id, viagemRecuperada);
 
             CaminhaoEntity caminhaoRecuprado1 = caminhaoService.getCaminhao(viagemRecuperada.getCaminhao().getIdCaminhao());//Não esta mudando o status do caminhão para estacionado
-            caminhaoRecuprado1.setEmViagem(EmViagem.ESTACIONADO);
+            caminhaoRecuprado1.setEmViagem(StatusCaminhao.ESTACIONADO);
             caminhaoService.editar(caminhaoRecuprado1.getIdCaminhao(), objectMapper.convertValue(caminhaoRecuprado1, CaminhaoCreateDTO.class));
 
             CaminhaoEntity caminhaoRecuprado2 = caminhaoService.getCaminhao(viagem.getIdCaminhao());
-            caminhaoRecuprado2.setEmViagem(EmViagem.EM_VIAGEM);
+            caminhaoRecuprado2.setEmViagem(StatusCaminhao.EM_VIAGEM);
             caminhaoService.editar(caminhaoRecuprado2.getIdCaminhao(), objectMapper.convertValue(caminhaoRecuprado2, CaminhaoCreateDTO.class));
 
             return objectMapper.convertValue(viagemRecuperada, ViagemDTO.class);

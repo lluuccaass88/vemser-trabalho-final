@@ -1,14 +1,12 @@
 package br.com.logisticadbc.entity;
 
-import lombok.AllArgsConstructor;
+import br.com.logisticadbc.entity.enums.StatusViagem;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
-@AllArgsConstructor
-@NoArgsConstructor
 @Getter
 @Setter
 @Entity(name = "VIAGEM")
@@ -20,27 +18,21 @@ public class ViagemEntity {
     @Column(name = "id_viagem")
     private Integer idViagem;
 
-    @Column(name = "id_viagem")
-    private Integer idCaminhao;
+    @Column(name = "data_inicio")
+    private LocalDateTime dataInicio;
 
-    @Column(name = "id_viagem")
-    private Integer idRota;
+    @Column(name = "data_fim")
+    private LocalDateTime dataFim;
 
-    @Column(name = "id_viagem")
-    private Integer IdUsuario;
+    @Column(name = "status_viagem")
+    private StatusViagem statusViagem; // 0 - EM_ANDAMENTO | 1 - FINALIZADA
 
-    //Teste
-    //    private Usuario usuario;
-    // TODO ENUM OU ATRIBUTO INTEGER/STRING
-    @Column(name = "finalizada")
-    private Integer finalizada;
+    // TODO RELACIONAMENTO COM COLABORADOR
 
+    // TODO RELACIONAMENTO COM MOTORISTA
 
-    /*private Caminhao caminhao;
-    //private Rota rota;
+    // TODO RELACIONAMENTO COM CAMINHAO
 
-    //TEste
-    private ViagemUsuarioDTO usuario;
-    private ViagemRotaDTO rota;*/
+    // TODO RELACIONAMENTO COM ROTA
 
 }

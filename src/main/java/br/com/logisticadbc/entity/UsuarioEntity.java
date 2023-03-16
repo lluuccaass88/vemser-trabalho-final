@@ -1,11 +1,11 @@
 package br.com.logisticadbc.entity;
 
-import lombok.*;
+import br.com.logisticadbc.entity.enums.StatusUsuario;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 
-@AllArgsConstructor
-@NoArgsConstructor
 @Getter
 @Setter
 @Entity(name = "USUARIO")
@@ -15,7 +15,6 @@ public class UsuarioEntity {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "USUARIO_SEQ")
     @SequenceGenerator(name = "USUARIO_SEQ", sequenceName = "seq_usuario", allocationSize = 1)
     @Column(name = "id_usuario")
-    // Refatorar nome
     private Integer idUsuario;
 
     @Column(name = "nome")
@@ -27,15 +26,13 @@ public class UsuarioEntity {
     @Column(name = "senha")
     private String senha;
 
-    @Column(name = "perfil")
-    private Perfil perfil; // 1 - Colaborador, 2 - Motorista
-
-    @Column(name = "cpf")
-    private String cpf;
-
-    @Column(name = "cnh")
-    private String cnh;
-
     @Column(name = "email")
     private String email;
+
+    @Column(name = "status_usuario")
+    private StatusUsuario statusUsuario; // 0 - INATIVO | 1 - ATIVO
+
+    // TODO RELACIONAMENTO COM MOTORISTA
+
+    // TODO RELACIONAMENTO COM COLABORADOR
 }

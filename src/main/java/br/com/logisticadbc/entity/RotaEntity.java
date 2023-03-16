@@ -1,15 +1,10 @@
 package br.com.logisticadbc.entity;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 
-@AllArgsConstructor
-@NoArgsConstructor
 @Getter
 @Setter
 @Entity(name = "ROTA")
@@ -24,17 +19,14 @@ public class RotaEntity {
     @Column(name = "descricao")
     private String descricao;
 
-    @Column(name = "localpartida")
+    @Column(name = "local_partida")
     private String localPartida;
 
-    @Column(name = "localdestino")
+    @Column(name = "local_destino")
     private String localDestino;
 
-    // TODO VER IMPLEMENTAÇÃO
-    private ArrayList<PostoEntity> listaPostoCadastrado = new ArrayList();
-    private ArrayList<Integer> listaIdPostoCadastrado = new ArrayList();
+    // TODO RELACIONAMENTO COM COLABORADOR
 
-    public void setListaPostoCadastradoPosto(PostoEntity posto) {
-        this.listaPostoCadastrado.add(posto);
-    }
+    // TODO RELACIONAMENTO COM POSTO
+
 }

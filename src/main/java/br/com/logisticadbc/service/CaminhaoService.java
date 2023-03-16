@@ -4,7 +4,7 @@ import br.com.logisticadbc.dto.CaminhaoCreateDTO;
 import br.com.logisticadbc.dto.CaminhaoDTO;
 import br.com.logisticadbc.dto.ViagemDTO;
 import br.com.logisticadbc.entity.CaminhaoEntity;
-import br.com.logisticadbc.entity.EmViagem;
+import br.com.logisticadbc.entity.enums.StatusCaminhao;
 import br.com.logisticadbc.exceptions.BancoDeDadosException;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.repository.CaminhaoRepository;
@@ -52,10 +52,10 @@ public class CaminhaoService {
     public CaminhaoDTO editar(Integer id) throws Exception { //Fução utilizada para editar o status de caminhção. Chamada no finalizarViagem e criarViagem
         CaminhaoEntity caminhaoRecuperado = getCaminhao(id);
 
-        if (caminhaoRecuperado.getEmViagem() == EmViagem.ESTACIONADO) {
-            caminhaoRecuperado.setEmViagem(EmViagem.EM_VIAGEM);
+        if (caminhaoRecuperado.getEmViagem() == StatusCaminhao.ESTACIONADO) {
+            caminhaoRecuperado.setEmViagem(StatusCaminhao.EM_VIAGEM);
         } else {
-            caminhaoRecuperado.setEmViagem(EmViagem.ESTACIONADO);
+            caminhaoRecuperado.setEmViagem(StatusCaminhao.ESTACIONADO);
         }
 
         caminhaoRepository.editar(id, caminhaoRecuperado);

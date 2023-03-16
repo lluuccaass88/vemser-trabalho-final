@@ -1,9 +1,8 @@
 package br.com.logisticadbc.dto;
 
-import br.com.logisticadbc.entity.EmViagem;
+import br.com.logisticadbc.entity.enums.StatusCaminhao;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import org.hibernate.validator.constraints.UniqueElements;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -21,5 +20,5 @@ public class CaminhaoCreateDTO {
     private Integer gasolina;
     @NotNull
     @Schema(description = "Se o caminhao já está viajando", example = "ESTACIONADO ou EM_VIAGEM", required = true)
-    private EmViagem emViagem; // 1 - estacionado | 2 - em viagem
+    private StatusCaminhao emViagem; // 1 - estacionado | 2 - em viagem
 }

@@ -1,14 +1,11 @@
 package br.com.logisticadbc.entity;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 
-@AllArgsConstructor
-@NoArgsConstructor
 @Getter
 @Setter
 @Entity(name = "POSTO")
@@ -20,12 +17,13 @@ public class PostoEntity {
     @Column(name = "id_posto")
     private Integer idPosto;
 
-//    @Column(name = "idrota")
-    private Integer idRota;
+    @Column(name = "nome")
+    private String nome;
 
-    @Column(name = "nomeposto")
-    private String nomePosto;
+    @Column(name = "valor_combustivel")
+    private BigDecimal valorCombustivel;
 
-    @Column(name = "valorcombustível")
-    private Double valorCombustível;
+    // TODO RELACIONAMENTO COM COLABORADOR
+
+    // TODO RELACIONAMENTO COM ROTA
 }

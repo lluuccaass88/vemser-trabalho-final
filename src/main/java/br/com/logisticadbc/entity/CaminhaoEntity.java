@@ -1,14 +1,11 @@
 package br.com.logisticadbc.entity;
 
-import lombok.AllArgsConstructor;
+import br.com.logisticadbc.entity.enums.StatusCaminhao;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
 
-@AllArgsConstructor
-@NoArgsConstructor
 @Getter
 @Setter
 @Entity(name = "CAMINHAO")
@@ -26,9 +23,13 @@ public class CaminhaoEntity {
     @Column(name = "placa")
     private String placa;
 
-    @Column(name = "gasolina")
-    private Integer gasolina;
+    @Column(name = "nivel_combustivel")
+    private Integer nivelCombustivel;
 
-    @Column(name = "emviagem")
-    private EmViagem emViagem; // 1 - estacionado | 2 - em viagem
+    @Column(name = "status_caminhao")
+    private StatusCaminhao statusCaminhao; // 0 - estacionado | 1 - em viagem
+
+    // TODO RELACIONAMENTO COM COLABORADOR
+
+    // TODO RELACIONAMENTO COM VIAGEM
 }
