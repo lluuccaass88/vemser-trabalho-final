@@ -1,6 +1,7 @@
 package br.com.logisticadbc.entity;
 
 import br.com.logisticadbc.entity.enums.StatusViagem;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -28,6 +29,11 @@ public class ViagemEntity {
     private StatusViagem statusViagem; // 0 - EM_ANDAMENTO | 1 - FINALIZADA
 
     // TODO RELACIONAMENTO COM MOTORISTA
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_motorista", referencedColumnName = "id_motorista")
+    @JsonIgnore
+    private MotoristaEntity motorista;
 
     // TODO RELACIONAMENTO COM CAMINHAO
 

@@ -1,9 +1,12 @@
 package br.com.logisticadbc.entity;
 
+import br.com.logisticadbc.entity.enums.StatusMotorista;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -16,10 +19,14 @@ public class MotoristaEntity extends UsuarioEntity{
     @Column(name = "id_motorista")
     private Integer idMotorista;
 
-    @Column(name = "cnh")
+    @Column(name = "cnh", unique = true)
     private String cnh;
 
-    // TODO RELACIONAMENTO COM USUARIO
+    @Column(name = "status_motorista")
+    private StatusMotorista statusMotorista; // 0 - DISPONIVEL, 1 - EM_ESTRADA
 
-    // TODO RELACIONAMENTO COM VIAGEM
+    // regra de negócio -> one to many -> um motorista pode ter muitas viagens
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "motorista", orphanRemoval = true)
+    @JsonIgnore
+    private Set<ViagemEntity> viagens;
 }
