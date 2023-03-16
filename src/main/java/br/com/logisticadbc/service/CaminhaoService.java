@@ -1,3 +1,4 @@
+/*
 package br.com.logisticadbc.service;
 
 import br.com.logisticadbc.dto.CaminhaoCreateDTO;
@@ -116,4 +117,4 @@ public class CaminhaoService {
         CaminhaoEntity caminhaoRecuperado = getCaminhao(id);
         return objectMapper.convertValue(caminhaoRecuperado.getEmViagem(), ViagemDTO.class);
     }
-}
+}*/

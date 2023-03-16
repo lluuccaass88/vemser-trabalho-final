@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -24,11 +25,14 @@ public class PostoEntity {
     @Column(name = "valor_combustivel")
     private BigDecimal valorCombustivel;
 
-    // TODO RELACIONAMENTO COM COLABORADOR
+    //RELACIONAMENTO COM COLABORADOR
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_colaborador", referencedColumnName = "id_colaborador")
     @JsonIgnore
     private ColaboradorEntity colaborador;
 
-    // TODO RELACIONAMENTO COM ROTA
+    //RELACIONAMENTO COM ROTA
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "postos")
+    @JsonIgnore
+    private Set<RotaEntity> rotas;
 }

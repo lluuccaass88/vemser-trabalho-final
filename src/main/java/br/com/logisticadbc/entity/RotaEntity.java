@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -26,12 +27,23 @@ public class RotaEntity {
     @Column(name = "local_destino")
     private String localDestino;
 
-    // TODO RELACIONAMENTO COM COLABORADOR
+    //RELACIONAMENTO COM COLABORADOR
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_colaborador", referencedColumnName = "id_colaborador")
     @JsonIgnore
     private ColaboradorEntity colaborador;
 
-    // TODO RELACIONAMENTO COM POSTO
+    //RELACIONAMENTO COM POSTO
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "ROTA_X_POSTO",
+            joinColumns = @JoinColumn(name = "id_rota"),
+            inverseJoinColumns = @JoinColumn(name = "id_posto"))
+    @JsonIgnore
+    private Set<PostoEntity> postos;
+
+    //RELACIONAMENTO COM VIAGEM
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "rota", orphanRemoval = true)
+    @JsonIgnore
+    private Set<ViagemEntity> viagens;
 
 }

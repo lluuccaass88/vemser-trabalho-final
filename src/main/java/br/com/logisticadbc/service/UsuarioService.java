@@ -1,3 +1,4 @@
+/*
 package br.com.logisticadbc.service;
 
 import br.com.logisticadbc.dto.UsuarioCreateDTO;
@@ -79,3 +80,4 @@ public class UsuarioService {
         return recuperarUsuario;
     }
 }
+*/

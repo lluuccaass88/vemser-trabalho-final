@@ -1,3 +1,4 @@
+/*
 package br.com.logisticadbc.service;
 
 import br.com.logisticadbc.dto.PostoCreateDTO;
@@ -82,3 +83,4 @@ public class PostoService {
     }
 
 }
+*/

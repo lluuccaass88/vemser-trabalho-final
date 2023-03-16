@@ -28,10 +28,6 @@ public class UsuarioCreateDTO {
     @Schema(description = "Senha do usuário", example = "123abc", required = true)
     private String senha;
 
-    @NotNull(message = "Perfil não pode ser vazio")
-    @Schema(description = "Perfil do Funcionário", example = "Colaborador ou Motorista", required = true)
-    private Perfil perfil; // 1 - Colaborador, 2 - Motorista
-
     @Size(max = 11, min = 11, message = "cpf deve conter 11 caracteres")
     @NotEmpty(message = "CPF não pode ser vazio")
     @NotBlank(message = "CPF não pode ser em branco")

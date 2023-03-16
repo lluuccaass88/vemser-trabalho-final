@@ -1,3 +1,4 @@
+/*
 package br.com.logisticadbc.controller;
 
 import br.com.logisticadbc.controller.impl.IUViagemControllerDoc;
@@ -59,3 +60,4 @@ public class ViagemController implements IUViagemControllerDoc {
         return new ResponseEntity<>(viagemService.editarViagem(id, viagemUpdateDTO), HttpStatus.OK);
     }
 }
+*/

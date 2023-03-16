@@ -23,6 +23,7 @@ CREATE TABLE MOTORISTA (
     id_motorista NUMBER(10) NOT NULL,
     id_usuario NUMBER(10) NOT NULL,
     cnh VARCHAR2(11) UNIQUE NOT NULL,
+    status_motorista NUMBER(1) NOT NULL,
     PRIMARY KEY(id_motorista),
     CONSTRAINT FK_USUARIO_MOTORISTA FOREIGN KEY (id_usuario) REFERENCES USUARIO (id_usuario)
 );

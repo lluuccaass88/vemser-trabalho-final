@@ -1,3 +1,4 @@
+/*
 package br.com.logisticadbc.service;
 
 import br.com.logisticadbc.dto.RotaCreateDTO;
@@ -115,3 +116,4 @@ public class RotaService {
 //        return null;
 //    }
 }
+*/

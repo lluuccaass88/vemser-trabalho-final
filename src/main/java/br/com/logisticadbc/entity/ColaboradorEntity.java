@@ -21,7 +21,6 @@ public class ColaboradorEntity extends UsuarioEntity{
     @Column(name = "cpf", unique = true)
     private String cpf;
 
-
     //RELACIONAMENTO COM CAMINHAO
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "colaborador", orphanRemoval = true)
     @JsonIgnore

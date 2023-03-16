@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -30,11 +31,14 @@ public class CaminhaoEntity {
     @Column(name = "status_caminhao")
     private StatusCaminhao statusCaminhao; // 0 - estacionado | 1 - em viagem
 
-    // TODO RELACIONAMENTO COM COLABORADOR
+    //RELACIONAMENTO COM COLABORADOR
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_colaborador", referencedColumnName = "id_colaborador")
     @JsonIgnore
     private ColaboradorEntity colaborador;
 
-    // TODO RELACIONAMENTO COM VIAGEM
+    //RELACIONAMENTO COM VIAGEM
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "caminhao", orphanRemoval = true)
+    @JsonIgnore
+    private Set<ViagemEntity> viagens;
 }

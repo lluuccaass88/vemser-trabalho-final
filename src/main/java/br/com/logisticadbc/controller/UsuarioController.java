@@ -1,3 +1,4 @@
+/*
 package br.com.logisticadbc.controller;
 
 import br.com.logisticadbc.controller.impl.IUsuarioControllerDoc;
@@ -58,4 +59,4 @@ public class UsuarioController implements IUsuarioControllerDoc {
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-}
+}*/

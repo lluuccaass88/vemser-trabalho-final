@@ -28,15 +28,22 @@ public class ViagemEntity {
     @Column(name = "status_viagem")
     private StatusViagem statusViagem; // 0 - EM_ANDAMENTO | 1 - FINALIZADA
 
-    // TODO RELACIONAMENTO COM MOTORISTA
-
+    //RELACIONAMENTO COM MOTORISTA
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_motorista", referencedColumnName = "id_motorista")
     @JsonIgnore
     private MotoristaEntity motorista;
 
-    // TODO RELACIONAMENTO COM CAMINHAO
+    //RELACIONAMENTO COM CAMINHAO
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_caminhao", referencedColumnName = "id_caminhao")
+    @JsonIgnore
+    private CaminhaoEntity caminhao;
 
-    // TODO RELACIONAMENTO COM ROTA
+    //RELACIONAMENTO COM ROTA
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_rota", referencedColumnName = "id_rota")
+    @JsonIgnore
+    private RotaEntity rota;
 
 }

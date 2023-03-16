@@ -1,3 +1,4 @@
+/*
 package br.com.logisticadbc.controller;
 
 
@@ -70,3 +71,4 @@ public class CaminhaoController implements ICaminhaoControllerDoc {
         return new ResponseEntity<>(caminhaoService.listarCaminhoesLivres(), HttpStatus.OK);
     }
 }
+*/

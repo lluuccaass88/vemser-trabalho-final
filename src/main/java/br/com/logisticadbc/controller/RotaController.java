@@ -1,3 +1,4 @@
+/*
 package br.com.logisticadbc.controller;
 
 import br.com.logisticadbc.controller.impl.IRotaControllerDoc;
@@ -54,3 +55,4 @@ public class RotaController implements IRotaControllerDoc {
     }
 
 }
+*/

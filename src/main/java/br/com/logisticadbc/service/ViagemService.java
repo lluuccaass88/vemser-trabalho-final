@@ -1,3 +1,4 @@
+/*
 package br.com.logisticadbc.service;
 
 import br.com.logisticadbc.dto.*;
@@ -155,4 +156,4 @@ public class ViagemService {
                 .orElseThrow(() -> new RegraDeNegocioException("Viagem não encontrada"));
     }
 
-}
+}*/
