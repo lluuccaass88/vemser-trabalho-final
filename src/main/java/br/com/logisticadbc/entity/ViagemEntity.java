@@ -27,8 +27,6 @@ public class ViagemEntity {
     @Column(name = "status_viagem")
     private StatusViagem statusViagem; // 0 - EM_ANDAMENTO | 1 - FINALIZADA
 
-    // TODO RELACIONAMENTO COM COLABORADOR
-
     // TODO RELACIONAMENTO COM MOTORISTA
 
     // TODO RELACIONAMENTO COM CAMINHAO
