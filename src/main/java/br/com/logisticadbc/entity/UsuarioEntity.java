@@ -32,7 +32,5 @@ public class UsuarioEntity {
     @Column(name = "status_usuario")
     private StatusUsuario statusUsuario; // 0 - INATIVO | 1 - ATIVO
 
-    // TODO RELACIONAMENTO COM MOTORISTA
-
-    // TODO RELACIONAMENTO COM COLABORADOR
+    //Classe extendida por MOTORISTA e COLABORADOR
 }

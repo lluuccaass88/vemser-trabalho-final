@@ -8,7 +8,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 @Entity(name = "MOTORISTA")
-public class MotoristaEntity {
+public class MotoristaEntity extends UsuarioEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "MOTORISTA_SEQ")
