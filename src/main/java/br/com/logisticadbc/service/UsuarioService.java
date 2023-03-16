@@ -4,7 +4,7 @@ import br.com.logisticadbc.dto.UsuarioCreateDTO;
 import br.com.logisticadbc.dto.UsuarioDTO;
 import br.com.logisticadbc.entity.UsuarioEntity;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
-import br.com.logisticadbc.repository.UsuarioRepository;
+import br.com.logisticadbc.repository.ColaboradorRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UsuarioService {
 
-    private final UsuarioRepository usuarioRepository;
+    private final ColaboradorRepository colaboradorRepository;
     private final ObjectMapper objectMapper;
     private final EmailService emailService;
     private final RotaService rotaService;
@@ -24,7 +24,7 @@ public class UsuarioService {
     public UsuarioDTO adicionar(UsuarioCreateDTO usuario) throws Exception {
 
         UsuarioEntity entity = objectMapper.convertValue(usuario, UsuarioEntity.class);
-        UsuarioEntity usuarioCriado = usuarioRepository.adicionar(entity);
+        UsuarioEntity usuarioCriado = colaboradorRepository.adicionar(entity);
         UsuarioDTO usuarioDTO = objectMapper.convertValue(usuarioCriado, UsuarioDTO.class);
 
         if (usuarioCriado.getPerfil() == Perfil.COLABORADOR) {
@@ -37,7 +37,7 @@ public class UsuarioService {
     }
 
     public List<UsuarioDTO> listar() throws Exception {
-        return usuarioRepository
+        return colaboradorRepository
                 .listar()
                 .stream()
                 .map(usuario -> objectMapper.convertValue(usuario, UsuarioDTO.class))
@@ -57,7 +57,7 @@ public class UsuarioService {
         usuarioRecuperado.setCnh(usuarioAtualizar.getCnh());
         usuarioRecuperado.setEmail(usuarioAtualizar.getEmail());
         // teste para saber se vai dar certo
-        usuarioRepository.editar(idUsuario, usuarioRecuperado);
+        colaboradorRepository.editar(idUsuario, usuarioRecuperado);
 
         UsuarioDTO dto = objectMapper.convertValue(usuarioRecuperado, UsuarioDTO.class);
         return dto;
@@ -68,11 +68,11 @@ public class UsuarioService {
         Integer idUsuario = getUsuario(id).getId();
         UsuarioDTO dto = objectMapper.convertValue(usuarioRecuperado, UsuarioDTO.class);
 
-        usuarioRepository.remover(idUsuario);
+        colaboradorRepository.remover(idUsuario);
     }
 
     public UsuarioEntity getUsuario(Integer id) throws Exception {
-        UsuarioEntity recuperarUsuario = usuarioRepository.listar().stream()
+        UsuarioEntity recuperarUsuario = colaboradorRepository.listar().stream()
                 .filter(u -> u.getId().equals(id))
                 .findFirst()
                 .orElseThrow(() -> new RegraDeNegocioException("Usuário não encontrado"));
