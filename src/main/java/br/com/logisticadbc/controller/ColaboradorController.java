@@ -2,6 +2,7 @@ package br.com.logisticadbc.controller;
 
 import br.com.logisticadbc.dto.ColaboradorCreateDTO;
 import br.com.logisticadbc.dto.ColaboradorDTO;
+import br.com.logisticadbc.dto.ColaboradorUpdateDTO;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.service.ColaboradorService;
 import lombok.RequiredArgsConstructor;
@@ -29,9 +30,21 @@ public class ColaboradorController {
     }
 
     @PostMapping
-    public ResponseEntity<ColaboradorDTO> create (@Valid @RequestBody ColaboradorCreateDTO colaboradorCreateDTO)
+    public ResponseEntity<ColaboradorDTO> create(@Valid @RequestBody ColaboradorCreateDTO colaboradorCreateDTO)
             throws RegraDeNegocioException {
         return new ResponseEntity<>(colaboradorService.criar(colaboradorCreateDTO), HttpStatus.CREATED);
     }
 
+    @PutMapping("/idUsuario")
+    public ResponseEntity<ColaboradorDTO> update(@RequestParam("idUsuario") Integer idUsuario,
+                                                 @Valid @RequestBody ColaboradorUpdateDTO colaboradorUpdateDTO)
+            throws RegraDeNegocioException {
+        return new ResponseEntity<>(colaboradorService.editar(idUsuario, colaboradorUpdateDTO), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/idUsuario")
+    public ResponseEntity<Void> delete(Integer idUsuario) throws RegraDeNegocioException {
+        colaboradorService.deletar(idUsuario);
+        return ResponseEntity.ok().build();
+    }
 }

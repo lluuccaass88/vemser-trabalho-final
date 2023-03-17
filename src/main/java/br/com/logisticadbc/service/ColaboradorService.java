@@ -3,6 +3,7 @@ package br.com.logisticadbc.service;
 
 import br.com.logisticadbc.dto.ColaboradorCreateDTO;
 import br.com.logisticadbc.dto.ColaboradorDTO;
+import br.com.logisticadbc.dto.ColaboradorUpdateDTO;
 import br.com.logisticadbc.entity.ColaboradorEntity;
 import br.com.logisticadbc.entity.enums.StatusUsuario;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
@@ -22,11 +23,6 @@ public class ColaboradorService {
     private final ColaboradorRepository colaboradorRepository;
     private final ObjectMapper objectMapper;
 
-    // TODO quando criar ou editar alterar o status do usuario
-
-    // TODO CRUD -> CRIAR, EDITAR, LISTAR, DELETAR, BUSCARPORID
-
-
     public List<ColaboradorDTO> listar() {
         return colaboradorRepository.findAll()
                 .stream()
@@ -35,7 +31,6 @@ public class ColaboradorService {
     }
 
     // TODO - fazer senha nao retornar no dto
-    // TODO - fazer com que id nao incremente quando der erro
     public ColaboradorDTO criar(ColaboradorCreateDTO colaboradorCreateDTO) throws RegraDeNegocioException {
         try {
             ColaboradorEntity colaboradorEntity = objectMapper.convertValue(colaboradorCreateDTO, ColaboradorEntity.class);
@@ -52,18 +47,34 @@ public class ColaboradorService {
         }
     }
 
-    public ColaboradorDTO update (Integer idUsuario, ColaboradorCreateDTO colaboradorCreateDTO)
+    public ColaboradorDTO editar(Integer idUsuario, ColaboradorUpdateDTO colaboradorUpdateDTO)
             throws RegraDeNegocioException {
         try {
             ColaboradorEntity colaboradorEncontrado = buscarPorId(idUsuario);
 
-            colaboradorEncontrado.setNome(colaboradorCreateDTO.getNome());
-            colaboradorEncontrado.setSenha(colaboradorCreateDTO.getSenha());
-            colaboradorEncontrado.set(colaboradorCreateDTO.getSenha());
+            colaboradorEncontrado.setNome(colaboradorUpdateDTO.getNome());
+            colaboradorEncontrado.setSenha(colaboradorUpdateDTO.getSenha());
+
+            colaboradorRepository.save(colaboradorEncontrado);
+
+            return objectMapper.convertValue(colaboradorEncontrado, ColaboradorDTO.class);
 
         } catch (Exception e) {
             e.printStackTrace();
-            throw new RegraDeNegocioException("Aconteceu algum problema durante a criação.");
+            throw new RegraDeNegocioException("Aconteceu algum problema durante a edição.");
+        }
+    }
+
+    public void deletar (Integer idUsuario) throws RegraDeNegocioException {
+        try {
+            ColaboradorEntity colaboradorEncontrado = buscarPorId(idUsuario);
+            colaboradorEncontrado.setStatusUsuario(StatusUsuario.INATIVO);
+
+            colaboradorRepository.save(colaboradorEncontrado);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RegraDeNegocioException("Aconteceu algum problema durante a exclusão.");
         }
     }
 
