@@ -54,8 +54,43 @@ public class CaminhaoService {
         }
     }
 
+    public CaminhaoDTO abastecer(Integer id, Integer gasolina) throws RegraDeNegocioException { //Fução utilizada para editar o status de caminhção. Chamada no finalizarViagem e criarViagem
+        try{
+            CaminhaoEntity caminhaoRecuperado = buscarPorId(id);
+
+            if(gasolina <= 0){
+                throw new RegraDeNegocioException("A gasolina informada não pode ser menor ou igual a 0");
+            }else if(caminhaoRecuperado.getNivelCombustivel() + gasolina > 100){
+                throw new RegraDeNegocioException("Limite de gasolina excedido, por favor digite outro valor");
+            }
+
+            caminhaoRecuperado.setNivelCombustivel(caminhaoRecuperado.getNivelCombustivel() + gasolina);
+
+            caminhaoRepository.save(caminhaoRecuperado);
+
+            return objectMapper.convertValue(caminhaoRecuperado, CaminhaoDTO.class);
+        }catch (Exception e){
+            throw new RegraDeNegocioException(e.getMessage());
+        }
+    }
+
+    public CaminhaoEntity buscarPorId(Integer idCaminhao) throws RegraDeNegocioException{
+        return caminhaoRepository.findById(idCaminhao)
+                .orElseThrow(() -> new RegraDeNegocioException("Caminhao não encontrado"));
+    }
+
+    public void deletar(Integer id) throws Exception {
+        try{
+            CaminhaoEntity caminhaoRecuperado = buscarPorId(id);
+            caminhaoRepository.delete(caminhaoRecuperado);
+        }catch (Exception e){
+            throw new RegraDeNegocioException("Aconteceu algum problema durante a criacao");
+        }
+    }
 
 }
+
+
 /*
     public CaminhaoDTO adicionar(CaminhaoCreateDTO caminhao) throws BancoDeDadosException {
         CaminhaoEntity caminhaoEntity = objectMapper.convertValue(caminhao, CaminhaoEntity.class);
