@@ -5,6 +5,7 @@ import lombok.Data;
 
 @Data
 public class ColaboradorDTO extends ColaboradorCreateDTO {
-    @Schema(description = "Id de usuario", example = "5", required = true)
-    private Integer idColaborador;
+
+    @Schema(description = "Id de usuario", example = "5")
+    private Integer idUsuario;
 }

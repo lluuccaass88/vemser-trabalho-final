@@ -17,6 +17,8 @@ public class ColaboradorService {
     private final ColaboradorRepository colaboradorRepository;
     private final ObjectMapper objectMapper;
 
+    // TODO quando criar ou editar alterar o status do usuario
+
 /*    public ColaboradorEntity getColaborador(Integer idColaborador) throws RegraDeNegocioException{
         return colaboradorRepository.findById(idColaborador)
                 .orElseThrow(() -> new RegraDeNegocioException("Colaborador não encontrado"));
