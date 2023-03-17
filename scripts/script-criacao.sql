@@ -1,61 +1,61 @@
 
 -- CRIAR TABELAS
 
-CREATE TABLE USUARIO (
+CREATE TABLE COLABORADOR (
+    
     id_usuario NUMBER(10) NOT NULL,
     nome VARCHAR2(100) NOT NULL,
     usuario VARCHAR2(100) UNIQUE NOT NULL,
     senha VARCHAR2(50) NOT NULL,
     email VARCHAR2(100) UNIQUE NOT NULL,
     status_usuario NUMBER(1) NOT NULL,
-    PRIMARY KEY(id_usuario)
-);
-
-CREATE TABLE COLABORADOR (
-    id_colaborador NUMBER(10) NOT NULL,
-    id_usuario NUMBER(10) NOT NULL,
     cpf VARCHAR2(11) UNIQUE NOT NULL,
-    PRIMARY KEY(id_colaborador),
-    CONSTRAINT FK_USUARIO_COLABORADOR FOREIGN KEY (id_usuario) REFERENCES USUARIO (id_usuario)
+    PRIMARY KEY(id_usuario)
+   
 );
 
 CREATE TABLE MOTORISTA (
-    id_motorista NUMBER(10) NOT NULL,
+    
     id_usuario NUMBER(10) NOT NULL,
+    nome VARCHAR2(100) NOT NULL,
+    usuario VARCHAR2(100) UNIQUE NOT NULL,
+    senha VARCHAR2(50) NOT NULL,
+    email VARCHAR2(100) UNIQUE NOT NULL,
+    status_usuario NUMBER(1) NOT NULL,
     cnh VARCHAR2(11) UNIQUE NOT NULL,
     status_motorista NUMBER(1) NOT NULL,
-    PRIMARY KEY(id_motorista),
-    CONSTRAINT FK_USUARIO_MOTORISTA FOREIGN KEY (id_usuario) REFERENCES USUARIO (id_usuario)
+    PRIMARY KEY(id_usuario)
+   
 );
 
 CREATE TABLE CAMINHAO (
     id_caminhao NUMBER(10) NOT NULL,
-    id_colaborador NUMBER(10) NOT NULL,
+    id_usuario NUMBER(10) NOT NULL,
     modelo VARCHAR2(100) NOT NULL,
     placa VARCHAR2(10) UNIQUE NOT NULL,
     nivel_combustivel NUMBER(3) NOT NULL,
     status_caminhao NUMBER(1) NOT NULL,
     PRIMARY KEY(id_caminhao),
-    CONSTRAINT FK_COLABORADOR_CAMINHAO FOREIGN KEY (id_colaborador) REFERENCES COLABORADOR (id_colaborador)
+    CONSTRAINT FK_COLABORADOR_CAMINHAO FOREIGN KEY (id_usuario) REFERENCES COLABORADOR (id_usuario)
 );
 
 CREATE TABLE ROTA (
     id_rota NUMBER(10) NOT NULL,
-    id_colaborador NUMBER(10) NOT NULL,
+    id_usuario NUMBER(10) NOT NULL,
     descricao VARCHAR2(100) NOT NULL,
 	local_partida VARCHAR2(100) NOT NULL,
 	local_destino VARCHAR2(100) NOT NULL,
     PRIMARY KEY(id_rota),
-    CONSTRAINT FK_COLABORADOR_ROTA FOREIGN KEY (id_colaborador) REFERENCES COLABORADOR (id_colaborador)
+    CONSTRAINT FK_COLABORADOR_ROTA FOREIGN KEY (id_usuario) REFERENCES COLABORADOR (id_usuario)
 );
 
 CREATE TABLE POSTO (
     id_posto NUMBER(10) NOT NULL,
-    id_colaborador NUMBER(10) NOT NULL,
+    id_usuario NUMBER(10) NOT NULL,
     nome VARCHAR2(100) NOT NULL,
     valor_combustivel NUMBER(4) NOT NULL,
     PRIMARY KEY(id_posto),
-    CONSTRAINT FK_COLABORADOR_POSTO FOREIGN KEY (id_colaborador) REFERENCES COLABORADOR (id_colaborador)
+    CONSTRAINT FK_COLABORADOR_POSTO FOREIGN KEY (id_usuario) REFERENCES COLABORADOR (id_usuario)
 );
 
 CREATE TABLE ROTA_X_POSTO (
@@ -68,7 +68,7 @@ CREATE TABLE ROTA_X_POSTO (
 
 CREATE TABLE VIAGEM (
     id_viagem NUMBER(10) NOT NULL,
-    id_motorista NUMBER(10) NOT NULL,
+    id_usuario NUMBER(10) NOT NULL,
     id_caminhao NUMBER(10) NOT NULL,
     id_rota NUMBER(10) NOT NULL,
     descricao VARCHAR2(200) NOT NULL,
@@ -76,7 +76,7 @@ CREATE TABLE VIAGEM (
     data_fim TIMESTAMP NOT NULL,
     status_viagem NUMBER(1) NOT NULL,
     PRIMARY KEY(id_viagem),
-    CONSTRAINT FK_MOTORISTA_VIAGEM FOREIGN KEY (id_motorista) REFERENCES MOTORISTA (id_motorista),
+    CONSTRAINT FK_MOTORISTA_VIAGEM FOREIGN KEY (id_usuario) REFERENCES MOTORISTA (id_usuario),
     CONSTRAINT FK_CAMINHAO_VIAGEM FOREIGN KEY (id_caminhao) REFERENCES CAMINHAO (id_caminhao),
     CONSTRAINT FK_ROTA_VIAGEM FOREIGN KEY (id_rota) REFERENCES ROTA (id_rota)
 );
@@ -85,18 +85,6 @@ CREATE TABLE VIAGEM (
 -- CRIAR SEQUENCES
 
 CREATE SEQUENCE seq_usuario
- START WITH     1
- INCREMENT BY   1
- NOCACHE
- NOCYCLE;
-
-CREATE SEQUENCE seq_colaborador
- START WITH     1
- INCREMENT BY   1
- NOCACHE
- NOCYCLE;
-
-CREATE SEQUENCE seq_motorista
  START WITH     1
  INCREMENT BY   1
  NOCACHE
