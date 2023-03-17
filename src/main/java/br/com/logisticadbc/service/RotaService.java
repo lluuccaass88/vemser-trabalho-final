@@ -25,6 +25,7 @@ public class RotaService {
     public RotaDTO adicionaRota(Integer idColaborador, RotaCreateDTO rota) throws RegraDeNegocioException, BancoDeDadosException {
 
         ColaboradorEntity colaboradorEntity = colaboradorService.getColaborador(idColaborador);
+        colaboradorEntity.setIdColabolador(idColaborador);
 
         RotaEntity rotaEntity = objectMapper.convertValue(rota, RotaEntity.class);
         rotaEntity.setColaborador(colaboradorService.getColaborador(idColaborador));
@@ -41,14 +42,4 @@ public class RotaService {
                 .map(rota -> objectMapper.convertValue(rota, RotaDTO.class))
                 .toList();
     }
-
-//    public RotaDTO editarRota(Integer id, RotaCreateDTO rota) throws RegraDeNegocioException {
-//    }
-//
-//    public boolean removerRota(Integer id) throws RegraDeNegocioException {
-//
-//    }
-//
-//    public RotaEntity getRota(Integer id) {
-//    }
 }

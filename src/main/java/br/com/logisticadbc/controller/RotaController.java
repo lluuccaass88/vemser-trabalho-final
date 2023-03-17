@@ -8,6 +8,7 @@ import br.com.logisticadbc.dto.RotaDTO;
 import br.com.logisticadbc.exceptions.BancoDeDadosException;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.repository.RotaRepository;
+import br.com.logisticadbc.service.ColaboradorService;
 import br.com.logisticadbc.service.RotaService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +28,7 @@ import java.util.List;
 public class RotaController { // implements IRotaControllerDoc {
 
     private final RotaService rotaService;
+    private final ColaboradorService colaboradorService;
 
     @GetMapping
     public List<RotaDTO> list() {

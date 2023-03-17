@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 @Data
-public class UsuarioDTO extends UsuarioCreateDTO{
+public class ColaboradorDTO extends ColaboradorCreateDTO {
     @Schema(description = "Id de usuario", example = "5", required = true)
-    private Integer idUsuario;
+    private Integer idColaborador;
 }
