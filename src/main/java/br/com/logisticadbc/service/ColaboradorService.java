@@ -17,7 +17,7 @@ public class ColaboradorService {
     private final ColaboradorRepository colaboradorRepository;
     private final ObjectMapper objectMapper;
 
-    public ColaboradorEntity getColaborador(Integer idColaborador) throws RegraDeNegocioException{
+/*    public ColaboradorEntity getColaborador(Integer idColaborador) throws RegraDeNegocioException{
         return colaboradorRepository.findById(idColaborador)
                 .orElseThrow(() -> new RegraDeNegocioException("Colaborador não encontrado"));
     }
@@ -27,5 +27,5 @@ public class ColaboradorService {
                 .stream()
                 .map(colaborador -> objectMapper.convertValue(colaborador, ColaboradorDTO.class))
                 .toList();
-    }
+    }*/
 }

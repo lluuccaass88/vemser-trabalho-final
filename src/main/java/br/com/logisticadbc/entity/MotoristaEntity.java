@@ -4,6 +4,7 @@ import br.com.logisticadbc.entity.enums.StatusMotorista;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -11,15 +12,13 @@ import java.util.Set;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity(name = "MOTORISTA")
+//@EqualsAndHashCode(callSuper = false)
 public class MotoristaEntity extends UsuarioEntity {
 
     private static final long serialVersionUID = 1L;
-
-    @Id
-    @SequenceGenerator(name = "MOTORISTA_SEQ", sequenceName = "seq_motorista", allocationSize = 1)
-    @Column(name = "id_motorista")
-    private Integer idMotorista;
 
     @Column(name = "cnh", unique = true)
     private String cnh;

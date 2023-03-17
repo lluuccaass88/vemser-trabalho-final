@@ -27,7 +27,7 @@ public class PostoEntity {
 
     //RELACIONAMENTO COM COLABORADOR
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_colaborador", referencedColumnName = "id_colaborador")
+    @JoinColumn(name = "id_usuario", referencedColumnName = "id_usuario")
     @JsonIgnore
     private ColaboradorEntity colaborador;
 

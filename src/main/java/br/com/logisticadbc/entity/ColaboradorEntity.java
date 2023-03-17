@@ -1,7 +1,9 @@
 package br.com.logisticadbc.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -9,14 +11,13 @@ import java.util.Set;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity(name = "COLABORADOR")
+//@EqualsAndHashCode(callSuper = false)
 public class ColaboradorEntity extends UsuarioEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "COLABORADOR_SEQ")
-    @SequenceGenerator(name = "COLABORADOR_SEQ", sequenceName = "seq_colaborador", allocationSize = 1)
-    @Column(name = "id_colaborador")
-    private Integer idColabolador;
+    private static final long serialVersionUID = 1L;
 
     @Column(name = "cpf", unique = true)
     private String cpf;

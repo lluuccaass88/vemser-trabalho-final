@@ -35,11 +35,11 @@ public class RotaController { // implements IRotaControllerDoc {
         return rotaService.listarRotas();
     }
 
-    @PostMapping
+ /*   @PostMapping
     public ResponseEntity<RotaDTO> criarRota(
             @RequestParam("idColaborador") Integer idColaborador,
             @Valid @RequestBody RotaCreateDTO rotaCreateDTO) throws RegraDeNegocioException, BancoDeDadosException {
         log.info("Criando rota");
         return new ResponseEntity<>(rotaService.adicionaRota(idColaborador, rotaCreateDTO), HttpStatus.CREATED);
-    }
+    }*/
 }

@@ -30,7 +30,7 @@ public class ViagemEntity {
 
     //RELACIONAMENTO COM MOTORISTA
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_motorista", referencedColumnName = "id_motorista")
+    @JoinColumn(name = "id_usuario", referencedColumnName = "id_usuario")
     @JsonIgnore
     private MotoristaEntity motorista;
 

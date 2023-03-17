@@ -21,8 +21,8 @@ public class ColaboradorController { // implements IUsuarioControllerDoc {
 
     private final ColaboradorService colaboradorService;
 
-    @GetMapping
+/*    @GetMapping
     public List<ColaboradorDTO> list() {
         return colaboradorService.listarColaboradores();
-    }
+    }*/
 }

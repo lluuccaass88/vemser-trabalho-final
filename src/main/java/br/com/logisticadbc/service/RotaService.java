@@ -22,7 +22,7 @@ public class RotaService {
     private final ObjectMapper objectMapper;
     private final ColaboradorService colaboradorService;
 
-    public RotaDTO adicionaRota(Integer idColaborador, RotaCreateDTO rota) throws RegraDeNegocioException, BancoDeDadosException {
+    /*public RotaDTO adicionaRota(Integer idColaborador, RotaCreateDTO rota) throws RegraDeNegocioException, BancoDeDadosException {
 
         ColaboradorEntity colaboradorEntity = colaboradorService.getColaborador(idColaborador);
         colaboradorEntity.setIdColabolador(idColaborador);
@@ -33,7 +33,7 @@ public class RotaService {
 
         RotaDTO rotaDTO = objectMapper.convertValue(rotaEntity, RotaDTO.class);
         return rotaDTO;
-    }
+    }*/
 
 
     public List<RotaDTO> listarRotas() {
