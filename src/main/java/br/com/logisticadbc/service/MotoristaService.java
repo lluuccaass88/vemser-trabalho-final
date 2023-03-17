@@ -54,10 +54,9 @@ public class MotoristaService {
         }
     }
 
-    public MotoristaDTO editar(Integer id, MotoristaUpdateDTO motoristaUpdateDTO) throws RegraDeNegocioException {
+    public MotoristaDTO editar(Integer idUsuario, MotoristaUpdateDTO motoristaUpdateDTO) throws RegraDeNegocioException {
         try {
-            MotoristaEntity motoristaEntity = buscarPorId(id);
-            motoristaEntity = objectMapper.convertValue(motoristaUpdateDTO, MotoristaEntity.class);
+            MotoristaEntity motoristaEntity = buscarPorId(idUsuario);
 
             motoristaEntity.setNome(motoristaUpdateDTO.getNome());
             motoristaEntity.setSenha(motoristaUpdateDTO.getSenha());
