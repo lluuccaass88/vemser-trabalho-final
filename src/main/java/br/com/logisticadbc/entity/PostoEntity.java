@@ -22,7 +22,7 @@ public class PostoEntity {
     @Column(name = "nome")
     private String nome;
 
-    @Column(name = "valor_combustivel")
+    @Column(name = "valor_combustivel", precision = 20, scale = 2)
     private BigDecimal valorCombustivel;
 
     //RELACIONAMENTO COM COLABORADOR

@@ -1,10 +1,9 @@
-/*
 package br.com.logisticadbc.service;
 
 import br.com.logisticadbc.dto.in.PostoCreateDTO;
 import br.com.logisticadbc.dto.out.PostoDTO;
+import br.com.logisticadbc.entity.ColaboradorEntity;
 import br.com.logisticadbc.entity.PostoEntity;
-import br.com.logisticadbc.exceptions.BancoDeDadosException;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.repository.PostoRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -13,74 +12,84 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
-@RequiredArgsConstructor
 @Slf4j
+@RequiredArgsConstructor
 @Service
 public class PostoService {
-    private  final PostoRepository postoRepository;
+    private final PostoRepository postoRepository;
+    private final ColaboradorService colaboradorService;
     private final ObjectMapper objectMapper;
 
-    public PostoDTO adicionaPosto(PostoCreateDTO posto) throws RegraDeNegocioException {
-        try {
-            PostoEntity postoEntity = objectMapper.convertValue(posto, PostoEntity.class);
-
-            PostoEntity postoSalvo = postoRepository.adicionar(postoEntity);
-
-            return  objectMapper.convertValue(postoSalvo, PostoDTO.class);
-        }catch (BancoDeDadosException e) {
-             e.printStackTrace();
-            throw new RegraDeNegocioException("Erro no banco de dados ao adicionar posto");
-        }
+    public List<PostoDTO> listar() {
+        return postoRepository
+                .findAll()
+                .stream()
+                .map(posto -> {
+                    PostoDTO postoDTO = objectMapper.convertValue(posto, PostoDTO.class);
+                    postoDTO.setIdUsuario(posto.getColaborador().getIdUsuario());
+                    return postoDTO;
+                })
+                .toList();
     }
 
-    public List<PostoDTO> listarPosto() throws RegraDeNegocioException {
+    private PostoEntity buscarPorId(Integer id) throws RegraDeNegocioException {
+        return postoRepository.findById(id)
+                .orElseThrow(() -> new RegraDeNegocioException("Posto não encontrado"));
+    }
+
+    public PostoDTO criar(Integer idUsuario, PostoCreateDTO postoCreateDTO) throws RegraDeNegocioException {
         try {
-            return postoRepository.listar().stream()
-                    .map(posto -> objectMapper.convertValue(posto, PostoDTO.class))
-                    .collect(Collectors.toList());
-        }catch (BancoDeDadosException e) {
+            ColaboradorEntity colaboradorEntity = colaboradorService.buscarPorId(idUsuario);
+
+            PostoEntity postoEntity = objectMapper.convertValue(postoCreateDTO, PostoEntity.class);
+            postoEntity.setColaborador(colaboradorEntity);
+            colaboradorEntity.getPostos().add(postoEntity);
+
+            postoRepository.save(postoEntity);
+            log.info("PostoEntity: {}", postoEntity);
+
+            PostoDTO postoDTO = objectMapper.convertValue(postoEntity, PostoDTO.class);
+            postoDTO.setIdUsuario(colaboradorEntity.getIdUsuario());
+
+            return postoDTO;
+
+        } catch (Exception e) {
             e.printStackTrace();
-            throw new RegraDeNegocioException("Erro no banco de dados ao listar posto");
+            throw new RegraDeNegocioException("Aconteceu algum problema durante a criação.");
         }
     }
 
-    public boolean editarPosto(Integer id, PostoCreateDTO posto) throws RegraDeNegocioException {
+    public PostoDTO editar(Integer idPosto, PostoCreateDTO postoCreateDTO) throws RegraDeNegocioException {
         try {
-            PostoEntity postoEntity = objectMapper.convertValue(posto, PostoEntity.class);
+            PostoEntity postoEntity = buscarPorId(idPosto);
 
-            return postoRepository.editar(id, postoEntity);
-        }catch (BancoDeDadosException e) {
+            postoEntity.setNome(postoCreateDTO.getNome());
+            postoEntity.setValorCombustivel(postoCreateDTO.getValorCombustivel());
+
+            ColaboradorEntity colaboradorEntity =
+                    colaboradorService.buscarPorId(postoEntity.getColaborador().getIdUsuario());
+            colaboradorEntity.getPostos().add(postoEntity);
+
+            postoRepository.save(postoEntity);
+            log.info("PostoEntity: {}", postoEntity);
+
+            return objectMapper.convertValue(postoEntity, PostoDTO.class);
+
+        } catch (Exception e) {
             e.printStackTrace();
-            throw new RegraDeNegocioException("Erro no banco de dados ao editar posto");
+            throw new RegraDeNegocioException("Aconteceu algum problema durante a edição.");
         }
     }
 
-    public void removerPosto(Integer id) throws RegraDeNegocioException {
+    public void deletar(Integer idPosto) throws RegraDeNegocioException {
+        PostoEntity postoEntity = buscarPorId(idPosto);
         try {
-            boolean conseguiuRemoverRelacionamento = postoRepository.removerPostoXRota(id);
-            boolean conseguiuRemover = postoRepository.remover(id);
-        } catch (BancoDeDadosException e) {
-            throw new RegraDeNegocioException("Erro no banco de dados ao remover posto");
+            postoRepository.deleteById(postoEntity.getIdPosto());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RegraDeNegocioException("Aconteceu algum problema durante a exclusão.");
         }
     }
-
-    public PostoEntity buscarPostoId(int id) throws RegraDeNegocioException {
-        try {
-            PostoEntity retornoBusca = postoRepository.buscarPorId(id);
-            if(retornoBusca == null){
-                throw new RegraDeNegocioException("Não foi encontrar o posto com o id " + id);
-            }else{
-                System.out.println("Posto: \n "+ retornoBusca);
-                return retornoBusca;
-            }
-        } catch (BancoDeDadosException e ) {
-            throw new RegraDeNegocioException("Erro no banco de dados ao buscar id");
-        } catch (Exception e){
-            throw new RegraDeNegocioException(e.getMessage());
-        }
-    }
-
 }
-*/
