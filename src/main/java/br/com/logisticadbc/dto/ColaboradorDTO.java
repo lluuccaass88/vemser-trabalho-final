@@ -1,11 +1,15 @@
 package br.com.logisticadbc.dto;
 
+import br.com.logisticadbc.entity.enums.StatusUsuario;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 @Data
 public class ColaboradorDTO extends ColaboradorCreateDTO {
 
-    @Schema(description = "Id de usuario", example = "5")
+    @Schema(description = "Id de usuario")
     private Integer idUsuario;
+
+    @Schema(description = "Status do usuário")
+    private StatusUsuario statusUsuario;
 }

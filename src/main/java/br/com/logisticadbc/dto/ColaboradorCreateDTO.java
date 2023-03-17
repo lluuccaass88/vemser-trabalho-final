@@ -1,6 +1,7 @@
 package br.com.logisticadbc.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -21,10 +22,10 @@ public class ColaboradorCreateDTO {
     @Schema(description = "Usuário que será logado no sistema", example = "marcklen", required = true)
     private String usuario;
 
-    @JsonIgnore
     @NotNull
     @NotBlank
     @Schema(description = "Senha do usuário", example = "123abc", required = true)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String senha;
 
     @NotNull

@@ -1,6 +1,7 @@
 package br.com.logisticadbc.entity;
 
 import br.com.logisticadbc.entity.enums.StatusUsuario;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 import javax.persistence.*;
@@ -31,6 +32,7 @@ public abstract class UsuarioEntity implements Serializable {
 
     @Column(name = "senha")
     @Size(min = 2, max = 20, message = "Senha do Usuário deve ter entre 2 e 20 caracteres")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String senha;
 
     @Column(name = "email")
