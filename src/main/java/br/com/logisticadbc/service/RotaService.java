@@ -1,13 +1,19 @@
 package br.com.logisticadbc.service;
 
+import br.com.logisticadbc.dto.in.RotaCreateDTO;
 import br.com.logisticadbc.dto.out.RotaDTO;
+import br.com.logisticadbc.entity.ColaboradorEntity;
+import br.com.logisticadbc.entity.RotaEntity;
+import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.repository.RotaRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class RotaService {
@@ -16,24 +22,77 @@ public class RotaService {
     private final ObjectMapper objectMapper;
     private final ColaboradorService colaboradorService;
 
-    /*public RotaDTO adicionaRota(Integer idColaborador, RotaCreateDTO rota) throws RegraDeNegocioException, BancoDeDadosException {
+    public RotaDTO criar(Integer idUsuario, RotaCreateDTO rotaCreateDTO) throws RegraDeNegocioException {
+        try {
+            ColaboradorEntity colaboradorEncontrado = colaboradorService.buscarPorId(idUsuario);
 
-        ColaboradorEntity colaboradorEntity = colaboradorService.getColaborador(idColaborador);
-        colaboradorEntity.setIdColabolador(idColaborador);
+            RotaEntity rotaEntity = objectMapper.convertValue(rotaCreateDTO, RotaEntity.class);
+            rotaEntity.setColaborador(colaboradorEncontrado); // Atribui idusuario a rota criada
+            colaboradorEncontrado.getRotas().add(rotaEntity); // Atribui rota criada ao Colaborador
 
-        RotaEntity rotaEntity = objectMapper.convertValue(rota, RotaEntity.class);
-        rotaEntity.setColaborador(colaboradorService.getColaborador(idColaborador));
-        rotaEntity = rotaRepository.save(rotaEntity);
+            rotaRepository.save(rotaEntity);
 
-        RotaDTO rotaDTO = objectMapper.convertValue(rotaEntity, RotaDTO.class);
-        return rotaDTO;
-    }*/
+            RotaDTO rotaDTO = objectMapper.convertValue(rotaEntity, RotaDTO.class);
+            rotaDTO.setIdUsuario(colaboradorEncontrado.getIdUsuario());
+            return rotaDTO;
 
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RegraDeNegocioException("Aconteceu algum problema durante a criação.");
+        }
+    }
 
-    public List<RotaDTO> listarRotas() {
-        return rotaRepository.findAll()
+    public RotaDTO editar(Integer idRota, RotaCreateDTO rotaCreateDTO) throws RegraDeNegocioException {
+        try {
+            RotaEntity rotaEncontrada = buscarPorId(idRota);
+
+            rotaEncontrada.setDescricao(rotaCreateDTO.getDescricao());
+            rotaEncontrada.setLocalPartida(rotaCreateDTO.getLocalPartida());
+            rotaEncontrada.setLocalDestino(rotaCreateDTO.getLocalDestino());
+
+            ColaboradorEntity colaboradorEncontrado = colaboradorService.buscarPorId(
+                    rotaEncontrada.getColaborador().getIdUsuario());
+            colaboradorEncontrado.getRotas().add(rotaEncontrada);
+
+            rotaRepository.save(rotaEncontrada);
+
+            return objectMapper.convertValue(rotaEncontrada, RotaDTO.class);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RegraDeNegocioException("Aconteceu algum problema durante a edição.");
+        }
+    }
+
+    public void deletar(Integer idRota) throws RegraDeNegocioException {
+        RotaEntity rotaEncontrada = buscarPorId(idRota);
+
+        try {
+            rotaRepository.deleteById(rotaEncontrada.getIdRota());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RegraDeNegocioException("Aconteceu algum problema durante a exclusão.");
+        }
+    }
+
+    public List<RotaDTO> listar() {
+
+        List<RotaDTO> rotasDTO = rotaRepository.findAll()
                 .stream()
-                .map(rota -> objectMapper.convertValue(rota, RotaDTO.class))
+                .map(rota -> {
+                    RotaDTO rotaDTO = objectMapper.convertValue(rota, RotaDTO.class);
+                    rotaDTO.setIdUsuario(rota.getColaborador().getIdUsuario());
+                    return rotaDTO;
+                })
                 .toList();
+
+        log.info("rotas: " + rotasDTO);
+        return rotasDTO;
+    }
+
+    public RotaEntity buscarPorId(Integer idRota) throws RegraDeNegocioException {
+        return rotaRepository.findById(idRota)
+                .orElseThrow(() -> new RegraDeNegocioException("Rota não encontrada"));
     }
 }

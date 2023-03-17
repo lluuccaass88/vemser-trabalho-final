@@ -11,16 +11,17 @@ public class RotaCreateDTO {
 
     @NotNull
     @NotBlank
-    @Schema(description = "Descrição da Rota", example = "Rota de São Paulo até Brasilia", required = true)
+    @Schema(description = "Descrição da Rota", example = "Rota de São Paulo até Brasilia")
     private String descricao;
+
     @NotNull
     @NotBlank
-    @Schema(description = "Destino Inicial da Rota", example = "São Paulo", required = true)
+    @Schema(description = "Destino Inicial da Rota", example = "São Paulo")
     private String localPartida;
 
     @NotNull
     @NotBlank
-    @Schema(description = "Destino Final da Rota", example = "Brasilia", required = true)
+    @Schema(description = "Destino Final da Rota", example = "Brasilia")
     private String localDestino;
 
 }

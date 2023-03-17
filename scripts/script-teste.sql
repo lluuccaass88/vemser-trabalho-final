@@ -71,7 +71,7 @@ CREATE TABLE POSTO (
     id_posto NUMBER(10) NOT NULL,
     id_usuario NUMBER(10) NOT NULL,
     nome VARCHAR2(100) NOT NULL,
-    valor_combustivel NUMBER(4) NOT NULL,
+    valor_combustivel NUMBER(20,2) NOT NULL,
     PRIMARY KEY(id_posto),
     CONSTRAINT FK_COLABORADOR_POSTO FOREIGN KEY (id_usuario) REFERENCES COLABORADOR (id_usuario)
 );
