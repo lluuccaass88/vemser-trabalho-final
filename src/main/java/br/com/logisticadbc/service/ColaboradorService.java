@@ -41,7 +41,7 @@ public class ColaboradorService {
         return objectMapper.convertValue(colaboradorEntity, ColaboradorDTO.class);
     }
 
-    private ColaboradorEntity buscarPorId(Integer idUsuario) throws RegraDeNegocioException{
+    public ColaboradorEntity buscarPorId(Integer idUsuario) throws RegraDeNegocioException{
         return colaboradorRepository.findById(idUsuario)
                 .orElseThrow(() -> new RegraDeNegocioException("Colaborador não encontrado"));
     }

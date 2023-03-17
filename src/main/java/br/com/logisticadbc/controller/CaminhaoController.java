@@ -1,10 +1,13 @@
-/*
+
 package br.com.logisticadbc.controller;
 
 
 import br.com.logisticadbc.controller.impl.ICaminhaoControllerDoc;
 import br.com.logisticadbc.dto.CaminhaoCreateDTO;
 import br.com.logisticadbc.dto.CaminhaoDTO;
+import br.com.logisticadbc.dto.ColaboradorCreateDTO;
+import br.com.logisticadbc.dto.ColaboradorDTO;
+import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.service.CaminhaoService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,10 +24,49 @@ import java.util.List;
 @RequestMapping("/caminhao") // http://localhost:8080/caminhao
 @Validated
 @Slf4j
-public class CaminhaoController implements ICaminhaoControllerDoc {
+public class CaminhaoController {//implements ICaminhaoControllerDoc {
 
     private final CaminhaoService caminhaoService;
 
+    @GetMapping
+    public ResponseEntity<List<CaminhaoDTO>> listAll() {
+        return new ResponseEntity<>(caminhaoService.listar(), HttpStatus.OK);
+    }
+
+    @PostMapping
+    public ResponseEntity<CaminhaoDTO> create (@RequestParam ("idColavorador") Integer idColaborador, @Valid @RequestBody CaminhaoCreateDTO caminhaoCreateDTO) throws RegraDeNegocioException {
+        return new ResponseEntity<>(caminhaoService.criar(idColaborador, caminhaoCreateDTO), HttpStatus.CREATED);
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
     @PostMapping
     public ResponseEntity<CaminhaoDTO> adicionar(@Valid @RequestBody CaminhaoCreateDTO caminhao) throws Exception {
 

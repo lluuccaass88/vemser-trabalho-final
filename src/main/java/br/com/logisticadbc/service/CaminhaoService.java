@@ -1,11 +1,11 @@
-/*
+
 package br.com.logisticadbc.service;
 
-import br.com.logisticadbc.dto.CaminhaoCreateDTO;
-import br.com.logisticadbc.dto.CaminhaoDTO;
-import br.com.logisticadbc.dto.ViagemDTO;
+import br.com.logisticadbc.dto.*;
 import br.com.logisticadbc.entity.CaminhaoEntity;
+import br.com.logisticadbc.entity.ColaboradorEntity;
 import br.com.logisticadbc.entity.enums.StatusCaminhao;
+import br.com.logisticadbc.entity.enums.StatusUsuario;
 import br.com.logisticadbc.exceptions.BancoDeDadosException;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.repository.CaminhaoRepository;
@@ -22,8 +22,35 @@ import static java.util.stream.Collectors.toList;
 public class CaminhaoService {
 
     private final CaminhaoRepository caminhaoRepository;
+    private final ColaboradorService colaboradorService;
     private final ObjectMapper objectMapper;
 
+
+    public List<CaminhaoDTO> listar() {
+        return caminhaoRepository.findAll()
+                .stream()
+                .map(colaborador -> objectMapper.convertValue(colaborador, CaminhaoDTO.class))
+                .toList();
+    }
+
+    public CaminhaoDTO criar(Integer idColaborador, CaminhaoCreateDTO caminhaoCreateDTO) throws RegraDeNegocioException {
+        ColaboradorEntity colaboradorEntity = colaboradorService.buscarPorId(idColaborador);
+
+        CaminhaoEntity caminhaoEntity = objectMapper.convertValue(caminhaoCreateDTO, CaminhaoEntity.class);
+        caminhaoEntity.setStatusCaminhao(StatusCaminhao.ESTACIONADO);
+
+        caminhaoEntity.setColaborador(colaboradorEntity);
+
+        caminhaoRepository.save(caminhaoEntity);
+
+        CaminhaoDTO caminhaoDTO = objectMapper.convertValue(caminhaoEntity, CaminhaoDTO.class);
+
+        return caminhaoDTO;
+    }
+
+
+}
+/*
     public CaminhaoDTO adicionar(CaminhaoCreateDTO caminhao) throws BancoDeDadosException {
         CaminhaoEntity caminhaoEntity = objectMapper.convertValue(caminhao, CaminhaoEntity.class);
         CaminhaoEntity caminhaoSalvo = caminhaoRepository.adicionar(caminhaoEntity);
