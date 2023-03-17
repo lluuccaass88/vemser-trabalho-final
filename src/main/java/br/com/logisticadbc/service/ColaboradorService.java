@@ -52,6 +52,7 @@ public class ColaboradorService {
         }
     }
 
+<<<<<<< HEAD
     public ColaboradorDTO update (Integer idUsuario, ColaboradorCreateDTO colaboradorCreateDTO)
             throws RegraDeNegocioException {
         try {
@@ -67,6 +68,8 @@ public class ColaboradorService {
         }
     }
 
+=======
+>>>>>>> e15312e2c738f1588b19dd2d91455721415374d1
     public ColaboradorEntity buscarPorId(Integer idUsuario) throws RegraDeNegocioException{
         return colaboradorRepository.findById(idUsuario)
                 .orElseThrow(() -> new RegraDeNegocioException("Colaborador não encontrado"));

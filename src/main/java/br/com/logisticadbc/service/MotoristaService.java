@@ -43,17 +43,16 @@ public class MotoristaService {
         // regra de negocio -> ao criar um motorista ele ja esta ativo e disponivel
         try {
             MotoristaEntity motoristaEntity = objectMapper.convertValue(motoristaCreateDTO, MotoristaEntity.class);
-            log.info("MotoristaEntity: {}", motoristaEntity);
 
             motoristaEntity.setStatusUsuario(StatusUsuario.ATIVO);
             motoristaEntity.setStatusMotorista(StatusMotorista.DISPONIVEL);
-
             motoristaRepository.save(motoristaEntity);
-
+            log.info("MotoristaEntity: {}", motoristaEntity);
             MotoristaDTO motoristaDTO = objectMapper.convertValue(motoristaEntity, MotoristaDTO.class);
 
             return motoristaDTO;
         } catch (Exception e) {
+            e.printStackTrace();
             throw new RegraDeNegocioException("Aconteceu algum problema durante a criação.");
         }
     }

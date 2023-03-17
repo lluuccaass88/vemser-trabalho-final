@@ -1,29 +1,62 @@
-/*
+
 package br.com.logisticadbc.service;
 
-import br.com.logisticadbc.dto.CaminhaoCreateDTO;
-import br.com.logisticadbc.dto.CaminhaoDTO;
-import br.com.logisticadbc.dto.ViagemDTO;
+import br.com.logisticadbc.dto.*;
 import br.com.logisticadbc.entity.CaminhaoEntity;
+import br.com.logisticadbc.entity.ColaboradorEntity;
 import br.com.logisticadbc.entity.enums.StatusCaminhao;
+import br.com.logisticadbc.entity.enums.StatusUsuario;
 import br.com.logisticadbc.exceptions.BancoDeDadosException;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.repository.CaminhaoRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class CaminhaoService {
 
     private final CaminhaoRepository caminhaoRepository;
+    private final ColaboradorService colaboradorService;
     private final ObjectMapper objectMapper;
 
+
+    public List<CaminhaoDTO> listar() {
+        return caminhaoRepository.findAll()
+                .stream()
+                .map(caminhao -> objectMapper.convertValue(caminhao, CaminhaoDTO.class))
+                .toList();
+    }
+
+    public CaminhaoDTO criar(Integer idColaborador, CaminhaoCreateDTO caminhaoCreateDTO) throws RegraDeNegocioException {
+        try{
+            ColaboradorEntity colaboradorEntity = colaboradorService.buscarPorId(idColaborador);
+
+            CaminhaoEntity caminhaoEntity = objectMapper.convertValue(caminhaoCreateDTO, CaminhaoEntity.class);
+            caminhaoEntity.setStatusCaminhao(StatusCaminhao.ESTACIONADO);
+
+            caminhaoEntity.setColaborador(colaboradorEntity);
+
+            log.info("Caminhao dados: " + caminhaoEntity);
+
+            caminhaoRepository.save(caminhaoEntity);
+
+            return objectMapper.convertValue(caminhaoEntity, CaminhaoDTO.class);
+        }catch (Exception e) {
+            throw new RegraDeNegocioException("Aconteceu algum problema durante a criação.");
+        }
+    }
+
+
+}
+/*
     public CaminhaoDTO adicionar(CaminhaoCreateDTO caminhao) throws BancoDeDadosException {
         CaminhaoEntity caminhaoEntity = objectMapper.convertValue(caminhao, CaminhaoEntity.class);
         CaminhaoEntity caminhaoSalvo = caminhaoRepository.adicionar(caminhaoEntity);
