@@ -5,6 +5,7 @@ import br.com.logisticadbc.dto.ColaboradorCreateDTO;
 import br.com.logisticadbc.dto.ColaboradorDTO;
 import br.com.logisticadbc.entity.ColaboradorEntity;
 import br.com.logisticadbc.entity.enums.StatusUsuario;
+import br.com.logisticadbc.exceptions.BancoDeDadosException;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.repository.ColaboradorRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -32,13 +33,21 @@ public class ColaboradorService {
                 .toList();
     }
 
-    public ColaboradorDTO criar(ColaboradorCreateDTO colaboradorCreateDTO) {
-        ColaboradorEntity colaboradorEntity = objectMapper.convertValue(colaboradorCreateDTO, ColaboradorEntity.class);
-        colaboradorEntity.setStatusUsuario(StatusUsuario.ATIVO);
+    // TODO - fazer senha nao retornar no dto
+    // TODO - fazer com que id nao incremente quando der erro
+    public ColaboradorDTO criar(ColaboradorCreateDTO colaboradorCreateDTO) throws RegraDeNegocioException {
+        try {
+            ColaboradorEntity colaboradorEntity = objectMapper.convertValue(colaboradorCreateDTO, ColaboradorEntity.class);
 
-        colaboradorRepository.save(colaboradorEntity);
+            colaboradorEntity.setStatusUsuario(StatusUsuario.ATIVO);
 
-        return objectMapper.convertValue(colaboradorEntity, ColaboradorDTO.class);
+            colaboradorRepository.save(colaboradorEntity);
+
+            return objectMapper.convertValue(colaboradorEntity, ColaboradorDTO.class);
+
+        } catch (Exception e) {
+            throw new RegraDeNegocioException("Aconteceu algum problema durante a criação.");
+        }
     }
 
     private ColaboradorEntity buscarPorId(Integer idUsuario) throws RegraDeNegocioException{

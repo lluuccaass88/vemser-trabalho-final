@@ -22,10 +22,9 @@ public class ColaboradorCreateDTO {
     @Schema(description = "Usuário que será logado no sistema", example = "marcklen", required = true)
     private String usuario;
 
-    @NotNull
     @NotBlank
-    @Schema(description = "Senha do usuário", example = "123abc", required = true)
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @Schema(description = "Senha do usuário", example = "123abc")
+//    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY) //nao ta funcionando
     private String senha;
 
     @NotNull
