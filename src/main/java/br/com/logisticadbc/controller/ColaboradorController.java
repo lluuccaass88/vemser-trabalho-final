@@ -2,6 +2,7 @@ package br.com.logisticadbc.controller;
 
 import br.com.logisticadbc.dto.ColaboradorCreateDTO;
 import br.com.logisticadbc.dto.ColaboradorDTO;
+import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.service.ColaboradorService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +29,8 @@ public class ColaboradorController {
     }
 
     @PostMapping
-    public ResponseEntity<ColaboradorDTO> create (@Valid @RequestBody ColaboradorCreateDTO colaboradorCreateDTO) {
+    public ResponseEntity<ColaboradorDTO> create (@Valid @RequestBody ColaboradorCreateDTO colaboradorCreateDTO)
+            throws RegraDeNegocioException {
         return new ResponseEntity<>(colaboradorService.criar(colaboradorCreateDTO), HttpStatus.CREATED);
     }
 
