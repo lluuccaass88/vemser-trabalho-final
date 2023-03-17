@@ -2,6 +2,7 @@ package br.com.logisticadbc.service;
 
 import br.com.logisticadbc.dto.MotoristaCreateDTO;
 import br.com.logisticadbc.dto.MotoristaDTO;
+import br.com.logisticadbc.dto.MotoristaUpdateDTO;
 import br.com.logisticadbc.entity.MotoristaEntity;
 import br.com.logisticadbc.entity.enums.StatusMotorista;
 import br.com.logisticadbc.entity.enums.StatusUsuario;
@@ -22,10 +23,6 @@ public class MotoristaService {
     private final MotoristaRepository motoristaRepository;
     private final ObjectMapper objectMapper;
 
-    // TODO quando for criar ou alterar o motorista , verificar o status
-
-    // TODO CRUD completo nome metodos -> CRIAR , EDITAR, LISTAR, DELETAR E BUSCARPORID
-
     public List<MotoristaDTO> listar() {
         return motoristaRepository
                 .findAll()
@@ -39,8 +36,8 @@ public class MotoristaService {
                 .orElseThrow(() -> new RegraDeNegocioException("Motorista não encontrado"));
     }
 
+    // TODO - MODIFICAR A SENHA PARA NAO RETORNAR NO DTO
     public MotoristaDTO criar(MotoristaCreateDTO motoristaCreateDTO) throws RegraDeNegocioException {
-        // regra de negocio -> ao criar um motorista ele ja esta ativo e disponivel
         try {
             MotoristaEntity motoristaEntity = objectMapper.convertValue(motoristaCreateDTO, MotoristaEntity.class);
 
@@ -48,12 +45,44 @@ public class MotoristaService {
             motoristaEntity.setStatusMotorista(StatusMotorista.DISPONIVEL);
             motoristaRepository.save(motoristaEntity);
             log.info("MotoristaEntity: {}", motoristaEntity);
-            MotoristaDTO motoristaDTO = objectMapper.convertValue(motoristaEntity, MotoristaDTO.class);
 
-            return motoristaDTO;
+            return objectMapper.convertValue(motoristaEntity, MotoristaDTO.class);
+
         } catch (Exception e) {
             e.printStackTrace();
             throw new RegraDeNegocioException("Aconteceu algum problema durante a criação.");
+        }
+    }
+
+    public MotoristaDTO editar(Integer id, MotoristaUpdateDTO motoristaUpdateDTO) throws RegraDeNegocioException {
+        try {
+            MotoristaEntity motoristaEntity = buscarPorId(id);
+            motoristaEntity = objectMapper.convertValue(motoristaUpdateDTO, MotoristaEntity.class);
+
+            motoristaEntity.setNome(motoristaUpdateDTO.getNome());
+            motoristaEntity.setSenha(motoristaUpdateDTO.getSenha());
+
+            motoristaRepository.save(motoristaEntity);
+
+            return objectMapper.convertValue(motoristaEntity, MotoristaDTO.class);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RegraDeNegocioException("Aconteceu algum problema durante a edição.");
+        }
+    }
+
+
+    public void deletar(Integer id) throws RegraDeNegocioException {
+        try {
+            MotoristaEntity motoristaEntity = buscarPorId(id);
+            motoristaEntity.setStatusUsuario(StatusUsuario.INATIVO);
+
+            motoristaRepository.save(motoristaEntity);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RegraDeNegocioException("Aconteceu algum problema durante a exclusão.");
         }
     }
 }

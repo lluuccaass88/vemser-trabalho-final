@@ -2,8 +2,8 @@ package br.com.logisticadbc.controller;
 
 import br.com.logisticadbc.dto.MotoristaCreateDTO;
 import br.com.logisticadbc.dto.MotoristaDTO;
+import br.com.logisticadbc.dto.MotoristaUpdateDTO;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
-import br.com.logisticadbc.service.ColaboradorService;
 import br.com.logisticadbc.service.MotoristaService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,6 +31,18 @@ public class MotoristaController {
 
     @PostMapping
     public ResponseEntity<MotoristaDTO> create(@Valid @RequestBody MotoristaCreateDTO motoristaCreateDTO) throws RegraDeNegocioException {
-        return new ResponseEntity<>(motoristaService.criar(motoristaCreateDTO) , HttpStatus.CREATED);
+        return new ResponseEntity<>(motoristaService.criar(motoristaCreateDTO), HttpStatus.CREATED);
+    }
+
+    @PutMapping("/{idUsuario}")
+    public ResponseEntity<MotoristaDTO> update(@RequestParam Integer idUsuario,
+                                               @Valid @RequestBody MotoristaUpdateDTO motoristaUpdateDTO) throws RegraDeNegocioException {
+        return new ResponseEntity<>(motoristaService.editar(idUsuario, motoristaUpdateDTO), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{idUsuario}")
+    public ResponseEntity<Void> delete(@RequestParam Integer idUsuario) throws RegraDeNegocioException {
+        motoristaService.deletar(idUsuario);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
