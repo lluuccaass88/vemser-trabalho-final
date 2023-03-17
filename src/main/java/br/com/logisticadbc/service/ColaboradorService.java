@@ -22,6 +22,7 @@ public class ColaboradorService {
 
     private final ColaboradorRepository colaboradorRepository;
     private final ObjectMapper objectMapper;
+    private final EmailService emailService;
 
     public List<ColaboradorDTO> listar() {
         return colaboradorRepository.findAll()
@@ -38,6 +39,8 @@ public class ColaboradorService {
             colaboradorEntity.setStatusUsuario(StatusUsuario.ATIVO);
 
             colaboradorRepository.save(colaboradorEntity);
+
+            emailService.enviarEmailBoansVindasColabotador(colaboradorEntity);
 
             return objectMapper.convertValue(colaboradorEntity, ColaboradorDTO.class);
 
@@ -56,6 +59,8 @@ public class ColaboradorService {
             colaboradorEncontrado.setSenha(colaboradorUpdateDTO.getSenha());
 
             colaboradorRepository.save(colaboradorEncontrado);
+
+
 
             return objectMapper.convertValue(colaboradorEncontrado, ColaboradorDTO.class);
 

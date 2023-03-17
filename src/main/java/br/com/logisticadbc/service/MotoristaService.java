@@ -23,6 +23,8 @@ public class MotoristaService {
     private final MotoristaRepository motoristaRepository;
     private final ObjectMapper objectMapper;
 
+    private final EmailService emailService;
+
     public List<MotoristaDTO> listar() {
         return motoristaRepository
                 .findAll()
@@ -43,8 +45,11 @@ public class MotoristaService {
 
             motoristaEntity.setStatusUsuario(StatusUsuario.ATIVO);
             motoristaEntity.setStatusMotorista(StatusMotorista.DISPONIVEL);
+
             motoristaRepository.save(motoristaEntity);
             log.info("MotoristaEntity: {}", motoristaEntity);
+
+            emailService.enviarEmailBoansVindasMotorista(motoristaEntity);
 
             return objectMapper.convertValue(motoristaEntity, MotoristaDTO.class);
 
