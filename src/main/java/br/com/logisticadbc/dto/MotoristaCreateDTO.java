@@ -1,6 +1,7 @@
 package br.com.logisticadbc.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -24,7 +25,7 @@ public class MotoristaCreateDTO {
     @NotNull
     @NotBlank
     @Schema(description = "Senha que será usada no sistema", example = "cilada123", required = true)
-    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String senha;
 
     @NotNull
