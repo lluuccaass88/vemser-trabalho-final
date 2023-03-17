@@ -5,15 +5,16 @@ import br.com.logisticadbc.dto.ColaboradorCreateDTO;
 import br.com.logisticadbc.dto.ColaboradorDTO;
 import br.com.logisticadbc.entity.ColaboradorEntity;
 import br.com.logisticadbc.entity.enums.StatusUsuario;
-import br.com.logisticadbc.exceptions.BancoDeDadosException;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.repository.ColaboradorRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ColaboradorService {
@@ -43,15 +44,30 @@ public class ColaboradorService {
 
             colaboradorRepository.save(colaboradorEntity);
 
-            ColaboradorDTO colaboradorDTO = objectMapper.convertValue(colaboradorEntity, ColaboradorDTO.class);
-            return colaboradorDTO;
+            return objectMapper.convertValue(colaboradorEntity, ColaboradorDTO.class);
 
         } catch (Exception e) {
+            e.printStackTrace();
             throw new RegraDeNegocioException("Aconteceu algum problema durante a criação.");
         }
     }
 
-    private ColaboradorEntity buscarPorId(Integer idUsuario) throws RegraDeNegocioException{
+    public ColaboradorDTO update (Integer idUsuario, ColaboradorCreateDTO colaboradorCreateDTO)
+            throws RegraDeNegocioException {
+        try {
+            ColaboradorEntity colaboradorEncontrado = buscarPorId(idUsuario);
+
+            colaboradorEncontrado.setNome(colaboradorCreateDTO.getNome());
+            colaboradorEncontrado.setSenha(colaboradorCreateDTO.getSenha());
+            colaboradorEncontrado.set(colaboradorCreateDTO.getSenha());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RegraDeNegocioException("Aconteceu algum problema durante a criação.");
+        }
+    }
+
+    public ColaboradorEntity buscarPorId(Integer idUsuario) throws RegraDeNegocioException{
         return colaboradorRepository.findById(idUsuario)
                 .orElseThrow(() -> new RegraDeNegocioException("Colaborador não encontrado"));
     }

@@ -1,18 +1,14 @@
 package br.com.logisticadbc.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Data
-public class ColaboradorCreateDTO {
+public class ColaboradorUpdateDTO {
 
     @NotNull
     @NotBlank
@@ -24,6 +20,7 @@ public class ColaboradorCreateDTO {
     @Schema(description = "Usuário que será logado no sistema", example = "marcklen", required = true)
     private String usuario;
 
+    @NotNull
     @NotBlank
     @Schema(description = "Senha do usuário", example = "123abc")
 //    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY) //nao ta funcionando

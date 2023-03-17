@@ -11,7 +11,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity(name = "COLABORADOR")
-@EqualsAndHashCode(callSuper = false)
+//@EqualsAndHashCode(callSuper = false)
 public class ColaboradorEntity extends UsuarioEntity {
 
     private static final long serialVersionUID = 1L;
@@ -33,5 +33,4 @@ public class ColaboradorEntity extends UsuarioEntity {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "colaborador", orphanRemoval = true)
     @JsonIgnore
     private Set<PostoEntity> postos;
-
 }
