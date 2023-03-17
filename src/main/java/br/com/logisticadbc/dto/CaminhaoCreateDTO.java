@@ -17,8 +17,6 @@ public class CaminhaoCreateDTO {
     private String placa;
     @NotNull
     @Schema(description = "Quantidade de Gasolina no Caminhão", example = "20", required = true)
-    private Integer gasolina;
-    @NotNull
-    @Schema(description = "Se o caminhao já está viajando", example = "ESTACIONADO ou EM_VIAGEM", required = true)
-    private StatusCaminhao emViagem; // 1 - estacionado | 2 - em viagem
+    private Integer nivelCombustivel;
+
 }

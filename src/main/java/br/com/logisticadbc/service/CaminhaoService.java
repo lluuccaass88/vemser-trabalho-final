@@ -11,12 +11,14 @@ import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.repository.CaminhaoRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class CaminhaoService {
@@ -29,23 +31,27 @@ public class CaminhaoService {
     public List<CaminhaoDTO> listar() {
         return caminhaoRepository.findAll()
                 .stream()
-                .map(colaborador -> objectMapper.convertValue(colaborador, CaminhaoDTO.class))
+                .map(caminhao -> objectMapper.convertValue(caminhao, CaminhaoDTO.class))
                 .toList();
     }
 
     public CaminhaoDTO criar(Integer idColaborador, CaminhaoCreateDTO caminhaoCreateDTO) throws RegraDeNegocioException {
-        ColaboradorEntity colaboradorEntity = colaboradorService.buscarPorId(idColaborador);
+        try{
+            ColaboradorEntity colaboradorEntity = colaboradorService.buscarPorId(idColaborador);
 
-        CaminhaoEntity caminhaoEntity = objectMapper.convertValue(caminhaoCreateDTO, CaminhaoEntity.class);
-        caminhaoEntity.setStatusCaminhao(StatusCaminhao.ESTACIONADO);
+            CaminhaoEntity caminhaoEntity = objectMapper.convertValue(caminhaoCreateDTO, CaminhaoEntity.class);
+            caminhaoEntity.setStatusCaminhao(StatusCaminhao.ESTACIONADO);
 
-        caminhaoEntity.setColaborador(colaboradorEntity);
+            caminhaoEntity.setColaborador(colaboradorEntity);
 
-        caminhaoRepository.save(caminhaoEntity);
+            log.info("Caminhao dados: " + caminhaoEntity);
 
-        CaminhaoDTO caminhaoDTO = objectMapper.convertValue(caminhaoEntity, CaminhaoDTO.class);
+            caminhaoRepository.save(caminhaoEntity);
 
-        return caminhaoDTO;
+            return objectMapper.convertValue(caminhaoEntity, CaminhaoDTO.class);
+        }catch (Exception e) {
+            throw new RegraDeNegocioException("Aconteceu algum problema durante a criação.");
+        }
     }
 
 

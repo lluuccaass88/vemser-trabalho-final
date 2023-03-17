@@ -34,7 +34,7 @@ public class CaminhaoController {//implements ICaminhaoControllerDoc {
     }
 
     @PostMapping
-    public ResponseEntity<CaminhaoDTO> create (@RequestParam ("idColavorador") Integer idColaborador, @Valid @RequestBody CaminhaoCreateDTO caminhaoCreateDTO) throws RegraDeNegocioException {
+    public ResponseEntity<CaminhaoDTO> create (@RequestParam ("idColaborador") Integer idColaborador, @Valid @RequestBody CaminhaoCreateDTO caminhaoCreateDTO) throws RegraDeNegocioException {
         return new ResponseEntity<>(caminhaoService.criar(idColaborador, caminhaoCreateDTO), HttpStatus.CREATED);
     }
 }
