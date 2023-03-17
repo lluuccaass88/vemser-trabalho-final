@@ -74,7 +74,10 @@ public class PostoService {
             postoRepository.save(postoEntity);
             log.info("PostoEntity: {}", postoEntity);
 
-            return objectMapper.convertValue(postoEntity, PostoDTO.class);
+            PostoDTO postoDTO = objectMapper.convertValue(postoEntity, PostoDTO.class);
+            postoDTO.setIdUsuario(colaboradorEntity.getIdUsuario());
+
+            return postoDTO;
 
         } catch (Exception e) {
             e.printStackTrace();

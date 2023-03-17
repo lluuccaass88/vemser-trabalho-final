@@ -56,7 +56,9 @@ public class RotaService {
 
             rotaRepository.save(rotaEncontrada);
 
-            return objectMapper.convertValue(rotaEncontrada, RotaDTO.class);
+            RotaDTO rotaDTO = objectMapper.convertValue(rotaEncontrada, RotaDTO.class);
+            rotaDTO.setIdUsuario(colaboradorEncontrado.getIdUsuario());
+            return rotaDTO;
 
         } catch (Exception e) {
             e.printStackTrace();
