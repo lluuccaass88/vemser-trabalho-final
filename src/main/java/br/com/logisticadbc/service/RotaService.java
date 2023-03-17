@@ -1,8 +1,8 @@
-/*
 package br.com.logisticadbc.service;
 
 import br.com.logisticadbc.dto.RotaCreateDTO;
 import br.com.logisticadbc.dto.RotaDTO;
+import br.com.logisticadbc.entity.ColaboradorEntity;
 import br.com.logisticadbc.entity.RotaEntity;
 import br.com.logisticadbc.exceptions.BancoDeDadosException;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
@@ -13,107 +13,42 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
 @RequiredArgsConstructor
 @Service
 public class RotaService {
 
-    private  final RotaRepository rotaRepository;
+    private final RotaRepository rotaRepository;
     private final ObjectMapper objectMapper;
+    private final ColaboradorService colaboradorService;
 
-    public RotaDTO adicionaRota(RotaCreateDTO rota) throws RegraDeNegocioException, BancoDeDadosException {
-        try {
-            RotaEntity rotaEntity = objectMapper.convertValue(rota, RotaEntity.class);
+    public RotaDTO adicionaRota(Integer idColaborador, RotaCreateDTO rota) throws RegraDeNegocioException, BancoDeDadosException {
 
-            RotaEntity rotaAdicionada = rotaRepository.adicionar(rotaEntity);
-            adicionaRotaXPosto(rotaEntity);
+        ColaboradorEntity colaboradorEntity = colaboradorService.getColaborador(idColaborador);
 
-            return objectMapper.convertValue(rotaAdicionada, RotaDTO.class);
-        }catch (BancoDeDadosException e) {
-            throw new RegraDeNegocioException("Erro no banco de dados ao adicionar rota");
-        } catch (Exception e) {
-            throw new RegraDeNegocioException(e.getMessage());
-        }
-    }
+        RotaEntity rotaEntity = objectMapper.convertValue(rota, RotaEntity.class);
+        rotaEntity.setColaborador(colaboradorService.getColaborador(idColaborador));
+        rotaEntity = rotaRepository.save(rotaEntity);
 
-    public void adicionaRotaXPosto(RotaEntity rota) throws RegraDeNegocioException, BancoDeDadosException {
-        try {
-            for(int i = 0; i < rota.getListaIdPostoCadastrado().size(); i++){
-                rotaRepository.adicionarPostoXRota(rota.getIdRota(), rota.getListaIdPostoCadastrado().get(i));
-            }
-        } catch (BancoDeDadosException e) {
-            throw new RegraDeNegocioException("Erro no banco de dados ao adicionar o relacionamento de posto e rota");
-        }
-    }
-
-    public List<RotaDTO> listarRotas() throws RegraDeNegocioException {
-        try {
-            return rotaRepository.listar().stream()
-                    .map(rota -> objectMapper.convertValue(rota, RotaDTO.class))
-                    .collect(Collectors.toList());
-        } catch (BancoDeDadosException e ) {
-            throw new RegraDeNegocioException("Erro no banco de dados ao listar rotas");
-        }catch (Exception e){
-            throw new RegraDeNegocioException(e.getMessage());
-        }
-    }
-
-    public RotaDTO editarRota(Integer id, RotaCreateDTO rota) throws RegraDeNegocioException {
-        try {
-            RotaEntity rotaEntity = objectMapper.convertValue(rota, RotaEntity.class);
-            RotaEntity rotaEditada = rotaRepository.editar(id, rotaEntity);
-            return objectMapper.convertValue(rotaEditada, RotaDTO.class);
-        } catch (BancoDeDadosException e) {
-            throw new RegraDeNegocioException("Erro no banco de dados ao editar posto - " + e.getMessage());
-        }
-    }
-
-    public boolean removerRota(Integer id) throws RegraDeNegocioException {
-        try {
-            boolean conseguiuRemoverRelacionamento = rotaRepository.removerPostoXRota(id);
-            return rotaRepository.remover(id);
-        } catch (BancoDeDadosException e) {
-            e.printStackTrace();
-            throw new RegraDeNegocioException("Erro no banco de dados ao remover rota - " + e.getMessage());
-        }
-    }
-
-    public RotaEntity getRota(Integer id) throws RegraDeNegocioException, BancoDeDadosException {
-        return rotaRepository.listar().stream()
-                .filter(u -> u.getIdRota() == id)
-                .findFirst()
-                .orElseThrow(() -> new RegraDeNegocioException("Viagem não encontrada"));
+        RotaDTO rotaDTO = objectMapper.convertValue(rotaEntity, RotaDTO.class);
+        return rotaDTO;
     }
 
 
+    public List<RotaDTO> listarRotas() {
+        return rotaRepository.findAll()
+                .stream()
+                .map(rota -> objectMapper.convertValue(rota, RotaDTO.class))
+                .toList();
+    }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+//    public RotaDTO editarRota(Integer id, RotaCreateDTO rota) throws RegraDeNegocioException {
+//    }
 //
-
+//    public boolean removerRota(Integer id) throws RegraDeNegocioException {
 //
-
+//    }
 //
-//    public Rota retornaPorId(int index){
-//        try {
-//            Rota rota = rotaRepository.buscaPorId(index);
-//            return rota;
-//        } catch (BancoDeDadosException e) {
-//            e.printStackTrace();
-//        }
-//        return null;
+//    public RotaEntity getRota(Integer id) {
 //    }
 }
-*/

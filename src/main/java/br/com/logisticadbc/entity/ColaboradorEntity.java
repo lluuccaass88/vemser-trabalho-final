@@ -10,7 +10,7 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity(name = "COLABORADOR")
-public class ColaboradorEntity extends UsuarioEntity{
+public class ColaboradorEntity extends UsuarioEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "COLABORADOR_SEQ")
@@ -22,7 +22,7 @@ public class ColaboradorEntity extends UsuarioEntity{
     private String cpf;
 
     //RELACIONAMENTO COM CAMINHAO
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "colaborador", orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "colaborador", orphanRemoval = true)
     @JsonIgnore
     private Set<CaminhaoEntity> caminhoes;
 

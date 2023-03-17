@@ -8,14 +8,14 @@ import javax.persistence.*;
 
 @Getter
 @Setter
-@Entity(name = "USUARIO")
-public class UsuarioEntity {
+@MappedSuperclass
+public abstract class UsuarioEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "USUARIO_SEQ")
-    @SequenceGenerator(name = "USUARIO_SEQ", sequenceName = "seq_usuario", allocationSize = 1)
-    @Column(name = "id_usuario")
-    private Integer idUsuario;
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "USUARIO_SEQ")
+//    @SequenceGenerator(name = "USUARIO_SEQ", sequenceName = "seq_usuario", allocationSize = 1)
+//    @Column(name = "id_usuario")
+//    private Integer idUsuario;
 
     @Column(name = "nome")
     private String nome;

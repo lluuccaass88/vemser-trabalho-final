@@ -2,6 +2,7 @@ package br.com.logisticadbc.entity;
 
 import br.com.logisticadbc.entity.enums.StatusMotorista;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,10 +12,11 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity(name = "MOTORISTA")
-public class MotoristaEntity extends UsuarioEntity{
+public class MotoristaEntity extends UsuarioEntity {
+
+    private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "MOTORISTA_SEQ")
     @SequenceGenerator(name = "MOTORISTA_SEQ", sequenceName = "seq_motorista", allocationSize = 1)
     @Column(name = "id_motorista")
     private Integer idMotorista;

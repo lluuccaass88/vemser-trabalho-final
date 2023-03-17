@@ -1,8 +1,9 @@
-/*
+
 package br.com.logisticadbc.service;
 
 import br.com.logisticadbc.dto.UsuarioCreateDTO;
 import br.com.logisticadbc.dto.UsuarioDTO;
+import br.com.logisticadbc.entity.ColaboradorEntity;
 import br.com.logisticadbc.entity.UsuarioEntity;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.repository.ColaboradorRepository;
@@ -15,13 +16,18 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class UsuarioService {
-
+public class ColaboradorService {
     private final ColaboradorRepository colaboradorRepository;
     private final ObjectMapper objectMapper;
-    private final EmailService emailService;
-    private final RotaService rotaService;
 
+    public ColaboradorEntity getColaborador(Integer idColaborador) throws RegraDeNegocioException{
+        return colaboradorRepository.findById(idColaborador)
+                .orElseThrow(() -> new RegraDeNegocioException("Colaborador não encontrado"));
+    }
+}
+//    private final EmailService emailService;
+//    private final RotaService rotaService;
+/*
     public UsuarioDTO adicionar(UsuarioCreateDTO usuario) throws Exception {
 
         UsuarioEntity entity = objectMapper.convertValue(usuario, UsuarioEntity.class);
