@@ -71,7 +71,7 @@ public class EmailService {
         }
     }
 
-    public String getBoasVindasTemplate(String emailUsuario, String nomeUsuario, String mensagem, Integer op) throws IOException, TemplateException {
+    private String getBoasVindasTemplate(String emailUsuario, String nomeUsuario, String mensagem, Integer op) throws IOException, TemplateException {
         Map<String, Object> dados = new HashMap<>();
         dados.put("nome", "Sistema de Logística DBC Company");
         dados.put("emailUsuario", emailUsuario);
@@ -95,7 +95,7 @@ public class EmailService {
 
             String mensagem = "Foi atribuido a você uma nova viagem. Seguem os dados da viagem: ";
 
-            mimeMessageHelper.setText(getBoasVindasTemplate(motorista.getEmail(), motorista.getNome(), mensagem, op), true);
+            mimeMessageHelper.setText(getViagemTemplate(rota, motorista.getNome(), mensagem, op), true);
 
             emailSender.send(mimeMessageHelper.getMimeMessage());
         } catch (MessagingException | IOException | TemplateException e) {
@@ -103,10 +103,11 @@ public class EmailService {
         }
     }
 
-    public String getViagemTemplate(RotaEntity rota, String nomeUsuario) throws IOException, TemplateException {
+    private String getViagemTemplate(RotaEntity rota, String nomeUsuario,String mensagem, Integer op) throws IOException, TemplateException {
         Map<String, Object> dados = new HashMap<>();
         dados.put("nome", "Sistema de Logística DBC Company");
         dados.put("nomeUsuario", nomeUsuario);
+        dados.put("mensagem", mensagem);
         dados.put("rota", rota);
 
         Template template = fmConfiguration.getTemplate("email-template-viagem.ftl");
