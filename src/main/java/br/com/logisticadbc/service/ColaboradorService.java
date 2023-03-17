@@ -43,7 +43,8 @@ public class ColaboradorService {
 
             colaboradorRepository.save(colaboradorEntity);
 
-            return objectMapper.convertValue(colaboradorEntity, ColaboradorDTO.class);
+            ColaboradorDTO colaboradorDTO = objectMapper.convertValue(colaboradorEntity, ColaboradorDTO.class);
+            return colaboradorDTO;
 
         } catch (Exception e) {
             throw new RegraDeNegocioException("Aconteceu algum problema durante a criação.");
