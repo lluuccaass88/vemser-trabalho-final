@@ -1,4 +1,4 @@
-package br.com.logisticadbc.dto;
+package br.com.logisticadbc.dto.in;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;

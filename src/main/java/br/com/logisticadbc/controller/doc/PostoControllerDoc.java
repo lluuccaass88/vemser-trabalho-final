@@ -1,7 +1,7 @@
-package br.com.logisticadbc.controller.impl;
+package br.com.logisticadbc.controller.doc;
 
-import br.com.logisticadbc.dto.PostoCreateDTO;
-import br.com.logisticadbc.dto.PostoDTO;
+import br.com.logisticadbc.dto.in.PostoCreateDTO;
+import br.com.logisticadbc.dto.out.PostoDTO;
 import br.com.logisticadbc.exceptions.BancoDeDadosException;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import io.swagger.v3.oas.annotations.Operation;
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
-public interface IPostoControllerDoc {
+public interface PostoControllerDoc {
     @Operation(summary = "Listar Postos", description = "Lista todas os postos no banco de dados")
     @ApiResponses(
             value = {

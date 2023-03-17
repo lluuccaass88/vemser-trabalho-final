@@ -1,7 +1,7 @@
-package br.com.logisticadbc.controller.impl;
+package br.com.logisticadbc.controller.doc;
 
-import br.com.logisticadbc.dto.ViagemCreateDTO;
-import br.com.logisticadbc.dto.ViagemDTO;
+import br.com.logisticadbc.dto.in.ViagemCreateDTO;
+import br.com.logisticadbc.dto.out.ViagemDTO;
 import br.com.logisticadbc.exceptions.BancoDeDadosException;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import io.swagger.v3.oas.annotations.Operation;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import javax.validation.Valid;
 import java.util.List;
 
-public interface IUViagemControllerDoc {
+public interface ViagemControllerDoc {
     // EXEMPLO
     @Operation(summary = "Adicionar Viagem", description = "Adicionar uma viagem")
     @ApiResponses(

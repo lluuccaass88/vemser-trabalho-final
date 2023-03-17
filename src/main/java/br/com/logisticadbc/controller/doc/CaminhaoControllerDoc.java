@@ -1,7 +1,7 @@
-package br.com.logisticadbc.controller.impl;
+package br.com.logisticadbc.controller.doc;
 
-import br.com.logisticadbc.dto.CaminhaoCreateDTO;
-import br.com.logisticadbc.dto.CaminhaoDTO;
+import br.com.logisticadbc.dto.in.CaminhaoCreateDTO;
+import br.com.logisticadbc.dto.out.CaminhaoDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
-public interface ICaminhaoControllerDoc {
+public interface CaminhaoControllerDoc {
 
     @Operation(summary = "Adicionar Caminhão", description = "Adicionar um caminhão no banco de dados")
     @ApiResponses(

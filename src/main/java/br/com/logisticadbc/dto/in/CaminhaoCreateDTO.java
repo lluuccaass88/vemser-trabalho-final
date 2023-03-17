@@ -1,4 +1,4 @@
-package br.com.logisticadbc.dto;
+package br.com.logisticadbc.dto.in;
 
 import br.com.logisticadbc.entity.enums.StatusCaminhao;
 import io.swagger.v3.oas.annotations.media.Schema;

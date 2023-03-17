@@ -1,8 +1,8 @@
 package br.com.logisticadbc.controller;
 
-import br.com.logisticadbc.dto.ColaboradorCreateDTO;
-import br.com.logisticadbc.dto.ColaboradorDTO;
-import br.com.logisticadbc.dto.ColaboradorUpdateDTO;
+import br.com.logisticadbc.dto.in.ColaboradorCreateDTO;
+import br.com.logisticadbc.dto.out.ColaboradorDTO;
+import br.com.logisticadbc.dto.in.ColaboradorUpdateDTO;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.service.ColaboradorService;
 import lombok.RequiredArgsConstructor;

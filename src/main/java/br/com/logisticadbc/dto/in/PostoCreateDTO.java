@@ -1,4 +1,4 @@
-package br.com.logisticadbc.dto;
+package br.com.logisticadbc.dto.in;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;

@@ -1,7 +1,7 @@
-package br.com.logisticadbc.controller.impl;
+package br.com.logisticadbc.controller.doc;
 
-import br.com.logisticadbc.dto.ColaboradorCreateDTO;
-import br.com.logisticadbc.dto.ColaboradorDTO;
+import br.com.logisticadbc.dto.in.ColaboradorCreateDTO;
+import br.com.logisticadbc.dto.out.ColaboradorDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -13,7 +13,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 // classe responsável por documentar o controlador de usuários e definir os métodos que serão implementados
-public interface IUsuarioControllerDoc {
+public interface ColaboradorControllerDoc {
 
     // EXEMPLO
     @Operation(summary = "Adicionar Usuários", description = "Adicionar um usuário do tipo Colaborador ou Motorista")

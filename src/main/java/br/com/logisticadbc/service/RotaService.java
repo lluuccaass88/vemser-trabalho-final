@@ -1,18 +1,12 @@
 package br.com.logisticadbc.service;
 
-import br.com.logisticadbc.dto.RotaCreateDTO;
-import br.com.logisticadbc.dto.RotaDTO;
-import br.com.logisticadbc.entity.ColaboradorEntity;
-import br.com.logisticadbc.entity.RotaEntity;
-import br.com.logisticadbc.exceptions.BancoDeDadosException;
-import br.com.logisticadbc.exceptions.RegraDeNegocioException;
+import br.com.logisticadbc.dto.out.RotaDTO;
 import br.com.logisticadbc.repository.RotaRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service

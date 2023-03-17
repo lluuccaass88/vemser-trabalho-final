@@ -1,8 +1,8 @@
 package br.com.logisticadbc.service;
 
-import br.com.logisticadbc.dto.MotoristaCreateDTO;
-import br.com.logisticadbc.dto.MotoristaDTO;
-import br.com.logisticadbc.dto.MotoristaUpdateDTO;
+import br.com.logisticadbc.dto.in.MotoristaCreateDTO;
+import br.com.logisticadbc.dto.out.MotoristaDTO;
+import br.com.logisticadbc.dto.in.MotoristaUpdateDTO;
 import br.com.logisticadbc.entity.MotoristaEntity;
 import br.com.logisticadbc.entity.enums.StatusMotorista;
 import br.com.logisticadbc.entity.enums.StatusUsuario;

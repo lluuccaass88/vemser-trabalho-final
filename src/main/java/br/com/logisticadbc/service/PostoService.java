@@ -1,8 +1,8 @@
 /*
 package br.com.logisticadbc.service;
 
-import br.com.logisticadbc.dto.PostoCreateDTO;
-import br.com.logisticadbc.dto.PostoDTO;
+import br.com.logisticadbc.dto.in.PostoCreateDTO;
+import br.com.logisticadbc.dto.out.PostoDTO;
 import br.com.logisticadbc.entity.PostoEntity;
 import br.com.logisticadbc.exceptions.BancoDeDadosException;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;

@@ -1,9 +1,9 @@
 
 package br.com.logisticadbc.service;
 
-import br.com.logisticadbc.dto.ColaboradorCreateDTO;
-import br.com.logisticadbc.dto.ColaboradorDTO;
-import br.com.logisticadbc.dto.ColaboradorUpdateDTO;
+import br.com.logisticadbc.dto.in.ColaboradorCreateDTO;
+import br.com.logisticadbc.dto.out.ColaboradorDTO;
+import br.com.logisticadbc.dto.in.ColaboradorUpdateDTO;
 import br.com.logisticadbc.entity.ColaboradorEntity;
 import br.com.logisticadbc.entity.enums.StatusUsuario;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;

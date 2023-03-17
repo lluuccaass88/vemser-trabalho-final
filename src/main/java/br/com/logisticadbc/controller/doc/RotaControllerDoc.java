@@ -1,7 +1,7 @@
-package br.com.logisticadbc.controller.impl;
+package br.com.logisticadbc.controller.doc;
 
-import br.com.logisticadbc.dto.RotaCreateDTO;
-import br.com.logisticadbc.dto.RotaDTO;
+import br.com.logisticadbc.dto.in.RotaCreateDTO;
+import br.com.logisticadbc.dto.out.RotaDTO;
 import br.com.logisticadbc.exceptions.BancoDeDadosException;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import io.swagger.v3.oas.annotations.Operation;
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
-public interface IRotaControllerDoc {
+public interface RotaControllerDoc {
     @Operation(summary = "Listar Rotas", description = "Lista todas as rotas no banco de dados")
     @ApiResponses(
             value = {

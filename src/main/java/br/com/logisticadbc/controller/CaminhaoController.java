@@ -2,11 +2,8 @@
 package br.com.logisticadbc.controller;
 
 
-import br.com.logisticadbc.controller.impl.ICaminhaoControllerDoc;
-import br.com.logisticadbc.dto.CaminhaoCreateDTO;
-import br.com.logisticadbc.dto.CaminhaoDTO;
-import br.com.logisticadbc.dto.ColaboradorCreateDTO;
-import br.com.logisticadbc.dto.ColaboradorDTO;
+import br.com.logisticadbc.dto.in.CaminhaoCreateDTO;
+import br.com.logisticadbc.dto.out.CaminhaoDTO;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.service.CaminhaoService;
 import lombok.RequiredArgsConstructor;

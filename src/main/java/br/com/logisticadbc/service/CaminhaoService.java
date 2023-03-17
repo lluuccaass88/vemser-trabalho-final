@@ -1,12 +1,11 @@
 
 package br.com.logisticadbc.service;
 
-import br.com.logisticadbc.dto.*;
+import br.com.logisticadbc.dto.in.CaminhaoCreateDTO;
+import br.com.logisticadbc.dto.out.CaminhaoDTO;
 import br.com.logisticadbc.entity.CaminhaoEntity;
 import br.com.logisticadbc.entity.ColaboradorEntity;
 import br.com.logisticadbc.entity.enums.StatusCaminhao;
-import br.com.logisticadbc.entity.enums.StatusUsuario;
-import br.com.logisticadbc.exceptions.BancoDeDadosException;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.repository.CaminhaoRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -15,8 +14,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-
-import static java.util.stream.Collectors.toList;
 
 @Slf4j
 @RequiredArgsConstructor

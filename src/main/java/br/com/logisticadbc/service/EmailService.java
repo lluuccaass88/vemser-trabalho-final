@@ -2,7 +2,7 @@
 package br.com.logisticadbc.service;
 
 
-import br.com.logisticadbc.dto.RotaDTO;
+import br.com.logisticadbc.dto.out.RotaDTO;
 import br.com.logisticadbc.dto.UsuarioDTO;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import freemarker.template.Configuration;

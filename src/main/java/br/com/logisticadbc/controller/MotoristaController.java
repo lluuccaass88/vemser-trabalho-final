@@ -1,8 +1,8 @@
 package br.com.logisticadbc.controller;
 
-import br.com.logisticadbc.dto.MotoristaCreateDTO;
-import br.com.logisticadbc.dto.MotoristaDTO;
-import br.com.logisticadbc.dto.MotoristaUpdateDTO;
+import br.com.logisticadbc.dto.in.MotoristaCreateDTO;
+import br.com.logisticadbc.dto.out.MotoristaDTO;
+import br.com.logisticadbc.dto.in.MotoristaUpdateDTO;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.service.MotoristaService;
 import lombok.RequiredArgsConstructor;

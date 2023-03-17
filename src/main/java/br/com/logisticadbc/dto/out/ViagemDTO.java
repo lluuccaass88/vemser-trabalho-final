@@ -1,6 +1,6 @@
-package br.com.logisticadbc.dto;
+package br.com.logisticadbc.dto.out;
 
-import br.com.logisticadbc.entity.CaminhaoEntity;
+import br.com.logisticadbc.dto.in.ViagemCreateDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
