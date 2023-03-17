@@ -30,7 +30,7 @@ public class MotoristaController {
     }
 
     @PostMapping
-    public ResponseEntity<MotoristaDTO> create(@Valid @RequestBody MotoristaCreateDTO motoristaCreateDTO) {
+    public ResponseEntity<MotoristaDTO> create(@Valid @RequestBody MotoristaCreateDTO motoristaCreateDTO) throws RegraDeNegocioException {
         return new ResponseEntity<>(motoristaService.criar(motoristaCreateDTO) , HttpStatus.CREATED);
     }
 }

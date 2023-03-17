@@ -25,7 +25,7 @@ public class MotoristaCreateDTO {
     @NotNull
     @NotBlank
     @Schema(description = "Senha que será usada no sistema", example = "cilada123", required = true)
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+//    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String senha;
 
     @NotNull
@@ -38,8 +38,4 @@ public class MotoristaCreateDTO {
     @Size(min = 11, max = 11, message = "CNH deve conter 11 caracteres")
     @Schema(description = "CNH motorista para realizar viagens", example = "14525658963", required = true)
     private String cnh;
-
-    @NotNull
-    @Schema(description = "Status atual do Motorista", example = "0 - Disponivel ou 1 - Em Estrada", required = true)
-    private Integer status_motorista;
 }
