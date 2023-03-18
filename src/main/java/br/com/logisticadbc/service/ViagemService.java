@@ -39,14 +39,13 @@ public class ViagemService {
             CaminhaoEntity caminhaoEncontrado = caminhaoService.buscarPorId(viagemCreateDTO.getIdCaminhao());
 
             // Verificações
-            if (motoristaEncontrado.getStatus().equals(StatusGeral.INATIVO)) {
-                throw new RegraDeNegocioException("Usuário inativo!");
+            if (caminhaoEncontrado.getStatus().equals(StatusGeral.INATIVO)
+            || motoristaEncontrado.getStatus().equals(StatusGeral.INATIVO)) {
+                throw new RegraDeNegocioException("Entidades informadas inativas!");
 
-            } else if (motoristaEncontrado.getStatusMotorista().equals(StatusMotorista.EM_ESTRADA)) {
-                throw new RegraDeNegocioException("Motorista em estrada!");
-
-            } else if (caminhaoEncontrado.getStatusCaminhao().equals(StatusCaminhao.EM_VIAGEM)) {
-                throw new RegraDeNegocioException("Caminhão em viagem!");
+            } else if (caminhaoEncontrado.getStatusCaminhao().equals(StatusCaminhao.EM_VIAGEM)
+            || motoristaEncontrado.getStatusMotorista().equals(StatusMotorista.EM_ESTRADA)) {
+                throw new RegraDeNegocioException("Entidades informadas indisponíveis!");
 
             } else if (viagemCreateDTO.getDataFim().isBefore(viagemCreateDTO.getDataInicio())) {
                 throw new RegraDeNegocioException("Data final não pode ser antes da data inicial!");
@@ -84,12 +83,9 @@ public class ViagemService {
         try {
             ViagemEntity viagemEncontrada = buscarPorId(idViagem);
 
-            if (viagemEncontrada.getMotorista().getStatus().equals(StatusGeral.INATIVO)) {
-                throw new RegraDeNegocioException("Usuário inativo!");
-
-            } else if (viagemUpdateDTO.getDataFim().isBefore(viagemUpdateDTO.getDataInicio())) {
+           if (viagemUpdateDTO.getDataFim().isBefore(viagemUpdateDTO.getDataInicio())) {
                 throw new RegraDeNegocioException("Data final não pode ser antes da data inicial!");
-            }
+           }
 
             viagemEncontrada.setDescricao(viagemUpdateDTO.getDescricao());
             viagemEncontrada.setDataInicio(viagemUpdateDTO.getDataInicio());

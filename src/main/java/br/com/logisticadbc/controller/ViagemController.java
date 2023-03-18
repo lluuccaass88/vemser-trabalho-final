@@ -6,6 +6,7 @@ import br.com.logisticadbc.dto.in.ViagemUpdateDTO;
 import br.com.logisticadbc.dto.out.PageDTO;
 import br.com.logisticadbc.dto.out.ViagemDTO;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
+import br.com.logisticadbc.service.ValidacaoService;
 import br.com.logisticadbc.service.ViagemService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +26,7 @@ import java.util.List;
 public class ViagemController implements ViagemControllerDoc {
 
     private final ViagemService viagemService;
+    private final ValidacaoService validacaoService;
 
     @GetMapping
     public ResponseEntity<List<ViagemDTO>> listAll() throws RegraDeNegocioException {
@@ -41,6 +43,8 @@ public class ViagemController implements ViagemControllerDoc {
     public ResponseEntity<ViagemDTO> create(@RequestParam("idMotorista") Integer idUsuario,
                                             @Valid @RequestBody ViagemCreateDTO viagemCreateDTO)
             throws RegraDeNegocioException {
+
+        validacaoService.validacao(idUsuario, "motorista");
         return new ResponseEntity<>(viagemService.criar(idUsuario,viagemCreateDTO), HttpStatus.CREATED);
     }
 
