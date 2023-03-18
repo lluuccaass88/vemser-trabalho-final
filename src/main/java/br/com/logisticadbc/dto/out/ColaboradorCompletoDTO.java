@@ -21,11 +21,11 @@ public class ColaboradorCompletoDTO {
     private StatusUsuario statusUsuario;
     private String cpf;
 
-//    private Integer idCaminhao;
-//    private String modelo;
-//    private String placa;
-//    private Integer nivelCombustivel;
-//    private StatusCaminhao statusCaminhao;
+    private Integer idCaminhao;
+    private String modelo;
+    private String placa;
+    private Integer nivelCombustivel;
+    private StatusCaminhao statusCaminhao;
 
     Set<CaminhaoDTO> caminhaoes;
 

@@ -5,8 +5,10 @@ import br.com.logisticadbc.dto.in.ColaboradorCreateDTO;
 
 import br.com.logisticadbc.dto.out.CaminhaoDTO;
 import br.com.logisticadbc.dto.out.ColaboradorCompletoDTO;
+import br.com.logisticadbc.dto.out.ColaboradorCompletoListasDTO;
 import br.com.logisticadbc.dto.out.ColaboradorDTO;
 import br.com.logisticadbc.dto.in.ColaboradorUpdateDTO;
+import br.com.logisticadbc.entity.CaminhaoEntity;
 import br.com.logisticadbc.entity.ColaboradorEntity;
 import br.com.logisticadbc.entity.enums.StatusUsuario;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
@@ -36,8 +38,24 @@ public class ColaboradorService {
 
 
     public List<ColaboradorCompletoDTO> GerarRelatorio(){
-        return colaboradorRepository.relatorio();
+        CaminhaoEntity caminhaoEntity;
+        ColaboradorCompletoListasDTO colaboradorCompletoListasDTO;
+        List<ColaboradorCompletoDTO> colaboradorCompletoDTO = colaboradorRepository.relatorio();
+
+        for (ColaboradorCompletoDTO colaboradorCompleto : colaboradorCompletoDTO) {
+            caminhaoEntity.setIdCaminhao(colaboradorCompleto.getIdCaminhao());
+            caminhaoEntity.setModelo(colaboradorCompleto.getModelo());
+            caminhaoEntity.setPlaca(colaboradorCompleto.getPlaca());
+            caminhaoEntity.setNivelCombustivel(colaboradorCompleto.getNivelCombustivel());
+            caminhaoEntity.setStatusCaminhao(colaboradorCompleto.getStatusCaminhao());
+            colaboradorCompletoListasDTO.getCaminhoes(caminhaoEntity);
+        }
+
+        return null;
     }
+
+
+
 
     // TODO - fazer senha nao retornar no dto
 
@@ -93,7 +111,6 @@ public class ColaboradorService {
             throw new RegraDeNegocioException("Aconteceu algum problema durante a exclusão.");
         }
     }
-
 
     public ColaboradorDTO listarPorId(Integer idColaborador) throws RegraDeNegocioException {
         try {
