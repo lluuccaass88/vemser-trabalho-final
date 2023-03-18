@@ -39,7 +39,7 @@ public class ViagemService {
             CaminhaoEntity caminhaoEncontrado = caminhaoService.buscarPorId(viagemCreateDTO.getIdCaminhao());
 
             // Verificações
-            if (motoristaEncontrado.getStatusUsuario().equals(StatusGeral.INATIVO)) {
+            if (motoristaEncontrado.getStatus().equals(StatusGeral.INATIVO)) {
                 throw new RegraDeNegocioException("Usuário inativo!");
 
             } else if (motoristaEncontrado.getStatusMotorista().equals(StatusMotorista.EM_ESTRADA)) {
@@ -84,7 +84,7 @@ public class ViagemService {
         try {
             ViagemEntity viagemEncontrada = buscarPorId(idViagem);
 
-            if (viagemEncontrada.getMotorista().getStatusUsuario().equals(StatusGeral.INATIVO)) {
+            if (viagemEncontrada.getMotorista().getStatus().equals(StatusGeral.INATIVO)) {
                 throw new RegraDeNegocioException("Usuário inativo!");
 
             } else if (viagemUpdateDTO.getDataFim().isBefore(viagemUpdateDTO.getDataInicio())) {

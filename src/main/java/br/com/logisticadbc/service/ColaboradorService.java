@@ -35,7 +35,6 @@ public class ColaboradorService {
                 .toList();
     }
 
-
     public List<ColaboradorCompletoDTO> gerarRelatorioColaboradoresInformacoesCompletas(){
         return colaboradorRepository.relatorio();
     }
@@ -46,7 +45,7 @@ public class ColaboradorService {
         try {
             ColaboradorEntity colaboradorEntity = objectMapper.convertValue(colaboradorCreateDTO, ColaboradorEntity.class);
 
-            colaboradorEntity.setStatusUsuario(StatusGeral.ATIVO);
+            colaboradorEntity.setStatus(StatusGeral.ATIVO);
 
             colaboradorRepository.save(colaboradorEntity);
 
@@ -65,7 +64,7 @@ public class ColaboradorService {
         try {
             ColaboradorEntity colaboradorEncontrado = buscarPorId(idUsuario);
 
-            if (colaboradorEncontrado.getStatusUsuario().equals(StatusGeral.INATIVO)) {
+            if (colaboradorEncontrado.getStatus().equals(StatusGeral.INATIVO)) {
                 throw new RegraDeNegocioException("Usuário inativo!");
             }
 
@@ -85,7 +84,7 @@ public class ColaboradorService {
     public void deletar(Integer idUsuario) throws RegraDeNegocioException {
         try {
             ColaboradorEntity colaboradorEncontrado = buscarPorId(idUsuario);
-            colaboradorEncontrado.setStatusUsuario(StatusGeral.INATIVO);
+            colaboradorEncontrado.setStatus(StatusGeral.INATIVO);
 
             colaboradorRepository.save(colaboradorEncontrado);
 
