@@ -3,12 +3,10 @@ package br.com.logisticadbc.service;
 
 import br.com.logisticadbc.dto.in.ColaboradorCreateDTO;
 
-import br.com.logisticadbc.dto.out.CaminhaoDTO;
-import br.com.logisticadbc.dto.out.ColaboradorCompletoDTO;
 import br.com.logisticadbc.dto.out.ColaboradorDTO;
 import br.com.logisticadbc.dto.in.ColaboradorUpdateDTO;
 import br.com.logisticadbc.entity.ColaboradorEntity;
-import br.com.logisticadbc.entity.enums.StatusUsuario;
+import br.com.logisticadbc.entity.enums.StatusGeral;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.repository.ColaboradorRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -44,7 +42,7 @@ public class ColaboradorService {
         try {
             ColaboradorEntity colaboradorEntity = objectMapper.convertValue(colaboradorCreateDTO, ColaboradorEntity.class);
 
-            colaboradorEntity.setStatusUsuario(StatusUsuario.ATIVO);
+            colaboradorEntity.setStatusUsuario(StatusGeral.ATIVO);
 
             colaboradorRepository.save(colaboradorEntity);
 
@@ -63,7 +61,7 @@ public class ColaboradorService {
         try {
             ColaboradorEntity colaboradorEncontrado = buscarPorId(idUsuario);
 
-            if (colaboradorEncontrado.getStatusUsuario().equals(StatusUsuario.INATIVO)) {
+            if (colaboradorEncontrado.getStatusUsuario().equals(StatusGeral.INATIVO)) {
                 throw new RegraDeNegocioException("Usuário inativo!");
             }
 
@@ -83,7 +81,7 @@ public class ColaboradorService {
     public void deletar(Integer idUsuario) throws RegraDeNegocioException {
         try {
             ColaboradorEntity colaboradorEncontrado = buscarPorId(idUsuario);
-            colaboradorEncontrado.setStatusUsuario(StatusUsuario.INATIVO);
+            colaboradorEncontrado.setStatusUsuario(StatusGeral.INATIVO);
 
             colaboradorRepository.save(colaboradorEncontrado);
 

@@ -6,7 +6,7 @@ import br.com.logisticadbc.dto.in.MotoristaUpdateDTO;
 import br.com.logisticadbc.dto.out.PageDTO;
 import br.com.logisticadbc.entity.MotoristaEntity;
 import br.com.logisticadbc.entity.enums.StatusMotorista;
-import br.com.logisticadbc.entity.enums.StatusUsuario;
+import br.com.logisticadbc.entity.enums.StatusGeral;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.repository.MotoristaRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -34,7 +34,7 @@ public class MotoristaService {
     public MotoristaDTO criar(MotoristaCreateDTO motoristaCreateDTO) throws RegraDeNegocioException {
         try {
             MotoristaEntity motoristaEntity = objectMapper.convertValue(motoristaCreateDTO, MotoristaEntity.class);
-            motoristaEntity.setStatusUsuario(StatusUsuario.ATIVO);
+            motoristaEntity.setStatusUsuario(StatusGeral.ATIVO);
             motoristaEntity.setStatusMotorista(StatusMotorista.DISPONIVEL);
 
             motoristaRepository.save(motoristaEntity);
@@ -52,7 +52,7 @@ public class MotoristaService {
         try {
             MotoristaEntity motoristaEntity = buscarPorId(idUsuario);
 
-            if (motoristaEntity.getStatusUsuario().equals(StatusUsuario.INATIVO)) {
+            if (motoristaEntity.getStatusUsuario().equals(StatusGeral.INATIVO)) {
                 throw new RegraDeNegocioException("Usuário inativo!");
             }
 
@@ -72,7 +72,7 @@ public class MotoristaService {
     public void deletar(Integer idUsuario) throws RegraDeNegocioException {
         try {
             MotoristaEntity motoristaEntity = buscarPorId(idUsuario);
-            motoristaEntity.setStatusUsuario(StatusUsuario.INATIVO);
+            motoristaEntity.setStatusUsuario(StatusGeral.INATIVO);
 
             motoristaRepository.save(motoristaEntity);
 
@@ -118,7 +118,7 @@ public class MotoristaService {
 
         Page<MotoristaEntity> paginacaoMotorista = motoristaRepository
                 .findByStatusMotoristaEqualsAndStatusUsuarioEqualsOrderByNomeAsc(
-                solicitacaoPagina, StatusMotorista.DISPONIVEL, StatusUsuario.ATIVO);
+                solicitacaoPagina, StatusMotorista.DISPONIVEL, StatusGeral.ATIVO);
 
         List<MotoristaDTO> motoristaDTOList = paginacaoMotorista
                 .getContent()

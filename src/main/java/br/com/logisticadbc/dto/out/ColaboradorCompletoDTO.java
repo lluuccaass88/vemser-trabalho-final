@@ -1,12 +1,9 @@
 package br.com.logisticadbc.dto.out;
 
-import br.com.logisticadbc.entity.enums.StatusCaminhao;
-import br.com.logisticadbc.entity.enums.StatusUsuario;
+import br.com.logisticadbc.entity.enums.StatusGeral;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import javax.persistence.*;
-import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.util.Set;
 
@@ -18,7 +15,7 @@ public class ColaboradorCompletoDTO {
     private String nome;
     private String usuario;
     private String email;
-    private StatusUsuario statusUsuario;
+    private StatusGeral statusUsuario;
     private String cpf;
 
 //    private Integer idCaminhao;
