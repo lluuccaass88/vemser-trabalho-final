@@ -36,8 +36,8 @@ public abstract class UsuarioEntity implements Serializable {
     @Column(name = "email")
     private String email;
 
-    @Column(name = "status_usuario")
-    private StatusGeral statusUsuario; // 0 - INATIVO | 1 - ATIVO
+    @Column(name = "status")
+    private StatusGeral status; // 0 - INATIVO | 1 - ATIVO
 
     //Classe extendida por MOTORISTA e COLABORADOR
 }
