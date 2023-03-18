@@ -32,3 +32,5 @@ public class MotoristaEntity extends UsuarioEntity {
     @JsonIgnore
     private Set<ViagemEntity> viagens;
 }
+
+findBystatusMotoristaEqualsAnd

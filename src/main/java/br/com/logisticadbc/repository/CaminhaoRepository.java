@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CaminhaoRepository extends JpaRepository<CaminhaoEntity, Integer> {
 
-//    List<CaminhaoEntity> findBy
+    List<CaminhaoEntity> findByStatusCaminhaoEquals
 }

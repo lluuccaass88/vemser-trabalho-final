@@ -41,7 +41,7 @@ public class CaminhaoController implements CaminhaoControllerDoc {
         return new ResponseEntity<>( caminhaoService.abastecer(idCaminhao, gasolina), HttpStatus.OK);
     }
 
-    @GetMapping("/listar-por-id")
+    @GetMapping("/caminhoes-disponiveis")
     public ResponseEntity<List<CaminhaoDTO>> ListCaminhaoDisponivel(@RequestParam ("idCaminhao") Integer idCaminhao) throws Exception {
         return null; //ResponseEntity<>(caminhaoService.listarPorId(idCaminhao), HttpStatus.OK);
     }
@@ -54,7 +54,7 @@ public class CaminhaoController implements CaminhaoControllerDoc {
     @DeleteMapping
     public ResponseEntity<Void> delete(@RequestParam("idCaminhao") Integer id) throws Exception {
         caminhaoService.deletar(id);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.);
     }
 
 }
