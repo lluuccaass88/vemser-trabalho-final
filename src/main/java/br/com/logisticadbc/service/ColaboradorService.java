@@ -3,6 +3,7 @@ package br.com.logisticadbc.service;
 
 import br.com.logisticadbc.dto.in.ColaboradorCreateDTO;
 import br.com.logisticadbc.dto.out.CaminhaoDTO;
+import br.com.logisticadbc.dto.out.ColaboradorCompletoDTO;
 import br.com.logisticadbc.dto.out.ColaboradorDTO;
 import br.com.logisticadbc.dto.in.ColaboradorUpdateDTO;
 import br.com.logisticadbc.entity.CaminhaoEntity;
@@ -38,6 +39,10 @@ public class ColaboradorService {
         ColaboradorDTO colaboradorDTO = objectMapper.convertValue(colaboradorRecuperado, ColaboradorDTO.class);
         colaboradorDTO.setIdUsuario(idColaborador);
         return colaboradorDTO;
+    }
+
+    public List<ColaboradorCompletoDTO> GerarRelatorio(){
+        return colaboradorRepository.relatorio();
     }
 
     // TODO - fazer senha nao retornar no dto
