@@ -92,7 +92,7 @@ public class MotoristaService {
     }
 
     public List<MotoristaCompletoDTO> gerarRelatorioMotoristasInformacoesCompletas(){
-        return motoristaRepository.relatorio();
+        return null;//motoristaRepository.relatorio();
     }
 
     public MotoristaDTO listarPorId(Integer idMotorista) throws RegraDeNegocioException {

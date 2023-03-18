@@ -32,23 +32,23 @@ public interface MotoristaRepository extends JpaRepository<MotoristaEntity, Inte
     Page<MotoristaEntity> findByStatusMotoristaEqualsAndStatusEqualsOrderByNomeAsc (Pageable pageable,
                                                                                            StatusMotorista statusMotorista,
                                                                                           StatusGeral statusUsuario);
-    @Query( " SELECT DISTINCT new br.com.logisticadbc.dto.out.MotoristaCompletoDTO(" +
-            "   m.idUsuario, " +
-            "   m.nome, " +
-            "   m.usuario, " +
-            "   m.email, " +
-            "   m.status, " +
-            "   m.cnh, " +
-            "   m.statusMotorista, " +
-            "   v.idViagem, " +
-            "   v.descricao, " +
-            "   v.dataInicio, " +
-            "   v.dataFim, " +
-            "   v.statusViagem " +
-            ")" +
-            "   From MOTORISTA m " +
-            "   left join m.viagens v"
-    )
-    List<MotoristaCompletoDTO> relatorio(); //Mudar para paginação
+//    @Query( " SELECT DISTINCT new br.com.logisticadbc.dto.out.MotoristaCompletoDTO(" +
+//            "   m.idUsuario, " +
+//            "   m.nome, " +
+//            "   m.usuario, " +
+//            "   m.email, " +
+//            "   m.status, " +
+//            "   m.cnh, " +
+//            "   m.statusMotorista, " +
+//            "   v.idViagem, " +
+//            "   v.descricao, " +
+//            "   v.dataInicio, " +
+//            "   v.dataFim, " +
+//            "   v.statusViagem " +
+//            ")" +
+//            "   From MOTORISTA m " +
+//            "   left join m.viagens v"
+//    )
+    //List<MotoristaCompletoDTO> relatorio(); //Mudar para paginação
 
 }
