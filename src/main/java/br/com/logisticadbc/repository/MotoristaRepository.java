@@ -29,7 +29,7 @@ public interface MotoristaRepository extends JpaRepository<MotoristaEntity, Inte
             "    WHERE m.statusMotorista = ?1 " +
             "      AND m.status = ?2 " +
             " ORDER BY m.nome ASC" )
-    Page<MotoristaEntity> findByStatusMotoristaEqualsAndStatusUsuarioEqualsOrderByNomeAsc (Pageable pageable,
+    Page<MotoristaEntity> findByStatusMotoristaEqualsAndStatusEqualsOrderByNomeAsc (Pageable pageable,
                                                                                            StatusMotorista statusMotorista,
                                                                                           StatusGeral statusUsuario);
     @Query( " SELECT DISTINCT new br.com.logisticadbc.dto.out.MotoristaCompletoDTO(" +

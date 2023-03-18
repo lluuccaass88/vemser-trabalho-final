@@ -123,7 +123,7 @@ public class MotoristaService {
         Pageable solicitacaoPagina = PageRequest.of(pagina, tamanho);
 
         Page<MotoristaEntity> paginacaoMotorista = motoristaRepository
-                .findByStatusMotoristaEqualsAndStatusUsuarioEqualsOrderByNomeAsc(
+                .findByStatusMotoristaEqualsAndStatusEqualsOrderByNomeAsc(
                 solicitacaoPagina, StatusMotorista.DISPONIVEL, StatusGeral.ATIVO);
 
         List<MotoristaDTO> motoristaDTOList = paginacaoMotorista
