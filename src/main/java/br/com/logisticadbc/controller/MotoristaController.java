@@ -1,5 +1,6 @@
 package br.com.logisticadbc.controller;
 
+import br.com.logisticadbc.controller.doc.MotoristaControllerDoc;
 import br.com.logisticadbc.dto.in.MotoristaCreateDTO;
 import br.com.logisticadbc.dto.out.MotoristaDTO;
 import br.com.logisticadbc.dto.in.MotoristaUpdateDTO;
@@ -20,18 +21,18 @@ import java.util.List;
 @RequestMapping("/motorista")
 @Validated
 @Slf4j
-public class MotoristaController {
+public class MotoristaController implements MotoristaControllerDoc{
 
     private final MotoristaService motoristaService;
-
-    @GetMapping
-    public ResponseEntity<List<MotoristaDTO>> listAll() {
-        return ResponseEntity.ok(motoristaService.listar());
-    }
 
     @PostMapping
     public ResponseEntity<MotoristaDTO> create(@Valid @RequestBody MotoristaCreateDTO motoristaCreateDTO) throws RegraDeNegocioException {
         return new ResponseEntity<>(motoristaService.criar(motoristaCreateDTO), HttpStatus.CREATED);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<MotoristaDTO>> listAll() {
+        return ResponseEntity.ok(motoristaService.listar());
     }
 
     @PutMapping("/{idUsuario}")

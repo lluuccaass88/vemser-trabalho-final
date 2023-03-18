@@ -2,6 +2,7 @@ package br.com.logisticadbc.controller.doc;
 
 import br.com.logisticadbc.dto.in.CaminhaoCreateDTO;
 import br.com.logisticadbc.dto.out.CaminhaoDTO;
+import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -22,8 +23,7 @@ public interface CaminhaoControllerDoc {
             }
     )
     @PostMapping
-    public ResponseEntity<CaminhaoDTO> adicionar(@Valid @RequestBody CaminhaoCreateDTO caminhao) throws Exception;
-
+    ResponseEntity<CaminhaoDTO> create (@RequestParam ("idColaborador") Integer idColaborador, @Valid @RequestBody CaminhaoCreateDTO caminhaoCreateDTO) throws RegraDeNegocioException;
     @Operation(summary = "Listar Caminhões", description = "Listar os caminhões do banco de dados")
     @ApiResponses(
             value = {
@@ -33,41 +33,29 @@ public interface CaminhaoControllerDoc {
             }
     )
     @GetMapping
-    public ResponseEntity<List<CaminhaoDTO>> listar() throws Exception;
-
-    @Operation(summary = "Editar Caminhão", description = "Edita os dados do caminhão do banco de dados")
-    @ApiResponses(
-            value = {
-                    @ApiResponse(responseCode = "200", description = "Retorna os dados do Caminhão editado"),
-                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
-                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
-            }
-    )
-    @PutMapping("/{id}")
-    public ResponseEntity<CaminhaoDTO> editar(@PathVariable Integer id, @Valid @RequestBody CaminhaoCreateDTO caminhao) throws Exception;
+    public ResponseEntity<List<CaminhaoDTO>> listAll() throws Exception;
 
     @Operation(summary = "Deletar Caminhão", description = "Deletar Caminhão do banco de dados")
     @ApiResponses(
             value = {
-                    @ApiResponse(responseCode = "204", description = "Retorna a confirmação da exclusão do caminhão"),
+                    @ApiResponse(responseCode = "204", description = "Retorno positivo ao deletar motorista"),
                     @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletar(@PathVariable Integer id) throws Exception;
+    public ResponseEntity<Void> delete(@PathVariable Integer id) throws Exception;
 
-    @Operation(summary = "Abastecer caminhão", description = "Abastecer caminhão")
+    @Operation(summary = "Abastecer caminhão", description = "Abastecer o caminhão")
     @ApiResponses(
             value = {
-                    @ApiResponse(responseCode = "200", description = "Retorna a quantidade de gasolina alterada do caminhao no banco de dados"),
+                    @ApiResponse(responseCode = "200", description = "Retorna o caminhão abastecido"),
                     @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
     @PutMapping("/abastecer/{id}")
-    public ResponseEntity<CaminhaoDTO> abastecer(@PathVariable Integer id,  Integer gasolina) throws Exception;
-
+    public ResponseEntity<CaminhaoDTO> update(@RequestParam("idCaminhao") Integer idCaminhao, @RequestParam("Quantidade de gasolina") Integer gasolina) throws RegraDeNegocioException;
     @Operation(summary = "Listar caminhões disponiveis", description = "Listar caminhões disponiveis no banco de dados")
     @ApiResponses(
             value = {

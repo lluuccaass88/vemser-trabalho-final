@@ -2,6 +2,7 @@
 package br.com.logisticadbc.controller;
 
 
+import br.com.logisticadbc.controller.doc.CaminhaoControllerDoc;
 import br.com.logisticadbc.dto.in.CaminhaoCreateDTO;
 import br.com.logisticadbc.dto.out.CaminhaoDTO;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
@@ -21,7 +22,7 @@ import java.util.List;
 @RequestMapping("/caminhao") // http://localhost:8080/caminhao
 @Validated
 @Slf4j
-public class CaminhaoController {//implements ICaminhaoControllerDoc {
+public class CaminhaoController implements CaminhaoControllerDoc {
 
     private final CaminhaoService caminhaoService;
 
@@ -38,6 +39,11 @@ public class CaminhaoController {//implements ICaminhaoControllerDoc {
     @PutMapping("/abastecer")
     public ResponseEntity<CaminhaoDTO> update(@RequestParam("idCaminhao") Integer idCaminhao, @RequestParam("Quantidade de gasolina") Integer gasolina) throws RegraDeNegocioException {
         return new ResponseEntity<>( caminhaoService.abastecer(idCaminhao, gasolina), HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<List<CaminhaoDTO>> listarCaminhoesDisponiveis() throws Exception {
+        return null;
     }
 
     @DeleteMapping // DELETE localhost:8080/pessoa/10
