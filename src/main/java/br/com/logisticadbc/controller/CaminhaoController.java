@@ -23,9 +23,16 @@ import java.util.List;
 public class CaminhaoController implements CaminhaoControllerDoc {
 
     private final CaminhaoService caminhaoService;
+
     @GetMapping
     public ResponseEntity<List<CaminhaoDTO>> listAll() {
         return new ResponseEntity<>(caminhaoService.listar(), HttpStatus.OK);
+    }
+
+    @GetMapping("/buscar-por-id")
+    public ResponseEntity<CaminhaoDTO> findById(@RequestParam("idCaminhao") Integer idCaminhao)
+            throws RegraDeNegocioException {
+        return new ResponseEntity<>(caminhaoService.listarPorId(idCaminhao), HttpStatus.OK);
     }
 
     @PostMapping
@@ -42,19 +49,14 @@ public class CaminhaoController implements CaminhaoControllerDoc {
         return new ResponseEntity<>(caminhaoService.abastecer(idCaminhao, gasolina), HttpStatus.OK);
     }
 
-    @GetMapping("/buscar-por-id")
-    public ResponseEntity<CaminhaoDTO> findById(@RequestParam("idCaminhao") Integer idCaminhao) throws Exception {
-        return new ResponseEntity<>(caminhaoService.listarPorId(idCaminhao), HttpStatus.OK);
+    @DeleteMapping
+    public ResponseEntity<Void> delete(@RequestParam("idCaminhao") Integer idCaminhao) throws RegraDeNegocioException {
+        caminhaoService.deletar(idCaminhao);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @GetMapping("/listar-disponiveis")
     public ResponseEntity<List<CaminhaoDTO>> listAllAvaiablesTrucks() {
         return new ResponseEntity<>(caminhaoService.listarCaminhoesLivres(), HttpStatus.OK);
-    }
-
-    @DeleteMapping
-    public ResponseEntity<Void> delete(@RequestParam("idCaminhao") Integer id) throws Exception {
-        caminhaoService.deletar(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

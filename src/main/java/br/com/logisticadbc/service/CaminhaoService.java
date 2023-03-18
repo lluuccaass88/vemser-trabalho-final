@@ -70,7 +70,7 @@ public class CaminhaoService {
         }
     }
 
-    public void deletar(Integer idCaminhao) throws Exception {
+    public void deletar(Integer idCaminhao) throws RegraDeNegocioException {
         try {
             buscarPorId(idCaminhao);
 

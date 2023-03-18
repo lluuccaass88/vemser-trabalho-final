@@ -33,9 +33,9 @@ public class MotoristaController implements MotoristaControllerDoc {
     }
 
     @GetMapping("/buscar-por-id")
-    public ResponseEntity<MotoristaDTO> findById(@RequestParam("idMotorista") Integer idMotorista)
+    public ResponseEntity<MotoristaDTO> findById(@RequestParam("idUsuario") Integer idUsuario)
             throws RegraDeNegocioException {
-        return new ResponseEntity<>(motoristaService.listarPorId(idMotorista), HttpStatus.OK);
+        return new ResponseEntity<>(motoristaService.listarPorId(idUsuario), HttpStatus.OK);
     }
 
     @PostMapping

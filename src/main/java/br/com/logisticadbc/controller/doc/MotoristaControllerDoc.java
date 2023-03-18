@@ -3,6 +3,7 @@ package br.com.logisticadbc.controller.doc;
 import br.com.logisticadbc.dto.in.MotoristaCreateDTO;
 import br.com.logisticadbc.dto.in.MotoristaUpdateDTO;
 import br.com.logisticadbc.dto.out.MotoristaDTO;
+import br.com.logisticadbc.dto.out.PageDTO;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -34,7 +35,7 @@ public interface MotoristaControllerDoc {
             }
     )
     @GetMapping("/buscar-por-id")
-    ResponseEntity<MotoristaDTO> findById(@RequestParam("idMotorista") Integer idMotorista)
+    ResponseEntity<MotoristaDTO> findById(@RequestParam("idUsuario") Integer idUsuario)
             throws RegraDeNegocioException;
 
     @Operation(summary = "Adicionar motorista", description = "Adicionar um motorista no banco de dados")
@@ -49,7 +50,7 @@ public interface MotoristaControllerDoc {
     ResponseEntity<MotoristaDTO> create(@Valid @RequestBody MotoristaCreateDTO motoristaCreateDTO)
             throws RegraDeNegocioException;
 
-    @Operation(summary = "Edita motorista", description = "Edita um motorista no banco de dados")
+    @Operation(summary = "Editar motorista", description = "Edita um motorista no banco de dados")
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "200", description = "Retorna o motorista editado"),
@@ -70,5 +71,20 @@ public interface MotoristaControllerDoc {
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
+    @DeleteMapping("/{idUsuario}")
     ResponseEntity<Void> delete(@RequestParam Integer idUsuario) throws RegraDeNegocioException;
+
+    @Operation(summary = "Listar motoristas ativos e disponiveis",
+            description = "Lista todos os motoristas com esse filtro do banco de dados")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Retorna a lista de motoristas"),
+                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
+            }
+    )
+    @GetMapping("/paginacao-ativo-disponivel")
+    ResponseEntity<PageDTO<MotoristaDTO>> listAllPagination(
+            @RequestParam(value = "page") Integer pagina,
+            @RequestParam(value = "size") Integer tamanho);
 }

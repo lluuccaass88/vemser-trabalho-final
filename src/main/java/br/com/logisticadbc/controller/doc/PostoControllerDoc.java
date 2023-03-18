@@ -63,7 +63,7 @@ public interface PostoControllerDoc {
                                            @Valid @RequestBody PostoCreateDTO postoCreateDTO)
             throws RegraDeNegocioException ;
 
-    @Operation(summary = "Deleta Posto", description = "Deleta um posto do banco de dados")
+    @Operation(summary = "Deletar Posto", description = "Deleta um posto do banco de dados")
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "204", description = "Retorno positivo ao deletar a viagem"),
