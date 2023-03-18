@@ -3,6 +3,7 @@ package br.com.logisticadbc.service;
 import br.com.logisticadbc.dto.in.MotoristaCreateDTO;
 import br.com.logisticadbc.dto.out.MotoristaDTO;
 import br.com.logisticadbc.dto.in.MotoristaUpdateDTO;
+import br.com.logisticadbc.dto.out.PageDTO;
 import br.com.logisticadbc.entity.MotoristaEntity;
 import br.com.logisticadbc.entity.enums.StatusMotorista;
 import br.com.logisticadbc.entity.enums.StatusUsuario;
@@ -11,6 +12,9 @@ import br.com.logisticadbc.repository.MotoristaRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -90,5 +94,26 @@ public class MotoristaService {
     public void mudarStatus(MotoristaEntity motorista, StatusMotorista status) {
         motorista.setStatusMotorista(status);
         motoristaRepository.save(motorista);
+    }
+
+    public PageDTO<MotoristaDTO> listarMotoristaDisponivelEAtivoOrdenadoPorNomeAsc(Integer pagina, Integer tamanho) {
+        Pageable solicitacaoPagina = PageRequest.of(pagina, tamanho);
+
+        Page<MotoristaEntity> paginacaoMotorista = motoristaRepository.findByStatusMotoristaEqualsAndStatusUsuarioEqualsOrderByNomeAsc(
+                solicitacaoPagina, StatusMotorista.DISPONIVEL, StatusUsuario.ATIVO);
+
+        List<MotoristaDTO> motoristaDTOList = paginacaoMotorista
+                .getContent()
+                .stream()
+                .map(motorista -> objectMapper.convertValue(motorista, MotoristaDTO.class))
+                .toList();
+
+        return new PageDTO<>(
+                paginacaoMotorista.getTotalElements(),
+                paginacaoMotorista.getTotalPages(),
+                pagina,
+                tamanho,
+                motoristaDTOList
+        );
     }
 }
