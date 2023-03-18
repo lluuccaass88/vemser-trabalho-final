@@ -42,7 +42,7 @@ public class CaminhaoService {
         }
     }
 
-    public CaminhaoDTO abastecer(Integer idCaminhao, Integer gasolina) throws RegraDeNegocioException { //Fução utilizada para editar o status de caminhção. Chamada no finalizarViagem e criarViagem
+    public CaminhaoDTO abastecer(Integer idCaminhao, Integer gasolina) throws RegraDeNegocioException {
         try{
             CaminhaoEntity caminhaoRecuperado = buscarPorId(idCaminhao);
 
@@ -78,6 +78,19 @@ public class CaminhaoService {
                 .map(caminhao -> objectMapper.convertValue(caminhao, CaminhaoDTO.class))
                 .toList();
     }
+
+    public CaminhaoDTO ListarCaminhoesLivres(Integer idCaminhao) throws RegraDeNegocioException {
+
+
+
+        return null;
+    }
+
+//    public CaminhaoDTO listarPorId(Integer idCaminhao) throws RegraDeNegocioException {
+//        CaminhaoEntity caminhaoRecuperado = buscarPorId(idCaminhao);
+//        CaminhaoDTO caminhaoDTO = objectMapper.convertValue(caminhaoRecuperado, CaminhaoDTO.class);
+//        return caminhaoDTO;
+//    }
 
     public CaminhaoEntity buscarPorId(Integer idCaminhao) throws RegraDeNegocioException{
         return caminhaoRepository.findById(idCaminhao)

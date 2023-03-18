@@ -65,5 +65,5 @@ public interface CaminhaoControllerDoc {
             }
     )
     @GetMapping("/caminhoesdisponiveis")
-    public ResponseEntity<List<CaminhaoDTO>> listarCaminhoesDisponiveis() throws Exception;
+    public ResponseEntity<List<CaminhaoDTO>> ListCaminhaoDisponivel() throws Exception;
 }

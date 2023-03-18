@@ -41,8 +41,13 @@ public class CaminhaoController implements CaminhaoControllerDoc {
         return new ResponseEntity<>( caminhaoService.abastecer(idCaminhao, gasolina), HttpStatus.OK);
     }
 
-    @Override
-    public ResponseEntity<List<CaminhaoDTO>> listarCaminhoesDisponiveis() throws Exception {
+    @GetMapping("/listar-por-id")
+    public ResponseEntity<List<CaminhaoDTO>> ListCaminhaoDisponivel(@RequestParam ("idCaminhao") Integer idCaminhao) throws Exception {
+        return null; //ResponseEntity<>(caminhaoService.listarPorId(idCaminhao), HttpStatus.OK);
+    }
+
+    @GetMapping
+    public ResponseEntity<CaminhaoDTO> listarCaminhoesDisponiveis(@RequestParam ("idCaminhao") Integer idCaminhao) throws Exception {
         return null;
     }
 
