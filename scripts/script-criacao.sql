@@ -8,7 +8,7 @@ CREATE TABLE COLABORADOR (
     usuario VARCHAR2(100) UNIQUE NOT NULL,
     senha VARCHAR2(50) NOT NULL,
     email VARCHAR2(100) UNIQUE NOT NULL,
-    status_usuario NUMBER(1) NOT NULL,
+    status NUMBER(1) NOT NULL,
     cpf VARCHAR2(11) UNIQUE NOT NULL,
     PRIMARY KEY(id_usuario)
    
@@ -21,7 +21,7 @@ CREATE TABLE MOTORISTA (
     usuario VARCHAR2(100) UNIQUE NOT NULL,
     senha VARCHAR2(50) NOT NULL,
     email VARCHAR2(100) UNIQUE NOT NULL,
-    status_usuario NUMBER(1) NOT NULL,
+    status NUMBER(1) NOT NULL,
     cnh VARCHAR2(11) UNIQUE NOT NULL,
     status_motorista NUMBER(1) NOT NULL,
     PRIMARY KEY(id_usuario)
@@ -35,6 +35,7 @@ CREATE TABLE CAMINHAO (
     placa VARCHAR2(10) UNIQUE NOT NULL,
     nivel_combustivel NUMBER(3) NOT NULL,
     status_caminhao NUMBER(1) NOT NULL,
+    status NUMBER(1) NOT NULL,
     PRIMARY KEY(id_caminhao),
     CONSTRAINT FK_COLABORADOR_CAMINHAO FOREIGN KEY (id_usuario) REFERENCES COLABORADOR (id_usuario)
 );
@@ -45,6 +46,7 @@ CREATE TABLE ROTA (
     descricao VARCHAR2(100) NOT NULL,
 	local_partida VARCHAR2(100) NOT NULL,
 	local_destino VARCHAR2(100) NOT NULL,
+	status NUMBER(1) NOT NULL,
     PRIMARY KEY(id_rota),
     CONSTRAINT FK_COLABORADOR_ROTA FOREIGN KEY (id_usuario) REFERENCES COLABORADOR (id_usuario)
 );
@@ -54,6 +56,7 @@ CREATE TABLE POSTO (
     id_usuario NUMBER(10) NOT NULL,
     nome VARCHAR2(100) NOT NULL,
     valor_combustivel NUMBER(20,2) NOT NULL,
+    status NUMBER(1) NOT NULL,
     PRIMARY KEY(id_posto),
     CONSTRAINT FK_COLABORADOR_POSTO FOREIGN KEY (id_usuario) REFERENCES COLABORADOR (id_usuario)
 );
