@@ -6,6 +6,7 @@ import br.com.logisticadbc.dto.out.CaminhaoDTO;
 import br.com.logisticadbc.entity.CaminhaoEntity;
 import br.com.logisticadbc.entity.ColaboradorEntity;
 import br.com.logisticadbc.entity.enums.StatusCaminhao;
+import br.com.logisticadbc.entity.enums.StatusUsuario;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.repository.CaminhaoRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -30,6 +31,10 @@ public class CaminhaoService {
         try {
             ColaboradorEntity colaboradorEntity = colaboradorService.buscarPorId(idUsuario);
 
+            if (colaboradorEntity.getStatusUsuario().equals(StatusUsuario.INATIVO)) {
+                throw new RegraDeNegocioException("Usuário inativo!");
+            }
+
             CaminhaoEntity caminhaoEntity = objectMapper.convertValue(caminhaoCreateDTO, CaminhaoEntity.class);
             caminhaoEntity.setStatusCaminhao(StatusCaminhao.ESTACIONADO);
 
@@ -49,6 +54,7 @@ public class CaminhaoService {
 
             if (gasolina <= 0) {
                 throw new RegraDeNegocioException("A gasolina informada não pode ser menor ou igual a 0");
+
             } else if (caminhaoRecuperado.getNivelCombustivel() + gasolina > 100) {
                 throw new RegraDeNegocioException("Limite de gasolina excedido, por favor digite outro valor");
             }
@@ -58,14 +64,16 @@ public class CaminhaoService {
             caminhaoRepository.save(caminhaoRecuperado);
 
             return objectMapper.convertValue(caminhaoRecuperado, CaminhaoDTO.class);
+
         } catch (Exception e) {
             throw new RegraDeNegocioException(e.getMessage());
         }
     }
 
-    public void deletar(Integer idCaminhao) throws Exception {
+    public void deletar(Integer idCaminhao) throws RegraDeNegocioException {
         try {
             buscarPorId(idCaminhao);
+
             caminhaoRepository.deleteById(idCaminhao);
 
         } catch (Exception e) {
@@ -80,19 +88,25 @@ public class CaminhaoService {
                 .toList();
     }
 
+    public CaminhaoDTO listarPorId(Integer idCaminhao) throws RegraDeNegocioException {
+        try {
+            CaminhaoEntity caminhaoRecuperado = buscarPorId(idCaminhao);
+
+            CaminhaoDTO caminhaoDTO = objectMapper.convertValue(caminhaoRecuperado, CaminhaoDTO.class);
+            caminhaoDTO.setIdCaminhao(idCaminhao);
+            return caminhaoDTO;
+
+        } catch (Exception e) {
+            throw new RegraDeNegocioException("Aconteceu algum problema durante a listagem");
+        }
+    }
+
     public List<CaminhaoDTO> listarCaminhoesLivres() {
         return caminhaoRepository
                 .findByStatusCaminhaoEquals(StatusCaminhao.ESTACIONADO)
                 .stream()
                 .map(caminhao -> objectMapper.convertValue(caminhao, CaminhaoDTO.class))
                 .collect(Collectors.toList());
-    }
-
-    public CaminhaoDTO listarPorId(Integer idCaminhao) throws RegraDeNegocioException {
-        CaminhaoEntity caminhaoRecuperado = buscarPorId(idCaminhao);
-        CaminhaoDTO caminhaoDTO = objectMapper.convertValue(caminhaoRecuperado, CaminhaoDTO.class);
-        caminhaoDTO.setIdCaminhao(idCaminhao);
-        return caminhaoDTO;
     }
 
     public CaminhaoEntity buscarPorId(Integer idCaminhao) throws RegraDeNegocioException {

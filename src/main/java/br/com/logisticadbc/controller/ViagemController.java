@@ -1,8 +1,8 @@
 package br.com.logisticadbc.controller;
 
+import br.com.logisticadbc.controller.doc.ViagemControllerDoc;
 import br.com.logisticadbc.dto.in.ViagemCreateDTO;
 import br.com.logisticadbc.dto.in.ViagemUpdateDTO;
-import br.com.logisticadbc.dto.out.RotaDTO;
 import br.com.logisticadbc.dto.out.ViagemDTO;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.service.ViagemService;
@@ -21,7 +21,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/viagem")
-public class ViagemController /*implements IUViagemControllerDoc*/ {
+public class ViagemController implements ViagemControllerDoc {
 
     private final ViagemService viagemService;
 
@@ -31,7 +31,8 @@ public class ViagemController /*implements IUViagemControllerDoc*/ {
     }
 
     @GetMapping("/buscar-por-id")
-    public ResponseEntity<ViagemDTO> findById(@RequestParam("idViagem") Integer idViagem) throws Exception {
+    public ResponseEntity<ViagemDTO> findById(@RequestParam("idViagem") Integer idViagem)
+            throws RegraDeNegocioException {
         return new ResponseEntity<>(viagemService.listarPorId(idViagem), HttpStatus.OK);
     }
 

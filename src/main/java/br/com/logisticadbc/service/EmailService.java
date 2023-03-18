@@ -1,9 +1,6 @@
 
 package br.com.logisticadbc.service;
 
-
-import br.com.logisticadbc.dto.out.ColaboradorDTO;
-import br.com.logisticadbc.dto.out.MotoristaDTO;
 import br.com.logisticadbc.entity.ColaboradorEntity;
 import br.com.logisticadbc.entity.MotoristaEntity;
 import br.com.logisticadbc.entity.RotaEntity;
@@ -28,12 +25,12 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class EmailService {
 
-    private final Configuration fmConfiguration;
     @Value("${spring.mail.username}")
     private String from;
+    private final Configuration fmConfiguration;
     private final JavaMailSender emailSender;
 
-    public void enviarEmailBoansVindasColabotador(ColaboradorEntity colaborador) throws RegraDeNegocioException {
+    public void enviarEmailBoasVindasColabotador(ColaboradorEntity colaborador) throws RegraDeNegocioException {
         MimeMessage mimeMessage = emailSender.createMimeMessage();
         Integer op = 2;
         try {
@@ -52,7 +49,7 @@ public class EmailService {
         }
     }
 
-    public void enviarEmailBoansVindasMotorista(MotoristaEntity motorista) throws RegraDeNegocioException {
+    public void enviarEmailBoasVindasMotorista(MotoristaEntity motorista) throws RegraDeNegocioException {
         MimeMessage mimeMessage = emailSender.createMimeMessage();
         Integer op = 2;
         try {
@@ -61,17 +58,22 @@ public class EmailService {
             mimeMessageHelper.setTo(motorista.getEmail());
             mimeMessageHelper.setSubject("Bem vindo ao DBC Logística");
 
-            String mensagem = "E isto não seria possivel sem a contribuição dos nossos motoristas, que são peça chave neste processo!";
+            String mensagem = "E isto não seria possivel sem a contribuição dos nossos motoristas, " +
+                    "que são peça chave neste processo!";
 
-            mimeMessageHelper.setText(getBoasVindasTemplate(motorista.getEmail(), motorista.getNome(), mensagem, op), true);
+            mimeMessageHelper.setText(getBoasVindasTemplate(motorista.getEmail(), motorista.getNome(), mensagem, op),
+                    true);
 
             emailSender.send(mimeMessageHelper.getMimeMessage());
         } catch (MessagingException | IOException | TemplateException e) {
-            throw new RegraDeNegocioException("Erro ao enviar email para o motorsita: " + motorista.getNome() + e.getMessage());
+            throw new RegraDeNegocioException("Erro ao enviar email para o motorsita: " +
+                    motorista.getNome() + e.getMessage());
         }
     }
 
-    private String getBoasVindasTemplate(String emailUsuario, String nomeUsuario, String mensagem, Integer op) throws IOException, TemplateException {
+    private String getBoasVindasTemplate(String emailUsuario, String nomeUsuario, String mensagem, Integer op)
+            throws IOException, TemplateException {
+
         Map<String, Object> dados = new HashMap<>();
         dados.put("nome", "Sistema de Logística DBC Company");
         dados.put("emailUsuario", emailUsuario);
@@ -80,6 +82,7 @@ public class EmailService {
         dados.put("emailContato", "logistica.dbc@dbccompany.com.br");
 
         Template template = fmConfiguration.getTemplate("email-template-boas-vindas-usuario.ftl");
+
         String html = FreeMarkerTemplateUtils.processTemplateIntoString(template, dados);
         return html;
     }
@@ -98,12 +101,16 @@ public class EmailService {
             mimeMessageHelper.setText(getViagemTemplate(rota, motorista.getNome(), mensagem, op), true);
 
             emailSender.send(mimeMessageHelper.getMimeMessage());
+
         } catch (MessagingException | IOException | TemplateException e) {
-            throw new RegraDeNegocioException("Erro ao enviar email para o motorsita: " + motorista.getNome() + e.getMessage());
+            throw new RegraDeNegocioException("Erro ao enviar email para o motorsita: " +
+                    motorista.getNome() + e.getMessage());
         }
     }
 
-    private String getViagemTemplate(RotaEntity rota, String nomeUsuario,String mensagem, Integer op) throws IOException, TemplateException {
+    private String getViagemTemplate(RotaEntity rota, String nomeUsuario,String mensagem, Integer op)
+            throws IOException, TemplateException {
+
         Map<String, Object> dados = new HashMap<>();
         dados.put("nome", "Sistema de Logística DBC Company");
         dados.put("nomeUsuario", nomeUsuario);

@@ -140,7 +140,7 @@ public class ViagemService {
 
             viagemRepository.save(viagemEncontrada);
 
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             throw new RegraDeNegocioException("Aconteceu algum problema durante a finalização.");
         }
@@ -162,14 +162,21 @@ public class ViagemService {
     }
 
     public ViagemDTO listarPorId(Integer idViagem) throws RegraDeNegocioException {
-        ViagemEntity viagemRecuperada = buscarPorId(idViagem);
-        ViagemDTO viagemDTO = objectMapper.convertValue(viagemRecuperada, ViagemDTO.class);
-        viagemDTO.setStatusViagem(viagemRecuperada.getStatusViagem());
-        viagemDTO.setIdRota(viagemRecuperada.getRota().getIdRota());
-        viagemDTO.setIdCaminhao(viagemRecuperada.getCaminhao().getIdCaminhao());
-        viagemDTO.setIdUsuario(viagemRecuperada.getMotorista().getIdUsuario());
-        viagemDTO.setIdViagem(idViagem);
-        return viagemDTO;
+        try{
+            ViagemEntity viagemRecuperada = buscarPorId(idViagem);
+
+            ViagemDTO viagemDTO = objectMapper.convertValue(viagemRecuperada, ViagemDTO.class);
+            viagemDTO.setStatusViagem(viagemRecuperada.getStatusViagem());
+            viagemDTO.setIdRota(viagemRecuperada.getRota().getIdRota());
+            viagemDTO.setIdCaminhao(viagemRecuperada.getCaminhao().getIdCaminhao());
+            viagemDTO.setIdUsuario(viagemRecuperada.getMotorista().getIdUsuario());
+            viagemDTO.setIdViagem(idViagem);
+            return viagemDTO;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RegraDeNegocioException("Aconteceu algum problema durante a listagem.");
+        }
     }
 
     public ViagemEntity buscarPorId(Integer idViagem) throws RegraDeNegocioException {

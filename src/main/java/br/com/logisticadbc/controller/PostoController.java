@@ -30,21 +30,21 @@ public class PostoController implements PostoControllerDoc {
     }
 
     @GetMapping("/buscar-por-id")
-    public ResponseEntity<PostoDTO> findById(@RequestParam("idPosto") Integer idPosto) throws Exception {
+    public ResponseEntity<PostoDTO> findById(@RequestParam("idPosto") Integer idPosto) throws RegraDeNegocioException {
         return new ResponseEntity<>(postoService.listarPorId(idPosto), HttpStatus.OK);
     }
 
     @PostMapping
     public ResponseEntity<PostoDTO> create(@RequestParam("idColaborador") Integer idColaborador,
-                                           @Valid @RequestBody PostoCreateDTO postoCreateDTO) throws RegraDeNegocioException {
+                                           @Valid @RequestBody PostoCreateDTO postoCreateDTO)
+            throws RegraDeNegocioException {
         return new ResponseEntity<>(postoService.criar(idColaborador, postoCreateDTO), HttpStatus.CREATED);
     }
 
-
-
     @PutMapping("/{idPosto}")
     public ResponseEntity<PostoDTO> update(@RequestParam("idPosto") Integer idPosto,
-                                           @Valid @RequestBody PostoCreateDTO postoCreateDTO) throws RegraDeNegocioException {
+                                           @Valid @RequestBody PostoCreateDTO postoCreateDTO)
+            throws RegraDeNegocioException {
         return new ResponseEntity<>(postoService.editar(idPosto, postoCreateDTO), HttpStatus.OK);
     }
 
