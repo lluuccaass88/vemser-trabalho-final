@@ -3,7 +3,7 @@ package br.com.logisticadbc.entity.enums;
 import lombok.Getter;
 
 @Getter
-public enum StatusUsuario {
+public enum StatusGeral {
 
     INATIVO, ATIVO
 }

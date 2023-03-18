@@ -1,7 +1,6 @@
 package br.com.logisticadbc.entity;
 
-import br.com.logisticadbc.entity.enums.StatusUsuario;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import br.com.logisticadbc.entity.enums.StatusGeral;
 import lombok.*;
 
 import javax.persistence.*;
@@ -38,7 +37,7 @@ public abstract class UsuarioEntity implements Serializable {
     private String email;
 
     @Column(name = "status_usuario")
-    private StatusUsuario statusUsuario; // 0 - INATIVO | 1 - ATIVO
+    private StatusGeral statusUsuario; // 0 - INATIVO | 1 - ATIVO
 
     //Classe extendida por MOTORISTA e COLABORADOR
 }

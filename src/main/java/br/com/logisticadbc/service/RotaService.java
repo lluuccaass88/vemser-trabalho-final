@@ -7,7 +7,7 @@ import br.com.logisticadbc.dto.out.RotaDTO;
 import br.com.logisticadbc.entity.ColaboradorEntity;
 import br.com.logisticadbc.entity.PostoEntity;
 import br.com.logisticadbc.entity.RotaEntity;
-import br.com.logisticadbc.entity.enums.StatusUsuario;
+import br.com.logisticadbc.entity.enums.StatusGeral;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.repository.RotaRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -34,7 +34,7 @@ public class RotaService {
         try {
             ColaboradorEntity colaboradorEncontrado = colaboradorService.buscarPorId(idUsuario);
 
-            if (colaboradorEncontrado.getStatusUsuario().equals(StatusUsuario.INATIVO)) {
+            if (colaboradorEncontrado.getStatusUsuario().equals(StatusGeral.INATIVO)) {
                 throw new RegraDeNegocioException("Usuário inativo!");
             }
 

@@ -4,7 +4,7 @@ import br.com.logisticadbc.dto.in.PostoCreateDTO;
 import br.com.logisticadbc.dto.out.PostoDTO;
 import br.com.logisticadbc.entity.ColaboradorEntity;
 import br.com.logisticadbc.entity.PostoEntity;
-import br.com.logisticadbc.entity.enums.StatusUsuario;
+import br.com.logisticadbc.entity.enums.StatusGeral;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.repository.PostoRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -27,7 +27,7 @@ public class PostoService {
         try {
             ColaboradorEntity colaboradorEntity = colaboradorService.buscarPorId(idUsuario);
 
-            if (colaboradorEntity.getStatusUsuario().equals(StatusUsuario.INATIVO)) {
+            if (colaboradorEntity.getStatusUsuario().equals(StatusGeral.INATIVO)) {
                 throw new RegraDeNegocioException("Usuário inativo!");
             }
 

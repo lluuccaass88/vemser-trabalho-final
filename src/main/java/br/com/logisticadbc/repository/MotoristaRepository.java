@@ -3,7 +3,7 @@ package br.com.logisticadbc.repository;
 import br.com.logisticadbc.dto.out.MotoristaCompletoDTO;
 import br.com.logisticadbc.entity.MotoristaEntity;
 import br.com.logisticadbc.entity.enums.StatusMotorista;
-import br.com.logisticadbc.entity.enums.StatusUsuario;
+import br.com.logisticadbc.entity.enums.StatusGeral;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -31,8 +31,7 @@ public interface MotoristaRepository extends JpaRepository<MotoristaEntity, Inte
             " ORDER BY m.nome ASC" )
     Page<MotoristaEntity> findByStatusMotoristaEqualsAndStatusUsuarioEqualsOrderByNomeAsc (Pageable pageable,
                                                                                            StatusMotorista statusMotorista,
-                                                                                           StatusUsuario statusUsuario);
-
+                                                                                          StatusGeral statusUsuario);
     @Query( " SELECT DISTINCT new br.com.logisticadbc.dto.out.MotoristaCompletoDTO(" +
             "   m.idUsuario, " +
             "   m.nome, " +

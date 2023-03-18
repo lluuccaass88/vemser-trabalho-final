@@ -3,7 +3,6 @@ package br.com.logisticadbc.service;
 import br.com.logisticadbc.dto.in.ViagemCreateDTO;
 import br.com.logisticadbc.dto.in.ViagemUpdateDTO;
 import br.com.logisticadbc.dto.out.PageDTO;
-import br.com.logisticadbc.dto.out.RotaDTO;
 import br.com.logisticadbc.dto.out.ViagemDTO;
 import br.com.logisticadbc.entity.CaminhaoEntity;
 import br.com.logisticadbc.entity.MotoristaEntity;
@@ -11,7 +10,7 @@ import br.com.logisticadbc.entity.RotaEntity;
 import br.com.logisticadbc.entity.ViagemEntity;
 import br.com.logisticadbc.entity.enums.StatusCaminhao;
 import br.com.logisticadbc.entity.enums.StatusMotorista;
-import br.com.logisticadbc.entity.enums.StatusUsuario;
+import br.com.logisticadbc.entity.enums.StatusGeral;
 import br.com.logisticadbc.entity.enums.StatusViagem;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.repository.ViagemRepository;
@@ -40,7 +39,7 @@ public class ViagemService {
             CaminhaoEntity caminhaoEncontrado = caminhaoService.buscarPorId(viagemCreateDTO.getIdCaminhao());
 
             // Verificações
-            if (motoristaEncontrado.getStatusUsuario().equals(StatusUsuario.INATIVO)) {
+            if (motoristaEncontrado.getStatusUsuario().equals(StatusGeral.INATIVO)) {
                 throw new RegraDeNegocioException("Usuário inativo!");
 
             } else if (motoristaEncontrado.getStatusMotorista().equals(StatusMotorista.EM_ESTRADA)) {
@@ -85,7 +84,7 @@ public class ViagemService {
         try {
             ViagemEntity viagemEncontrada = buscarPorId(idViagem);
 
-            if (viagemEncontrada.getMotorista().getStatusUsuario().equals(StatusUsuario.INATIVO)) {
+            if (viagemEncontrada.getMotorista().getStatusUsuario().equals(StatusGeral.INATIVO)) {
                 throw new RegraDeNegocioException("Usuário inativo!");
 
             } else if (viagemUpdateDTO.getDataFim().isBefore(viagemUpdateDTO.getDataInicio())) {
