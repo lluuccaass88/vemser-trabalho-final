@@ -38,7 +38,7 @@ public class CaminhaoEntity {
     private ColaboradorEntity colaborador;
 
     //RELACIONAMENTO COM VIAGEM
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "caminhao", orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "caminhao")
     @JsonIgnore
     private Set<ViagemEntity> viagens;
 }

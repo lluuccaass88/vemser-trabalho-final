@@ -42,7 +42,7 @@ public class RotaEntity {
     private Set<PostoEntity> postos;
 
     //RELACIONAMENTO COM VIAGEM
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "rota", orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "rota")
     @JsonIgnore
     private Set<ViagemEntity> viagens;
 

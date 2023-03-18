@@ -27,8 +27,7 @@ public class MotoristaEntity extends UsuarioEntity {
     private StatusMotorista statusMotorista; // 0 - DISPONIVEL, 1 - EM_ESTRADA
 
     //RELACIONAMENTO COM VIAGEM
-    // regra de negócio -> one to many -> um motorista pode ter muitas viagens
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "motorista", orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "motorista")
     @JsonIgnore
     private Set<ViagemEntity> viagens;
 }
