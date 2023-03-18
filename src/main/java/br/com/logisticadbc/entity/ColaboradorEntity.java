@@ -11,7 +11,6 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity(name = "COLABORADOR")
-//@EqualsAndHashCode(callSuper = false)
 public class ColaboradorEntity extends UsuarioEntity {
 
     private static final long serialVersionUID = 1L;
@@ -20,7 +19,7 @@ public class ColaboradorEntity extends UsuarioEntity {
     private String cpf;
 
     //RELACIONAMENTO COM CAMINHAO
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "colaborador", orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "colaborador")
     @JsonIgnore
     private Set<CaminhaoEntity> caminhoes;
 
