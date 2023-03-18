@@ -2,6 +2,7 @@ package br.com.logisticadbc.controller;
 
 import br.com.logisticadbc.controller.doc.PostoControllerDoc;
 import br.com.logisticadbc.dto.in.PostoCreateDTO;
+import br.com.logisticadbc.dto.out.MotoristaDTO;
 import br.com.logisticadbc.dto.out.PostoDTO;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.service.PostoService;
@@ -28,11 +29,18 @@ public class PostoController implements PostoControllerDoc {
         return new ResponseEntity<>(postoService.listar(), HttpStatus.OK);
     }
 
+    @GetMapping("/buscar-por-id")
+    public ResponseEntity<PostoDTO> findById(@RequestParam("idPosto") Integer idPosto) throws Exception {
+        return new ResponseEntity<>(postoService.listarPorId(idPosto), HttpStatus.OK);
+    }
+
     @PostMapping
     public ResponseEntity<PostoDTO> create(@RequestParam("idColaborador") Integer idColaborador,
                                            @Valid @RequestBody PostoCreateDTO postoCreateDTO) throws RegraDeNegocioException {
         return new ResponseEntity<>(postoService.criar(idColaborador, postoCreateDTO), HttpStatus.CREATED);
     }
+
+
 
     @PutMapping("/{idPosto}")
     public ResponseEntity<PostoDTO> update(@RequestParam("idPosto") Integer idPosto,

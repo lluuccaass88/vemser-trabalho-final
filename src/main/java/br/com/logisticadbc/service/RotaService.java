@@ -1,8 +1,10 @@
 package br.com.logisticadbc.service;
 
 import br.com.logisticadbc.dto.in.RotaCreateDTO;
+import br.com.logisticadbc.dto.out.PostoDTO;
 import br.com.logisticadbc.dto.out.RotaDTO;
 import br.com.logisticadbc.entity.ColaboradorEntity;
+import br.com.logisticadbc.entity.PostoEntity;
 import br.com.logisticadbc.entity.RotaEntity;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.repository.RotaRepository;
@@ -87,6 +89,14 @@ public class RotaService {
                 .toList();
 
         return rotasDTO;
+    }
+
+    public RotaDTO listarPorId(Integer idRota) throws RegraDeNegocioException {
+        RotaEntity rotaRecuperado = buscarPorId(idRota);
+        RotaDTO rotaDTO = objectMapper.convertValue(rotaRecuperado, RotaDTO.class);
+        rotaDTO.setIdUsuario(rotaRecuperado.getColaborador().getIdUsuario());
+        rotaDTO.setIdRota(idRota);
+        return rotaDTO;
     }
 
     public RotaEntity buscarPorId(Integer idRota) throws RegraDeNegocioException {

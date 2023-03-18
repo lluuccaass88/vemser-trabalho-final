@@ -2,6 +2,7 @@ package br.com.logisticadbc.service;
 
 import br.com.logisticadbc.dto.in.ViagemCreateDTO;
 import br.com.logisticadbc.dto.in.ViagemUpdateDTO;
+import br.com.logisticadbc.dto.out.RotaDTO;
 import br.com.logisticadbc.dto.out.ViagemDTO;
 import br.com.logisticadbc.entity.CaminhaoEntity;
 import br.com.logisticadbc.entity.MotoristaEntity;
@@ -158,6 +159,17 @@ public class ViagemService {
                 .toList();
 
         return viagensDTO;
+    }
+
+    public ViagemDTO listarPorId(Integer idViagem) throws RegraDeNegocioException {
+        ViagemEntity viagemRecuperada = buscarPorId(idViagem);
+        ViagemDTO viagemDTO = objectMapper.convertValue(viagemRecuperada, ViagemDTO.class);
+        viagemDTO.setStatusViagem(viagemRecuperada.getStatusViagem());
+        viagemDTO.setIdRota(viagemRecuperada.getRota().getIdRota());
+        viagemDTO.setIdCaminhao(viagemRecuperada.getCaminhao().getIdCaminhao());
+        viagemDTO.setIdUsuario(viagemRecuperada.getMotorista().getIdUsuario());
+        viagemDTO.setIdViagem(idViagem);
+        return viagemDTO;
     }
 
     public ViagemEntity buscarPorId(Integer idViagem) throws RegraDeNegocioException {

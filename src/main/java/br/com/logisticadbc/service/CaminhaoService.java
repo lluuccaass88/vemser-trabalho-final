@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -26,7 +27,7 @@ public class CaminhaoService {
 
     public CaminhaoDTO criar(Integer idUsuario, CaminhaoCreateDTO caminhaoCreateDTO)
             throws RegraDeNegocioException {
-        try{
+        try {
             ColaboradorEntity colaboradorEntity = colaboradorService.buscarPorId(idUsuario);
 
             CaminhaoEntity caminhaoEntity = objectMapper.convertValue(caminhaoCreateDTO, CaminhaoEntity.class);
@@ -37,18 +38,18 @@ public class CaminhaoService {
             caminhaoRepository.save(caminhaoEntity);
 
             return objectMapper.convertValue(caminhaoEntity, CaminhaoDTO.class);
-        }catch (Exception e) {
+        } catch (Exception e) {
             throw new RegraDeNegocioException("Aconteceu algum problema durante a criação.");
         }
     }
 
     public CaminhaoDTO abastecer(Integer idCaminhao, Integer gasolina) throws RegraDeNegocioException {
-        try{
+        try {
             CaminhaoEntity caminhaoRecuperado = buscarPorId(idCaminhao);
 
-            if(gasolina <= 0){
+            if (gasolina <= 0) {
                 throw new RegraDeNegocioException("A gasolina informada não pode ser menor ou igual a 0");
-            }else if(caminhaoRecuperado.getNivelCombustivel() + gasolina > 100){
+            } else if (caminhaoRecuperado.getNivelCombustivel() + gasolina > 100) {
                 throw new RegraDeNegocioException("Limite de gasolina excedido, por favor digite outro valor");
             }
 
@@ -57,17 +58,17 @@ public class CaminhaoService {
             caminhaoRepository.save(caminhaoRecuperado);
 
             return objectMapper.convertValue(caminhaoRecuperado, CaminhaoDTO.class);
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new RegraDeNegocioException(e.getMessage());
         }
     }
 
     public void deletar(Integer idCaminhao) throws Exception {
-        try{
+        try {
             buscarPorId(idCaminhao);
             caminhaoRepository.deleteById(idCaminhao);
 
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new RegraDeNegocioException("Aconteceu algum problema durante a exclusão");
         }
     }
@@ -79,20 +80,22 @@ public class CaminhaoService {
                 .toList();
     }
 
-    public CaminhaoDTO ListarCaminhoesLivres(Integer idCaminhao) throws RegraDeNegocioException {
-
-
-
-        return null;
+    public List<CaminhaoDTO> listarCaminhoesLivres() {
+        return caminhaoRepository
+                .findByStatusCaminhaoEquals(StatusCaminhao.ESTACIONADO)
+                .stream()
+                .map(caminhao -> objectMapper.convertValue(caminhao, CaminhaoDTO.class))
+                .collect(Collectors.toList());
     }
 
-//    public CaminhaoDTO listarPorId(Integer idCaminhao) throws RegraDeNegocioException {
-//        CaminhaoEntity caminhaoRecuperado = buscarPorId(idCaminhao);
-//        CaminhaoDTO caminhaoDTO = objectMapper.convertValue(caminhaoRecuperado, CaminhaoDTO.class);
-//        return caminhaoDTO;
-//    }
+    public CaminhaoDTO listarPorId(Integer idCaminhao) throws RegraDeNegocioException {
+        CaminhaoEntity caminhaoRecuperado = buscarPorId(idCaminhao);
+        CaminhaoDTO caminhaoDTO = objectMapper.convertValue(caminhaoRecuperado, CaminhaoDTO.class);
+        caminhaoDTO.setIdCaminhao(idCaminhao);
+        return caminhaoDTO;
+    }
 
-    public CaminhaoEntity buscarPorId(Integer idCaminhao) throws RegraDeNegocioException{
+    public CaminhaoEntity buscarPorId(Integer idCaminhao) throws RegraDeNegocioException {
         return caminhaoRepository.findById(idCaminhao)
                 .orElseThrow(() -> new RegraDeNegocioException("Caminhao não encontrado"));
     }
@@ -101,5 +104,4 @@ public class CaminhaoService {
         caminhao.setStatusCaminhao(status);
         caminhaoRepository.save(caminhao);
     }
-
 }

@@ -33,7 +33,7 @@ public interface CaminhaoControllerDoc {
             }
     )
     @GetMapping
-    public ResponseEntity<List<CaminhaoDTO>> listAll() throws Exception;
+    ResponseEntity<List<CaminhaoDTO>> listAll() throws Exception;
 
     @Operation(summary = "Deletar Caminhão", description = "Deletar Caminhão do banco de dados")
     @ApiResponses(
@@ -44,7 +44,7 @@ public interface CaminhaoControllerDoc {
             }
     )
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Integer id) throws Exception;
+    ResponseEntity<Void> delete(@PathVariable Integer id) throws Exception;
 
     @Operation(summary = "Abastecer caminhão", description = "Abastecer o caminhão")
     @ApiResponses(
@@ -55,7 +55,7 @@ public interface CaminhaoControllerDoc {
             }
     )
     @PutMapping("/abastecer/{id}")
-    public ResponseEntity<CaminhaoDTO> update(@RequestParam("idCaminhao") Integer idCaminhao, @RequestParam("Quantidade de gasolina") Integer gasolina) throws RegraDeNegocioException;
+    ResponseEntity<CaminhaoDTO> update(@RequestParam("idCaminhao") Integer idCaminhao, @RequestParam("Quantidade de gasolina") Integer gasolina) throws RegraDeNegocioException;
     @Operation(summary = "Listar caminhões disponiveis", description = "Listar caminhões disponiveis no banco de dados")
     @ApiResponses(
             value = {
@@ -65,5 +65,5 @@ public interface CaminhaoControllerDoc {
             }
     )
     @GetMapping("/caminhoesdisponiveis")
-    public ResponseEntity<List<CaminhaoDTO>> ListCaminhaoDisponivel() throws Exception;
+    ResponseEntity<List<CaminhaoDTO>> listAllAvaiablesTrucks() throws Exception;
 }

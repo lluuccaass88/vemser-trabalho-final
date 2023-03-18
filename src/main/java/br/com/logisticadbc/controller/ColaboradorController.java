@@ -2,6 +2,7 @@ package br.com.logisticadbc.controller;
 
 import br.com.logisticadbc.controller.doc.ColaboradorControllerDoc;
 import br.com.logisticadbc.dto.in.ColaboradorCreateDTO;
+import br.com.logisticadbc.dto.out.CaminhaoDTO;
 import br.com.logisticadbc.dto.out.ColaboradorDTO;
 import br.com.logisticadbc.dto.in.ColaboradorUpdateDTO;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
@@ -34,6 +35,11 @@ public class ColaboradorController implements ColaboradorControllerDoc {
     public ResponseEntity<ColaboradorDTO> create(@Valid @RequestBody ColaboradorCreateDTO colaboradorCreateDTO)
             throws RegraDeNegocioException {
         return new ResponseEntity<>(colaboradorService.criar(colaboradorCreateDTO), HttpStatus.CREATED);
+    }
+
+    @GetMapping("/buscar-por-id")
+    public ResponseEntity<ColaboradorDTO> findById(@RequestParam("idColaborador") Integer idColaborador) throws Exception {
+        return new ResponseEntity<>(colaboradorService.listarPorId(idColaborador), HttpStatus.OK);
     }
 
     @PutMapping("/{idUsuario}")
