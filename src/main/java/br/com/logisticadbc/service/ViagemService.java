@@ -2,6 +2,7 @@ package br.com.logisticadbc.service;
 
 import br.com.logisticadbc.dto.in.ViagemCreateDTO;
 import br.com.logisticadbc.dto.in.ViagemUpdateDTO;
+import br.com.logisticadbc.dto.out.PageDTO;
 import br.com.logisticadbc.dto.out.RotaDTO;
 import br.com.logisticadbc.dto.out.ViagemDTO;
 import br.com.logisticadbc.entity.CaminhaoEntity;
@@ -16,6 +17,9 @@ import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.repository.ViagemRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -162,7 +166,7 @@ public class ViagemService {
     }
 
     public ViagemDTO listarPorId(Integer idViagem) throws RegraDeNegocioException {
-        try{
+        try {
             ViagemEntity viagemRecuperada = buscarPorId(idViagem);
 
             ViagemDTO viagemDTO = objectMapper.convertValue(viagemRecuperada, ViagemDTO.class);
@@ -184,4 +188,29 @@ public class ViagemService {
                 .orElseThrow(() -> new RegraDeNegocioException("Viagem não encontrada"));
     }
 
+    public PageDTO<ViagemDTO> listarPorStatusOrdenadoPorDataInicioAsc(Integer pagina, Integer tamanho) {
+        Pageable solicitacaoPagina = PageRequest.of(pagina, tamanho);
+
+        Page<ViagemEntity> paginacaoViagens = viagemRepository.findByStatusViagemEqualsOrderBOrderByDataInicioAsc(
+                solicitacaoPagina, StatusViagem.EM_ANDAMENTO);
+
+        List<ViagemDTO> viagensDTOList = paginacaoViagens
+                .getContent()
+                .stream()
+                .map(viagem -> {
+                    ViagemDTO viagemDTO = objectMapper.convertValue(viagem, ViagemDTO.class);
+                    viagemDTO.setIdUsuario(viagem.getMotorista().getIdUsuario());
+                    viagemDTO.setIdCaminhao(viagem.getCaminhao().getIdCaminhao());
+                    viagemDTO.setIdRota(viagem.getRota().getIdRota());
+                return viagemDTO;
+                }).toList();
+
+        return new PageDTO<>(
+                paginacaoViagens.getTotalElements(),
+                paginacaoViagens.getTotalPages(),
+                pagina,
+                tamanho,
+                viagensDTOList
+        );
+    }
 }
