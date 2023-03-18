@@ -26,8 +26,8 @@ public class ColaboradorCompletoDTO {
     private String placa;
     private Integer nivelCombustivel;
     private StatusCaminhao statusCaminhao;
-
-    Set<CaminhaoDTO> caminhaoes;
+//
+//    Set<CaminhaoDTO> caminhaoes;
 
     private Integer idRota;
     private String descricao;

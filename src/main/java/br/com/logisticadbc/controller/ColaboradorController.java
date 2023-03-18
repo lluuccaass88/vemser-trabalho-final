@@ -39,8 +39,8 @@ public class ColaboradorController implements ColaboradorControllerDoc {
     }
 
 
-    @GetMapping
-    public ResponseEntity<List<ColaboradorCompletoDTO>> generateReport() {
+    @GetMapping("/relatorio")
+    public ResponseEntity<List<ColaboradorCompletoDTO>> generateReport() throws RegraDeNegocioException {
         return new ResponseEntity<>(colaboradorService.GerarRelatorio(), HttpStatus.OK);
     }
 

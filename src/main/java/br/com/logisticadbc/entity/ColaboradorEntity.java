@@ -25,12 +25,12 @@ public class ColaboradorEntity extends UsuarioEntity {
     private Set<CaminhaoEntity> caminhoes;
 
     //RELACIONAMENTO COM ROTA
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "colaborador", orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "colaborador")
     @JsonIgnore
     private Set<RotaEntity> rotas;
 
     //RELACIONAMENTO COM POSTO
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "colaborador", orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "colaborador")
     @JsonIgnore
     private Set<PostoEntity> postos;
 }

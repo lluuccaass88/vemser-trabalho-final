@@ -1,8 +1,11 @@
 package br.com.logisticadbc.service;
 
 import br.com.logisticadbc.dto.in.RotaCreateDTO;
+import br.com.logisticadbc.dto.out.PostoDTO;
+import br.com.logisticadbc.dto.out.RotaComPostosDTO;
 import br.com.logisticadbc.dto.out.RotaDTO;
 import br.com.logisticadbc.entity.ColaboradorEntity;
+import br.com.logisticadbc.entity.PostoEntity;
 import br.com.logisticadbc.entity.RotaEntity;
 import br.com.logisticadbc.entity.enums.StatusUsuario;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
@@ -13,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -22,8 +26,9 @@ public class RotaService {
     // TODO fazer metodo de cadastrar posto em rota
 
     private final RotaRepository rotaRepository;
-    private final ObjectMapper objectMapper;
     private final ColaboradorService colaboradorService;
+    private final PostoService postoService;
+    private final ObjectMapper objectMapper;
 
     public RotaDTO criar(Integer idUsuario, RotaCreateDTO rotaCreateDTO) throws RegraDeNegocioException {
         try {
@@ -107,6 +112,46 @@ public class RotaService {
             rotaDTO.setIdUsuario(rotaRecuperado.getColaborador().getIdUsuario());
             rotaDTO.setIdRota(idRota);
             return rotaDTO;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RegraDeNegocioException("Aconteceu algum problema durante a listagem.");
+        }
+    }
+
+    public void cadastrarPosto(Integer idRota, Integer idPosto) throws RegraDeNegocioException {
+        try {
+            RotaEntity rotaEncontrada = buscarPorId(idRota);
+            PostoEntity postoEncontrado = postoService.buscarPorId(idPosto);
+
+            rotaEncontrada.getPostos().add(postoEncontrado);
+            postoEncontrado.getRotas().add(rotaEncontrada);
+
+            rotaRepository.save(rotaEncontrada);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RegraDeNegocioException("Aconteceu algum problema durante o cadastro.");
+        }
+    }
+
+    public RotaComPostosDTO listarPostosCadastrados(Integer idRota) throws RegraDeNegocioException {
+        try {
+            RotaEntity rotaEncontrada = buscarPorId(idRota);
+
+            RotaComPostosDTO rotaComPostosDTO = objectMapper.convertValue(rotaEncontrada, RotaComPostosDTO.class);
+            rotaComPostosDTO.setIdUsuario(rotaEncontrada.getColaborador().getIdUsuario());
+
+            rotaComPostosDTO.setPostos(rotaEncontrada.getPostos()
+                    .stream()
+                    .map(posto -> { // Converte postos para DTO
+                        PostoDTO postoDTO = objectMapper.convertValue(posto, PostoDTO.class);
+                        postoDTO.setIdUsuario(posto.getColaborador().getIdUsuario());
+                        return postoDTO;
+                    })
+                    .collect(Collectors.toSet()));
+
+            return rotaComPostosDTO;
 
         } catch (Exception e) {
             e.printStackTrace();

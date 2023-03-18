@@ -38,19 +38,6 @@ public class ColaboradorService {
 
 
     public List<ColaboradorCompletoDTO> GerarRelatorio(){
-        CaminhaoEntity caminhaoEntity;
-        ColaboradorCompletoListasDTO colaboradorCompletoListasDTO;
-        List<ColaboradorCompletoDTO> colaboradorCompletoDTO = colaboradorRepository.relatorio();
-
-        for (ColaboradorCompletoDTO colaboradorCompleto : colaboradorCompletoDTO) {
-            caminhaoEntity.setIdCaminhao(colaboradorCompleto.getIdCaminhao());
-            caminhaoEntity.setModelo(colaboradorCompleto.getModelo());
-            caminhaoEntity.setPlaca(colaboradorCompleto.getPlaca());
-            caminhaoEntity.setNivelCombustivel(colaboradorCompleto.getNivelCombustivel());
-            caminhaoEntity.setStatusCaminhao(colaboradorCompleto.getStatusCaminhao());
-            colaboradorCompletoListasDTO.getCaminhoes(caminhaoEntity);
-        }
-
         return null;
     }
 
@@ -58,6 +45,11 @@ public class ColaboradorService {
 
 
     // TODO - fazer senha nao retornar no dto
+
+//    public List<ColaboradorCompletoDTO> GerarRelatorio(){
+//        return colaboradorRepository.relatorio();
+//    }
+
 
     public ColaboradorDTO criar(ColaboradorCreateDTO colaboradorCreateDTO) throws RegraDeNegocioException {
         try {
@@ -99,7 +91,7 @@ public class ColaboradorService {
         }
     }
 
-    public void deletar (Integer idUsuario) throws RegraDeNegocioException {
+    public void deletar(Integer idUsuario) throws RegraDeNegocioException {
         try {
             ColaboradorEntity colaboradorEncontrado = buscarPorId(idUsuario);
             colaboradorEncontrado.setStatusUsuario(StatusUsuario.INATIVO);

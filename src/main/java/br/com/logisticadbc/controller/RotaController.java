@@ -2,6 +2,7 @@ package br.com.logisticadbc.controller;
 
 import br.com.logisticadbc.controller.doc.RotaControllerDoc;
 import br.com.logisticadbc.dto.in.RotaCreateDTO;
+import br.com.logisticadbc.dto.out.RotaComPostosDTO;
 import br.com.logisticadbc.dto.out.RotaDTO;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.service.ColaboradorService;
@@ -54,5 +55,19 @@ public class RotaController implements RotaControllerDoc {
     public ResponseEntity<Void> delete(@RequestParam("idRota") Integer idRota) throws RegraDeNegocioException {
         rotaService.deletar(idRota);
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/cadastrar-posto")
+    public ResponseEntity<Void> linkEntities(@RequestParam("idRota") Integer idRota,
+                                             @RequestParam("idPosto") Integer idPosto)
+            throws RegraDeNegocioException {
+        rotaService.cadastrarPosto(idRota, idPosto);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/listar-postos-cadastrados")
+    public ResponseEntity<RotaComPostosDTO> listLink(@RequestParam("idRota") Integer idRota)
+            throws RegraDeNegocioException {
+        return new ResponseEntity<>(rotaService.listarPostosCadastrados(idRota), HttpStatus.OK);
     }
 }
