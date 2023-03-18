@@ -10,7 +10,7 @@ import java.util.List;
 
 @Repository
 public interface ColaboradorRepository extends JpaRepository<ColaboradorEntity, Integer> {
-    @Query( " SELECT new br.com.logisticadbc.dto.out.ColaboradorCompletoDTO(" +
+    @Query( " SELECT DISTINCT new br.com.logisticadbc.dto.out.ColaboradorCompletoDTO(" +
             "   c.idUsuario, " +
             "   c.nome, " +
             "   c.usuario, " +
@@ -35,5 +35,5 @@ public interface ColaboradorRepository extends JpaRepository<ColaboradorEntity, 
             "   left join c.rotas r " +
             "   left join c.postos p "
     )
-    List<ColaboradorCompletoDTO> relatorio();
+    List<ColaboradorCompletoDTO> relatorio(); //Mudar para paginação
 }

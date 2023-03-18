@@ -38,12 +38,10 @@ public class ColaboradorController implements ColaboradorControllerDoc {
         return new ResponseEntity<>(colaboradorService.listarPorId(idColaborador), HttpStatus.OK);
     }
 
-
-    @GetMapping("/relatorio")
-    public ResponseEntity<List<ColaboradorCompletoDTO>> generateReport() throws RegraDeNegocioException {
-        return new ResponseEntity<>(colaboradorService.GerarRelatorio(), HttpStatus.OK);
+    @GetMapping("/relatorio-completo")
+    public ResponseEntity<List<ColaboradorCompletoDTO>> generateReportComplete() {
+        return new ResponseEntity<>(colaboradorService.gerarRelatorioColaboradoresInformacoesCompletas(), HttpStatus.OK);
     }
-
 
     @PostMapping
     public ResponseEntity<ColaboradorDTO> create(@Valid @RequestBody ColaboradorCreateDTO colaboradorCreateDTO)

@@ -3,12 +3,9 @@ package br.com.logisticadbc.service;
 
 import br.com.logisticadbc.dto.in.ColaboradorCreateDTO;
 
-import br.com.logisticadbc.dto.out.CaminhaoDTO;
 import br.com.logisticadbc.dto.out.ColaboradorCompletoDTO;
-import br.com.logisticadbc.dto.out.ColaboradorCompletoListasDTO;
 import br.com.logisticadbc.dto.out.ColaboradorDTO;
 import br.com.logisticadbc.dto.in.ColaboradorUpdateDTO;
-import br.com.logisticadbc.entity.CaminhaoEntity;
 import br.com.logisticadbc.entity.ColaboradorEntity;
 import br.com.logisticadbc.entity.enums.StatusUsuario;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
@@ -29,6 +26,8 @@ public class ColaboradorService {
     private final ObjectMapper objectMapper;
     private final EmailService emailService;
 
+    //private final CaminhaoService caminhaoService;
+
     public List<ColaboradorDTO> listar() {
         return colaboradorRepository.findAll()
                 .stream()
@@ -37,19 +36,11 @@ public class ColaboradorService {
     }
 
 
-    public List<ColaboradorCompletoDTO> GerarRelatorio(){
-        return null;
+    public List<ColaboradorCompletoDTO> gerarRelatorioColaboradoresInformacoesCompletas(){
+        return colaboradorRepository.relatorio();
     }
 
-
-
-
     // TODO - fazer senha nao retornar no dto
-
-//    public List<ColaboradorCompletoDTO> GerarRelatorio(){
-//        return colaboradorRepository.relatorio();
-//    }
-
 
     public ColaboradorDTO criar(ColaboradorCreateDTO colaboradorCreateDTO) throws RegraDeNegocioException {
         try {

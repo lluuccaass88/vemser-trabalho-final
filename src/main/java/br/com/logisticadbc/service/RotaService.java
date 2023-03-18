@@ -77,8 +77,6 @@ public class RotaService {
         }
     }
 
-    // TODO CRIAR FUNÇÃO PARA SETAR POSTO EM ROTA
-
     public void deletar(Integer idRota) throws RegraDeNegocioException {
         try {
             RotaEntity rotaEncontrada = buscarPorId(idRota);
