@@ -6,13 +6,20 @@ import br.com.logisticadbc.dto.in.ColaboradorCreateDTO;
 import br.com.logisticadbc.dto.out.ColaboradorCompletoDTO;
 import br.com.logisticadbc.dto.out.ColaboradorDTO;
 import br.com.logisticadbc.dto.in.ColaboradorUpdateDTO;
+import br.com.logisticadbc.dto.out.MotoristaDTO;
+import br.com.logisticadbc.dto.out.PageDTO;
 import br.com.logisticadbc.entity.ColaboradorEntity;
+import br.com.logisticadbc.entity.MotoristaEntity;
 import br.com.logisticadbc.entity.enums.StatusGeral;
+import br.com.logisticadbc.entity.enums.StatusMotorista;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.repository.ColaboradorRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -35,8 +42,46 @@ public class ColaboradorService {
                 .toList();
     }
 
-    public List<ColaboradorCompletoDTO> gerarRelatorioColaboradoresInformacoesCompletas(){
-        return colaboradorRepository.relatorio();
+    public Page<ColaboradorCompletoDTO> gerarRelatorioColaboradoresInformacoesCompletas(Integer pagina, Integer tamanho){
+//
+//        Pageable solicitacaoPagina = PageRequest.of(pagina, tamanho);
+//
+//        Page<ColaboradorCompletoDTO> paginacaoColaborador = colaboradorRepository.relatorio(solicitacaoPagina);
+//
+//        List<ColaboradorCompletoDTO> colaboradorDTOList = paginacaoColaborador
+//
+//
+//
+////                paginacaoColaborador
+////                .getContent()
+////                .stream()
+////                .map(colaborador -> objectMapper.convertValue(colaborador, ColaboradorCompletoDTO.class))
+////                .toList();
+//
+//        return new PageDTO<>(
+//                paginacaoColaborador.getTotalElements(),
+//                paginacaoColaborador.getTotalPages(),
+//                pagina,
+//                tamanho,
+//                colaboradorDTOList
+
+
+//        );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        return null; //colaboradorRepository.relatorio();
     }
 
     // TODO - fazer senha nao retornar no dto

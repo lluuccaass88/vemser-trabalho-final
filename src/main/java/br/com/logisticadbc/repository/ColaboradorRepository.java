@@ -2,6 +2,8 @@ package br.com.logisticadbc.repository;
 
 import br.com.logisticadbc.dto.out.ColaboradorCompletoDTO;
 import br.com.logisticadbc.entity.ColaboradorEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -41,5 +43,5 @@ public interface ColaboradorRepository extends JpaRepository<ColaboradorEntity, 
             "   left join c.rotas r " +
             "   left join c.postos p "
     )
-    List<ColaboradorCompletoDTO> relatorio(); //Mudar para paginação
+    Page<ColaboradorCompletoDTO> relatorio(Pageable pageable); //Mudar para paginação
 }

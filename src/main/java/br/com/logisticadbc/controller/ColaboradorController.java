@@ -2,9 +2,7 @@ package br.com.logisticadbc.controller;
 
 import br.com.logisticadbc.controller.doc.ColaboradorControllerDoc;
 import br.com.logisticadbc.dto.in.ColaboradorCreateDTO;
-import br.com.logisticadbc.dto.out.CaminhaoDTO;
-import br.com.logisticadbc.dto.out.ColaboradorCompletoDTO;
-import br.com.logisticadbc.dto.out.ColaboradorDTO;
+import br.com.logisticadbc.dto.out.*;
 import br.com.logisticadbc.dto.in.ColaboradorUpdateDTO;
 import br.com.logisticadbc.dto.out.ColaboradorDTO;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
@@ -39,8 +37,10 @@ public class ColaboradorController implements ColaboradorControllerDoc {
     }
 
     @GetMapping("/relatorio-completo")
-    public ResponseEntity<List<ColaboradorCompletoDTO>> generateReportComplete() {
-        return new ResponseEntity<>(colaboradorService.gerarRelatorioColaboradoresInformacoesCompletas(), HttpStatus.OK);
+    public ResponseEntity<List<ColaboradorCompletoDTO>> generateReportComplete(
+                                                            @RequestParam(value = "page") Integer pagina,
+                                                            @RequestParam(value = "size") Integer tamanho) {
+        return new ResponseEntity<>(colaboradorService.gerarRelatorioColaboradoresInformacoesCompletas(pagina, tamanho), HttpStatus.OK);
     }
 
     @PostMapping
