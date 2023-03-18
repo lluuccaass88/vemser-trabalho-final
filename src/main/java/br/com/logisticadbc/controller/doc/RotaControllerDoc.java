@@ -14,16 +14,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 public interface RotaControllerDoc {
-    @Operation(summary = "Listar Rotas", description = "Lista todas as rotas no banco de dados")
-    @ApiResponses(
-            value = {
-                    @ApiResponse(responseCode = "200", description = "Retorna a lista de rotas"),
-                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
-                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
-            }
-    )
-    @GetMapping
-    public List<RotaDTO> list() throws Exception;
+
 
     @Operation(summary = "Adicionar Rotas", description = "Adicionar uma rota ao banco de dados")
     @ApiResponses(
@@ -34,12 +25,23 @@ public interface RotaControllerDoc {
             }
     )
     @PostMapping
-    public ResponseEntity<RotaDTO> create(@Valid @RequestBody RotaCreateDTO rotaCreateDTO) throws RegraDeNegocioException, BancoDeDadosException;
+    public ResponseEntity<RotaDTO> create(@RequestParam("idUsuario") Integer idUsuario, @Valid @RequestBody RotaCreateDTO rotaCreateDTO) throws RegraDeNegocioException, BancoDeDadosException;
+
+    @Operation(summary = "Listar Rotas", description = "Lista todas as rotas no banco de dados")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Retorna umaa lista de rotas"),
+                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
+            }
+    )
+    @GetMapping
+        ResponseEntity<List<RotaDTO>> listAll() throws Exception;
 
     @Operation(summary = "Editar Rota", description = "Edita uma rota ao banco de dados")
     @ApiResponses(
             value = {
-                    @ApiResponse(responseCode = "200", description = "Retorna os dados da rota editada"),
+                    @ApiResponse(responseCode = "200", description = "Retorna a Viagem editada"),
                     @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
@@ -48,14 +50,14 @@ public interface RotaControllerDoc {
     public  ResponseEntity<RotaDTO> update(@PathVariable("idRota") Integer id,
                                            @Valid @RequestBody RotaCreateDTO rotaUpdateDTO) throws RegraDeNegocioException, BancoDeDadosException;
 
-    @Operation(summary = "Deleta Rota", description = "Excui uma rota ao banco de dados")
+    @Operation(summary = "Deletar Rota", description = "Deleta uma rota ao banco de dados")
     @ApiResponses(
             value = {
-                    @ApiResponse(responseCode = "204", description = "Retorna verdadeiro caso tenha deletado a rota com sucesso"),
+                    @ApiResponse(responseCode = "204", description = "Retorno positivo ao deletar a viagem"),
                     @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
     @DeleteMapping("/{idRota}")
-    public ResponseEntity<Boolean> delete(@PathVariable("idRota") Integer id) throws RegraDeNegocioException;
+    public ResponseEntity<Void> delete(@PathVariable("idRota") Integer id) throws RegraDeNegocioException;
 }

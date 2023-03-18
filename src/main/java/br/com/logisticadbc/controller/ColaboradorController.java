@@ -1,5 +1,6 @@
 package br.com.logisticadbc.controller;
 
+import br.com.logisticadbc.controller.doc.ColaboradorControllerDoc;
 import br.com.logisticadbc.dto.in.ColaboradorCreateDTO;
 import br.com.logisticadbc.dto.out.ColaboradorDTO;
 import br.com.logisticadbc.dto.in.ColaboradorUpdateDTO;
@@ -20,7 +21,7 @@ import java.util.List;
 @RequestMapping("/colaborador")
 @Validated
 @Slf4j
-public class ColaboradorController {
+public class ColaboradorController implements ColaboradorControllerDoc {
 
     private final ColaboradorService colaboradorService;
 
@@ -38,7 +39,7 @@ public class ColaboradorController {
     @PutMapping("/{idUsuario}")
     public ResponseEntity<ColaboradorDTO> update(@RequestParam("idUsuario") Integer idUsuario,
                                                  @Valid @RequestBody ColaboradorUpdateDTO colaboradorUpdateDTO)
-            throws RegraDeNegocioException {
+                                                        throws RegraDeNegocioException {
         return new ResponseEntity<>(colaboradorService.editar(idUsuario, colaboradorUpdateDTO), HttpStatus.OK);
     }
 

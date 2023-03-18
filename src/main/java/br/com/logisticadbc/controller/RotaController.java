@@ -1,9 +1,7 @@
 package br.com.logisticadbc.controller;
 
-import br.com.logisticadbc.dto.in.ColaboradorCreateDTO;
-import br.com.logisticadbc.dto.in.ColaboradorUpdateDTO;
+import br.com.logisticadbc.controller.doc.RotaControllerDoc;
 import br.com.logisticadbc.dto.in.RotaCreateDTO;
-import br.com.logisticadbc.dto.out.ColaboradorDTO;
 import br.com.logisticadbc.dto.out.RotaDTO;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.service.ColaboradorService;
@@ -23,7 +21,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/rota")
 @Validated
-public class RotaController { // implements IRotaControllerDoc {
+public class RotaController implements RotaControllerDoc {
 
     private final RotaService rotaService;
     private final ColaboradorService colaboradorService;

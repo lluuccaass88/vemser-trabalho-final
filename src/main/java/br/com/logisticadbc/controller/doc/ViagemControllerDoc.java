@@ -15,8 +15,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 public interface ViagemControllerDoc {
-    // EXEMPLO
-    @Operation(summary = "Adicionar Viagem", description = "Adicionar uma viagem")
+    @Operation(summary = "Adicionar Viagem", description = "Adicionar uma viagem no banco de dados")
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "201", description = "Retorna os dados da viagem adicionada"),
@@ -26,7 +25,7 @@ public interface ViagemControllerDoc {
     )
     ResponseEntity<ViagemDTO> create (@Valid @RequestBody ViagemCreateDTO viagemCreateDTO) throws Exception;
 
-    @Operation(summary = "Listar Viagens", description = "Lista todas as viagens do banco")
+    @Operation(summary = "Listar Viagens", description = "Lista todas as viagens do banco de dados")
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "200", description = "Retorna uma lista de Viagens"),
@@ -34,9 +33,9 @@ public interface ViagemControllerDoc {
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-    ResponseEntity<List<ViagemDTO>> listar() throws Exception;
+    ResponseEntity<List<ViagemDTO>> listAll() throws Exception;
 
-    @Operation(summary = "Listar Viagens finalizadas", description = "Lista todas as viagens finalizadas do banco")
+    @Operation(summary = "Listar Viagens finalizadas", description = "Lista todas as viagens finalizadas do banco de dados")
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "200", description = "Retorna uma lista de Viagens finalizadas"),
@@ -47,7 +46,7 @@ public interface ViagemControllerDoc {
     ResponseEntity<List<ViagemDTO>> listarViagensFinalizadas() throws Exception;
 
 
-    @Operation(summary = "Listar Viagem a partir de um id", description = "Lista uma Viagem do banco a partir de um id")
+    @Operation(summary = "Listar Viagem a partir de um id", description = "Lista uma Viagem do banco de dados a partir de um id")
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "200", description = "Retorna uma Viagem"),
@@ -57,10 +56,10 @@ public interface ViagemControllerDoc {
     )
     ResponseEntity<ViagemDTO> listarPorId(@PathVariable("idViagem") Integer id) throws RegraDeNegocioException, BancoDeDadosException;
 
-    @Operation(summary = "Atualizar Viagem", description = "Atualiza uma Viagem no banco")
+    @Operation(summary = "Editar Viagem", description = "Edita uma Viagem no banco de dados")
     @ApiResponses(
             value = {
-                    @ApiResponse(responseCode = "200", description = "Retorna a Viagem atualizado"),
+                    @ApiResponse(responseCode = "200", description = "Retorna a Viagem editada"),
                     @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
@@ -68,10 +67,10 @@ public interface ViagemControllerDoc {
     ResponseEntity<ViagemDTO> update(@PathVariable("idViagem") Integer id,
                                      @Valid @RequestBody ViagemCreateDTO viagemUpdateDTO) throws RegraDeNegocioException, BancoDeDadosException;
 
-    @Operation(summary = "Deletar Viagem", description = "Deleta uma Viagem no banco")
+    @Operation(summary = "Deletar Viagem", description = "Realiza um soft delete do colaborador")
     @ApiResponses(
             value = {
-                    @ApiResponse(responseCode = "204", description = "Informa que deu certo deletar uma Viagem no banco"),
+                    @ApiResponse(responseCode = "204", description = "Retorno positivo ao deletar a viagem"),
                     @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
