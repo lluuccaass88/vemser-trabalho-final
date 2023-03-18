@@ -19,6 +19,9 @@ public class ViagemEntity {
     @Column(name = "id_viagem")
     private Integer idViagem;
 
+    @Column(name = "descricao")
+    private String descricao;
+
     @Column(name = "data_inicio")
     private LocalDateTime dataInicio;
 
@@ -45,5 +48,4 @@ public class ViagemEntity {
     @JoinColumn(name = "id_rota", referencedColumnName = "id_rota")
     @JsonIgnore
     private RotaEntity rota;
-
 }

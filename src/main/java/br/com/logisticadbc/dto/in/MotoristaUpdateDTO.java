@@ -12,7 +12,7 @@ public class MotoristaUpdateDTO {
 
     @NotNull
     @NotBlank
-    @Schema(description = "Nome do Usuário", example = "Marcklen Guimarães", required = true)
+    @Schema(description = "Nome do Usuário", example = "Marcklen Guimarães")
     private String nome;
 
     @NotNull

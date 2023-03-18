@@ -33,22 +33,22 @@ public class RotaController { // implements IRotaControllerDoc {
         return new ResponseEntity<>(rotaService.listar(), HttpStatus.OK);
     }
 
-    @PostMapping("/idUsuario")
+    @PostMapping("/{idUsuario}")
     public ResponseEntity<RotaDTO> create(@RequestParam("idUsuario") Integer idUsuario,
                                           @Valid @RequestBody RotaCreateDTO rotaCreateDTO)
             throws RegraDeNegocioException {
         return new ResponseEntity<>(rotaService.criar(idUsuario, rotaCreateDTO), HttpStatus.CREATED);
     }
 
-    @PutMapping("/idRota")
+    @PutMapping("/{idRota}")
     public ResponseEntity<RotaDTO> update(@RequestParam("idRota") Integer idRota,
                                                  @Valid @RequestBody RotaCreateDTO rotaCreateDTO)
             throws RegraDeNegocioException {
         return new ResponseEntity<>(rotaService.editar(idRota, rotaCreateDTO), HttpStatus.OK);
     }
 
-    @DeleteMapping("/idRota")
-    public ResponseEntity<Void> delete(Integer idRota) throws RegraDeNegocioException {
+    @DeleteMapping("/{idRota}")
+    public ResponseEntity<Void> delete(@RequestParam("idRota") Integer idRota) throws RegraDeNegocioException {
         rotaService.deletar(idRota);
         return ResponseEntity.ok().build();
     }

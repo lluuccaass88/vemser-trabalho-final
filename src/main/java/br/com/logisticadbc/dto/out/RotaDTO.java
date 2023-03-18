@@ -7,9 +7,9 @@ import lombok.Data;
 @Data
 public class RotaDTO extends RotaCreateDTO {
 
-    @Schema(description = "ID da Rota")
+    @Schema(description = "ID da Rota", example = "1")
     private Integer idRota;
 
-    @Schema(description = "ID do Usuário")
+    @Schema(description = "ID do Usuário", example = "1")
     private Integer idUsuario;
 }

@@ -13,6 +13,7 @@ public class PostoCreateDTO {
     @NotBlank
     @Schema(description = "Nome do posto", example = "Posto Ipiranga")
     private String nome;
+
     @NotNull
     @Schema(description = "Valor do combustivel no posto", example = "5.89")
     private BigDecimal valorCombustivel;

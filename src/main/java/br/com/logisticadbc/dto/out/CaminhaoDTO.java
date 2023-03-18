@@ -8,9 +8,9 @@ import lombok.Data;
 @Data
 public class CaminhaoDTO extends CaminhaoCreateDTO {
 
-    @Schema(description = "Id do Caminhão", example = "1", required = true)
+    @Schema(description = "Id do Caminhão", example = "1")
     private Integer idCaminhao;
 
-    @Schema(description = "Se o caminhao já está viajando", example = "ESTACIONADO ou EM_VIAGEM", required = true)
-    private StatusCaminhao statusCaminhao; // 1 - estacionado | 2 - em viagem
+    @Schema(description = "Se o caminhao já está viajando", example = "ESTACIONADO")
+    private StatusCaminhao statusCaminhao;
 }

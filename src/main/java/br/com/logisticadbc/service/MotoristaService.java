@@ -21,24 +21,12 @@ import java.util.List;
 public class MotoristaService {
 
     private final MotoristaRepository motoristaRepository;
+    private final EmailService emailService;
     private final ObjectMapper objectMapper;
 
-    private final EmailService emailService;
-
-    public List<MotoristaDTO> listar() {
-        return motoristaRepository
-                .findAll()
-                .stream()
-                .map(motorista -> objectMapper.convertValue(motorista, MotoristaDTO.class)).toList();
-    }
-
-    // o metodo buscar por id retornando o obj motorista é privado por expor a entidade
-    private MotoristaEntity buscarPorId(Integer id) throws RegraDeNegocioException {
-        return motoristaRepository.findById(id)
-                .orElseThrow(() -> new RegraDeNegocioException("Motorista não encontrado"));
-    }
 
     // TODO - MODIFICAR A SENHA PARA NAO RETORNAR NO DTO
+
     public MotoristaDTO criar(MotoristaCreateDTO motoristaCreateDTO) throws RegraDeNegocioException {
         try {
             MotoristaEntity motoristaEntity = objectMapper.convertValue(motoristaCreateDTO, MotoristaEntity.class);
@@ -58,7 +46,6 @@ public class MotoristaService {
             throw new RegraDeNegocioException("Aconteceu algum problema durante a criação.");
         }
     }
-
     public MotoristaDTO editar(Integer idUsuario, MotoristaUpdateDTO motoristaUpdateDTO) throws RegraDeNegocioException {
         try {
             MotoristaEntity motoristaEntity = buscarPorId(idUsuario);
@@ -75,8 +62,6 @@ public class MotoristaService {
             throw new RegraDeNegocioException("Aconteceu algum problema durante a edição.");
         }
     }
-
-
     public void deletar(Integer id) throws RegraDeNegocioException {
         try {
             MotoristaEntity motoristaEntity = buscarPorId(id);
@@ -88,5 +73,22 @@ public class MotoristaService {
             e.printStackTrace();
             throw new RegraDeNegocioException("Aconteceu algum problema durante a exclusão.");
         }
+    }
+
+    public List<MotoristaDTO> listar() {
+        return motoristaRepository
+                .findAll()
+                .stream()
+                .map(motorista -> objectMapper.convertValue(motorista, MotoristaDTO.class)).toList();
+    }
+
+    public MotoristaEntity buscarPorId(Integer id) throws RegraDeNegocioException {
+        return motoristaRepository.findById(id)
+                .orElseThrow(() -> new RegraDeNegocioException("Motorista não encontrado"));
+    }
+
+    public void mudarStatus(MotoristaEntity motorista, StatusMotorista status) {
+        motorista.setStatusMotorista(status);
+        motoristaRepository.save(motorista);
     }
 }

@@ -33,7 +33,7 @@ public class RotaService {
             rotaRepository.save(rotaEntity);
 
             RotaDTO rotaDTO = objectMapper.convertValue(rotaEntity, RotaDTO.class);
-            rotaDTO.setIdUsuario(colaboradorEncontrado.getIdUsuario());
+            rotaDTO.setIdUsuario(idUsuario);
             return rotaDTO;
 
         } catch (Exception e) {
@@ -45,7 +45,6 @@ public class RotaService {
     public RotaDTO editar(Integer idRota, RotaCreateDTO rotaCreateDTO) throws RegraDeNegocioException {
         try {
             RotaEntity rotaEncontrada = buscarPorId(idRota);
-
             rotaEncontrada.setDescricao(rotaCreateDTO.getDescricao());
             rotaEncontrada.setLocalPartida(rotaCreateDTO.getLocalPartida());
             rotaEncontrada.setLocalDestino(rotaCreateDTO.getLocalDestino());
@@ -67,9 +66,8 @@ public class RotaService {
     }
 
     public void deletar(Integer idRota) throws RegraDeNegocioException {
-        RotaEntity rotaEncontrada = buscarPorId(idRota);
-
         try {
+            RotaEntity rotaEncontrada = buscarPorId(idRota);
             rotaRepository.deleteById(rotaEncontrada.getIdRota());
 
         } catch (Exception e) {
@@ -79,7 +77,6 @@ public class RotaService {
     }
 
     public List<RotaDTO> listar() {
-
         List<RotaDTO> rotasDTO = rotaRepository.findAll()
                 .stream()
                 .map(rota -> {
@@ -89,7 +86,6 @@ public class RotaService {
                 })
                 .toList();
 
-        log.info("rotas: " + rotasDTO);
         return rotasDTO;
     }
 

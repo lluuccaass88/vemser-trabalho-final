@@ -40,7 +40,7 @@ public class CaminhaoController {//implements ICaminhaoControllerDoc {
         return new ResponseEntity<>( caminhaoService.abastecer(idCaminhao, gasolina), HttpStatus.OK);
     }
 
-    @DeleteMapping // DELETE localhost:8080/pessoa/10
+    @DeleteMapping
     public ResponseEntity<Void> delete(@RequestParam("idCaminhao") Integer id) throws Exception {
         caminhaoService.deletar(id);
         return new ResponseEntity<>(HttpStatus.OK);

@@ -11,8 +11,10 @@ public class MotoristaDTO extends MotoristaCreateDTO {
 
     @Schema(description = "Id do Usuário", example = "1")
     private Integer idUsuario;
-    @Schema(description = "Status do Usuário", example = "0 - ATIVO ou 1 - INATIVO")
+
+    @Schema(description = "Status do Usuário", example = "ATIVO")
     private StatusUsuario statusUsuario;
-    @Schema(description = "Status do Motorista", example = "0 - DISPONIVEL ou 1 - EM VIAGEM")
+
+    @Schema(description = "Status do Motorista", example = "DISPONIVEL")
     private StatusMotorista statusMotorista;
 }

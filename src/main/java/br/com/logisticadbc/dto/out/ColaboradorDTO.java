@@ -8,9 +8,9 @@ import lombok.Data;
 @Data
 public class ColaboradorDTO extends ColaboradorCreateDTO {
 
-    @Schema(description = "Id de usuario")
+    @Schema(description = "Id de usuario", example = "1")
     private Integer idUsuario;
 
-    @Schema(description = "Status do usuário")
+    @Schema(description = "Status do usuário", example = "FINALIZADA")
     private StatusUsuario statusUsuario;
 }
