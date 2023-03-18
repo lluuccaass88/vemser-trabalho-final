@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.math.BigDecimal;
-import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -22,9 +21,8 @@ public class ColaboradorCompletoDTO {
     private String modelo;
     private String placa;
     private Integer nivelCombustivel;
-    private StatusCaminhao statusCaminhao;
-//
-//    Set<CaminhaoDTO> caminhaoes;
+    private StatusGeral statusCaminhao;
+
 
     private Integer idRota;
     private String descricao;

@@ -1,7 +1,7 @@
 package br.com.logisticadbc.dto.out;
 
+import br.com.logisticadbc.entity.enums.StatusGeral;
 import br.com.logisticadbc.entity.enums.StatusMotorista;
-import br.com.logisticadbc.entity.enums.StatusUsuario;
 import br.com.logisticadbc.entity.enums.StatusViagem;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,7 +15,7 @@ public class MotoristaCompletoDTO {
     private String nome;
     private String usuario;
     private String email;
-    private StatusUsuario statusUsuario;
+    private StatusGeral statusUsuario;
     private String cnh;
     private StatusMotorista statusMotorista;
 
