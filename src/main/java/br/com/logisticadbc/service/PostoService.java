@@ -75,6 +75,7 @@ public class PostoService {
         try {
             PostoEntity postoEntity = buscarPorId(idPosto);
 
+
             postoRepository.deleteById(postoEntity.getIdPosto());
 
         } catch (Exception e) {
@@ -110,7 +111,7 @@ public class PostoService {
         }
     }
 
-    private PostoEntity buscarPorId(Integer idPosto) throws RegraDeNegocioException {
+    public PostoEntity buscarPorId(Integer idPosto) throws RegraDeNegocioException {
         return postoRepository.findById(idPosto)
                 .orElseThrow(() -> new RegraDeNegocioException("Posto não encontrado"));
     }

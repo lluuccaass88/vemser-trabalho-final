@@ -35,11 +35,10 @@ public class ColaboradorService {
     }
 
 
-    public List<ColaboradorCompletoDTO> GerarRelatorio(){
+ /*   public List<ColaboradorCompletoDTO> GerarRelatorio(){
         return colaboradorRepository.relatorio();
-    }
+    }*/
 
-    // TODO - fazer senha nao retornar no dto
 
     public ColaboradorDTO criar(ColaboradorCreateDTO colaboradorCreateDTO) throws RegraDeNegocioException {
         try {
@@ -81,7 +80,7 @@ public class ColaboradorService {
         }
     }
 
-    public void deletar (Integer idUsuario) throws RegraDeNegocioException {
+    public void deletar(Integer idUsuario) throws RegraDeNegocioException {
         try {
             ColaboradorEntity colaboradorEncontrado = buscarPorId(idUsuario);
             colaboradorEncontrado.setStatusUsuario(StatusUsuario.INATIVO);

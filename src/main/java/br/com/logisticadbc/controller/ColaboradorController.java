@@ -39,10 +39,10 @@ public class ColaboradorController implements ColaboradorControllerDoc {
     }
 
 
-    @GetMapping
+    /*@GetMapping
     public ResponseEntity<List<ColaboradorCompletoDTO>> generateReport() {
         return new ResponseEntity<>(colaboradorService.GerarRelatorio(), HttpStatus.OK);
-    }
+    }*/
 
 
     @PostMapping

@@ -1,6 +1,7 @@
 package br.com.logisticadbc.controller.doc;
 
 import br.com.logisticadbc.dto.in.RotaCreateDTO;
+import br.com.logisticadbc.dto.out.RotaComPostosDTO;
 import br.com.logisticadbc.dto.out.RotaDTO;
 import br.com.logisticadbc.exceptions.BancoDeDadosException;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
@@ -74,4 +75,31 @@ public interface RotaControllerDoc {
     )
     @DeleteMapping("/{idRota}")
     ResponseEntity<Void> delete(@RequestParam("idRota") Integer idRota) throws RegraDeNegocioException;
+
+    @Operation(summary = "Cadastrar Posto na Rota",
+            description = "Cadastra posto na rota passando id de ambos")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Cadastro positivo"),
+                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
+            }
+    )
+    @PostMapping("/cadastrar-posto")
+    ResponseEntity<Void> linkEntities(@RequestParam("idRota") Integer idRota,
+                                    @RequestParam("idPosto") Integer idPosto)
+            throws RegraDeNegocioException;
+
+    @Operation(summary = "Listar Postos cadastrados na rota",
+            description = "Lista postos da rota passando id da rota")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Retorna lista com postos"),
+                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
+            }
+    )
+    @GetMapping("/listar-postos-cadastrados")
+    ResponseEntity<RotaComPostosDTO> listLink(@RequestParam("idRota") Integer idRota)
+            throws RegraDeNegocioException;
 }
