@@ -1,6 +1,7 @@
 package br.com.logisticadbc.dto.out;
 
 import br.com.logisticadbc.dto.in.RotaCreateDTO;
+import br.com.logisticadbc.entity.enums.StatusGeral;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -20,6 +21,9 @@ public class RotaComPostosDTO extends RotaCreateDTO {
 
     @Schema(description = "ID da Rota")
     private Integer idRota;
+
+    @Schema(description = "Status da Rota", example = "ATIVO")
+    private StatusGeral status;
 
     @Schema(description = "ID do Usuário")
     private Integer idUsuario;

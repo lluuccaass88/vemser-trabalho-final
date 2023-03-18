@@ -1,5 +1,6 @@
 package br.com.logisticadbc.entity;
 
+import br.com.logisticadbc.entity.enums.StatusGeral;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
@@ -24,6 +25,9 @@ public class PostoEntity {
 
     @Column(name = "valor_combustivel", precision = 20, scale = 2)
     private BigDecimal valorCombustivel;
+
+    @Column(name = "status")
+    private StatusGeral status; // 0 - INATIVO | 1 - ATIVO
 
     //RELACIONAMENTO COM COLABORADOR
     @ManyToOne(fetch = FetchType.LAZY)

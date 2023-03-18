@@ -80,8 +80,8 @@ public class RotaService {
     public void deletar(Integer idRota) throws RegraDeNegocioException {
         try {
             RotaEntity rotaEncontrada = buscarPorId(idRota);
-
-            rotaRepository.deleteById(rotaEncontrada.getIdRota());
+            rotaEncontrada.setStatus(StatusGeral.INATIVO);
+            rotaRepository.save(rotaEncontrada);
 
         } catch (Exception e) {
             e.printStackTrace();

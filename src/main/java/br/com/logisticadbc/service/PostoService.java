@@ -74,9 +74,8 @@ public class PostoService {
     public void deletar(Integer idPosto) throws RegraDeNegocioException {
         try {
             PostoEntity postoEntity = buscarPorId(idPosto);
-
-
-            postoRepository.deleteById(postoEntity.getIdPosto());
+            postoEntity.setStatus(StatusGeral.INATIVO);
+            postoRepository.save(postoEntity);
 
         } catch (Exception e) {
             e.printStackTrace();
