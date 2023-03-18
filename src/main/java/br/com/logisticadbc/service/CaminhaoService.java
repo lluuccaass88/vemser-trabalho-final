@@ -24,7 +24,6 @@ public class CaminhaoService {
     private final ColaboradorService colaboradorService;
     private final ObjectMapper objectMapper;
 
-
     public CaminhaoDTO criar(Integer idUsuario, CaminhaoCreateDTO caminhaoCreateDTO)
             throws RegraDeNegocioException {
         try{
@@ -34,8 +33,6 @@ public class CaminhaoService {
             caminhaoEntity.setStatusCaminhao(StatusCaminhao.ESTACIONADO);
 
             caminhaoEntity.setColaborador(colaboradorEntity);
-
-            log.info("Caminhao dados: " + caminhaoEntity);
 
             caminhaoRepository.save(caminhaoEntity);
 
