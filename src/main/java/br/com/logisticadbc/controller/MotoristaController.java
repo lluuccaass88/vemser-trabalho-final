@@ -2,10 +2,8 @@ package br.com.logisticadbc.controller;
 
 import br.com.logisticadbc.controller.doc.MotoristaControllerDoc;
 import br.com.logisticadbc.dto.in.MotoristaCreateDTO;
-import br.com.logisticadbc.dto.out.ColaboradorDTO;
-import br.com.logisticadbc.dto.out.MotoristaDTO;
+import br.com.logisticadbc.dto.out.*;
 import br.com.logisticadbc.dto.in.MotoristaUpdateDTO;
-import br.com.logisticadbc.dto.out.PageDTO;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.service.MotoristaService;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +34,11 @@ public class MotoristaController implements MotoristaControllerDoc {
     public ResponseEntity<MotoristaDTO> findById(@RequestParam("idUsuario") Integer idUsuario)
             throws RegraDeNegocioException {
         return new ResponseEntity<>(motoristaService.listarPorId(idUsuario), HttpStatus.OK);
+    }
+
+    @GetMapping("/relatorio-completo")
+    public ResponseEntity<List<MotoristaCompletoDTO>> generateReportComplete() {
+        return new ResponseEntity<>(motoristaService.gerarRelatorioMotoristasInformacoesCompletas(), HttpStatus.OK);
     }
 
     @PostMapping

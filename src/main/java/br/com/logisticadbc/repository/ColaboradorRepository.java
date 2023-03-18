@@ -10,30 +10,30 @@ import java.util.List;
 
 @Repository
 public interface ColaboradorRepository extends JpaRepository<ColaboradorEntity, Integer> {
-//    @Query( " SELECT new br.com.logisticadbc.dto.out.ColaboradorCompletoDTO(" +
-//            "   c.idUsuario, " +
-//            "   c.nome, " +
-//            "   c.usuario, " +
-//            "   c.email, " +
-//            "   c.statusUsuario, " +
-//            "   c.cpf, " +
-//            "   cam.idCaminhao, " +
-//            "   cam.modelo, " +
-//            "   cam.placa, " +
-//            "   cam.nivelCombustivel, " +
-//            "   cam.statusCaminhao, " +
-//            "   r.idRota, " +
-//            "   r.descricao, " +
-//            "   r.localPartida, " +
-//            "   r.localDestino, " +
-//            "   p.idPosto, " +
-//            "   p.nome, " +
-//            "   p.valorCombustivel" +
-//            " ) " +
-//            "   From COLABORADOR c " +
-//            "   left join c.caminhoes cam " +
-//            "   left join c.rotas r " +
-//            "   left join c.postos p "
-//    )
-//    List<ColaboradorCompletoDTO> relatorio();
+    @Query( " SELECT DISTINCT new br.com.logisticadbc.dto.out.ColaboradorCompletoDTO(" +
+            "   c.idUsuario, " +
+            "   c.nome, " +
+            "   c.usuario, " +
+            "   c.email, " +
+            "   c.statusUsuario, " +
+            "   c.cpf, " +
+            "   cam.idCaminhao, " +
+            "   cam.modelo, " +
+            "   cam.placa, " +
+            "   cam.nivelCombustivel, " +
+            "   cam.statusCaminhao, " +
+            "   r.idRota, " +
+            "   r.descricao, " +
+            "   r.localPartida, " +
+            "   r.localDestino, " +
+            "   p.idPosto, " +
+            "   p.nome, " +
+            "   p.valorCombustivel" +
+            " ) " +
+            "   From COLABORADOR c " +
+            "   left join c.caminhoes cam " +
+            "   left join c.rotas r " +
+            "   left join c.postos p "
+    )
+    List<ColaboradorCompletoDTO> relatorio(); //Mudar para paginação
 }

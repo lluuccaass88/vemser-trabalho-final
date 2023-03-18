@@ -1,6 +1,8 @@
 package br.com.logisticadbc.service;
 
 import br.com.logisticadbc.dto.in.MotoristaCreateDTO;
+import br.com.logisticadbc.dto.out.ColaboradorCompletoDTO;
+import br.com.logisticadbc.dto.out.MotoristaCompletoDTO;
 import br.com.logisticadbc.dto.out.MotoristaDTO;
 import br.com.logisticadbc.dto.in.MotoristaUpdateDTO;
 import br.com.logisticadbc.dto.out.PageDTO;
@@ -87,6 +89,10 @@ public class MotoristaService {
                 .findAll()
                 .stream()
                 .map(motorista -> objectMapper.convertValue(motorista, MotoristaDTO.class)).toList();
+    }
+
+    public List<MotoristaCompletoDTO> gerarRelatorioMotoristasInformacoesCompletas(){
+        return motoristaRepository.relatorio();
     }
 
     public MotoristaDTO listarPorId(Integer idMotorista) throws RegraDeNegocioException {
