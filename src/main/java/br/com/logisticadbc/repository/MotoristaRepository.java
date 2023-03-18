@@ -27,7 +27,7 @@ public interface MotoristaRepository extends JpaRepository<MotoristaEntity, Inte
     @Query( "   SELECT m " +
             "     FROM MOTORISTA m " +
             "    WHERE m.statusMotorista = ?1 " +
-            "      AND m.statusUsuario = ?2 " +
+            "      AND m.status = ?2 " +
             " ORDER BY m.nome ASC" )
     Page<MotoristaEntity> findByStatusMotoristaEqualsAndStatusUsuarioEqualsOrderByNomeAsc (Pageable pageable,
                                                                                            StatusMotorista statusMotorista,
@@ -37,7 +37,7 @@ public interface MotoristaRepository extends JpaRepository<MotoristaEntity, Inte
             "   m.nome, " +
             "   m.usuario, " +
             "   m.email, " +
-            "   m.statusUsuario, " +
+            "   m.status, " +
             "   m.cnh, " +
             "   m.statusMotorista, " +
             "   v.idViagem, " +

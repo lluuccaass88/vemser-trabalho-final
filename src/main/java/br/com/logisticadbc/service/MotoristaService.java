@@ -36,7 +36,7 @@ public class MotoristaService {
     public MotoristaDTO criar(MotoristaCreateDTO motoristaCreateDTO) throws RegraDeNegocioException {
         try {
             MotoristaEntity motoristaEntity = objectMapper.convertValue(motoristaCreateDTO, MotoristaEntity.class);
-            motoristaEntity.setStatusUsuario(StatusGeral.ATIVO);
+            motoristaEntity.setStatus(StatusGeral.ATIVO);
             motoristaEntity.setStatusMotorista(StatusMotorista.DISPONIVEL);
 
             motoristaRepository.save(motoristaEntity);
@@ -54,7 +54,7 @@ public class MotoristaService {
         try {
             MotoristaEntity motoristaEntity = buscarPorId(idUsuario);
 
-            if (motoristaEntity.getStatusUsuario().equals(StatusGeral.INATIVO)) {
+            if (motoristaEntity.getStatus().equals(StatusGeral.INATIVO)) {
                 throw new RegraDeNegocioException("Usuário inativo!");
             }
 
@@ -74,7 +74,7 @@ public class MotoristaService {
     public void deletar(Integer idUsuario) throws RegraDeNegocioException {
         try {
             MotoristaEntity motoristaEntity = buscarPorId(idUsuario);
-            motoristaEntity.setStatusUsuario(StatusGeral.INATIVO);
+            motoristaEntity.setStatus(StatusGeral.INATIVO);
 
             motoristaRepository.save(motoristaEntity);
 

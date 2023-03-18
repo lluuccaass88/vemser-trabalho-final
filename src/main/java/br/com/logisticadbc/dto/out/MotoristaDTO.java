@@ -16,7 +16,7 @@ public class MotoristaDTO extends MotoristaCreateDTO {
     private Integer idUsuario;
 
     @Schema(description = "Status do Usuário", example = "ATIVO")
-    private StatusGeral statusUsuario;
+    private StatusGeral status;
 
     @Schema(description = "Status do Motorista", example = "DISPONIVEL")
     private StatusMotorista statusMotorista;

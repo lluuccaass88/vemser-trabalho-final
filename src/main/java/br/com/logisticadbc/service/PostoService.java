@@ -27,7 +27,7 @@ public class PostoService {
         try {
             ColaboradorEntity colaboradorEntity = colaboradorService.buscarPorId(idUsuario);
 
-            if (colaboradorEntity.getStatusUsuario().equals(StatusGeral.INATIVO)) {
+            if (colaboradorEntity.getStatus().equals(StatusGeral.INATIVO)) {
                 throw new RegraDeNegocioException("Usuário inativo!");
             }
 

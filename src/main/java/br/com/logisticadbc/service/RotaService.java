@@ -34,7 +34,7 @@ public class RotaService {
         try {
             ColaboradorEntity colaboradorEncontrado = colaboradorService.buscarPorId(idUsuario);
 
-            if (colaboradorEncontrado.getStatusUsuario().equals(StatusGeral.INATIVO)) {
+            if (colaboradorEncontrado.getStatus().equals(StatusGeral.INATIVO)) {
                 throw new RegraDeNegocioException("Usuário inativo!");
             }
 

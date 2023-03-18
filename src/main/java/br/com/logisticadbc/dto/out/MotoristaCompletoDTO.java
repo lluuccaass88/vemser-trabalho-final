@@ -15,7 +15,7 @@ public class MotoristaCompletoDTO {
     private String nome;
     private String usuario;
     private String email;
-    private StatusGeral statusUsuario;
+    private StatusGeral status; // modificado de statusUsuario para status
     private String cnh;
     private StatusMotorista statusMotorista;
 
