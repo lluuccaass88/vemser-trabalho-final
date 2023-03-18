@@ -2,7 +2,6 @@ package br.com.logisticadbc.controller;
 
 import br.com.logisticadbc.controller.doc.RotaControllerDoc;
 import br.com.logisticadbc.dto.in.RotaCreateDTO;
-import br.com.logisticadbc.dto.out.PostoDTO;
 import br.com.logisticadbc.dto.out.RotaDTO;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.service.ColaboradorService;
@@ -33,12 +32,12 @@ public class RotaController implements RotaControllerDoc {
     }
 
     @GetMapping("/buscar-por-id")
-    public ResponseEntity<RotaDTO> findById(@RequestParam("idRota") Integer idRota) throws Exception {
+    public ResponseEntity<RotaDTO> findById(@RequestParam("idRota") Integer idRota) throws RegraDeNegocioException {
         return new ResponseEntity<>(rotaService.listarPorId(idRota), HttpStatus.OK);
     }
 
-    @PostMapping("/{idUsuario}")
-    public ResponseEntity<RotaDTO> create(@RequestParam("idUsuario") Integer idUsuario,
+    @PostMapping("/{idColaborador}")
+    public ResponseEntity<RotaDTO> create(@RequestParam("idColaborador") Integer idUsuario,
                                           @Valid @RequestBody RotaCreateDTO rotaCreateDTO)
             throws RegraDeNegocioException {
         return new ResponseEntity<>(rotaService.criar(idUsuario, rotaCreateDTO), HttpStatus.CREATED);

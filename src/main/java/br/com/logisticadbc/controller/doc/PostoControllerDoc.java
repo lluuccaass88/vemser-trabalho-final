@@ -14,18 +14,6 @@ import javax.validation.Valid;
 import java.util.List;
 
 public interface PostoControllerDoc {
-    @Operation(summary = "Adicionar Posto", description = "Adicionar uma viagem no banco de dados")
-    @ApiResponses(
-            value = {
-                    @ApiResponse(responseCode = "201", description = "Retorna os dados do posto adicionado"),
-                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
-                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
-            }
-    )
-    @PostMapping()
-    public ResponseEntity<PostoDTO> create(@RequestParam("idColaborador") Integer idColaborador, @Valid @RequestBody PostoCreateDTO postoCreateDTO)
-            throws RegraDeNegocioException, BancoDeDadosException;
-
     @Operation(summary = "Listar Postos", description = "Lista todas os postos no banco de dados")
     @ApiResponses(
             value = {
@@ -35,8 +23,32 @@ public interface PostoControllerDoc {
             }
     )
     @GetMapping
-    public ResponseEntity<List<PostoDTO>> listAll() throws BancoDeDadosException, RegraDeNegocioException;
+    ResponseEntity<List<PostoDTO>> listAll();
 
+    @Operation(summary = "Listar Posto a partir de um id",
+            description = "Lista um Posto do banco de dados a partir de um id")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Retorna um posto"),
+                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
+            }
+    )
+    @GetMapping("/buscar-por-id")
+    ResponseEntity<PostoDTO> findById(@RequestParam("idPosto") Integer idPosto) throws RegraDeNegocioException;
+
+    @Operation(summary = "Adicionar Posto", description = "Adicionar uma viagem no banco de dados")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "201", description = "Retorna os dados do posto adicionado"),
+                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
+            }
+    )
+    @PostMapping
+    ResponseEntity<PostoDTO> create(@RequestParam("idColaborador") Integer idColaborador,
+                                           @Valid @RequestBody PostoCreateDTO postoCreateDTO)
+            throws RegraDeNegocioException;
 
     @Operation(summary = "Editar Posto", description = "Edita um posto do banco de dados")
     @ApiResponses(
@@ -47,8 +59,9 @@ public interface PostoControllerDoc {
             }
     )
     @PutMapping("/{idPosto}")
-    public ResponseEntity<PostoDTO> update(@PathVariable("idPosto") Integer id, //Recuperando o id a ser editado por parametro
-                                           @Valid @RequestBody PostoCreateDTO postoAtualizarDTO) throws RegraDeNegocioException, BancoDeDadosException;
+    ResponseEntity<PostoDTO> update(@RequestParam("idPosto") Integer idPosto,
+                                           @Valid @RequestBody PostoCreateDTO postoCreateDTO)
+            throws RegraDeNegocioException ;
 
     @Operation(summary = "Deleta Posto", description = "Deleta um posto do banco de dados")
     @ApiResponses(
@@ -58,7 +71,7 @@ public interface PostoControllerDoc {
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-    @DeleteMapping("/{idPosto}") // DELETE localhost:8080/contato/2
-    public ResponseEntity<Void> delete(@PathVariable("idPosto") Integer id) throws RegraDeNegocioException;
+    @DeleteMapping("/{idPosto}")
+    ResponseEntity<Void> delete(@RequestParam("idPosto") Integer idPosto) throws RegraDeNegocioException ;
 
 }

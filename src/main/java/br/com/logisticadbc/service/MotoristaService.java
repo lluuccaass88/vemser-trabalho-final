@@ -1,11 +1,9 @@
 package br.com.logisticadbc.service;
 
 import br.com.logisticadbc.dto.in.MotoristaCreateDTO;
-import br.com.logisticadbc.dto.out.ColaboradorDTO;
 import br.com.logisticadbc.dto.out.MotoristaDTO;
 import br.com.logisticadbc.dto.in.MotoristaUpdateDTO;
 import br.com.logisticadbc.dto.out.PageDTO;
-import br.com.logisticadbc.entity.ColaboradorEntity;
 import br.com.logisticadbc.entity.MotoristaEntity;
 import br.com.logisticadbc.entity.enums.StatusMotorista;
 import br.com.logisticadbc.entity.enums.StatusUsuario;
@@ -36,14 +34,12 @@ public class MotoristaService {
     public MotoristaDTO criar(MotoristaCreateDTO motoristaCreateDTO) throws RegraDeNegocioException {
         try {
             MotoristaEntity motoristaEntity = objectMapper.convertValue(motoristaCreateDTO, MotoristaEntity.class);
-
             motoristaEntity.setStatusUsuario(StatusUsuario.ATIVO);
             motoristaEntity.setStatusMotorista(StatusMotorista.DISPONIVEL);
 
             motoristaRepository.save(motoristaEntity);
-            log.info("MotoristaEntity: {}", motoristaEntity);
 
-            emailService.enviarEmailBoansVindasMotorista(motoristaEntity);
+            emailService.enviarEmailBoasVindasMotorista(motoristaEntity);
 
             return objectMapper.convertValue(motoristaEntity, MotoristaDTO.class);
 
@@ -55,6 +51,10 @@ public class MotoristaService {
     public MotoristaDTO editar(Integer idUsuario, MotoristaUpdateDTO motoristaUpdateDTO) throws RegraDeNegocioException {
         try {
             MotoristaEntity motoristaEntity = buscarPorId(idUsuario);
+
+            if (motoristaEntity.getStatusUsuario().equals(StatusUsuario.INATIVO)) {
+                throw new RegraDeNegocioException("Usuário inativo!");
+            }
 
             motoristaEntity.setNome(motoristaUpdateDTO.getNome());
             motoristaEntity.setSenha(motoristaUpdateDTO.getSenha());
@@ -68,9 +68,10 @@ public class MotoristaService {
             throw new RegraDeNegocioException("Aconteceu algum problema durante a edição.");
         }
     }
-    public void deletar(Integer id) throws RegraDeNegocioException {
+
+    public void deletar(Integer idUsuario) throws RegraDeNegocioException {
         try {
-            MotoristaEntity motoristaEntity = buscarPorId(id);
+            MotoristaEntity motoristaEntity = buscarPorId(idUsuario);
             motoristaEntity.setStatusUsuario(StatusUsuario.INATIVO);
 
             motoristaRepository.save(motoristaEntity);
@@ -89,10 +90,17 @@ public class MotoristaService {
     }
 
     public MotoristaDTO listarPorId(Integer idMotorista) throws RegraDeNegocioException {
-        MotoristaEntity motoristaRecuperado = buscarPorId(idMotorista);
-        MotoristaDTO motoristaDTO = objectMapper.convertValue(motoristaRecuperado, MotoristaDTO.class);
-        motoristaDTO.setIdUsuario(idMotorista);
-        return motoristaDTO;
+        try {
+            MotoristaEntity motoristaRecuperado = buscarPorId(idMotorista);
+
+            MotoristaDTO motoristaDTO = objectMapper.convertValue(motoristaRecuperado, MotoristaDTO.class);
+            motoristaDTO.setIdUsuario(idMotorista);
+            return motoristaDTO;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RegraDeNegocioException("Aconteceu algum problema durante a listagem.");
+        }
     }
 
     public MotoristaEntity buscarPorId(Integer id) throws RegraDeNegocioException {
@@ -108,7 +116,8 @@ public class MotoristaService {
     public PageDTO<MotoristaDTO> listarMotoristaDisponivelEAtivoOrdenadoPorNomeAsc(Integer pagina, Integer tamanho) {
         Pageable solicitacaoPagina = PageRequest.of(pagina, tamanho);
 
-        Page<MotoristaEntity> paginacaoMotorista = motoristaRepository.findByStatusMotoristaEqualsAndStatusUsuarioEqualsOrderByNomeAsc(
+        Page<MotoristaEntity> paginacaoMotorista = motoristaRepository
+                .findByStatusMotoristaEqualsAndStatusUsuarioEqualsOrderByNomeAsc(
                 solicitacaoPagina, StatusMotorista.DISPONIVEL, StatusUsuario.ATIVO);
 
         List<MotoristaDTO> motoristaDTOList = paginacaoMotorista

@@ -32,19 +32,22 @@ public class MotoristaController implements MotoristaControllerDoc {
         return ResponseEntity.ok(motoristaService.listar());
     }
 
-    @PostMapping
-    public ResponseEntity<MotoristaDTO> create(@Valid @RequestBody MotoristaCreateDTO motoristaCreateDTO) throws RegraDeNegocioException {
-        return new ResponseEntity<>(motoristaService.criar(motoristaCreateDTO), HttpStatus.CREATED);
+    @GetMapping("/buscar-por-id")
+    public ResponseEntity<MotoristaDTO> findById(@RequestParam("idMotorista") Integer idMotorista)
+            throws RegraDeNegocioException {
+        return new ResponseEntity<>(motoristaService.listarPorId(idMotorista), HttpStatus.OK);
     }
 
-    @GetMapping("/buscar-por-id")
-    public ResponseEntity<MotoristaDTO> findById(@RequestParam("idMotorista") Integer idMotorista) throws Exception {
-        return new ResponseEntity<>(motoristaService.listarPorId(idMotorista), HttpStatus.OK);
+    @PostMapping
+    public ResponseEntity<MotoristaDTO> create(@Valid @RequestBody MotoristaCreateDTO motoristaCreateDTO)
+            throws RegraDeNegocioException {
+        return new ResponseEntity<>(motoristaService.criar(motoristaCreateDTO), HttpStatus.CREATED);
     }
 
     @PutMapping("/{idUsuario}")
     public ResponseEntity<MotoristaDTO> update(@RequestParam Integer idUsuario,
-                                               @Valid @RequestBody MotoristaUpdateDTO motoristaUpdateDTO) throws RegraDeNegocioException {
+                                               @Valid @RequestBody MotoristaUpdateDTO motoristaUpdateDTO)
+            throws RegraDeNegocioException {
         return new ResponseEntity<>(motoristaService.editar(idUsuario, motoristaUpdateDTO), HttpStatus.OK);
     }
 

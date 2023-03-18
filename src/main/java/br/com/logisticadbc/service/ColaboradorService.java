@@ -2,10 +2,8 @@
 package br.com.logisticadbc.service;
 
 import br.com.logisticadbc.dto.in.ColaboradorCreateDTO;
-import br.com.logisticadbc.dto.out.CaminhaoDTO;
 import br.com.logisticadbc.dto.out.ColaboradorDTO;
 import br.com.logisticadbc.dto.in.ColaboradorUpdateDTO;
-import br.com.logisticadbc.entity.CaminhaoEntity;
 import br.com.logisticadbc.entity.ColaboradorEntity;
 import br.com.logisticadbc.entity.enums.StatusUsuario;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
@@ -26,21 +24,8 @@ public class ColaboradorService {
     private final ObjectMapper objectMapper;
     private final EmailService emailService;
 
-    public List<ColaboradorDTO> listar() {
-        return colaboradorRepository.findAll()
-                .stream()
-                .map(colaborador -> objectMapper.convertValue(colaborador, ColaboradorDTO.class))
-                .toList();
-    }
-
-    public ColaboradorDTO listarPorId(Integer idColaborador) throws RegraDeNegocioException {
-        ColaboradorEntity colaboradorRecuperado = buscarPorId(idColaborador);
-        ColaboradorDTO colaboradorDTO = objectMapper.convertValue(colaboradorRecuperado, ColaboradorDTO.class);
-        colaboradorDTO.setIdUsuario(idColaborador);
-        return colaboradorDTO;
-    }
-
     // TODO - fazer senha nao retornar no dto
+
     public ColaboradorDTO criar(ColaboradorCreateDTO colaboradorCreateDTO) throws RegraDeNegocioException {
         try {
             ColaboradorEntity colaboradorEntity = objectMapper.convertValue(colaboradorCreateDTO, ColaboradorEntity.class);
@@ -49,7 +34,7 @@ public class ColaboradorService {
 
             colaboradorRepository.save(colaboradorEntity);
 
-            emailService.enviarEmailBoansVindasColabotador(colaboradorEntity);
+            emailService.enviarEmailBoasVindasColabotador(colaboradorEntity);
 
             return objectMapper.convertValue(colaboradorEntity, ColaboradorDTO.class);
 
@@ -64,12 +49,14 @@ public class ColaboradorService {
         try {
             ColaboradorEntity colaboradorEncontrado = buscarPorId(idUsuario);
 
+            if (colaboradorEncontrado.getStatusUsuario().equals(StatusUsuario.INATIVO)) {
+                throw new RegraDeNegocioException("Usuário inativo!");
+            }
+
             colaboradorEncontrado.setNome(colaboradorUpdateDTO.getNome());
             colaboradorEncontrado.setSenha(colaboradorUpdateDTO.getSenha());
 
             colaboradorRepository.save(colaboradorEncontrado);
-
-
 
             return objectMapper.convertValue(colaboradorEncontrado, ColaboradorDTO.class);
 
@@ -89,6 +76,27 @@ public class ColaboradorService {
         } catch (Exception e) {
             e.printStackTrace();
             throw new RegraDeNegocioException("Aconteceu algum problema durante a exclusão.");
+        }
+    }
+
+    public List<ColaboradorDTO> listar() {
+        return colaboradorRepository.findAll()
+                .stream()
+                .map(colaborador -> objectMapper.convertValue(colaborador, ColaboradorDTO.class))
+                .toList();
+    }
+
+    public ColaboradorDTO listarPorId(Integer idColaborador) throws RegraDeNegocioException {
+        try {
+            ColaboradorEntity colaboradorRecuperado = buscarPorId(idColaborador);
+
+            ColaboradorDTO colaboradorDTO = objectMapper.convertValue(colaboradorRecuperado, ColaboradorDTO.class);
+            colaboradorDTO.setIdUsuario(idColaborador);
+            return colaboradorDTO;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RegraDeNegocioException("Aconteceu algum problema durante a listagem.");
         }
     }
 

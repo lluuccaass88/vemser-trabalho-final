@@ -9,6 +9,7 @@ import java.util.List;
 
 @Repository
 public interface CaminhaoRepository extends JpaRepository<CaminhaoEntity, Integer> {
+
     List<CaminhaoEntity> findByStatusCaminhaoEquals (StatusCaminhao statusCaminhao);
 
 }

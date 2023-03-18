@@ -1,6 +1,4 @@
-
 package br.com.logisticadbc.controller;
-
 
 import br.com.logisticadbc.controller.doc.CaminhaoControllerDoc;
 import br.com.logisticadbc.dto.in.CaminhaoCreateDTO;
@@ -29,14 +27,21 @@ public class CaminhaoController implements CaminhaoControllerDoc {
     public ResponseEntity<List<CaminhaoDTO>> listAll() {
         return new ResponseEntity<>(caminhaoService.listar(), HttpStatus.OK);
     }
+
     @PostMapping
-    public ResponseEntity<CaminhaoDTO> create(@RequestParam("idColaborador") Integer idColaborador, @Valid @RequestBody CaminhaoCreateDTO caminhaoCreateDTO) throws RegraDeNegocioException {
+    public ResponseEntity<CaminhaoDTO> create(@RequestParam("idColaborador") Integer idColaborador,
+                                              @Valid @RequestBody CaminhaoCreateDTO caminhaoCreateDTO)
+            throws RegraDeNegocioException {
         return new ResponseEntity<>(caminhaoService.criar(idColaborador, caminhaoCreateDTO), HttpStatus.CREATED);
     }
+
     @PutMapping("/abastecer")
-    public ResponseEntity<CaminhaoDTO> update(@RequestParam("idCaminhao") Integer idCaminhao, @RequestParam("Quantidade de gasolina") Integer gasolina) throws RegraDeNegocioException {
+    public ResponseEntity<CaminhaoDTO> update(@RequestParam("idCaminhao") Integer idCaminhao,
+                                              @RequestParam("Quantidade de gasolina") Integer gasolina)
+            throws RegraDeNegocioException {
         return new ResponseEntity<>(caminhaoService.abastecer(idCaminhao, gasolina), HttpStatus.OK);
     }
+
     @GetMapping("/buscar-por-id")
     public ResponseEntity<CaminhaoDTO> findById(@RequestParam("idCaminhao") Integer idCaminhao) throws Exception {
         return new ResponseEntity<>(caminhaoService.listarPorId(idCaminhao), HttpStatus.OK);

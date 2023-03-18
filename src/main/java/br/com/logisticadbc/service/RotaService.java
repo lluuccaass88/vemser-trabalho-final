@@ -1,11 +1,10 @@
 package br.com.logisticadbc.service;
 
 import br.com.logisticadbc.dto.in.RotaCreateDTO;
-import br.com.logisticadbc.dto.out.PostoDTO;
 import br.com.logisticadbc.dto.out.RotaDTO;
 import br.com.logisticadbc.entity.ColaboradorEntity;
-import br.com.logisticadbc.entity.PostoEntity;
 import br.com.logisticadbc.entity.RotaEntity;
+import br.com.logisticadbc.entity.enums.StatusUsuario;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.repository.RotaRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -20,6 +19,8 @@ import java.util.List;
 @Service
 public class RotaService {
 
+    // TODO fazer metodo de cadastrar posto em rota
+
     private final RotaRepository rotaRepository;
     private final ObjectMapper objectMapper;
     private final ColaboradorService colaboradorService;
@@ -27,6 +28,10 @@ public class RotaService {
     public RotaDTO criar(Integer idUsuario, RotaCreateDTO rotaCreateDTO) throws RegraDeNegocioException {
         try {
             ColaboradorEntity colaboradorEncontrado = colaboradorService.buscarPorId(idUsuario);
+
+            if (colaboradorEncontrado.getStatusUsuario().equals(StatusUsuario.INATIVO)) {
+                throw new RegraDeNegocioException("Usuário inativo!");
+            }
 
             RotaEntity rotaEntity = objectMapper.convertValue(rotaCreateDTO, RotaEntity.class);
             rotaEntity.setColaborador(colaboradorEncontrado); // Atribui idusuario a rota criada
@@ -70,6 +75,7 @@ public class RotaService {
     public void deletar(Integer idRota) throws RegraDeNegocioException {
         try {
             RotaEntity rotaEncontrada = buscarPorId(idRota);
+
             rotaRepository.deleteById(rotaEncontrada.getIdRota());
 
         } catch (Exception e) {
@@ -92,11 +98,18 @@ public class RotaService {
     }
 
     public RotaDTO listarPorId(Integer idRota) throws RegraDeNegocioException {
-        RotaEntity rotaRecuperado = buscarPorId(idRota);
-        RotaDTO rotaDTO = objectMapper.convertValue(rotaRecuperado, RotaDTO.class);
-        rotaDTO.setIdUsuario(rotaRecuperado.getColaborador().getIdUsuario());
-        rotaDTO.setIdRota(idRota);
-        return rotaDTO;
+        try {
+            RotaEntity rotaRecuperado = buscarPorId(idRota);
+
+            RotaDTO rotaDTO = objectMapper.convertValue(rotaRecuperado, RotaDTO.class);
+            rotaDTO.setIdUsuario(rotaRecuperado.getColaborador().getIdUsuario());
+            rotaDTO.setIdRota(idRota);
+            return rotaDTO;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RegraDeNegocioException("Aconteceu algum problema durante a listagem.");
+        }
     }
 
     public RotaEntity buscarPorId(Integer idRota) throws RegraDeNegocioException {
