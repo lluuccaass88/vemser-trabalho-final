@@ -15,20 +15,26 @@ public interface ColaboradorRepository extends JpaRepository<ColaboradorEntity, 
             "   c.nome, " +
             "   c.usuario, " +
             "   c.email, " +
-            "   c.statusUsuario, " +
+            "   c.status, " +
             "   c.cpf, " +
+
             "   cam.idCaminhao, " +
             "   cam.modelo, " +
             "   cam.placa, " +
             "   cam.nivelCombustivel, " +
             "   cam.statusCaminhao, " +
+            "   cam.status, " +
+
             "   r.idRota, " +
             "   r.descricao, " +
             "   r.localPartida, " +
             "   r.localDestino, " +
+            "   r.status, " +
+
             "   p.idPosto, " +
             "   p.nome, " +
-            "   p.valorCombustivel" +
+            "   p.valorCombustivel, " +
+            "   p.status " +
             " ) " +
             "   From COLABORADOR c " +
             "   left join c.caminhoes cam " +
