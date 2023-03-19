@@ -15,7 +15,7 @@ public class ColaboradorDTO extends ColaboradorCreateDTO {
     private Integer idUsuario;
 
     @Schema(description = "Status do usuário", example = "FINALIZADA")
-    private StatusGeral statusUsuario;
+    private StatusGeral status;
 
     @Override
     public void setSenha(@NotNull @NotBlank String senha) {

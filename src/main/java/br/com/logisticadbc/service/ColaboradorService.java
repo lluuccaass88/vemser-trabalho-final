@@ -26,25 +26,12 @@ public class ColaboradorService {
     private final ObjectMapper objectMapper;
     private final EmailService emailService;
 
-    //private final CaminhaoService caminhaoService;
 
-    public List<ColaboradorDTO> listar() {
-        return colaboradorRepository.findAll()
-                .stream()
-                .map(colaborador -> objectMapper.convertValue(colaborador, ColaboradorDTO.class))
-                .toList();
-    }
-
-    public List<ColaboradorCompletoDTO> gerarRelatorioColaboradoresInformacoesCompletas(){
-        return colaboradorRepository.relatorio();
-    }
-
-    // TODO - fazer senha nao retornar no dto
 
     public ColaboradorDTO criar(ColaboradorCreateDTO colaboradorCreateDTO) throws RegraDeNegocioException {
-        try {
-            ColaboradorEntity colaboradorEntity = objectMapper.convertValue(colaboradorCreateDTO, ColaboradorEntity.class);
+        ColaboradorEntity colaboradorEntity = objectMapper.convertValue(colaboradorCreateDTO, ColaboradorEntity.class);
 
+        try {
             colaboradorEntity.setStatus(StatusGeral.ATIVO);
 
             colaboradorRepository.save(colaboradorEntity);
@@ -61,13 +48,9 @@ public class ColaboradorService {
 
     public ColaboradorDTO editar(Integer idUsuario, ColaboradorUpdateDTO colaboradorUpdateDTO)
             throws RegraDeNegocioException {
+        ColaboradorEntity colaboradorEncontrado = buscarPorId(idUsuario);
+
         try {
-            ColaboradorEntity colaboradorEncontrado = buscarPorId(idUsuario);
-
-            if (colaboradorEncontrado.getStatus().equals(StatusGeral.INATIVO)) {
-                throw new RegraDeNegocioException("Usuário inativo!");
-            }
-
             colaboradorEncontrado.setNome(colaboradorUpdateDTO.getNome());
             colaboradorEncontrado.setSenha(colaboradorUpdateDTO.getSenha());
 
@@ -82,8 +65,9 @@ public class ColaboradorService {
     }
 
     public void deletar(Integer idUsuario) throws RegraDeNegocioException {
+        ColaboradorEntity colaboradorEncontrado = buscarPorId(idUsuario);
+
         try {
-            ColaboradorEntity colaboradorEncontrado = buscarPorId(idUsuario);
             colaboradorEncontrado.setStatus(StatusGeral.INATIVO);
 
             colaboradorRepository.save(colaboradorEncontrado);
@@ -94,10 +78,17 @@ public class ColaboradorService {
         }
     }
 
-    public ColaboradorDTO listarPorId(Integer idColaborador) throws RegraDeNegocioException {
-        try {
-            ColaboradorEntity colaboradorRecuperado = buscarPorId(idColaborador);
+    public List<ColaboradorDTO> listar() {
+        return colaboradorRepository.findAll()
+                .stream()
+                .map(colaborador -> objectMapper.convertValue(colaborador, ColaboradorDTO.class))
+                .toList();
+    }
 
+    public ColaboradorDTO listarPorId(Integer idColaborador) throws RegraDeNegocioException {
+        ColaboradorEntity colaboradorRecuperado = buscarPorId(idColaborador);
+
+        try {
             ColaboradorDTO colaboradorDTO = objectMapper.convertValue(colaboradorRecuperado, ColaboradorDTO.class);
             colaboradorDTO.setIdUsuario(idColaborador);
             return colaboradorDTO;
@@ -106,6 +97,10 @@ public class ColaboradorService {
             e.printStackTrace();
             throw new RegraDeNegocioException("Aconteceu algum problema durante a listagem.");
         }
+    }
+
+    public List<ColaboradorCompletoDTO> gerarRelatorioColaboradoresInformacoesCompletas(){
+        return colaboradorRepository.relatorio();
     }
 
     public ColaboradorEntity buscarPorId(Integer idUsuario) throws RegraDeNegocioException{

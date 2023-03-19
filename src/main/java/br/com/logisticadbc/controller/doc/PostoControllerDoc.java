@@ -59,7 +59,8 @@ public interface PostoControllerDoc {
             }
     )
     @PutMapping("/{idPosto}")
-    ResponseEntity<PostoDTO> update(@RequestParam("idPosto") Integer idPosto,
+    ResponseEntity<PostoDTO> update(@RequestParam("idColaborador") Integer idColaborador,
+                                    @RequestParam("idPosto") Integer idPosto,
                                            @Valid @RequestBody PostoCreateDTO postoCreateDTO)
             throws RegraDeNegocioException ;
 
@@ -72,6 +73,7 @@ public interface PostoControllerDoc {
             }
     )
     @DeleteMapping("/{idPosto}")
-    ResponseEntity<Void> delete(@RequestParam("idPosto") Integer idPosto) throws RegraDeNegocioException ;
+    ResponseEntity<Void> delete(@RequestParam("idColaborador") Integer idColaborador,
+                                @RequestParam("idPosto") Integer idPosto) throws RegraDeNegocioException ;
 
 }

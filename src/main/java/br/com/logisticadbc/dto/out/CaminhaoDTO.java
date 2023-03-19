@@ -17,4 +17,7 @@ public class CaminhaoDTO extends CaminhaoCreateDTO {
 
     @Schema(description = "Se o caminhao está ativo", example = "ATIVO")
     private StatusGeral status;
+
+    @Schema(description = "ID do Colaborador", example = "1")
+    private Integer idUsuario;
 }

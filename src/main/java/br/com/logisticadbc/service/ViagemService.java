@@ -34,22 +34,22 @@ public class ViagemService {
     private final ObjectMapper objectMapper;
 
     public ViagemDTO criar(Integer idUsuario, ViagemCreateDTO viagemCreateDTO) throws RegraDeNegocioException {
+        MotoristaEntity motoristaEncontrado = motoristaService.buscarPorId(idUsuario);
+        CaminhaoEntity caminhaoEncontrado = caminhaoService.buscarPorId(viagemCreateDTO.getIdCaminhao());
+
+        // Verificações
+        if (caminhaoEncontrado.getStatus().equals(StatusGeral.INATIVO)
+                || motoristaEncontrado.getStatus().equals(StatusGeral.INATIVO)) {
+            throw new RegraDeNegocioException("Entidades informadas inativas!");
+
+        } else if (caminhaoEncontrado.getStatusCaminhao().equals(StatusCaminhao.EM_VIAGEM)
+                || motoristaEncontrado.getStatusMotorista().equals(StatusMotorista.EM_ESTRADA)) {
+            throw new RegraDeNegocioException("Entidades informadas indisponíveis!");
+
+        } else if (viagemCreateDTO.getDataFim().isBefore(viagemCreateDTO.getDataInicio())) {
+            throw new RegraDeNegocioException("Data final não pode ser antes da data inicial!");
+        }
         try {
-            MotoristaEntity motoristaEncontrado = motoristaService.buscarPorId(idUsuario);
-            CaminhaoEntity caminhaoEncontrado = caminhaoService.buscarPorId(viagemCreateDTO.getIdCaminhao());
-
-            // Verificações
-            if (caminhaoEncontrado.getStatus().equals(StatusGeral.INATIVO)
-            || motoristaEncontrado.getStatus().equals(StatusGeral.INATIVO)) {
-                throw new RegraDeNegocioException("Entidades informadas inativas!");
-
-            } else if (caminhaoEncontrado.getStatusCaminhao().equals(StatusCaminhao.EM_VIAGEM)
-            || motoristaEncontrado.getStatusMotorista().equals(StatusMotorista.EM_ESTRADA)) {
-                throw new RegraDeNegocioException("Entidades informadas indisponíveis!");
-
-            } else if (viagemCreateDTO.getDataFim().isBefore(viagemCreateDTO.getDataInicio())) {
-                throw new RegraDeNegocioException("Data final não pode ser antes da data inicial!");
-            }
 
             RotaEntity rotaEncontrada = rotaService.buscarPorId(viagemCreateDTO.getIdRota());
 
@@ -80,12 +80,12 @@ public class ViagemService {
     }
 
     public ViagemDTO editar(Integer idViagem, ViagemUpdateDTO viagemUpdateDTO) throws RegraDeNegocioException {
-        try {
-            ViagemEntity viagemEncontrada = buscarPorId(idViagem);
+        ViagemEntity viagemEncontrada = buscarPorId(idViagem);
 
-           if (viagemUpdateDTO.getDataFim().isBefore(viagemUpdateDTO.getDataInicio())) {
-                throw new RegraDeNegocioException("Data final não pode ser antes da data inicial!");
-           }
+        if (viagemUpdateDTO.getDataFim().isBefore(viagemUpdateDTO.getDataInicio())) {
+            throw new RegraDeNegocioException("Data final não pode ser antes da data inicial!");
+        }
+        try {
 
             viagemEncontrada.setDescricao(viagemUpdateDTO.getDescricao());
             viagemEncontrada.setDataInicio(viagemUpdateDTO.getDataInicio());
@@ -118,8 +118,9 @@ public class ViagemService {
     }
 
     public void finalizar(Integer idViagem) throws RegraDeNegocioException {
+        ViagemEntity viagemEncontrada = buscarPorId(idViagem);
+
         try {
-            ViagemEntity viagemEncontrada = buscarPorId(idViagem);
             viagemEncontrada.setStatusViagem(StatusViagem.FINALIZADA);
 
             MotoristaEntity motoristaEncontrado = motoristaService.buscarPorId(
@@ -161,9 +162,9 @@ public class ViagemService {
     }
 
     public ViagemDTO listarPorId(Integer idViagem) throws RegraDeNegocioException {
-        try {
-            ViagemEntity viagemRecuperada = buscarPorId(idViagem);
+        ViagemEntity viagemRecuperada = buscarPorId(idViagem);
 
+        try {
             ViagemDTO viagemDTO = objectMapper.convertValue(viagemRecuperada, ViagemDTO.class);
             viagemDTO.setStatusViagem(viagemRecuperada.getStatusViagem());
             viagemDTO.setIdRota(viagemRecuperada.getRota().getIdRota());
@@ -186,7 +187,7 @@ public class ViagemService {
     public PageDTO<ViagemDTO> listarPorStatusOrdenadoPorDataInicioAsc(Integer pagina, Integer tamanho) {
         Pageable solicitacaoPagina = PageRequest.of(pagina, tamanho);
 
-        Page<ViagemEntity> paginacaoViagens = viagemRepository.findByStatusViagemEqualsOrderBOrderByDataInicioAsc(
+        Page<ViagemEntity> paginacaoViagens = viagemRepository.findByStatusViagemEqualsOrderByDataInicioAsc(
                 solicitacaoPagina, StatusViagem.EM_ANDAMENTO);
 
         List<ViagemDTO> viagensDTOList = paginacaoViagens

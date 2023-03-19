@@ -5,6 +5,7 @@ import br.com.logisticadbc.dto.in.CaminhaoCreateDTO;
 import br.com.logisticadbc.dto.out.CaminhaoDTO;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.service.CaminhaoService;
+import br.com.logisticadbc.service.ValidacaoService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -23,6 +24,7 @@ import java.util.List;
 public class CaminhaoController implements CaminhaoControllerDoc {
 
     private final CaminhaoService caminhaoService;
+    private final ValidacaoService validacaoService;
 
     @GetMapping
     public ResponseEntity<List<CaminhaoDTO>> listAll() {
@@ -39,18 +41,26 @@ public class CaminhaoController implements CaminhaoControllerDoc {
     public ResponseEntity<CaminhaoDTO> create(@RequestParam("idColaborador") Integer idColaborador,
                                               @Valid @RequestBody CaminhaoCreateDTO caminhaoCreateDTO)
             throws RegraDeNegocioException {
+
+        validacaoService.validacao(idColaborador, "colaborador");
         return new ResponseEntity<>(caminhaoService.criar(idColaborador, caminhaoCreateDTO), HttpStatus.CREATED);
     }
 
     @PutMapping("/abastecer")
-    public ResponseEntity<CaminhaoDTO> update(@RequestParam("idCaminhao") Integer idCaminhao,
+    public ResponseEntity<CaminhaoDTO> update(@RequestParam("idMotorista") Integer idMotorista,
+                                              @RequestParam("idCaminhao") Integer idCaminhao,
                                               @RequestParam("Quantidade de gasolina") Integer gasolina)
             throws RegraDeNegocioException {
+
+        validacaoService.validacao(idMotorista, "motorista");
         return new ResponseEntity<>(caminhaoService.abastecer(idCaminhao, gasolina), HttpStatus.OK);
     }
 
     @DeleteMapping
-    public ResponseEntity<Void> delete(@RequestParam("idCaminhao") Integer idCaminhao) throws RegraDeNegocioException {
+    public ResponseEntity<Void> delete(@RequestParam("idColaborador") Integer idColaborador,
+                                       @RequestParam("idCaminhao") Integer idCaminhao) throws RegraDeNegocioException {
+
+        validacaoService.validacao(idColaborador, "colaborador");
         caminhaoService.deletar(idCaminhao);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

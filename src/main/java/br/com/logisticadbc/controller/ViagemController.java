@@ -49,16 +49,21 @@ public class ViagemController implements ViagemControllerDoc {
     }
 
     @PutMapping("/{idViagem}")
-    public ResponseEntity<ViagemDTO> update(@RequestParam("idViagem") Integer idViagem,
+    public ResponseEntity<ViagemDTO> update(@RequestParam("idMotorista") Integer idUsuario,
+                                            @RequestParam("idViagem") Integer idViagem,
                                             @Valid @RequestBody ViagemUpdateDTO viagemUpdateDTO)
             throws RegraDeNegocioException {
+
+        validacaoService.validacao(idUsuario, "motorista");
         return new ResponseEntity<>(viagemService.editar(idViagem, viagemUpdateDTO), HttpStatus.OK);
     }
 
     @DeleteMapping("/{idViagem}")
-    public ResponseEntity<Void> delete(@RequestParam("idViagem") Integer idViagem)
+    public ResponseEntity<Void> delete(@RequestParam("idMotorista") Integer idUsuario,
+                                       @RequestParam("idViagem") Integer idViagem)
             throws RegraDeNegocioException {
 
+        validacaoService.validacao(idUsuario, "motorista");
         viagemService.finalizar(idViagem);
         return ResponseEntity.ok().build();
     }

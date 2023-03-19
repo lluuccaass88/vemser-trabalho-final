@@ -61,7 +61,8 @@ public interface RotaControllerDoc {
             }
     )
     @PutMapping("/{idRota}")
-    ResponseEntity<RotaDTO> update(@RequestParam("idRota") Integer idRota,
+    ResponseEntity<RotaDTO> update(@RequestParam("idColaborador") Integer idUsuario,
+                                   @RequestParam("idRota") Integer idRota,
                                           @Valid @RequestBody RotaCreateDTO rotaCreateDTO)
             throws RegraDeNegocioException;
 
@@ -74,7 +75,8 @@ public interface RotaControllerDoc {
             }
     )
     @DeleteMapping("/{idRota}")
-    ResponseEntity<Void> delete(@RequestParam("idRota") Integer idRota) throws RegraDeNegocioException;
+    ResponseEntity<Void> delete(@RequestParam("idColaborador") Integer idUsuario,
+                                @RequestParam("idRota") Integer idRota) throws RegraDeNegocioException;
 
     @Operation(summary = "Cadastrar Posto na Rota",
             description = "Cadastra posto na rota passando id de ambos")
@@ -86,7 +88,8 @@ public interface RotaControllerDoc {
             }
     )
     @PostMapping("/cadastrar-posto")
-    ResponseEntity<Void> linkEntities(@RequestParam("idRota") Integer idRota,
+    ResponseEntity<Void> linkEntities(@RequestParam("idColaborador") Integer idUsuario,
+                                      @RequestParam("idRota") Integer idRota,
                                     @RequestParam("idPosto") Integer idPosto)
             throws RegraDeNegocioException;
 

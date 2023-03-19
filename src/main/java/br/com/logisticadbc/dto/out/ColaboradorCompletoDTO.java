@@ -25,7 +25,6 @@ public class ColaboradorCompletoDTO {
     private StatusCaminhao statusCaminhao;
     private StatusGeral statusGeralCaminhao;
 
-
     private Integer idRota;
     private String descricao;
     private String localPartida;

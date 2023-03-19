@@ -1,14 +1,13 @@
 package br.com.logisticadbc.service;
 
 import br.com.logisticadbc.dto.in.MotoristaCreateDTO;
-import br.com.logisticadbc.dto.out.ColaboradorCompletoDTO;
+import br.com.logisticadbc.dto.in.MotoristaUpdateDTO;
 import br.com.logisticadbc.dto.out.MotoristaCompletoDTO;
 import br.com.logisticadbc.dto.out.MotoristaDTO;
-import br.com.logisticadbc.dto.in.MotoristaUpdateDTO;
 import br.com.logisticadbc.dto.out.PageDTO;
 import br.com.logisticadbc.entity.MotoristaEntity;
-import br.com.logisticadbc.entity.enums.StatusMotorista;
 import br.com.logisticadbc.entity.enums.StatusGeral;
+import br.com.logisticadbc.entity.enums.StatusMotorista;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.repository.MotoristaRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -30,12 +29,10 @@ public class MotoristaService {
     private final EmailService emailService;
     private final ObjectMapper objectMapper;
 
-
-    // TODO - MODIFICAR A SENHA PARA NAO RETORNAR NO DTO
-
     public MotoristaDTO criar(MotoristaCreateDTO motoristaCreateDTO) throws RegraDeNegocioException {
+        MotoristaEntity motoristaEntity = objectMapper.convertValue(motoristaCreateDTO, MotoristaEntity.class);
+
         try {
-            MotoristaEntity motoristaEntity = objectMapper.convertValue(motoristaCreateDTO, MotoristaEntity.class);
             motoristaEntity.setStatus(StatusGeral.ATIVO);
             motoristaEntity.setStatusMotorista(StatusMotorista.DISPONIVEL);
 
@@ -51,13 +48,9 @@ public class MotoristaService {
         }
     }
     public MotoristaDTO editar(Integer idUsuario, MotoristaUpdateDTO motoristaUpdateDTO) throws RegraDeNegocioException {
+        MotoristaEntity motoristaEntity = buscarPorId(idUsuario);
+
         try {
-            MotoristaEntity motoristaEntity = buscarPorId(idUsuario);
-
-            if (motoristaEntity.getStatus().equals(StatusGeral.INATIVO)) {
-                throw new RegraDeNegocioException("Usuário inativo!");
-            }
-
             motoristaEntity.setNome(motoristaUpdateDTO.getNome());
             motoristaEntity.setSenha(motoristaUpdateDTO.getSenha());
 
@@ -72,8 +65,9 @@ public class MotoristaService {
     }
 
     public void deletar(Integer idUsuario) throws RegraDeNegocioException {
+        MotoristaEntity motoristaEntity = buscarPorId(idUsuario);
+
         try {
-            MotoristaEntity motoristaEntity = buscarPorId(idUsuario);
             motoristaEntity.setStatus(StatusGeral.INATIVO);
 
             motoristaRepository.save(motoristaEntity);
@@ -96,9 +90,9 @@ public class MotoristaService {
     }
 
     public MotoristaDTO listarPorId(Integer idMotorista) throws RegraDeNegocioException {
-        try {
-            MotoristaEntity motoristaRecuperado = buscarPorId(idMotorista);
+        MotoristaEntity motoristaRecuperado = buscarPorId(idMotorista);
 
+        try {
             MotoristaDTO motoristaDTO = objectMapper.convertValue(motoristaRecuperado, MotoristaDTO.class);
             motoristaDTO.setIdUsuario(idMotorista);
             return motoristaDTO;
