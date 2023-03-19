@@ -57,7 +57,7 @@ public class ViagemController implements ViagemControllerDoc {
             throws RegraDeNegocioException {
 
         validacaoService.validacao(idUsuario, "motorista");
-        return new ResponseEntity<>(viagemService.editar(idViagem, viagemUpdateDTO), HttpStatus.OK);
+        return new ResponseEntity<>(viagemService.editar(idUsuario, idViagem, viagemUpdateDTO), HttpStatus.OK);
     }
 
     @DeleteMapping
@@ -66,7 +66,7 @@ public class ViagemController implements ViagemControllerDoc {
             throws RegraDeNegocioException {
 
         validacaoService.validacao(idUsuario, "motorista");
-        viagemService.finalizar(idViagem);
+        viagemService.finalizar(idUsuario, idViagem);
         return ResponseEntity.ok().build();
     }
 

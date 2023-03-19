@@ -83,10 +83,14 @@ public class ViagemService {
         }
     }
 
-    public ViagemDTO editar(Integer idViagem, ViagemUpdateDTO viagemUpdateDTO) throws RegraDeNegocioException {
+    public ViagemDTO editar(Integer idMotorista, Integer idViagem, ViagemUpdateDTO viagemUpdateDTO)
+            throws RegraDeNegocioException {
         ViagemEntity viagemEncontrada = buscarPorId(idViagem);
 
-        if (viagemUpdateDTO.getDataFim().isBefore(viagemUpdateDTO.getDataInicio())) {
+        if (!viagemEncontrada.getMotorista().getIdUsuario().equals(idMotorista)){
+            throw new RegraDeNegocioException("Permissão negada, motorista não criou a viagem!");
+
+        } else if (viagemUpdateDTO.getDataFim().isBefore(viagemUpdateDTO.getDataInicio())) {
             throw new RegraDeNegocioException("Data final não pode ser antes da data inicial!");
         }
         try {
@@ -120,9 +124,12 @@ public class ViagemService {
         }
     }
 
-    public void finalizar(Integer idViagem) throws RegraDeNegocioException {
+    public void finalizar(Integer idMotorista, Integer idViagem) throws RegraDeNegocioException {
         ViagemEntity viagemEncontrada = buscarPorId(idViagem);
 
+        if (!viagemEncontrada.getMotorista().getIdUsuario().equals(idMotorista)){
+            throw new RegraDeNegocioException("Permissão negada, motorista não criou a viagem!");
+        }
         try {
             viagemEncontrada.setStatusViagem(StatusViagem.FINALIZADA);
 
