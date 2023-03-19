@@ -43,7 +43,6 @@ public class MotoristaService {
             return objectMapper.convertValue(motoristaEntity, MotoristaDTO.class);
 
         } catch (Exception e) {
-//            e.printStackTrace();
             throw new RegraDeNegocioException("Aconteceu algum problema durante a criação. -> " + e.getMessage());
         }
     }
@@ -59,7 +58,6 @@ public class MotoristaService {
             return objectMapper.convertValue(motoristaEntity, MotoristaDTO.class);
 
         } catch (Exception e) {
-//            e.printStackTrace();
             throw new RegraDeNegocioException("Aconteceu algum problema durante a edição. -> " + e.getMessage());
         }
     }
@@ -73,7 +71,6 @@ public class MotoristaService {
             motoristaRepository.save(motoristaEntity);
 
         } catch (Exception e) {
-            e.printStackTrace();
             throw new RegraDeNegocioException("Aconteceu algum problema durante a exclusão.");
         }
     }
@@ -115,7 +112,6 @@ public class MotoristaService {
             return motoristaDTO;
 
         } catch (Exception e) {
-            e.printStackTrace();
             throw new RegraDeNegocioException("Aconteceu algum problema durante a listagem.");
         }
     }

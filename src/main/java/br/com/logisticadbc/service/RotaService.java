@@ -116,7 +116,6 @@ public class RotaService {
         try {
             RotaDTO rotaDTO = objectMapper.convertValue(rotaRecuperado, RotaDTO.class);
             rotaDTO.setIdUsuario(rotaRecuperado.getColaborador().getIdUsuario());
-            rotaDTO.setIdRota(idRota);
             return rotaDTO;
 
         } catch (Exception e) {
@@ -171,6 +170,19 @@ public class RotaService {
             e.printStackTrace();
             throw new RegraDeNegocioException("Aconteceu algum problema durante a listagem.");
         }
+    }
+
+    public List<RotaDTO> listarPorIdColaborador(Integer idColaborador) throws RegraDeNegocioException {
+        ColaboradorEntity colaboradorEncontrado = colaboradorService.buscarPorId(idColaborador);
+
+        return colaboradorEncontrado.getRotas()
+                .stream()
+                .map(rota -> {
+                    RotaDTO rotaDTO = objectMapper.convertValue(rota, RotaDTO.class);
+                    rotaDTO.setIdUsuario(idColaborador);
+                    return rotaDTO;
+                })
+                .toList();
     }
 
     public RotaEntity buscarPorId(Integer idRota) throws RegraDeNegocioException {

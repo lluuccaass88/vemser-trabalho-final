@@ -81,4 +81,10 @@ public class RotaController implements RotaControllerDoc {
             throws RegraDeNegocioException {
         return new ResponseEntity<>(rotaService.listarPostosCadastrados(idRota), HttpStatus.OK);
     }
+
+    @GetMapping("/listar-por-colaborador")
+    public ResponseEntity<List<RotaDTO>> listByIdUser(@RequestParam("idColaborador") Integer idColaborador)
+            throws RegraDeNegocioException {
+        return new ResponseEntity<>(rotaService.listarPorIdColaborador(idColaborador), HttpStatus.OK);
+    }
 }

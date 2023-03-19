@@ -4,6 +4,7 @@ package br.com.logisticadbc.service;
 import br.com.logisticadbc.dto.in.CaminhaoCreateDTO;
 import br.com.logisticadbc.dto.out.CaminhaoDTO;
 import br.com.logisticadbc.dto.out.PostoDTO;
+import br.com.logisticadbc.dto.out.RotaDTO;
 import br.com.logisticadbc.entity.CaminhaoEntity;
 import br.com.logisticadbc.entity.ColaboradorEntity;
 import br.com.logisticadbc.entity.enums.StatusCaminhao;
@@ -109,7 +110,6 @@ public class CaminhaoService {
         try {
             CaminhaoDTO caminhaoDTO = objectMapper.convertValue(caminhaoRecuperado, CaminhaoDTO.class);
             caminhaoDTO.setIdUsuario(caminhaoRecuperado.getColaborador().getIdUsuario());
-            caminhaoDTO.setIdCaminhao(idCaminhao);
             return caminhaoDTO;
 
         } catch (Exception e) {
@@ -127,6 +127,19 @@ public class CaminhaoService {
                     caminhaoDTO.setIdUsuario(caminhao.getColaborador().getIdUsuario());
                     return caminhaoDTO;})
                 .collect(Collectors.toList());
+    }
+
+    public List<CaminhaoDTO> listarPorIdColaborador(Integer idColaborador) throws RegraDeNegocioException {
+        ColaboradorEntity colaboradorEncontrado = colaboradorService.buscarPorId(idColaborador);
+
+        return colaboradorEncontrado.getRotas()
+                .stream()
+                .map(caminhao -> {
+                    CaminhaoDTO caminhaoDTO = objectMapper.convertValue(caminhao, CaminhaoDTO.class);
+                    caminhaoDTO.setIdUsuario(idColaborador);
+                    return caminhaoDTO;
+                })
+                .toList();
     }
 
     public CaminhaoEntity buscarPorId(Integer idCaminhao) throws RegraDeNegocioException {

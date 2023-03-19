@@ -2,6 +2,7 @@ package br.com.logisticadbc.controller.doc;
 
 import br.com.logisticadbc.dto.in.PostoCreateDTO;
 import br.com.logisticadbc.dto.out.PostoDTO;
+import br.com.logisticadbc.dto.out.RotaDTO;
 import br.com.logisticadbc.exceptions.BancoDeDadosException;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import io.swagger.v3.oas.annotations.Operation;
@@ -14,6 +15,8 @@ import javax.validation.Valid;
 import java.util.List;
 
 public interface PostoControllerDoc {
+
+    // TODO - LISTAR CAMINHOES POR ID COLABORADOR
     @Operation(summary = "Listar Postos", description = "Lista todas os postos no banco de dados")
     @ApiResponses(
             value = {
@@ -75,5 +78,18 @@ public interface PostoControllerDoc {
     @DeleteMapping("/{idPosto}")
     ResponseEntity<Void> delete(@RequestParam("idColaborador") Integer idColaborador,
                                 @RequestParam("idPosto") Integer idPosto) throws RegraDeNegocioException ;
+
+    @Operation(summary = "Listar postos de um colaborador",
+            description = "Lista todos postos de um colaborador")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Retorna lista com postos"),
+                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
+            }
+    )
+    @GetMapping("/listar-por-colaborador")
+    ResponseEntity<List<PostoDTO>> listByIdUser(@RequestParam("idColaborador") Integer idColaborador)
+            throws RegraDeNegocioException;
 
 }

@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface RotaRepository extends JpaRepository<RotaEntity, Integer> {
 
-    // TODO - LISTAR TODAS AS ROTAS INFORMANDO O COLABORADOR QUE A ADICIONOU
+
 
 }

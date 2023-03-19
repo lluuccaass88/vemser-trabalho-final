@@ -47,8 +47,8 @@ public interface RotaControllerDoc {
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-    @PostMapping("/{idUsuario}")
-    ResponseEntity<RotaDTO> create(@RequestParam("idUsuario") Integer idUsuario,
+    @PostMapping("/{idColaborador}")
+    ResponseEntity<RotaDTO> create(@RequestParam("idColaborador") Integer idUsuario,
                                           @Valid @RequestBody RotaCreateDTO rotaCreateDTO)
             throws RegraDeNegocioException;
 
@@ -104,5 +104,18 @@ public interface RotaControllerDoc {
     )
     @GetMapping("/listar-postos-cadastrados")
     ResponseEntity<RotaComPostosDTO> listLink(@RequestParam("idRota") Integer idRota)
+            throws RegraDeNegocioException;
+
+    @Operation(summary = "Listar rotas de um colaborador",
+            description = "Lista todas rotas de um colaborador")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Retorna lista com rotas"),
+                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
+            }
+    )
+    @GetMapping("/listar-por-colaborador")
+    ResponseEntity<List<RotaDTO>> listByIdUser(@RequestParam("idColaborador") Integer idColaborador)
             throws RegraDeNegocioException;
 }

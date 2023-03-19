@@ -2,6 +2,7 @@ package br.com.logisticadbc.controller.doc;
 
 import br.com.logisticadbc.dto.in.CaminhaoCreateDTO;
 import br.com.logisticadbc.dto.out.CaminhaoDTO;
+import br.com.logisticadbc.dto.out.PostoDTO;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -14,6 +15,7 @@ import java.util.List;
 
 public interface CaminhaoControllerDoc {
 
+    // TODO - LISTAR CAMINHOES POR ID COLABORADOR
     @Operation(summary = "Listar Caminhões", description = "Listar os caminhões do banco de dados")
     @ApiResponses(
             value = {
@@ -76,6 +78,19 @@ public interface CaminhaoControllerDoc {
     @DeleteMapping
     public ResponseEntity<Void> delete(@RequestParam("idColaborador") Integer idColaborador,
                                        @RequestParam("idCaminhao") Integer idCaminhao) throws RegraDeNegocioException;
+
+    @Operation(summary = "Listar caminhões de um colaborador",
+            description = "Lista todos caminhões de um colaborador")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Retorna lista com caminhões"),
+                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
+            }
+    )
+    @GetMapping("/listar-por-colaborador")
+    ResponseEntity<List<CaminhaoDTO>> listByIdUser(@RequestParam("idColaborador") Integer idColaborador)
+            throws RegraDeNegocioException;
 
     @Operation(summary = "Listar caminhões disponiveis", description = "Listar caminhões disponiveis no banco de dados")
     @ApiResponses(

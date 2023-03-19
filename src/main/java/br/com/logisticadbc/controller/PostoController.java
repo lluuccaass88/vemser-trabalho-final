@@ -4,6 +4,7 @@ import br.com.logisticadbc.controller.doc.PostoControllerDoc;
 import br.com.logisticadbc.dto.in.PostoCreateDTO;
 import br.com.logisticadbc.dto.out.MotoristaDTO;
 import br.com.logisticadbc.dto.out.PostoDTO;
+import br.com.logisticadbc.dto.out.RotaDTO;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.service.PostoService;
 import br.com.logisticadbc.service.ValidacaoService;
@@ -62,5 +63,11 @@ public class PostoController implements PostoControllerDoc {
         validacaoService.validacao(idColaborador, "colaborador");
         postoService.deletar(idPosto);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/listar-por-colaborador")
+    public ResponseEntity<List<PostoDTO>> listByIdUser(@RequestParam("idColaborador") Integer idColaborador)
+            throws RegraDeNegocioException {
+        return new ResponseEntity<>(postoService.listarPorIdColaborador(idColaborador), HttpStatus.OK);
     }
 }

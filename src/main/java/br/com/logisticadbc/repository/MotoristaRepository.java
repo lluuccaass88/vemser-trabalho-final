@@ -15,15 +15,6 @@ import java.util.List;
 @Repository
 public interface MotoristaRepository extends JpaRepository<MotoristaEntity, Integer> {
 
-    /**
-     *    @Query("SELECT p " +
-     *             " FROM PESSOA p " +
-     *             "WHERE p.dataNascimento >= ?1 " +
-     *             "OR ?1 IS NULL " +
-     *             "ORDER BY p.nome ASC")
-     *     Page<PessoaEntity> findByDataNascimentoIsGreaterThanEqualOrderByNomeAsc(Pageable pageable, LocalDate data);
-     */
-
     @Query( "   SELECT m " +
             "     FROM MOTORISTA m " +
             "    WHERE m.statusMotorista = ?1 " +

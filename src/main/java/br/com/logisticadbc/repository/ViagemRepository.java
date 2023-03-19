@@ -18,6 +18,6 @@ public interface ViagemRepository extends JpaRepository<ViagemEntity, Integer> {
             "     FROM VIAGEM v " +
             "    WHERE v.statusViagem = ?1 " +
             " ORDER BY v.dataInicio ASC" )
-    Page<ViagemEntity> findByStatusViagemEqualsOrderByDataInicioAsc(Pageable pageable, StatusViagem statusViagem); //LocalDateTime dataInicio caso necessário
+    Page<ViagemEntity> findByStatusViagemEqualsOrderByDataInicioAsc(Pageable pageable, StatusViagem statusViagem);
 }
 

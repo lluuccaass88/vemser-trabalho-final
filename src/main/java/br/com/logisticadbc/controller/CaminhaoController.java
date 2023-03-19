@@ -3,6 +3,7 @@ package br.com.logisticadbc.controller;
 import br.com.logisticadbc.controller.doc.CaminhaoControllerDoc;
 import br.com.logisticadbc.dto.in.CaminhaoCreateDTO;
 import br.com.logisticadbc.dto.out.CaminhaoDTO;
+import br.com.logisticadbc.dto.out.PostoDTO;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.service.CaminhaoService;
 import br.com.logisticadbc.service.ValidacaoService;
@@ -63,6 +64,12 @@ public class CaminhaoController implements CaminhaoControllerDoc {
         validacaoService.validacao(idColaborador, "colaborador");
         caminhaoService.deletar(idCaminhao);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/listar-por-colaborador")
+    public ResponseEntity<List<CaminhaoDTO>> listByIdUser(@RequestParam("idColaborador") Integer idColaborador)
+            throws RegraDeNegocioException {
+        return new ResponseEntity<>(caminhaoService.listarPorIdColaborador(idColaborador), HttpStatus.OK);
     }
 
     @GetMapping("/listar-disponiveis")

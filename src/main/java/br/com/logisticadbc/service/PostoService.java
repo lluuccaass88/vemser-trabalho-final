@@ -2,6 +2,7 @@ package br.com.logisticadbc.service;
 
 import br.com.logisticadbc.dto.in.PostoCreateDTO;
 import br.com.logisticadbc.dto.out.PostoDTO;
+import br.com.logisticadbc.dto.out.RotaDTO;
 import br.com.logisticadbc.entity.ColaboradorEntity;
 import br.com.logisticadbc.entity.PostoEntity;
 import br.com.logisticadbc.entity.enums.StatusGeral;
@@ -115,6 +116,19 @@ public class PostoService {
             e.printStackTrace();
             throw new RegraDeNegocioException("Aconteceu algum problema durante a listagem.");
         }
+    }
+
+    public List<PostoDTO> listarPorIdColaborador(Integer idColaborador) throws RegraDeNegocioException {
+        ColaboradorEntity colaboradorEncontrado = colaboradorService.buscarPorId(idColaborador);
+
+        return colaboradorEncontrado.getPostos()
+                .stream()
+                .map(posto -> {
+                    PostoDTO postoDTO = objectMapper.convertValue(posto, PostoDTO.class);
+                    postoDTO.setIdUsuario(idColaborador);
+                    return postoDTO;
+                })
+                .toList();
     }
 
     public PostoEntity buscarPorId(Integer idPosto) throws RegraDeNegocioException {
