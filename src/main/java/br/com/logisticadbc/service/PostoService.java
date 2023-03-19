@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -116,6 +117,31 @@ public class PostoService {
             e.printStackTrace();
             throw new RegraDeNegocioException("Aconteceu algum problema durante a listagem.");
         }
+    }
+
+    public List<PostoDTO> listarPostosAtivos() {
+        return postoRepository
+                .findByStatusEquals(StatusGeral.ATIVO)
+                .stream()
+                .map(posto -> {
+                    PostoDTO postoDTO = objectMapper.convertValue(posto, PostoDTO.class);
+                    postoDTO.setIdUsuario(posto.getColaborador().getIdUsuario());
+                    postoDTO.setStatus(StatusGeral.ATIVO);
+                    return postoDTO;
+                })
+                .collect(Collectors.toList());
+    }
+
+    public List<PostoDTO> listarPostosInativos() {return postoRepository
+            .findByStatusEquals(StatusGeral.INATIVO)
+            .stream()
+            .map(posto -> {
+                PostoDTO postoDTO = objectMapper.convertValue(posto, PostoDTO.class);
+                postoDTO.setIdUsuario(posto.getColaborador().getIdUsuario());
+                postoDTO.setStatus(StatusGeral.ATIVO);
+                return postoDTO;
+            })
+            .collect(Collectors.toList());
     }
 
     public List<PostoDTO> listarPorIdColaborador(Integer idColaborador) throws RegraDeNegocioException {

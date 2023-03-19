@@ -88,6 +88,16 @@ public class RotaController implements RotaControllerDoc {
         return new ResponseEntity<>(rotaService.listarPorIdColaborador(idColaborador), HttpStatus.OK);
     }
 
+    @GetMapping("/listar-rotas-ativas")
+    public ResponseEntity<List<RotaDTO>> listByActiveRoute(){
+        return new ResponseEntity<>(rotaService.listarRotasAtivas(), HttpStatus.OK);
+    }
+
+    @GetMapping("/listar-rotas-inativas")
+    public ResponseEntity<List<RotaDTO>> listByInacctiveRoute(){
+        return new ResponseEntity<>(rotaService.listarRotasInativas(), HttpStatus.OK);
+    }
+
     @GetMapping("/listar-por-local-partida")
     public ResponseEntity<List<RotaDTO>> listByPlaceOfDeparture(@RequestParam("LocalPartida") String localPartida)
             throws RegraDeNegocioException {

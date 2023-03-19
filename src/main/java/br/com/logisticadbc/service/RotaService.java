@@ -1,12 +1,14 @@
 package br.com.logisticadbc.service;
 
 import br.com.logisticadbc.dto.in.RotaCreateDTO;
+import br.com.logisticadbc.dto.out.CaminhaoDTO;
 import br.com.logisticadbc.dto.out.PostoDTO;
 import br.com.logisticadbc.dto.out.RotaComPostosDTO;
 import br.com.logisticadbc.dto.out.RotaDTO;
 import br.com.logisticadbc.entity.ColaboradorEntity;
 import br.com.logisticadbc.entity.PostoEntity;
 import br.com.logisticadbc.entity.RotaEntity;
+import br.com.logisticadbc.entity.enums.StatusCaminhao;
 import br.com.logisticadbc.entity.enums.StatusGeral;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.repository.RotaRepository;
@@ -168,6 +170,34 @@ public class RotaService {
         }catch(Exception e){
             throw new RegraDeNegocioException (e.getMessage());
         }
+    }
+
+    public List<RotaDTO> listarRotasAtivas() {
+        return rotaRepository
+                .findByStatusEquals(StatusGeral.ATIVO)
+                .stream()
+                .map(rota -> {
+                    RotaDTO rotaDTO = objectMapper.convertValue(rota, RotaDTO.class);
+                    rotaDTO.setIdRota(rota.getIdRota());
+                    rotaDTO.setIdUsuario(rota.getColaborador().getIdUsuario());
+                    rotaDTO.setStatus(StatusGeral.ATIVO);
+                    return rotaDTO;
+                })
+                .collect(Collectors.toList());
+    }
+
+    public List<RotaDTO> listarRotasInativas() {
+        return rotaRepository
+                .findByStatusEquals(StatusGeral.INATIVO)
+                .stream()
+                .map(rota -> {
+                    RotaDTO rotaDTO = objectMapper.convertValue(rota, RotaDTO.class);
+                    rotaDTO.setIdRota(rota.getIdRota());
+                    rotaDTO.setIdUsuario(rota.getColaborador().getIdUsuario());
+                    rotaDTO.setStatus(StatusGeral.INATIVO);
+                    return rotaDTO;
+                })
+                .collect(Collectors.toList());
     }
 
     public void cadastrarPosto(Integer idRota, Integer idPosto) throws RegraDeNegocioException {
