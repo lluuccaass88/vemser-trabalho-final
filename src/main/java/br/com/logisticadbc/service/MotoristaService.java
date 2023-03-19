@@ -38,13 +38,12 @@ public class MotoristaService {
 
             motoristaRepository.save(motoristaEntity);
 
-            emailService.enviarEmailBoasVindasMotorista(motoristaEntity);
+          // emailService.enviarEmailBoasVindasMotorista(motoristaEntity);
 
             return objectMapper.convertValue(motoristaEntity, MotoristaDTO.class);
-
-        } catch (Exception e) {
-//            e.printStackTrace();
-            throw new RegraDeNegocioException("Aconteceu algum problema durante a criação. -> " + e.getMessage());
+         } catch (Exception e) {
+            e.printStackTrace();
+            throw new RegraDeNegocioException("Aconteceu algum problema durante a criação. -> ");
         }
     }
     public MotoristaDTO editar(Integer idUsuario, MotoristaUpdateDTO motoristaUpdateDTO) throws RegraDeNegocioException {
@@ -59,8 +58,8 @@ public class MotoristaService {
             return objectMapper.convertValue(motoristaEntity, MotoristaDTO.class);
 
         } catch (Exception e) {
-//            e.printStackTrace();
-            throw new RegraDeNegocioException("Aconteceu algum problema durante a edição. -> " + e.getMessage());
+            e.printStackTrace();
+            throw new RegraDeNegocioException("Aconteceu algum problema durante a edição. -> ");
         }
     }
 

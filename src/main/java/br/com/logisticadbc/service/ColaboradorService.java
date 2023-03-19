@@ -58,7 +58,7 @@ public class ColaboradorService {
 
             colaboradorRepository.save(colaboradorEntity);
 
-           // emailService.enviarEmailBoasVindasColabotador(colaboradorEntity);
+           emailService.enviarEmailBoasVindasColabotador(colaboradorEntity);
 
             return objectMapper.convertValue(colaboradorEntity, ColaboradorDTO.class);
 
