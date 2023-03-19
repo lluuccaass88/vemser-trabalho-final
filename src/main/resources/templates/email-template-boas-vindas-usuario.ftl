@@ -1,19 +1,20 @@
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/1999/html">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>DBC Logistica</title>
+    <title>Heroes Logistica</title>
 </head>
 
 <body>
-<div style="background-color: #f2f2f2; padding: 20px;">
-    <div align=center style="background-color: #dc1e1e;">
+    <div align=center style="background-color: #d12121;">
         <br>
-        <h1 style="color: #f2f2f2;">DBC Logística</h1>
+        <img src="/images/logo2.png" alt="Logo" height="150px" width="150px">
+        <h1 style="color: #f2f2f2; font-family:courier;"> Heroes Logística </h1>
         <br>
     </div>
 
-    <h2 align=center>Olá, ${nomeUsuario}, seja bem vindo!</h2>
-    <div>
+    <div style="background-color: #f2f2f2; padding: 20px;">
+        <h2 align=center>Olá, ${nomeUsuario}, seja bem vindo!</h2>
+        <br>
         <br>É com grande prazer que lhe damos as boas-vindas à equipe da <b>${nome}</b>!
         <br>
         <br>Nosso principal objetivo é fornecer aos nossos clientes os melhores serviços personalizados e soluções em logística.
@@ -27,8 +28,15 @@
         <br>
         <br>
         <br>Atenciosamente,<br>
-        <b>${nome}</div>
-</div>
+        <b>${nome}</b>
+        <br>
+        <br>
+    </div>
+
+    <div align=center style="background-color: #d12121;">
+    <br>
+    <h1 style="color: #f2f2f2; font-family:courier;">"Voamos por você!"</h1>
+    <br>
+    </div>
 
 </body>
-</html>
