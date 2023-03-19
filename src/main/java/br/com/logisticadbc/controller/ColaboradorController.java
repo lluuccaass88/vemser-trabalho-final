@@ -37,7 +37,7 @@ public class ColaboradorController implements ColaboradorControllerDoc {
     }
 
     @GetMapping("/relatorio-completo")
-    public ResponseEntity<List<ColaboradorCompletoDTO>> generateReportComplete(
+    public ResponseEntity<PageDTO<ColaboradorCompletoDTO>> generateReportComplete(
                                                             @RequestParam(value = "page") Integer pagina,
                                                             @RequestParam(value = "size") Integer tamanho) {
         return new ResponseEntity<>(colaboradorService.gerarRelatorioColaboradoresInformacoesCompletas(pagina, tamanho), HttpStatus.OK);

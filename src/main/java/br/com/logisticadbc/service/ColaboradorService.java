@@ -42,31 +42,25 @@ public class ColaboradorService {
                 .toList();
     }
 
-    public Page<ColaboradorCompletoDTO> gerarRelatorioColaboradoresInformacoesCompletas(Integer pagina, Integer tamanho){
-//
-//        Pageable solicitacaoPagina = PageRequest.of(pagina, tamanho);
-//
-//        Page<ColaboradorCompletoDTO> paginacaoColaborador = colaboradorRepository.relatorio(solicitacaoPagina);
-//
-//        List<ColaboradorCompletoDTO> colaboradorDTOList = paginacaoColaborador
-//
-//
-//
-////                paginacaoColaborador
-////                .getContent()
-////                .stream()
-////                .map(colaborador -> objectMapper.convertValue(colaborador, ColaboradorCompletoDTO.class))
-////                .toList();
-//
-//        return new PageDTO<>(
-//                paginacaoColaborador.getTotalElements(),
-//                paginacaoColaborador.getTotalPages(),
-//                pagina,
-//                tamanho,
-//                colaboradorDTOList
+    public PageDTO<ColaboradorCompletoDTO> gerarRelatorioColaboradoresInformacoesCompletas(Integer pagina, Integer tamanho){
 
+        Pageable solicitacaoPagina = PageRequest.of(pagina, tamanho);
 
-//        );
+        Page<ColaboradorCompletoDTO> paginacaoColaborador = colaboradorRepository.relatorio(solicitacaoPagina);
+
+        List<ColaboradorCompletoDTO> colaboradorDTOList = paginacaoColaborador
+                .getContent()
+                .stream()
+                .map(colaborador -> objectMapper.convertValue(colaborador, ColaboradorCompletoDTO.class))
+                .toList();
+
+        return new PageDTO<>(
+                paginacaoColaborador.getTotalElements(),
+                paginacaoColaborador.getTotalPages(),
+                pagina,
+                tamanho,
+                colaboradorDTOList
+        );
 
 
 
@@ -81,7 +75,7 @@ public class ColaboradorService {
 
 
 
-        return null; //colaboradorRepository.relatorio();
+//        return colaboradorRepository.relatorio();
     }
 
     // TODO - fazer senha nao retornar no dto
