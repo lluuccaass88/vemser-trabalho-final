@@ -3,17 +3,20 @@ package br.com.logisticadbc.service;
 import br.com.logisticadbc.dto.in.ViagemCreateDTO;
 import br.com.logisticadbc.dto.in.ViagemUpdateDTO;
 import br.com.logisticadbc.dto.out.PageDTO;
-import br.com.logisticadbc.dto.out.RotaDTO;
 import br.com.logisticadbc.dto.out.ViagemDTO;
-import br.com.logisticadbc.entity.*;
+import br.com.logisticadbc.entity.CaminhaoEntity;
+import br.com.logisticadbc.entity.MotoristaEntity;
+import br.com.logisticadbc.entity.RotaEntity;
+import br.com.logisticadbc.entity.ViagemEntity;
 import br.com.logisticadbc.entity.enums.StatusCaminhao;
-import br.com.logisticadbc.entity.enums.StatusMotorista;
 import br.com.logisticadbc.entity.enums.StatusGeral;
+import br.com.logisticadbc.entity.enums.StatusMotorista;
 import br.com.logisticadbc.entity.enums.StatusViagem;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.repository.ViagemRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +25,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @RequiredArgsConstructor
+@Slf4j
 @Service
 public class ViagemService {
     private final ViagemRepository viagemRepository;
@@ -190,6 +194,19 @@ public class ViagemService {
                     viagemDTO.setIdUsuario(viagem.getMotorista().getIdUsuario());
                     viagemDTO.setIdCaminhao(viagem.getCaminhao().getIdCaminhao());
                     viagemDTO.setIdRota(idRota);
+
+    public List<ViagemDTO> listarPorIdMotorista(Integer idMotorista) throws RegraDeNegocioException {
+
+        MotoristaEntity motoristaEncontrado = motoristaService.buscarPorId(idMotorista);
+
+
+        return motoristaEncontrado.getViagens()
+                .stream()
+                .map(viagem -> {
+                    ViagemDTO viagemDTO = objectMapper.convertValue(viagem, ViagemDTO.class);
+                    viagemDTO.setIdUsuario(idMotorista);
+                    viagemDTO.setIdCaminhao(viagem.getCaminhao().getIdCaminhao());
+                    viagemDTO.setIdRota(viagem.getIdViagem());
                     return viagemDTO;
                 })
                 .toList();
