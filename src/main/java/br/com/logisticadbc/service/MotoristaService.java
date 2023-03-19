@@ -83,6 +83,19 @@ public class MotoristaService {
                 .map(motorista -> objectMapper.convertValue(motorista, MotoristaDTO.class)).toList();
     }
 
+    public MotoristaDTO listarPorId(Integer idMotorista) throws RegraDeNegocioException {
+        MotoristaEntity motoristaRecuperado = buscarPorId(idMotorista);
+
+        try {
+            MotoristaDTO motoristaDTO = objectMapper.convertValue(motoristaRecuperado, MotoristaDTO.class);
+            motoristaDTO.setIdUsuario(idMotorista);
+            return motoristaDTO;
+
+        } catch (Exception e) {
+            throw new RegraDeNegocioException("Aconteceu algum problema durante a listagem.");
+        }
+    }
+
     public PageDTO<MotoristaCompletoDTO> gerarRelatorioMotoristasInformacoesCompletas(Integer pagina, Integer tamanho){
 
         Pageable solicitacaoPagina = PageRequest.of(pagina, tamanho);
@@ -104,35 +117,12 @@ public class MotoristaService {
         );
     }
 
-    public MotoristaDTO listarPorId(Integer idMotorista) throws RegraDeNegocioException {
-        MotoristaEntity motoristaRecuperado = buscarPorId(idMotorista);
-
-        try {
-            MotoristaDTO motoristaDTO = objectMapper.convertValue(motoristaRecuperado, MotoristaDTO.class);
-            motoristaDTO.setIdUsuario(idMotorista);
-            return motoristaDTO;
-
-        } catch (Exception e) {
-            throw new RegraDeNegocioException("Aconteceu algum problema durante a listagem.");
-        }
-    }
-
-    public MotoristaEntity buscarPorId(Integer id) throws RegraDeNegocioException {
-        return motoristaRepository.findById(id)
-                .orElseThrow(() -> new RegraDeNegocioException("Motorista não encontrado"));
-    }
-
-    public void mudarStatus(MotoristaEntity motorista, StatusMotorista status) {
-        motorista.setStatusMotorista(status);
-        motoristaRepository.save(motorista);
-    }
-
     public PageDTO<MotoristaDTO> listarMotoristaDisponivelEAtivoOrdenadoPorNomeAsc(Integer pagina, Integer tamanho) {
         Pageable solicitacaoPagina = PageRequest.of(pagina, tamanho);
 
         Page<MotoristaEntity> paginacaoMotorista = motoristaRepository
                 .findByStatusMotoristaEqualsAndStatusEqualsOrderByNomeAsc(
-                solicitacaoPagina, StatusMotorista.DISPONIVEL, StatusGeral.ATIVO);
+                        solicitacaoPagina, StatusMotorista.DISPONIVEL, StatusGeral.ATIVO);
 
         List<MotoristaDTO> motoristaDTOList = paginacaoMotorista
                 .getContent()
@@ -147,5 +137,15 @@ public class MotoristaService {
                 tamanho,
                 motoristaDTOList
         );
+    }
+
+    public MotoristaEntity buscarPorId(Integer id) throws RegraDeNegocioException {
+        return motoristaRepository.findById(id)
+                .orElseThrow(() -> new RegraDeNegocioException("Motorista não encontrado"));
+    }
+
+    public void mudarStatus(MotoristaEntity motorista, StatusMotorista status) {
+        motorista.setStatusMotorista(status);
+        motoristaRepository.save(motorista);
     }
 }

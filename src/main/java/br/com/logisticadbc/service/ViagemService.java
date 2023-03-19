@@ -79,7 +79,6 @@ public class ViagemService {
             return viagemDTO;
 
         } catch (Exception e) {
-            e.printStackTrace();
             throw new RegraDeNegocioException("Aconteceu algum problema durante a criação.");
         }
     }
@@ -117,7 +116,6 @@ public class ViagemService {
             return viagemDTO;
 
         } catch (Exception e) {
-            e.printStackTrace();
             throw new RegraDeNegocioException("Aconteceu algum problema durante a edição.");
         }
     }
@@ -146,7 +144,6 @@ public class ViagemService {
             viagemRepository.save(viagemEncontrada);
 
         } catch (Exception e) {
-            e.printStackTrace();
             throw new RegraDeNegocioException("Aconteceu algum problema durante a finalização.");
         }
     }
@@ -179,7 +176,6 @@ public class ViagemService {
             return viagemDTO;
 
         } catch (Exception e) {
-            e.printStackTrace();
             throw new RegraDeNegocioException("Aconteceu algum problema durante a listagem.");
         }
     }

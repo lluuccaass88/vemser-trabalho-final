@@ -8,6 +8,7 @@ import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,7 +17,6 @@ import java.util.List;
 
 public interface PostoControllerDoc {
 
-    // TODO - LISTAR CAMINHOES POR ID COLABORADOR
     @Operation(summary = "Listar Postos", description = "Lista todas os postos no banco de dados")
     @ApiResponses(
             value = {
@@ -91,5 +91,29 @@ public interface PostoControllerDoc {
     @GetMapping("/listar-por-colaborador")
     ResponseEntity<List<PostoDTO>> listByIdUser(@RequestParam("idColaborador") Integer idColaborador)
             throws RegraDeNegocioException;
+
+    @Operation(summary = "Listar postos ativos",
+            description = "Lista todos postos ativos")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Retorna lista com postos"),
+                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
+            }
+    )
+    @GetMapping("/listar-postos-ativos")
+    public ResponseEntity<List<PostoDTO>> listByActiveGassStation();
+
+    @Operation(summary = "Listar postos inativos",
+            description = "Lista todos postos inativos")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Retorna lista com postos"),
+                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
+            }
+    )
+    @GetMapping("/listar-postos-inativos")
+    public ResponseEntity<List<PostoDTO>> listByInacctiveGassStation();
 
 }

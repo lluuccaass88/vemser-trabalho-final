@@ -29,27 +29,6 @@ public class ColaboradorService {
     private final ObjectMapper objectMapper;
     private final EmailService emailService;
 
-    public PageDTO<ColaboradorCompletoDTO> gerarRelatorioColaboradoresInformacoesCompletas(Integer pagina, Integer tamanho){
-
-        Pageable solicitacaoPagina = PageRequest.of(pagina, tamanho);
-
-        Page<ColaboradorCompletoDTO> paginacaoColaborador = colaboradorRepository.relatorio(solicitacaoPagina);
-
-        List<ColaboradorCompletoDTO> colaboradorDTOList = paginacaoColaborador
-                .getContent()
-                .stream()
-                .map(colaborador -> objectMapper.convertValue(colaborador, ColaboradorCompletoDTO.class))
-                .toList();
-
-        return new PageDTO<>(
-                paginacaoColaborador.getTotalElements(),
-                paginacaoColaborador.getTotalPages(),
-                pagina,
-                tamanho,
-                colaboradorDTOList
-        );
-    }
-
     public ColaboradorDTO criar(ColaboradorCreateDTO colaboradorCreateDTO) throws RegraDeNegocioException {
         ColaboradorEntity colaboradorEntity = objectMapper.convertValue(colaboradorCreateDTO, ColaboradorEntity.class);
 
@@ -63,7 +42,6 @@ public class ColaboradorService {
             return objectMapper.convertValue(colaboradorEntity, ColaboradorDTO.class);
 
         } catch (Exception e) {
-            e.printStackTrace();
             throw new RegraDeNegocioException("Aconteceu algum problema durante a criação.");
         }
     }
@@ -81,7 +59,6 @@ public class ColaboradorService {
             return objectMapper.convertValue(colaboradorEncontrado, ColaboradorDTO.class);
 
         } catch (Exception e) {
-            e.printStackTrace();
             throw new RegraDeNegocioException("Aconteceu algum problema durante a edição.");
         }
     }
@@ -95,7 +72,6 @@ public class ColaboradorService {
             colaboradorRepository.save(colaboradorEncontrado);
 
         } catch (Exception e) {
-            e.printStackTrace();
             throw new RegraDeNegocioException("Aconteceu algum problema durante a exclusão.");
         }
     }
@@ -116,9 +92,29 @@ public class ColaboradorService {
             return colaboradorDTO;
 
         } catch (Exception e) {
-            e.printStackTrace();
             throw new RegraDeNegocioException("Aconteceu algum problema durante a listagem.");
         }
+    }
+
+    public PageDTO<ColaboradorCompletoDTO> gerarRelatorioColaboradoresInformacoesCompletas(Integer pagina, Integer tamanho){
+
+        Pageable solicitacaoPagina = PageRequest.of(pagina, tamanho);
+
+        Page<ColaboradorCompletoDTO> paginacaoColaborador = colaboradorRepository.relatorio(solicitacaoPagina);
+
+        List<ColaboradorCompletoDTO> colaboradorDTOList = paginacaoColaborador
+                .getContent()
+                .stream()
+                .map(colaborador -> objectMapper.convertValue(colaborador, ColaboradorCompletoDTO.class))
+                .toList();
+
+        return new PageDTO<>(
+                paginacaoColaborador.getTotalElements(),
+                paginacaoColaborador.getTotalPages(),
+                pagina,
+                tamanho,
+                colaboradorDTOList
+        );
     }
 
     public ColaboradorEntity buscarPorId(Integer idUsuario) throws RegraDeNegocioException{
