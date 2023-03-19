@@ -37,8 +37,10 @@ public class MotoristaController implements MotoristaControllerDoc {
     }
 
     @GetMapping("/relatorio-completo")
-    public ResponseEntity<List<MotoristaCompletoDTO>> generateReportComplete() {
-        return new ResponseEntity<>(motoristaService.gerarRelatorioMotoristasInformacoesCompletas(), HttpStatus.OK);
+    public ResponseEntity<PageDTO<MotoristaCompletoDTO>> generateReportComplete(
+                                                        @RequestParam(value = "page") Integer pagina,
+                                                        @RequestParam(value = "size") Integer tamanho) {
+        return new ResponseEntity<>(motoristaService.gerarRelatorioMotoristasInformacoesCompletas(pagina, tamanho), HttpStatus.OK);
     }
 
     @PostMapping

@@ -50,6 +50,6 @@ public interface MotoristaRepository extends JpaRepository<MotoristaEntity, Inte
             "   From MOTORISTA m " +
             "   left join m.viagens v"
     )
-    List<MotoristaCompletoDTO> relatorio(); //Mudar para paginação
+    Page<MotoristaCompletoDTO> relatorio(Pageable pageable); //Mudar para paginação
 
 }

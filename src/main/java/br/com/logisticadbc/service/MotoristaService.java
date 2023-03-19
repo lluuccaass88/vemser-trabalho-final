@@ -91,8 +91,25 @@ public class MotoristaService {
                 .map(motorista -> objectMapper.convertValue(motorista, MotoristaDTO.class)).toList();
     }
 
-    public List<MotoristaCompletoDTO> gerarRelatorioMotoristasInformacoesCompletas(){
-        return motoristaRepository.relatorio();
+    public PageDTO<MotoristaCompletoDTO> gerarRelatorioMotoristasInformacoesCompletas(Integer pagina, Integer tamanho){
+
+        Pageable solicitacaoPagina = PageRequest.of(pagina, tamanho);
+
+        Page<MotoristaCompletoDTO> paginacaoMotorista = motoristaRepository.relatorio(solicitacaoPagina);
+
+        List<MotoristaCompletoDTO> motoristaDTOList = paginacaoMotorista
+                .getContent()
+                .stream()
+                .map(colaborador -> objectMapper.convertValue(colaborador, MotoristaCompletoDTO.class))
+                .toList();
+
+        return new PageDTO<>(
+                paginacaoMotorista.getTotalElements(),
+                paginacaoMotorista.getTotalPages(),
+                pagina,
+                tamanho,
+                motoristaDTOList
+        );
     }
 
     public MotoristaDTO listarPorId(Integer idMotorista) throws RegraDeNegocioException {
