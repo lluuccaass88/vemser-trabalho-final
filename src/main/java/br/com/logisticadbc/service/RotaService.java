@@ -124,6 +124,52 @@ public class RotaService {
         }
     }
 
+    public List<RotaDTO> listarPorLocalPartida(String localPartida) throws RegraDeNegocioException {
+        try{
+            List<RotaEntity> rotasPartida = rotaRepository.findBylocalPartida(localPartida);
+
+            if (rotasPartida.size() == 0) {
+                throw new RegraDeNegocioException("Local de partida não encontrado.");
+            }
+
+            List<RotaDTO> rotasDTO = rotasPartida
+                    .stream()
+                    .map(rota -> {
+                        RotaDTO rotaDTO = objectMapper.convertValue(rota, RotaDTO.class);
+                        rotaDTO.setIdUsuario(rota.getColaborador().getIdUsuario());
+                        return rotaDTO;
+                    })
+                    .toList();
+
+            return rotasDTO;
+        }catch (Exception e){
+            throw new RegraDeNegocioException(e.getMessage());
+        }
+    }
+
+    public List<RotaDTO> listarPorLocalDestino(String localDestino) throws RegraDeNegocioException {
+        try{
+            List<RotaEntity> rotasDestino = rotaRepository.findBylocalDestino(localDestino);
+
+            if (rotasDestino.size() == 0) {
+                throw new RegraDeNegocioException("Local de destino não encontrado.");
+            }
+
+            List<RotaDTO> rotasDTO = rotasDestino
+                    .stream()
+                    .map(rota -> {
+                        RotaDTO rotaDTO = objectMapper.convertValue(rota, RotaDTO.class);
+                        rotaDTO.setIdUsuario(rota.getColaborador().getIdUsuario());
+                        return rotaDTO;
+                    })
+                    .toList();
+
+            return rotasDTO;
+        }catch(Exception e){
+            throw new RegraDeNegocioException (e.getMessage());
+        }
+    }
+
     public void cadastrarPosto(Integer idRota, Integer idPosto) throws RegraDeNegocioException {
         RotaEntity rotaEncontrada = buscarPorId(idRota);
         PostoEntity postoEncontrado = postoService.buscarPorId(idPosto);

@@ -87,4 +87,16 @@ public class RotaController implements RotaControllerDoc {
             throws RegraDeNegocioException {
         return new ResponseEntity<>(rotaService.listarPorIdColaborador(idColaborador), HttpStatus.OK);
     }
+
+    @GetMapping("/listar-por-local-partida")
+    public ResponseEntity<List<RotaDTO>> listByPlaceOfDeparture(@RequestParam("LocalPartida") String localPartida)
+            throws RegraDeNegocioException {
+        return new ResponseEntity<>(rotaService.listarPorLocalPartida(localPartida), HttpStatus.OK);
+    }
+
+    @GetMapping("/listar-por-local-destino")
+    public ResponseEntity<List<RotaDTO>> listByDesnitation(@RequestParam("LocalDestino") String LocalDestino)
+            throws RegraDeNegocioException {
+        return new ResponseEntity<>(rotaService.listarPorLocalDestino(LocalDestino), HttpStatus.OK);
+    }
 }
