@@ -38,11 +38,12 @@ public class MotoristaService {
 
             motoristaRepository.save(motoristaEntity);
 
-          // emailService.enviarEmailBoasVindasMotorista(motoristaEntity);
+           //emailService.enviarEmailBoasVindasMotorista(motoristaEntity);
 
             return objectMapper.convertValue(motoristaEntity, MotoristaDTO.class);
 
          } catch (Exception e) {
+            e.printStackTrace();
             throw new RegraDeNegocioException("Aconteceu algum problema durante a criação.");
         }
     }

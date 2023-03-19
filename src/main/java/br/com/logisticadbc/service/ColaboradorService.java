@@ -59,6 +59,7 @@ public class ColaboradorService {
             return objectMapper.convertValue(colaboradorEncontrado, ColaboradorDTO.class);
 
         } catch (Exception e) {
+            e.printStackTrace();
             throw new RegraDeNegocioException("Aconteceu algum problema durante a edição.");
         }
     }
