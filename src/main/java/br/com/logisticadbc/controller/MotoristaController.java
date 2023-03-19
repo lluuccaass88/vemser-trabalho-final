@@ -68,7 +68,7 @@ public class MotoristaController implements MotoristaControllerDoc {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping("/paginacao-ativo-disponivel")
+    @GetMapping("/ativo-disponivel/paginacao")
     public ResponseEntity<PageDTO<MotoristaDTO>> listAllPagination(
             @RequestParam(value = "page") Integer pagina,
             @RequestParam(value = "size") Integer tamanho) {

@@ -11,9 +11,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ViagemRepository extends JpaRepository<ViagemEntity, Integer> {
 
-    // TODO - RELATORIO DE VIAGENS COM CAMPOS RELACIONADOS E PAGINAÇÃO
-
-    // TODO - LISTAR VIAGENS POR STATUS DA VIAGEM (FINALIZADA/EM_ANDAMENTO)
     @Query( "   SELECT v " +
             "     FROM VIAGEM v " +
             "    WHERE v.statusViagem = ?1 " +

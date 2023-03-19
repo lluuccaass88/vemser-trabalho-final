@@ -132,7 +132,7 @@ public class CaminhaoService {
     public List<CaminhaoDTO> listarPorIdColaborador(Integer idColaborador) throws RegraDeNegocioException {
         ColaboradorEntity colaboradorEncontrado = colaboradorService.buscarPorId(idColaborador);
 
-        return colaboradorEncontrado.getRotas()
+        return colaboradorEncontrado.getCaminhoes()
                 .stream()
                 .map(caminhao -> {
                     CaminhaoDTO caminhaoDTO = objectMapper.convertValue(caminhao, CaminhaoDTO.class);
