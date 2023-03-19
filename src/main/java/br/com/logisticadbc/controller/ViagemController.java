@@ -41,12 +41,6 @@ public class ViagemController implements ViagemControllerDoc {
         return new ResponseEntity<>(viagemService.listarPorId(idViagem), HttpStatus.OK);
     }
 
-    @GetMapping("/listar-por-motorista")
-    public ResponseEntity<List<ViagemDTO>> listByIdUser(@RequestParam("idMotorista") Integer idMotorista)
-            throws RegraDeNegocioException {
-        return new ResponseEntity<>(viagemService.listarPorIdMotorista(idMotorista), HttpStatus.OK);
-    }
-
     @PostMapping
     public ResponseEntity<ViagemDTO> create(@RequestParam("idMotorista") Integer idUsuario,
                                             @Valid @RequestBody ViagemCreateDTO viagemCreateDTO)
@@ -76,6 +70,12 @@ public class ViagemController implements ViagemControllerDoc {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/listar-por-motorista")
+    public ResponseEntity<List<ViagemDTO>> listByIdUser(@RequestParam("idMotorista") Integer idMotorista)
+            throws RegraDeNegocioException {
+        return new ResponseEntity<>(viagemService.listarPorIdMotorista(idMotorista), HttpStatus.OK);
+    }
+
     @GetMapping("/listar-por-rota")
     public ResponseEntity<List<ViagemDTO>> listByIdRote(@RequestParam(value = "idRota") Integer idRota)
             throws RegraDeNegocioException {
@@ -83,7 +83,7 @@ public class ViagemController implements ViagemControllerDoc {
                 viagemService.listarPorIdRota(idRota), HttpStatus.OK);
     }
 
-    @GetMapping("/buscar-por-status/paginacao")
+    @GetMapping("/listar-por-status/paginacao")
     public ResponseEntity<PageDTO<ViagemDTO>> findByStatusOrderByDataBegun(
             @RequestParam(value = "status") StatusViagem statusViagem ,
             @RequestParam(value = "page") Integer pagina,

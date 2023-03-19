@@ -184,6 +184,21 @@ public class ViagemService {
         }
     }
 
+    public List<ViagemDTO> listarPorIdMotorista(Integer idMotorista) throws RegraDeNegocioException {
+        MotoristaEntity motoristaEncontrado = motoristaService.buscarPorId(idMotorista);
+
+        return motoristaEncontrado.getViagens()
+                .stream()
+                .map(viagem -> {
+                    ViagemDTO viagemDTO = objectMapper.convertValue(viagem, ViagemDTO.class);
+                    viagemDTO.setIdUsuario(idMotorista);
+                    viagemDTO.setIdCaminhao(viagem.getCaminhao().getIdCaminhao());
+                    viagemDTO.setIdRota(viagem.getRota().getIdRota());
+                    return viagemDTO;
+                })
+                .toList();
+    }
+
     public List<ViagemDTO> listarPorIdRota(Integer idRota) throws RegraDeNegocioException {
         RotaEntity rotaEncontrada = rotaService.buscarPorId(idRota);
 
@@ -194,19 +209,6 @@ public class ViagemService {
                     viagemDTO.setIdUsuario(viagem.getMotorista().getIdUsuario());
                     viagemDTO.setIdCaminhao(viagem.getCaminhao().getIdCaminhao());
                     viagemDTO.setIdRota(idRota);
-
-    public List<ViagemDTO> listarPorIdMotorista(Integer idMotorista) throws RegraDeNegocioException {
-
-        MotoristaEntity motoristaEncontrado = motoristaService.buscarPorId(idMotorista);
-
-
-        return motoristaEncontrado.getViagens()
-                .stream()
-                .map(viagem -> {
-                    ViagemDTO viagemDTO = objectMapper.convertValue(viagem, ViagemDTO.class);
-                    viagemDTO.setIdUsuario(idMotorista);
-                    viagemDTO.setIdCaminhao(viagem.getCaminhao().getIdCaminhao());
-                    viagemDTO.setIdRota(viagem.getIdViagem());
                     return viagemDTO;
                 })
                 .toList();

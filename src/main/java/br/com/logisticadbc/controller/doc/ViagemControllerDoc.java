@@ -10,6 +10,7 @@ import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -82,8 +83,8 @@ public interface ViagemControllerDoc {
                                 @RequestParam("idViagem") Integer idViagem)
             throws RegraDeNegocioException;
 
-    @Operation(summary = "Listar Viagens por status",
-                description = "Lista todas as viagens de acordo com o status do banco de dados")
+    @Operation(summary = "Listar Viagens por motorista",
+            description = "Lista todas as viagens de um motorista do banco de dados")
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "200", description = "Retorna uma lista de viagens"),
@@ -91,11 +92,9 @@ public interface ViagemControllerDoc {
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-    @GetMapping("/buscar-por-status/paginacao")
-    ResponseEntity<PageDTO<ViagemDTO>> findByStatusOrderByDataBegun(
-            @RequestParam(value = "status") StatusViagem statusViagem ,
-            @RequestParam(value = "page") Integer pagina,
-            @RequestParam(value = "size") Integer tamanho);
+    @GetMapping("/listar-por-motorista")
+    ResponseEntity<List<ViagemDTO>> listByIdUser(@RequestParam("idMotorista") Integer idMotorista)
+    throws RegraDeNegocioException;
 
     @Operation(summary = "Listar Viagens por rota",
             description = "Lista todas as viagens de uma rota do banco de dados")
@@ -109,4 +108,19 @@ public interface ViagemControllerDoc {
     @GetMapping("/listar-por-rota")
     ResponseEntity<List<ViagemDTO>> listByIdRote(@RequestParam(value = "idRota") Integer idRota)
             throws RegraDeNegocioException;
+
+    @Operation(summary = "Listar Viagens por status",
+            description = "Lista todas as viagens de acordo com o status do banco de dados")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Retorna uma lista de viagens"),
+                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
+            }
+    )
+    @GetMapping("/listar-por-status/paginacao")
+    ResponseEntity<PageDTO<ViagemDTO>> findByStatusOrderByDataBegun(
+            @RequestParam(value = "status") StatusViagem statusViagem ,
+            @RequestParam(value = "page") Integer pagina,
+            @RequestParam(value = "size") Integer tamanho);
 }
