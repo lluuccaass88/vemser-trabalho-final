@@ -126,7 +126,7 @@ public class RotaService {
 
     public List<RotaDTO> listarPorLocalPartida(String localPartida) throws RegraDeNegocioException {
         try{
-            List<RotaEntity> rotasPartida = rotaRepository.findBylocalPartida(localPartida);
+            List<RotaEntity> rotasPartida = rotaRepository.findBylocalPartidaIgnoreCase(localPartida);
 
             if (rotasPartida.size() == 0) {
                 throw new RegraDeNegocioException("Local de partida não encontrado.");
@@ -149,7 +149,7 @@ public class RotaService {
 
     public List<RotaDTO> listarPorLocalDestino(String localDestino) throws RegraDeNegocioException {
         try{
-            List<RotaEntity> rotasDestino = rotaRepository.findBylocalDestino(localDestino);
+            List<RotaEntity> rotasDestino = rotaRepository.findBylocalDestinoIgnoreCase(localDestino);
 
             if (rotasDestino.size() == 0) {
                 throw new RegraDeNegocioException("Local de destino não encontrado.");

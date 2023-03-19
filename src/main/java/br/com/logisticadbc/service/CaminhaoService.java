@@ -3,8 +3,6 @@ package br.com.logisticadbc.service;
 
 import br.com.logisticadbc.dto.in.CaminhaoCreateDTO;
 import br.com.logisticadbc.dto.out.CaminhaoDTO;
-import br.com.logisticadbc.dto.out.PostoDTO;
-import br.com.logisticadbc.dto.out.RotaDTO;
 import br.com.logisticadbc.entity.CaminhaoEntity;
 import br.com.logisticadbc.entity.ColaboradorEntity;
 import br.com.logisticadbc.entity.enums.StatusCaminhao;
@@ -122,6 +120,7 @@ public class CaminhaoService {
         return caminhaoRepository
                 .findByStatusCaminhaoEquals(StatusCaminhao.ESTACIONADO)
                 .stream()
+                .filter(caminhao -> caminhao.getStatus().equals(StatusGeral.ATIVO))
                 .map(caminhao -> {
                     CaminhaoDTO caminhaoDTO = objectMapper.convertValue(caminhao, CaminhaoDTO.class);
                     caminhaoDTO.setIdUsuario(caminhao.getColaborador().getIdUsuario());

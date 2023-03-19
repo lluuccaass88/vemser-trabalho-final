@@ -83,6 +83,12 @@ public class ViagemController implements ViagemControllerDoc {
                 viagemService.listarPorIdRota(idRota), HttpStatus.OK);
     }
 
+    @GetMapping("/listar-por-caminhao")
+    public ResponseEntity<List<ViagemDTO>> listByIdTruck(@RequestParam(value = "idCaminhao") Integer idCaminhao)
+            throws RegraDeNegocioException {
+        return new ResponseEntity<>(viagemService.listarPorIdCaminhao(idCaminhao), HttpStatus.OK);
+    }
+
     @GetMapping("/listar-por-status/paginacao")
     public ResponseEntity<PageDTO<ViagemDTO>> findByStatusOrderByDataBegun(
             @RequestParam(value = "status") StatusViagem statusViagem ,

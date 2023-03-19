@@ -39,13 +39,6 @@ public class ColaboradorController implements ColaboradorControllerDoc {
         return new ResponseEntity<>(colaboradorService.listarPorId(idColaborador), HttpStatus.OK);
     }
 
-    @GetMapping("/relatorio-completo")
-    public ResponseEntity<PageDTO<ColaboradorCompletoDTO>> generateReportComplete(
-                                                            @RequestParam(value = "page") Integer pagina,
-                                                            @RequestParam(value = "size") Integer tamanho) {
-        return new ResponseEntity<>(colaboradorService.gerarRelatorioColaboradoresInformacoesCompletas(pagina, tamanho), HttpStatus.OK);
-    }
-
     @PostMapping
     public ResponseEntity<ColaboradorDTO> create(@Valid @RequestBody ColaboradorCreateDTO colaboradorCreateDTO)
                                                     throws RegraDeNegocioException{
@@ -67,5 +60,12 @@ public class ColaboradorController implements ColaboradorControllerDoc {
         validacaoService.validacao(idUsuario, "colaborador");
         colaboradorService.deletar(idUsuario);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/relatorio-completo")
+    public ResponseEntity<PageDTO<ColaboradorCompletoDTO>> generateReportComplete(
+            @RequestParam(value = "page") Integer pagina,
+            @RequestParam(value = "size") Integer tamanho) {
+        return new ResponseEntity<>(colaboradorService.gerarRelatorioColaboradoresInformacoesCompletas(pagina, tamanho), HttpStatus.OK);
     }
 }

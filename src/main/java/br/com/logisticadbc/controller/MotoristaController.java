@@ -38,13 +38,6 @@ public class MotoristaController implements MotoristaControllerDoc {
         return new ResponseEntity<>(motoristaService.listarPorId(idUsuario), HttpStatus.OK);
     }
 
-    @GetMapping("/relatorio-completo")
-    public ResponseEntity<PageDTO<MotoristaCompletoDTO>> generateReportComplete(
-                                                        @RequestParam(value = "page") Integer pagina,
-                                                        @RequestParam(value = "size") Integer tamanho) {
-        return new ResponseEntity<>(motoristaService.gerarRelatorioMotoristasInformacoesCompletas(pagina, tamanho), HttpStatus.OK);
-    }
-
     @PostMapping
     public ResponseEntity<MotoristaDTO> create(@Valid @RequestBody MotoristaCreateDTO motoristaCreateDTO)
             throws RegraDeNegocioException {
@@ -68,7 +61,14 @@ public class MotoristaController implements MotoristaControllerDoc {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping("/ativo-disponivel/paginacao")
+    @GetMapping("/relatorio-completo")
+    public ResponseEntity<PageDTO<MotoristaCompletoDTO>> generateReportComplete(
+            @RequestParam(value = "page") Integer pagina,
+            @RequestParam(value = "size") Integer tamanho) {
+        return new ResponseEntity<>(motoristaService.gerarRelatorioMotoristasInformacoesCompletas(pagina, tamanho), HttpStatus.OK);
+    }
+
+    @GetMapping("/listar-ativo-disponivel/paginacao")
     public ResponseEntity<PageDTO<MotoristaDTO>> listAllPagination(
             @RequestParam(value = "page") Integer pagina,
             @RequestParam(value = "size") Integer tamanho) {

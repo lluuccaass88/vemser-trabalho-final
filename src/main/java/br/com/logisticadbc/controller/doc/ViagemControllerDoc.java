@@ -109,6 +109,19 @@ public interface ViagemControllerDoc {
     ResponseEntity<List<ViagemDTO>> listByIdRote(@RequestParam(value = "idRota") Integer idRota)
             throws RegraDeNegocioException;
 
+    @Operation(summary = "Listar Viagens por caminhao",
+            description = "Lista todas as viagens de um caminhao do banco de dados")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Retorna uma lista de viagens"),
+                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
+            }
+    )
+    @GetMapping("/listar-por-caminhao")
+    ResponseEntity<List<ViagemDTO>> listByIdTruck(@RequestParam(value = "idCaminhao") Integer idCaminhao)
+            throws RegraDeNegocioException;
+
     @Operation(summary = "Listar Viagens por status",
             description = "Lista todas as viagens de acordo com o status do banco de dados")
     @ApiResponses(

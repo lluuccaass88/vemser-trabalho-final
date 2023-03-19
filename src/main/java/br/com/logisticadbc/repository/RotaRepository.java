@@ -8,7 +8,8 @@ import java.util.List;
 
 @Repository
 public interface RotaRepository extends JpaRepository<RotaEntity, Integer> {
-    List<RotaEntity> findBylocalPartida(String localPartida);
-    List<RotaEntity> findBylocalDestino(String localDestino);
+
+    List<RotaEntity> findBylocalPartidaIgnoreCase(String localPartida);
+    List<RotaEntity> findBylocalDestinoIgnoreCase(String localDestino);
 
 }

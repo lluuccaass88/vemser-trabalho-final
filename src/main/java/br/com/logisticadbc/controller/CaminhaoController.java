@@ -3,7 +3,6 @@ package br.com.logisticadbc.controller;
 import br.com.logisticadbc.controller.doc.CaminhaoControllerDoc;
 import br.com.logisticadbc.dto.in.CaminhaoCreateDTO;
 import br.com.logisticadbc.dto.out.CaminhaoDTO;
-import br.com.logisticadbc.dto.out.PostoDTO;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.service.CaminhaoService;
 import br.com.logisticadbc.service.ValidacaoService;

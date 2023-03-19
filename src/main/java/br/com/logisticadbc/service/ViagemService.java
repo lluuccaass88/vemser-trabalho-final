@@ -214,6 +214,21 @@ public class ViagemService {
                 .toList();
     }
 
+    public List<ViagemDTO> listarPorIdCaminhao(Integer idCaminhao) throws RegraDeNegocioException {
+        RotaEntity rotaEncontrada = rotaService.buscarPorId(idCaminhao);
+
+        return rotaEncontrada.getViagens()
+                .stream()
+                .map(viagem -> {
+                    ViagemDTO viagemDTO = objectMapper.convertValue(viagem, ViagemDTO.class);
+                    viagemDTO.setIdUsuario(viagem.getMotorista().getIdUsuario());
+                    viagemDTO.setIdRota(viagem.getRota().getIdRota());
+                    viagemDTO.setIdCaminhao(idCaminhao);
+                    return viagemDTO;
+                })
+                .toList();
+    }
+
     public ViagemEntity buscarPorId(Integer idViagem) throws RegraDeNegocioException {
         return viagemRepository.findById(idViagem)
                 .orElseThrow(() -> new RegraDeNegocioException("Viagem não encontrada"));
