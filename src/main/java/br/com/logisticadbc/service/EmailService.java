@@ -75,11 +75,11 @@ public class EmailService {
             throws IOException, TemplateException {
 
         Map<String, Object> dados = new HashMap<>();
-        dados.put("nome", "Sistema de Logística DBC Company");
-        dados.put("emailUsuario", emailUsuario);
         dados.put("nomeUsuario", nomeUsuario);
         dados.put("mensagem", mensagem);
+        dados.put("emailUsuario", emailUsuario);
         dados.put("emailContato", "logistica.dbc@dbccompany.com.br");
+        dados.put("nome", "Sistema de Logística DBC Company");
 
         Template template = fmConfiguration.getTemplate("email-template-boas-vindas-usuario.ftl");
 
@@ -112,10 +112,11 @@ public class EmailService {
             throws IOException, TemplateException {
 
         Map<String, Object> dados = new HashMap<>();
-        dados.put("nome", "Sistema de Logística DBC Company");
         dados.put("nomeUsuario", nomeUsuario);
         dados.put("mensagem", mensagem);
         dados.put("rota", rota);
+        dados.put("emailContato", "logistica.dbc@dbccompany.com.br");
+        dados.put("nome", "Sistema de Logística DBC Company");
 
         Template template = fmConfiguration.getTemplate("email-template-viagem.ftl");
         String html = FreeMarkerTemplateUtils.processTemplateIntoString(template, dados);
