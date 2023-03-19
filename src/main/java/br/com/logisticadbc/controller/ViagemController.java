@@ -4,6 +4,7 @@ import br.com.logisticadbc.controller.doc.ViagemControllerDoc;
 import br.com.logisticadbc.dto.in.ViagemCreateDTO;
 import br.com.logisticadbc.dto.in.ViagemUpdateDTO;
 import br.com.logisticadbc.dto.out.PageDTO;
+import br.com.logisticadbc.dto.out.RotaDTO;
 import br.com.logisticadbc.dto.out.ViagemDTO;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.service.ValidacaoService;
@@ -37,6 +38,12 @@ public class ViagemController implements ViagemControllerDoc {
     public ResponseEntity<ViagemDTO> findById(@RequestParam("idViagem") Integer idViagem)
             throws RegraDeNegocioException {
         return new ResponseEntity<>(viagemService.listarPorId(idViagem), HttpStatus.OK);
+    }
+
+    @GetMapping("/listar-por-motorista")
+    public ResponseEntity<List<ViagemDTO>> listByIdUser(@RequestParam("idMotorista") Integer idMotorista)
+            throws RegraDeNegocioException {
+        return new ResponseEntity<>(viagemService.listarPorIdMotorista(idMotorista), HttpStatus.OK);
     }
 
     @PostMapping
