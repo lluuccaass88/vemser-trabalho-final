@@ -6,6 +6,7 @@ import br.com.logisticadbc.dto.in.ViagemUpdateDTO;
 import br.com.logisticadbc.dto.out.PageDTO;
 import br.com.logisticadbc.dto.out.RotaDTO;
 import br.com.logisticadbc.dto.out.ViagemDTO;
+import br.com.logisticadbc.entity.enums.StatusViagem;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.service.ValidacaoService;
 import br.com.logisticadbc.service.ViagemService;
@@ -75,12 +76,12 @@ public class ViagemController implements ViagemControllerDoc {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/paginacao-por-status")
+    @GetMapping("/buscar-por-status/paginacao")
     public ResponseEntity<PageDTO<ViagemDTO>> findByStatusOrderByDataBegun(
-//            @RequestParam(value = "status", required = false) String status ,
+            @RequestParam(value = "status") StatusViagem statusViagem ,
             @RequestParam(value = "page") Integer pagina,
             @RequestParam(value = "size") Integer tamanho) {
         return new ResponseEntity<>(
-                viagemService.listarPorStatusOrdenadoPorDataInicioAsc(pagina, tamanho), HttpStatus.OK);
+                viagemService.listarPorStatusOrdenadoPorDataInicioAsc(statusViagem, pagina, tamanho), HttpStatus.OK);
     }
 }

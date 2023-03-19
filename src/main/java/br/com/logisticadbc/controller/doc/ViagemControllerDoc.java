@@ -2,7 +2,9 @@ package br.com.logisticadbc.controller.doc;
 
 import br.com.logisticadbc.dto.in.ViagemCreateDTO;
 import br.com.logisticadbc.dto.in.ViagemUpdateDTO;
+import br.com.logisticadbc.dto.out.PageDTO;
 import br.com.logisticadbc.dto.out.ViagemDTO;
+import br.com.logisticadbc.entity.enums.StatusViagem;
 import br.com.logisticadbc.exceptions.BancoDeDadosException;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import io.swagger.v3.oas.annotations.Operation;
@@ -80,13 +82,18 @@ public interface ViagemControllerDoc {
                                 @RequestParam("idViagem") Integer idViagem)
             throws RegraDeNegocioException;
 
-    /*@Operation(summary = "Listar Viagens finalizadas", description = "Lista todas as viagens finalizadas do banco de dados")
+    @Operation(summary = "Listar Viagens por status",
+                description = "Lista todas as viagens de acordo com o status do banco de dados")
     @ApiResponses(
             value = {
-                    @ApiResponse(responseCode = "200", description = "Retorna uma lista de Viagens finalizadas"),
+                    @ApiResponse(responseCode = "200", description = "Retorna uma lista de viagens"),
                     @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-    ResponseEntity<List<ViagemDTO>> listarViagensFinalizadas() throws Exception;*/
+    @GetMapping("/buscar-por-status/paginacao")
+    ResponseEntity<PageDTO<ViagemDTO>> findByStatusOrderByDataBegun(
+            @RequestParam(value = "status") StatusViagem statusViagem ,
+            @RequestParam(value = "page") Integer pagina,
+            @RequestParam(value = "size") Integer tamanho);
 }

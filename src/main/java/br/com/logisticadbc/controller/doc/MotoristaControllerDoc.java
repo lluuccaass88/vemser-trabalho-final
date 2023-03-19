@@ -83,7 +83,7 @@ public interface MotoristaControllerDoc {
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-    @GetMapping("/paginacao-ativo-disponivel")
+    @GetMapping("/ativo-disponivel/paginacao")
     ResponseEntity<PageDTO<MotoristaDTO>> listAllPagination(
             @RequestParam(value = "page") Integer pagina,
             @RequestParam(value = "size") Integer tamanho);

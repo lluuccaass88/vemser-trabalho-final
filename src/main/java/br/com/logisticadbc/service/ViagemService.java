@@ -73,7 +73,7 @@ public class ViagemService {
             viagemDTO.setIdCaminhao(caminhaoEncontrado.getIdCaminhao());
             viagemDTO.setIdRota(rotaEncontrada.getIdRota());
 
-            emailService.enviarEmailViagemMotorista(rotaEncontrada, motoristaEncontrado);
+//            emailService.enviarEmailViagemMotorista(rotaEncontrada, motoristaEncontrado);
 
             return viagemDTO;
 
@@ -206,11 +206,13 @@ public class ViagemService {
                 .orElseThrow(() -> new RegraDeNegocioException("Viagem não encontrada"));
     }
 
-    public PageDTO<ViagemDTO> listarPorStatusOrdenadoPorDataInicioAsc(Integer pagina, Integer tamanho) {
+    public PageDTO<ViagemDTO> listarPorStatusOrdenadoPorDataInicioAsc(
+            StatusViagem statusViagem,Integer pagina, Integer tamanho) {
+
         Pageable solicitacaoPagina = PageRequest.of(pagina, tamanho);
 
         Page<ViagemEntity> paginacaoViagens = viagemRepository.findByStatusViagemEqualsOrderByDataInicioAsc(
-                solicitacaoPagina, StatusViagem.EM_ANDAMENTO);
+                solicitacaoPagina, statusViagem);
 
         List<ViagemDTO> viagensDTOList = paginacaoViagens
                 .getContent()
