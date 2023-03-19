@@ -3,11 +3,9 @@ package br.com.logisticadbc.service;
 import br.com.logisticadbc.dto.in.ViagemCreateDTO;
 import br.com.logisticadbc.dto.in.ViagemUpdateDTO;
 import br.com.logisticadbc.dto.out.PageDTO;
+import br.com.logisticadbc.dto.out.RotaDTO;
 import br.com.logisticadbc.dto.out.ViagemDTO;
-import br.com.logisticadbc.entity.CaminhaoEntity;
-import br.com.logisticadbc.entity.MotoristaEntity;
-import br.com.logisticadbc.entity.RotaEntity;
-import br.com.logisticadbc.entity.ViagemEntity;
+import br.com.logisticadbc.entity.*;
 import br.com.logisticadbc.entity.enums.StatusCaminhao;
 import br.com.logisticadbc.entity.enums.StatusMotorista;
 import br.com.logisticadbc.entity.enums.StatusGeral;
@@ -180,6 +178,21 @@ public class ViagemService {
             e.printStackTrace();
             throw new RegraDeNegocioException("Aconteceu algum problema durante a listagem.");
         }
+    }
+
+    public List<ViagemDTO> listarPorIdRota(Integer idRota) throws RegraDeNegocioException {
+        RotaEntity rotaEncontrada = rotaService.buscarPorId(idRota);
+
+        return rotaEncontrada.getViagens()
+                .stream()
+                .map(viagem -> {
+                    ViagemDTO viagemDTO = objectMapper.convertValue(viagem, ViagemDTO.class);
+                    viagemDTO.setIdUsuario(viagem.getMotorista().getIdUsuario());
+                    viagemDTO.setIdCaminhao(viagem.getCaminhao().getIdCaminhao());
+                    viagemDTO.setIdRota(idRota);
+                    return viagemDTO;
+                })
+                .toList();
     }
 
     public ViagemEntity buscarPorId(Integer idViagem) throws RegraDeNegocioException {

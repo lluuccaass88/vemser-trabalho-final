@@ -96,4 +96,17 @@ public interface ViagemControllerDoc {
             @RequestParam(value = "status") StatusViagem statusViagem ,
             @RequestParam(value = "page") Integer pagina,
             @RequestParam(value = "size") Integer tamanho);
+
+    @Operation(summary = "Listar Viagens por rota",
+            description = "Lista todas as viagens de uma rota do banco de dados")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Retorna uma lista de viagens"),
+                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
+            }
+    )
+    @GetMapping("/listar-por-rota")
+    ResponseEntity<List<ViagemDTO>> listByIdRote(@RequestParam(value = "idRota") Integer idRota)
+            throws RegraDeNegocioException;
 }
