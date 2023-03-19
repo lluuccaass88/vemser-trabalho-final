@@ -24,14 +24,11 @@ public class PostoService {
     private final ObjectMapper objectMapper;
 
     public PostoDTO criar(Integer idUsuario, PostoCreateDTO postoCreateDTO) throws RegraDeNegocioException {
+        ColaboradorEntity colaboradorEntity = colaboradorService.buscarPorId(idUsuario);
+
         try {
-            ColaboradorEntity colaboradorEntity = colaboradorService.buscarPorId(idUsuario);
-
-            if (colaboradorEntity.getStatus().equals(StatusGeral.INATIVO)) {
-                throw new RegraDeNegocioException("Usuário inativo!");
-            }
-
             PostoEntity postoEntity = objectMapper.convertValue(postoCreateDTO, PostoEntity.class);
+            postoEntity.setStatus(StatusGeral.ATIVO);
             postoEntity.setColaborador(colaboradorEntity);
 
             colaboradorEntity.getPostos().add(postoEntity);
@@ -39,7 +36,7 @@ public class PostoService {
             postoRepository.save(postoEntity);
 
             PostoDTO postoDTO = objectMapper.convertValue(postoEntity, PostoDTO.class);
-            postoDTO.setIdUsuario(colaboradorEntity.getIdUsuario());
+            postoDTO.setIdUsuario(idUsuario);
             return postoDTO;
 
         } catch (Exception e) {
@@ -49,19 +46,22 @@ public class PostoService {
     }
 
     public PostoDTO editar(Integer idPosto, PostoCreateDTO postoCreateDTO) throws RegraDeNegocioException {
-        try {
-            PostoEntity postoEntity = buscarPorId(idPosto);
+        PostoEntity postoEncontrado = buscarPorId(idPosto);
 
-            postoEntity.setNome(postoCreateDTO.getNome());
-            postoEntity.setValorCombustivel(postoCreateDTO.getValorCombustivel());
+        if (postoEncontrado.getStatus().equals(StatusGeral.INATIVO)) {
+            throw new RegraDeNegocioException("Posto inativo!");
+        }
+        try {
+            postoEncontrado.setNome(postoCreateDTO.getNome());
+            postoEncontrado.setValorCombustivel(postoCreateDTO.getValorCombustivel());
 
             ColaboradorEntity colaboradorEntity =
-                    colaboradorService.buscarPorId(postoEntity.getColaborador().getIdUsuario());
-            colaboradorEntity.getPostos().add(postoEntity);
+                    colaboradorService.buscarPorId(postoEncontrado.getColaborador().getIdUsuario());
+            colaboradorEntity.getPostos().add(postoEncontrado);
 
-            postoRepository.save(postoEntity);
+            postoRepository.save(postoEncontrado);
 
-            PostoDTO postoDTO = objectMapper.convertValue(postoEntity, PostoDTO.class);
+            PostoDTO postoDTO = objectMapper.convertValue(postoEncontrado, PostoDTO.class);
             postoDTO.setIdUsuario(colaboradorEntity.getIdUsuario());
             return postoDTO;
 
@@ -72,10 +72,18 @@ public class PostoService {
     }
 
     public void deletar(Integer idPosto) throws RegraDeNegocioException {
+        PostoEntity postoEncontrado = buscarPorId(idPosto);
+
+        if (postoEncontrado.getStatus().equals(StatusGeral.INATIVO)) {
+            throw new RegraDeNegocioException("Posto já inativo!");
+        }
         try {
-            PostoEntity postoEntity = buscarPorId(idPosto);
-            postoEntity.setStatus(StatusGeral.INATIVO);
-            postoRepository.save(postoEntity);
+            postoEncontrado.setStatus(StatusGeral.INATIVO);
+            postoRepository.save(postoEncontrado);
+
+            ColaboradorEntity colaboradorEntity =
+                    colaboradorService.buscarPorId(postoEncontrado.getColaborador().getIdUsuario());
+            colaboradorEntity.getPostos().add(postoEncontrado);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -84,8 +92,7 @@ public class PostoService {
     }
 
     public List<PostoDTO> listar() {
-        return postoRepository
-                .findAll()
+        return postoRepository.findAll()
                 .stream()
                 .map(posto -> {
                     PostoDTO postoDTO = objectMapper.convertValue(posto, PostoDTO.class);
@@ -96,9 +103,9 @@ public class PostoService {
     }
 
     public PostoDTO listarPorId(Integer idPosto) throws RegraDeNegocioException {
-        try {
-            PostoEntity postoRecuperado = buscarPorId(idPosto);
+        PostoEntity postoRecuperado = buscarPorId(idPosto);
 
+        try {
             PostoDTO postoDTO = objectMapper.convertValue(postoRecuperado, PostoDTO.class);
             postoDTO.setIdUsuario(postoRecuperado.getColaborador().getIdUsuario());
             postoDTO.setIdPosto(idPosto);

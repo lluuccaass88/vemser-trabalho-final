@@ -60,7 +60,8 @@ public interface CaminhaoControllerDoc {
             }
     )
     @PutMapping("/abastecer")
-    ResponseEntity<CaminhaoDTO> update(@RequestParam("idCaminhao") Integer idCaminhao,
+    ResponseEntity<CaminhaoDTO> update(@RequestParam("idColaborador") Integer idColaborador,
+                                       @RequestParam("idCaminhao") Integer idCaminhao,
                                               @RequestParam("Quantidade de gasolina") Integer gasolina)
             throws RegraDeNegocioException;
 
@@ -73,7 +74,8 @@ public interface CaminhaoControllerDoc {
             }
     )
     @DeleteMapping
-    public ResponseEntity<Void> delete(@RequestParam("idCaminhao") Integer idCaminhao) throws RegraDeNegocioException;
+    public ResponseEntity<Void> delete(@RequestParam("idColaborador") Integer idColaborador,
+                                       @RequestParam("idCaminhao") Integer idCaminhao) throws RegraDeNegocioException;
 
     @Operation(summary = "Listar caminhões disponiveis", description = "Listar caminhões disponiveis no banco de dados")
     @ApiResponses(

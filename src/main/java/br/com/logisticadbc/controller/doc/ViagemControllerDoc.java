@@ -62,7 +62,8 @@ public interface ViagemControllerDoc {
             }
     )
     @PutMapping("/{idViagem}")
-    ResponseEntity<ViagemDTO> update(@RequestParam("idViagem") Integer idViagem,
+    ResponseEntity<ViagemDTO> update(@RequestParam("idMotorista") Integer idUsuario,
+                                     @RequestParam("idViagem") Integer idViagem,
                                      @Valid @RequestBody ViagemUpdateDTO viagemUpdateDTO)
             throws RegraDeNegocioException;
 
@@ -75,7 +76,8 @@ public interface ViagemControllerDoc {
             }
     )
     @DeleteMapping("/{idViagem}")
-    ResponseEntity<Void> delete(@RequestParam("idViagem") Integer idViagem)
+    ResponseEntity<Void> delete(@RequestParam("idMotorista") Integer idUsuario,
+                                @RequestParam("idViagem") Integer idViagem)
             throws RegraDeNegocioException;
 
     /*@Operation(summary = "Listar Viagens finalizadas", description = "Lista todas as viagens finalizadas do banco de dados")

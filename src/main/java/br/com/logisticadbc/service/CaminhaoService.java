@@ -3,6 +3,7 @@ package br.com.logisticadbc.service;
 
 import br.com.logisticadbc.dto.in.CaminhaoCreateDTO;
 import br.com.logisticadbc.dto.out.CaminhaoDTO;
+import br.com.logisticadbc.dto.out.PostoDTO;
 import br.com.logisticadbc.entity.CaminhaoEntity;
 import br.com.logisticadbc.entity.ColaboradorEntity;
 import br.com.logisticadbc.entity.enums.StatusCaminhao;
@@ -28,42 +29,50 @@ public class CaminhaoService {
 
     public CaminhaoDTO criar(Integer idUsuario, CaminhaoCreateDTO caminhaoCreateDTO)
             throws RegraDeNegocioException {
+        ColaboradorEntity colaboradorEntity = colaboradorService.buscarPorId(idUsuario);
+
         try {
-            ColaboradorEntity colaboradorEntity = colaboradorService.buscarPorId(idUsuario);
-
-            if (colaboradorEntity.getStatus().equals(StatusGeral.INATIVO)) {
-                throw new RegraDeNegocioException("Usuário inativo!");
-            }
-
             CaminhaoEntity caminhaoEntity = objectMapper.convertValue(caminhaoCreateDTO, CaminhaoEntity.class);
+            caminhaoEntity.setStatus(StatusGeral.ATIVO);
             caminhaoEntity.setStatusCaminhao(StatusCaminhao.ESTACIONADO);
-
             caminhaoEntity.setColaborador(colaboradorEntity);
+
+            colaboradorEntity.getCaminhoes().add(caminhaoEntity);
 
             caminhaoRepository.save(caminhaoEntity);
 
-            return objectMapper.convertValue(caminhaoEntity, CaminhaoDTO.class);
+            CaminhaoDTO caminhaoDTO = objectMapper.convertValue(caminhaoEntity, CaminhaoDTO.class);
+            caminhaoDTO.setIdUsuario(idUsuario);
+            return caminhaoDTO;
+
         } catch (Exception e) {
             throw new RegraDeNegocioException("Aconteceu algum problema durante a criação.");
         }
     }
 
     public CaminhaoDTO abastecer(Integer idCaminhao, Integer gasolina) throws RegraDeNegocioException {
+        CaminhaoEntity caminhaoRecuperado = buscarPorId(idCaminhao);
+
+        if (caminhaoRecuperado.getStatus().equals(StatusGeral.INATIVO)) {
+            throw new RegraDeNegocioException("Caimnhão inativo!");
+
+        } else if (gasolina <= 0) {
+            throw new RegraDeNegocioException("A gasolina informada não pode ser menor ou igual a 0");
+
+        } else if (caminhaoRecuperado.getNivelCombustivel() + gasolina > 100) {
+            throw new RegraDeNegocioException("Limite de gasolina excedido, por favor digite outro valor");
+        }
         try {
-            CaminhaoEntity caminhaoRecuperado = buscarPorId(idCaminhao);
-
-            if (gasolina <= 0) {
-                throw new RegraDeNegocioException("A gasolina informada não pode ser menor ou igual a 0");
-
-            } else if (caminhaoRecuperado.getNivelCombustivel() + gasolina > 100) {
-                throw new RegraDeNegocioException("Limite de gasolina excedido, por favor digite outro valor");
-            }
-
             caminhaoRecuperado.setNivelCombustivel(caminhaoRecuperado.getNivelCombustivel() + gasolina);
+
+            ColaboradorEntity colaboradorEntity =
+                    colaboradorService.buscarPorId(caminhaoRecuperado.getColaborador().getIdUsuario());
 
             caminhaoRepository.save(caminhaoRecuperado);
 
-            return objectMapper.convertValue(caminhaoRecuperado, CaminhaoDTO.class);
+            CaminhaoDTO caminhaoDTO = objectMapper.convertValue(caminhaoRecuperado, CaminhaoDTO.class);
+            caminhaoDTO.setIdUsuario(colaboradorEntity.getIdUsuario());
+            return caminhaoDTO;
 
         } catch (Exception e) {
             throw new RegraDeNegocioException(e.getMessage());
@@ -71,10 +80,14 @@ public class CaminhaoService {
     }
 
     public void deletar(Integer idCaminhao) throws RegraDeNegocioException {
-        try {
-            buscarPorId(idCaminhao);
+        CaminhaoEntity caminhaoRecuperado = buscarPorId(idCaminhao);
 
-            caminhaoRepository.deleteById(idCaminhao);
+        try {
+            if (caminhaoRecuperado.getStatus().equals(StatusGeral.INATIVO)) {
+                throw new RegraDeNegocioException("Caimnhão já inativo!");
+            }
+            caminhaoRecuperado.setStatus(StatusGeral.INATIVO);
+            caminhaoRepository.save(caminhaoRecuperado);
 
         } catch (Exception e) {
             throw new RegraDeNegocioException("Aconteceu algum problema durante a exclusão");
@@ -84,19 +97,23 @@ public class CaminhaoService {
     public List<CaminhaoDTO> listar() {
         return caminhaoRepository.findAll()
                 .stream()
-                .map(caminhao -> objectMapper.convertValue(caminhao, CaminhaoDTO.class))
+                .map(caminhao -> {
+                    CaminhaoDTO caminhaoDTO = objectMapper.convertValue(caminhao, CaminhaoDTO.class);
+                    caminhaoDTO.setIdUsuario(caminhao.getColaborador().getIdUsuario());
+                    return caminhaoDTO;})
                 .toList();
     }
 
     public CaminhaoDTO listarPorId(Integer idCaminhao) throws RegraDeNegocioException {
+        CaminhaoEntity caminhaoRecuperado = buscarPorId(idCaminhao);
         try {
-            CaminhaoEntity caminhaoRecuperado = buscarPorId(idCaminhao);
-
             CaminhaoDTO caminhaoDTO = objectMapper.convertValue(caminhaoRecuperado, CaminhaoDTO.class);
+            caminhaoDTO.setIdUsuario(caminhaoRecuperado.getColaborador().getIdUsuario());
             caminhaoDTO.setIdCaminhao(idCaminhao);
             return caminhaoDTO;
 
         } catch (Exception e) {
+            e.printStackTrace();
             throw new RegraDeNegocioException("Aconteceu algum problema durante a listagem");
         }
     }
@@ -105,7 +122,10 @@ public class CaminhaoService {
         return caminhaoRepository
                 .findByStatusCaminhaoEquals(StatusCaminhao.ESTACIONADO)
                 .stream()
-                .map(caminhao -> objectMapper.convertValue(caminhao, CaminhaoDTO.class))
+                .map(caminhao -> {
+                    CaminhaoDTO caminhaoDTO = objectMapper.convertValue(caminhao, CaminhaoDTO.class);
+                    caminhaoDTO.setIdUsuario(caminhao.getColaborador().getIdUsuario());
+                    return caminhaoDTO;})
                 .collect(Collectors.toList());
     }
 

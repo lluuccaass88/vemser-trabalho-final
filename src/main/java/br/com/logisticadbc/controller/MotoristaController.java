@@ -6,6 +6,7 @@ import br.com.logisticadbc.dto.out.*;
 import br.com.logisticadbc.dto.in.MotoristaUpdateDTO;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.service.MotoristaService;
+import br.com.logisticadbc.service.ValidacaoService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -24,6 +25,7 @@ import java.util.List;
 public class MotoristaController implements MotoristaControllerDoc {
 
     private final MotoristaService motoristaService;
+    private final ValidacaoService validacaoService;
 
     @GetMapping
     public ResponseEntity<List<MotoristaDTO>> listAll() {
@@ -53,11 +55,15 @@ public class MotoristaController implements MotoristaControllerDoc {
     public ResponseEntity<MotoristaDTO> update(@RequestParam Integer idUsuario,
                                                @Valid @RequestBody MotoristaUpdateDTO motoristaUpdateDTO)
             throws RegraDeNegocioException {
+
+        validacaoService.validacao(idUsuario, "motorista");
         return new ResponseEntity<>(motoristaService.editar(idUsuario, motoristaUpdateDTO), HttpStatus.OK);
     }
 
     @DeleteMapping("/{idUsuario}")
     public ResponseEntity<Void> delete(@RequestParam Integer idUsuario) throws RegraDeNegocioException {
+
+        validacaoService.validacao(idUsuario, "motorista");
         motoristaService.deletar(idUsuario);
         return new ResponseEntity<>(HttpStatus.OK);
     }

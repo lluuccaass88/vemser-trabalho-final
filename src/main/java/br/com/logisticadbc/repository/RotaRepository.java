@@ -9,5 +9,4 @@ public interface RotaRepository extends JpaRepository<RotaEntity, Integer> {
 
     // TODO - LISTAR TODAS AS ROTAS INFORMANDO O COLABORADOR QUE A ADICIONOU
 
-    // TODO - LISTAR POSTOS DA ROTA INFORMADA
 }

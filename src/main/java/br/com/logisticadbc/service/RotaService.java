@@ -23,23 +23,19 @@ import java.util.stream.Collectors;
 @Service
 public class RotaService {
 
-    // TODO fazer metodo de cadastrar posto em rota
-
     private final RotaRepository rotaRepository;
     private final ColaboradorService colaboradorService;
     private final PostoService postoService;
     private final ObjectMapper objectMapper;
 
     public RotaDTO criar(Integer idUsuario, RotaCreateDTO rotaCreateDTO) throws RegraDeNegocioException {
+        ColaboradorEntity colaboradorEncontrado = colaboradorService.buscarPorId(idUsuario);
+
         try {
-            ColaboradorEntity colaboradorEncontrado = colaboradorService.buscarPorId(idUsuario);
-
-            if (colaboradorEncontrado.getStatus().equals(StatusGeral.INATIVO)) {
-                throw new RegraDeNegocioException("Usuário inativo!");
-            }
-
             RotaEntity rotaEntity = objectMapper.convertValue(rotaCreateDTO, RotaEntity.class);
+            rotaEntity.setStatus(StatusGeral.ATIVO);
             rotaEntity.setColaborador(colaboradorEncontrado); // Atribui idusuario a rota criada
+
             colaboradorEncontrado.getRotas().add(rotaEntity); // Atribui rota criada ao Colaborador
 
             rotaRepository.save(rotaEntity);
@@ -55,8 +51,12 @@ public class RotaService {
     }
 
     public RotaDTO editar(Integer idRota, RotaCreateDTO rotaCreateDTO) throws RegraDeNegocioException {
+        RotaEntity rotaEncontrada = buscarPorId(idRota);
+
+        if (rotaEncontrada.getStatus().equals(StatusGeral.INATIVO)) {
+            throw new RegraDeNegocioException("Rota inativa!");
+        }
         try {
-            RotaEntity rotaEncontrada = buscarPorId(idRota);
             rotaEncontrada.setDescricao(rotaCreateDTO.getDescricao());
             rotaEncontrada.setLocalPartida(rotaCreateDTO.getLocalPartida());
             rotaEncontrada.setLocalDestino(rotaCreateDTO.getLocalDestino());
@@ -78,10 +78,18 @@ public class RotaService {
     }
 
     public void deletar(Integer idRota) throws RegraDeNegocioException {
+        RotaEntity rotaEncontrada = buscarPorId(idRota);
+
+        if (rotaEncontrada.getStatus().equals(StatusGeral.INATIVO)) {
+            throw new RegraDeNegocioException("Rota já inativa!");
+        }
         try {
-            RotaEntity rotaEncontrada = buscarPorId(idRota);
-            rotaEncontrada.setStatus(StatusGeral.INATIVO);
-            rotaRepository.save(rotaEncontrada);
+                rotaEncontrada.setStatus(StatusGeral.INATIVO);
+                rotaRepository.save(rotaEncontrada);
+
+                ColaboradorEntity colaboradorEncontrado = colaboradorService.buscarPorId(
+                        rotaEncontrada.getColaborador().getIdUsuario());
+                colaboradorEncontrado.getRotas().add(rotaEncontrada);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -103,9 +111,9 @@ public class RotaService {
     }
 
     public RotaDTO listarPorId(Integer idRota) throws RegraDeNegocioException {
-        try {
-            RotaEntity rotaRecuperado = buscarPorId(idRota);
+        RotaEntity rotaRecuperado = buscarPorId(idRota);
 
+        try {
             RotaDTO rotaDTO = objectMapper.convertValue(rotaRecuperado, RotaDTO.class);
             rotaDTO.setIdUsuario(rotaRecuperado.getColaborador().getIdUsuario());
             rotaDTO.setIdRota(idRota);
@@ -118,10 +126,14 @@ public class RotaService {
     }
 
     public void cadastrarPosto(Integer idRota, Integer idPosto) throws RegraDeNegocioException {
-        try {
-            RotaEntity rotaEncontrada = buscarPorId(idRota);
-            PostoEntity postoEncontrado = postoService.buscarPorId(idPosto);
+        RotaEntity rotaEncontrada = buscarPorId(idRota);
+        PostoEntity postoEncontrado = postoService.buscarPorId(idPosto);
 
+        if (rotaEncontrada.getStatus().equals(StatusGeral.INATIVO)
+                || postoEncontrado.getStatus().equals(StatusGeral.INATIVO)) {
+            throw new RegraDeNegocioException("Entidades informadas inativas!");
+        }
+        try {
             rotaEncontrada.getPostos().add(postoEncontrado);
             postoEncontrado.getRotas().add(rotaEncontrada);
 
@@ -134,14 +146,18 @@ public class RotaService {
     }
 
     public RotaComPostosDTO listarPostosCadastrados(Integer idRota) throws RegraDeNegocioException {
-        try {
-            RotaEntity rotaEncontrada = buscarPorId(idRota);
+        RotaEntity rotaEncontrada = buscarPorId(idRota);
 
+        if (rotaEncontrada.getStatus().equals(StatusGeral.INATIVO)) {
+            throw new RegraDeNegocioException("Rota já inativa!");
+        }
+        try {
             RotaComPostosDTO rotaComPostosDTO = objectMapper.convertValue(rotaEncontrada, RotaComPostosDTO.class);
             rotaComPostosDTO.setIdUsuario(rotaEncontrada.getColaborador().getIdUsuario());
 
             rotaComPostosDTO.setPostos(rotaEncontrada.getPostos()
                     .stream()
+                    .filter(posto -> posto.getStatus().equals(StatusGeral.ATIVO))
                     .map(posto -> { // Converte postos para DTO
                         PostoDTO postoDTO = objectMapper.convertValue(posto, PostoDTO.class);
                         postoDTO.setIdUsuario(posto.getColaborador().getIdUsuario());
