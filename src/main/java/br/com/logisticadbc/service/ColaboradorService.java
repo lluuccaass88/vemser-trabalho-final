@@ -83,6 +83,22 @@ public class ColaboradorService {
                 .toList();
     }
 
+    public List<ColaboradorDTO> listarAtivos() {
+        return colaboradorRepository.findAll()
+                .stream()
+                .filter(colaborador -> colaborador.getStatus().equals(StatusGeral.ATIVO))
+                .map(colaborador -> objectMapper.convertValue(colaborador, ColaboradorDTO.class))
+                .toList();
+    }
+
+    public List<ColaboradorDTO> listarInativos() {
+        return colaboradorRepository.findAll()
+                .stream()
+                .filter(colaborador -> colaborador.getStatus().equals(StatusGeral.INATIVO))
+                .map(colaborador -> objectMapper.convertValue(colaborador, ColaboradorDTO.class))
+                .toList();
+    }
+
     public ColaboradorDTO listarPorId(Integer idColaborador) throws RegraDeNegocioException {
         ColaboradorEntity colaboradorRecuperado = buscarPorId(idColaborador);
 

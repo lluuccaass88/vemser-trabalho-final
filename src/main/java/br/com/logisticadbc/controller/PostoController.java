@@ -46,7 +46,7 @@ public class PostoController implements PostoControllerDoc {
         return new ResponseEntity<>(postoService.criar(idColaborador, postoCreateDTO), HttpStatus.CREATED);
     }
 
-    @PutMapping("/{idPosto}")
+    @PutMapping
     public ResponseEntity<PostoDTO> update(@RequestParam("idColaborador") Integer idColaborador,
                                            @RequestParam("idPosto") Integer idPosto,
                                            @Valid @RequestBody PostoCreateDTO postoCreateDTO)
@@ -56,7 +56,7 @@ public class PostoController implements PostoControllerDoc {
         return new ResponseEntity<>(postoService.editar(idPosto, postoCreateDTO), HttpStatus.OK);
     }
 
-    @DeleteMapping("/{idPosto}")
+    @DeleteMapping
     public ResponseEntity<Void> delete(@RequestParam("idColaborador") Integer idColaborador,
                                        @RequestParam("idPosto") Integer idPosto) throws RegraDeNegocioException {
 
@@ -71,13 +71,13 @@ public class PostoController implements PostoControllerDoc {
         return new ResponseEntity<>(postoService.listarPorIdColaborador(idColaborador), HttpStatus.OK);
     }
 
-    @GetMapping("/listar-postos-ativos")
+    @GetMapping("/listar-ativos")
     public ResponseEntity<List<PostoDTO>> listByActiveGassStation(){
         return new ResponseEntity<>(postoService.listarPostosAtivos(), HttpStatus.OK);
     }
 
-    @GetMapping("/listar-postos-inativos")
-    public ResponseEntity<List<PostoDTO>> listByInacctiveGassStation(){
+    @GetMapping("/listar-inativos")
+    public ResponseEntity<List<PostoDTO>> listByInactiveGassStation(){
         return new ResponseEntity<>(postoService.listarPostosInativos(), HttpStatus.OK);
     }
 }

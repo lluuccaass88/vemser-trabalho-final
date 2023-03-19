@@ -50,7 +50,7 @@ public class ViagemController implements ViagemControllerDoc {
         return new ResponseEntity<>(viagemService.criar(idUsuario,viagemCreateDTO), HttpStatus.CREATED);
     }
 
-    @PutMapping("/{idViagem}")
+    @PutMapping
     public ResponseEntity<ViagemDTO> update(@RequestParam("idMotorista") Integer idUsuario,
                                             @RequestParam("idViagem") Integer idViagem,
                                             @Valid @RequestBody ViagemUpdateDTO viagemUpdateDTO)
@@ -60,7 +60,7 @@ public class ViagemController implements ViagemControllerDoc {
         return new ResponseEntity<>(viagemService.editar(idViagem, viagemUpdateDTO), HttpStatus.OK);
     }
 
-    @DeleteMapping("/{idViagem}")
+    @DeleteMapping
     public ResponseEntity<Void> delete(@RequestParam("idMotorista") Integer idUsuario,
                                        @RequestParam("idViagem") Integer idViagem)
             throws RegraDeNegocioException {

@@ -39,7 +39,7 @@ public interface ViagemControllerDoc {
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-    @GetMapping
+    @GetMapping("/buscar-por-id/{idViagem}")
     ResponseEntity<ViagemDTO> findById(@RequestParam("idViagem") Integer idViagem)
             throws RegraDeNegocioException;
 
@@ -51,7 +51,7 @@ public interface ViagemControllerDoc {
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-    @PostMapping
+    @PostMapping("/{idMotorista}")
     ResponseEntity<ViagemDTO> create(@RequestParam("idMotorista") Integer idUsuario,
                                      @Valid @RequestBody ViagemCreateDTO viagemCreateDTO)
     throws RegraDeNegocioException;
@@ -64,7 +64,7 @@ public interface ViagemControllerDoc {
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-    @PutMapping("/{idViagem}")
+    @PutMapping("/{idMotorista}/{idViagem}")
     ResponseEntity<ViagemDTO> update(@RequestParam("idMotorista") Integer idUsuario,
                                      @RequestParam("idViagem") Integer idViagem,
                                      @Valid @RequestBody ViagemUpdateDTO viagemUpdateDTO)
@@ -78,7 +78,7 @@ public interface ViagemControllerDoc {
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-    @DeleteMapping("/{idViagem}")
+    @DeleteMapping("/{idMotorista}/{idViagem}")
     ResponseEntity<Void> delete(@RequestParam("idMotorista") Integer idUsuario,
                                 @RequestParam("idViagem") Integer idViagem)
             throws RegraDeNegocioException;
@@ -92,7 +92,7 @@ public interface ViagemControllerDoc {
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-    @GetMapping("/listar-por-motorista")
+    @GetMapping("/listar-por-motorista/{idMotorista}")
     ResponseEntity<List<ViagemDTO>> listByIdUser(@RequestParam("idMotorista") Integer idMotorista)
     throws RegraDeNegocioException;
 
@@ -105,7 +105,7 @@ public interface ViagemControllerDoc {
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-    @GetMapping("/listar-por-rota")
+    @GetMapping("/listar-por-rota/{idRota}")
     ResponseEntity<List<ViagemDTO>> listByIdRote(@RequestParam(value = "idRota") Integer idRota)
             throws RegraDeNegocioException;
 
@@ -118,7 +118,7 @@ public interface ViagemControllerDoc {
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-    @GetMapping("/listar-por-caminhao")
+    @GetMapping("/listar-por-caminhao/{idCaminhao}")
     ResponseEntity<List<ViagemDTO>> listByIdTruck(@RequestParam(value = "idCaminhao") Integer idCaminhao)
             throws RegraDeNegocioException;
 
@@ -136,4 +136,5 @@ public interface ViagemControllerDoc {
             @RequestParam(value = "status") StatusViagem statusViagem ,
             @RequestParam(value = "page") Integer pagina,
             @RequestParam(value = "size") Integer tamanho);
+
 }

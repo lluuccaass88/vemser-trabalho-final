@@ -58,8 +58,8 @@ public interface MotoristaControllerDoc {
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-    @PutMapping("/{idUsuario}")
-    ResponseEntity<MotoristaDTO> update(@RequestParam Integer idUsuario,
+    @PutMapping
+    ResponseEntity<MotoristaDTO> update(@RequestParam("idMotorista") Integer idMotorista,
                                                @Valid @RequestBody MotoristaUpdateDTO motoristaUpdateDTO)
             throws RegraDeNegocioException;
 
@@ -71,8 +71,8 @@ public interface MotoristaControllerDoc {
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-    @DeleteMapping("/{idUsuario}")
-    ResponseEntity<Void> delete(@RequestParam Integer idUsuario) throws RegraDeNegocioException;
+    @DeleteMapping
+    ResponseEntity<Void> delete(@RequestParam("idMotorista") Integer idMotorista) throws RegraDeNegocioException;
 
     @Operation(summary = "Listar motoristas ativos e disponiveis",
             description = "Lista todos os motoristas com esse filtro do banco de dados")
@@ -87,4 +87,28 @@ public interface MotoristaControllerDoc {
     ResponseEntity<PageDTO<MotoristaDTO>> listAllPagination(
             @RequestParam(value = "page") Integer pagina,
             @RequestParam(value = "size") Integer tamanho);
+
+    @Operation(summary = "Listar motoristas ativos",
+            description = "Lista todos os motoristas ativos do banco de dados")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Retorna a lista de motoristas"),
+                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
+            }
+    )
+    @GetMapping("/listar-ativos")
+    ResponseEntity<List<MotoristaDTO>> listActive();
+
+    @Operation(summary = "Listar motoristas inativos",
+            description = "Lista todos os motoristas inativos do banco de dados")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Retorna a lista de motoristas"),
+                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
+            }
+    )
+    @GetMapping("/listar-inativos")
+    ResponseEntity<List<MotoristaDTO>> listInactive();
 }

@@ -3,6 +3,7 @@ package br.com.logisticadbc.controller.doc;
 import br.com.logisticadbc.dto.in.ColaboradorCreateDTO;
 import br.com.logisticadbc.dto.in.ColaboradorUpdateDTO;
 import br.com.logisticadbc.dto.out.ColaboradorDTO;
+import br.com.logisticadbc.dto.out.MotoristaDTO;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -58,10 +59,10 @@ public interface ColaboradorControllerDoc {
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-    @PutMapping("/{idUsuario}")
-    ResponseEntity<ColaboradorDTO> update(@RequestParam("idUsuario") Integer idUsuario,
+    @PutMapping
+    ResponseEntity<ColaboradorDTO> update(@RequestParam("idColaborador") Integer idColaborador,
                                                  @Valid @RequestBody ColaboradorUpdateDTO colaboradorUpdateDTO)
-            throws RegraDeNegocioException ;
+            throws RegraDeNegocioException;
 
 
     @Operation(summary = "Deletar colaborador", description = "Realiza um soft delete do colaborador")
@@ -72,6 +73,31 @@ public interface ColaboradorControllerDoc {
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-    @DeleteMapping("/{idUsuario}")
-    ResponseEntity<Void> delete(@RequestParam("idUsuario") Integer idUsuario) throws RegraDeNegocioException;
+    @DeleteMapping
+    ResponseEntity<Void> delete(@RequestParam("idColaborador") Integer idColaborador)
+            throws RegraDeNegocioException ;
+
+    @Operation(summary = "Listar Colaboradores ativos",
+            description = "Lista todos os Colaboradores ativos do banco de dados")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Retorna a lista de Colaboradores"),
+                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
+            }
+    )
+    @GetMapping("/listar-ativos")
+    ResponseEntity<List<ColaboradorDTO>> listActive();
+
+    @Operation(summary = "Listar Colaboradores inativos",
+            description = "Lista todos os Colaboradores inativos do banco de dados")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Retorna a lista de Colaboradores"),
+                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
+            }
+    )
+    @GetMapping("/listar-inativos")
+    ResponseEntity<List<ColaboradorDTO>> listInactive();
 }

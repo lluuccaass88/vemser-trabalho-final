@@ -33,9 +33,9 @@ public class MotoristaController implements MotoristaControllerDoc {
     }
 
     @GetMapping("/buscar-por-id")
-    public ResponseEntity<MotoristaDTO> findById(@RequestParam("idUsuario") Integer idUsuario)
+    public ResponseEntity<MotoristaDTO> findById(@RequestParam("idMotorista") Integer idMotorista)
             throws RegraDeNegocioException {
-        return new ResponseEntity<>(motoristaService.listarPorId(idUsuario), HttpStatus.OK);
+        return new ResponseEntity<>(motoristaService.listarPorId(idMotorista), HttpStatus.OK);
     }
 
     @PostMapping
@@ -44,20 +44,20 @@ public class MotoristaController implements MotoristaControllerDoc {
         return new ResponseEntity<>(motoristaService.criar(motoristaCreateDTO), HttpStatus.CREATED);
     }
 
-    @PutMapping("/{idUsuario}")
-    public ResponseEntity<MotoristaDTO> update(@RequestParam Integer idUsuario,
+    @PutMapping
+    public ResponseEntity<MotoristaDTO> update(@RequestParam("idMotorista") Integer idMotorista,
                                                @Valid @RequestBody MotoristaUpdateDTO motoristaUpdateDTO)
             throws RegraDeNegocioException {
 
-        validacaoService.validacao(idUsuario, "motorista");
-        return new ResponseEntity<>(motoristaService.editar(idUsuario, motoristaUpdateDTO), HttpStatus.OK);
+        validacaoService.validacao(idMotorista, "motorista");
+        return new ResponseEntity<>(motoristaService.editar(idMotorista, motoristaUpdateDTO), HttpStatus.OK);
     }
 
-    @DeleteMapping("/{idUsuario}")
-    public ResponseEntity<Void> delete(@RequestParam Integer idUsuario) throws RegraDeNegocioException {
+    @DeleteMapping
+    public ResponseEntity<Void> delete(@RequestParam("idMotorista") Integer idMotorista) throws RegraDeNegocioException {
 
-        validacaoService.validacao(idUsuario, "motorista");
-        motoristaService.deletar(idUsuario);
+        validacaoService.validacao(idMotorista, "motorista");
+        motoristaService.deletar(idMotorista);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -75,5 +75,15 @@ public class MotoristaController implements MotoristaControllerDoc {
         return new ResponseEntity<>(
                 motoristaService.listarMotoristaDisponivelEAtivoOrdenadoPorNomeAsc(pagina, tamanho),
                 HttpStatus.OK);
+    }
+
+    @GetMapping("/listar-ativos")
+    public ResponseEntity<List<MotoristaDTO>> listActive() {
+        return new ResponseEntity<>(motoristaService.listarAtivos(), HttpStatus.OK);
+    }
+
+    @GetMapping("/listar-inativos")
+    public ResponseEntity<List<MotoristaDTO>> listInactive() {
+        return new ResponseEntity<>(motoristaService.listarInativos(), HttpStatus.OK);
     }
 }

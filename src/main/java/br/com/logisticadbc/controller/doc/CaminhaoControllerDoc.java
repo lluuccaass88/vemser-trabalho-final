@@ -15,7 +15,6 @@ import java.util.List;
 
 public interface CaminhaoControllerDoc {
 
-    // TODO - LISTAR CAMINHOES POR ID COLABORADOR
     @Operation(summary = "Listar Caminhões", description = "Listar os caminhões do banco de dados")
     @ApiResponses(
             value = {
@@ -62,8 +61,8 @@ public interface CaminhaoControllerDoc {
             }
     )
     @PutMapping("/abastecer")
-    ResponseEntity<CaminhaoDTO> update(@RequestParam("idColaborador") Integer idColaborador,
-                                       @RequestParam("idCaminhao") Integer idCaminhao,
+    ResponseEntity<CaminhaoDTO> update(@RequestParam("idMotorista") Integer idMotorista,
+                                              @RequestParam("idCaminhao") Integer idCaminhao,
                                               @RequestParam("Quantidade de gasolina") Integer gasolina)
             throws RegraDeNegocioException;
 
@@ -76,7 +75,7 @@ public interface CaminhaoControllerDoc {
             }
     )
     @DeleteMapping
-    public ResponseEntity<Void> delete(@RequestParam("idColaborador") Integer idColaborador,
+    ResponseEntity<Void> delete(@RequestParam("idColaborador") Integer idColaborador,
                                        @RequestParam("idCaminhao") Integer idCaminhao) throws RegraDeNegocioException;
 
     @Operation(summary = "Listar caminhões de um colaborador",
@@ -102,4 +101,26 @@ public interface CaminhaoControllerDoc {
     )
     @GetMapping("/listar-disponiveis")
     ResponseEntity<List<CaminhaoDTO>> listAllAvaiablesTrucks();
+
+    @Operation(summary = "Listar caminhões ativos", description = "Listar caminhões ativos no banco de dados")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Retorna lista com caminhões"),
+                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
+            }
+    )
+    @GetMapping("/listar-ativos")
+    ResponseEntity<List<CaminhaoDTO>> listActive();
+
+    @Operation(summary = "Listar caminhões inativos", description = "Listar caminhões inativos no banco de dados")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Retorna lista com caminhões"),
+                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
+            }
+    )
+    @GetMapping("/listar-inativos")
+    ResponseEntity<List<CaminhaoDTO>> listInactive();
 }

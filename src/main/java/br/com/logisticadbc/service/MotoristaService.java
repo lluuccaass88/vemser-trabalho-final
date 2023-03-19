@@ -83,6 +83,22 @@ public class MotoristaService {
                 .map(motorista -> objectMapper.convertValue(motorista, MotoristaDTO.class)).toList();
     }
 
+    public List<MotoristaDTO> listarAtivos() {
+        return motoristaRepository
+                .findAll()
+                .stream()
+                .filter(motorista -> motorista.getStatus().equals(StatusGeral.ATIVO))
+                .map(motorista -> objectMapper.convertValue(motorista, MotoristaDTO.class)).toList();
+    }
+
+    public List<MotoristaDTO> listarInativos() {
+        return motoristaRepository
+                .findAll()
+                .stream()
+                .filter(motorista -> motorista.getStatus().equals(StatusGeral.INATIVO))
+                .map(motorista -> objectMapper.convertValue(motorista, MotoristaDTO.class)).toList();
+    }
+
     public MotoristaDTO listarPorId(Integer idMotorista) throws RegraDeNegocioException {
         MotoristaEntity motoristaRecuperado = buscarPorId(idMotorista);
 

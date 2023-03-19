@@ -37,7 +37,7 @@ public class RotaController implements RotaControllerDoc {
         return new ResponseEntity<>(rotaService.listarPorId(idRota), HttpStatus.OK);
     }
 
-    @PostMapping("/{idColaborador}")
+    @PostMapping
     public ResponseEntity<RotaDTO> create(@RequestParam("idColaborador") Integer idUsuario,
                                           @Valid @RequestBody RotaCreateDTO rotaCreateDTO)
             throws RegraDeNegocioException {
@@ -46,7 +46,7 @@ public class RotaController implements RotaControllerDoc {
         return new ResponseEntity<>(rotaService.criar(idUsuario, rotaCreateDTO), HttpStatus.CREATED);
     }
 
-    @PutMapping("/{idRota}")
+    @PutMapping
     public ResponseEntity<RotaDTO> update(@RequestParam("idColaborador") Integer idUsuario,
                                           @RequestParam("idRota") Integer idRota,
                                                  @Valid @RequestBody RotaCreateDTO rotaCreateDTO)
@@ -56,7 +56,7 @@ public class RotaController implements RotaControllerDoc {
         return new ResponseEntity<>(rotaService.editar(idRota, rotaCreateDTO), HttpStatus.OK);
     }
 
-    @DeleteMapping("/{idRota}")
+    @DeleteMapping
     public ResponseEntity<Void> delete(@RequestParam("idColaborador") Integer idUsuario,
                                        @RequestParam("idRota") Integer idRota) throws RegraDeNegocioException {
 
@@ -88,13 +88,13 @@ public class RotaController implements RotaControllerDoc {
         return new ResponseEntity<>(rotaService.listarPorIdColaborador(idColaborador), HttpStatus.OK);
     }
 
-    @GetMapping("/listar-rotas-ativas")
+    @GetMapping("/listar-ativas")
     public ResponseEntity<List<RotaDTO>> listByActiveRoute(){
         return new ResponseEntity<>(rotaService.listarRotasAtivas(), HttpStatus.OK);
     }
 
-    @GetMapping("/listar-rotas-inativas")
-    public ResponseEntity<List<RotaDTO>> listByInacctiveRoute(){
+    @GetMapping("/listar-inativas")
+    public ResponseEntity<List<RotaDTO>> listByInactiveRoute(){
         return new ResponseEntity<>(rotaService.listarRotasInativas(), HttpStatus.OK);
     }
 

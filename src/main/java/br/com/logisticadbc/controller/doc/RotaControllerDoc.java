@@ -48,7 +48,7 @@ public interface RotaControllerDoc {
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-    @PostMapping("/{idColaborador}")
+    @PostMapping
     ResponseEntity<RotaDTO> create(@RequestParam("idColaborador") Integer idUsuario,
                                           @Valid @RequestBody RotaCreateDTO rotaCreateDTO)
             throws RegraDeNegocioException;
@@ -61,7 +61,7 @@ public interface RotaControllerDoc {
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-    @PutMapping("/{idRota}")
+    @PutMapping
     ResponseEntity<RotaDTO> update(@RequestParam("idColaborador") Integer idUsuario,
                                    @RequestParam("idRota") Integer idRota,
                                           @Valid @RequestBody RotaCreateDTO rotaCreateDTO)
@@ -75,7 +75,7 @@ public interface RotaControllerDoc {
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-    @DeleteMapping("/{idRota}")
+    @DeleteMapping
     ResponseEntity<Void> delete(@RequestParam("idColaborador") Integer idUsuario,
                                 @RequestParam("idRota") Integer idRota) throws RegraDeNegocioException;
 
@@ -129,7 +129,7 @@ public interface RotaControllerDoc {
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-    @GetMapping("/listar-rotas-ativas")
+    @GetMapping("/listar-ativas")
     public ResponseEntity<List<RotaDTO>> listByActiveRoute();
 
     @Operation(summary = "Listar rotas inativas",
@@ -141,8 +141,8 @@ public interface RotaControllerDoc {
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-    @GetMapping("/listar-rotas-inativas")
-    public ResponseEntity<List<RotaDTO>> listByInacctiveRoute();
+    @GetMapping("/listar-inativas")
+    public ResponseEntity<List<RotaDTO>> listByInactiveRoute();
 
     @Operation(summary = "Listar rotas por local de partida",
             description = "Lista todas rotas por local de partida")

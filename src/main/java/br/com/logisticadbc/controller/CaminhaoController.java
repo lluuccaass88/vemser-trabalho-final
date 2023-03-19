@@ -75,4 +75,15 @@ public class CaminhaoController implements CaminhaoControllerDoc {
     public ResponseEntity<List<CaminhaoDTO>> listAllAvaiablesTrucks() {
         return new ResponseEntity<>(caminhaoService.listarCaminhoesLivres(), HttpStatus.OK);
     }
+
+    @GetMapping("/listar-ativos")
+    public ResponseEntity<List<CaminhaoDTO>> listActive() {
+        return new ResponseEntity<>(caminhaoService.listarAtivos(), HttpStatus.OK);
+    }
+
+    @GetMapping("/listar-inativos")
+    public ResponseEntity<List<CaminhaoDTO>> listInactive() {
+        return new ResponseEntity<>(caminhaoService.listarInativos(), HttpStatus.OK);
+    }
+
 }

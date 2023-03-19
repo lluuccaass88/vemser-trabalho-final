@@ -45,20 +45,21 @@ public class ColaboradorController implements ColaboradorControllerDoc {
         return new ResponseEntity<>(colaboradorService.criar(colaboradorCreateDTO), HttpStatus.CREATED);
     }
 
-    @PutMapping("/{idUsuario}")
-    public ResponseEntity<ColaboradorDTO> update(@RequestParam("idUsuario") Integer idUsuario,
+    @PutMapping
+    public ResponseEntity<ColaboradorDTO> update(@RequestParam("idColaborador") Integer idColaborador,
                                                  @Valid @RequestBody ColaboradorUpdateDTO colaboradorUpdateDTO)
                                                         throws RegraDeNegocioException {
 
-        validacaoService.validacao(idUsuario, "colaborador");
-        return new ResponseEntity<>(colaboradorService.editar(idUsuario, colaboradorUpdateDTO), HttpStatus.OK);
+        validacaoService.validacao(idColaborador, "colaborador");
+        return new ResponseEntity<>(colaboradorService.editar(idColaborador, colaboradorUpdateDTO), HttpStatus.OK);
     }
 
-    @DeleteMapping("/{idUsuario}")
-    public ResponseEntity<Void> delete(@RequestParam("idUsuario") Integer idUsuario) throws RegraDeNegocioException {
+    @DeleteMapping
+    public ResponseEntity<Void> delete(@RequestParam("idColaborador") Integer idColaborador)
+            throws RegraDeNegocioException {
 
-        validacaoService.validacao(idUsuario, "colaborador");
-        colaboradorService.deletar(idUsuario);
+        validacaoService.validacao(idColaborador, "colaborador");
+        colaboradorService.deletar(idColaborador);
         return ResponseEntity.ok().build();
     }
 
@@ -67,5 +68,15 @@ public class ColaboradorController implements ColaboradorControllerDoc {
             @RequestParam(value = "page") Integer pagina,
             @RequestParam(value = "size") Integer tamanho) {
         return new ResponseEntity<>(colaboradorService.gerarRelatorioColaboradoresInformacoesCompletas(pagina, tamanho), HttpStatus.OK);
+    }
+
+    @GetMapping("/listar-ativos")
+    public ResponseEntity<List<ColaboradorDTO>> listActive() {
+        return new ResponseEntity<>(colaboradorService.listarAtivos(), HttpStatus.OK);
+    }
+
+    @GetMapping("/listar-inativos")
+    public ResponseEntity<List<ColaboradorDTO>> listInactive() {
+        return new ResponseEntity<>(colaboradorService.listarInativos(), HttpStatus.OK);
     }
 }

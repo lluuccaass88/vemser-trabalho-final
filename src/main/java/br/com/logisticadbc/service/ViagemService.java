@@ -168,11 +168,9 @@ public class ViagemService {
 
         try {
             ViagemDTO viagemDTO = objectMapper.convertValue(viagemRecuperada, ViagemDTO.class);
-            viagemDTO.setStatusViagem(viagemRecuperada.getStatusViagem());
             viagemDTO.setIdRota(viagemRecuperada.getRota().getIdRota());
             viagemDTO.setIdCaminhao(viagemRecuperada.getCaminhao().getIdCaminhao());
             viagemDTO.setIdUsuario(viagemRecuperada.getMotorista().getIdUsuario());
-            viagemDTO.setIdViagem(idViagem);
             return viagemDTO;
 
         } catch (Exception e) {
@@ -225,11 +223,6 @@ public class ViagemService {
                 .toList();
     }
 
-    public ViagemEntity buscarPorId(Integer idViagem) throws RegraDeNegocioException {
-        return viagemRepository.findById(idViagem)
-                .orElseThrow(() -> new RegraDeNegocioException("Viagem não encontrada"));
-    }
-
     public PageDTO<ViagemDTO> listarPorStatusOrdenadoPorDataInicioAsc(
             StatusViagem statusViagem,Integer pagina, Integer tamanho) {
 
@@ -256,5 +249,10 @@ public class ViagemService {
                 tamanho,
                 viagensDTOList
         );
+    }
+
+    public ViagemEntity buscarPorId(Integer idViagem) throws RegraDeNegocioException {
+        return viagemRepository.findById(idViagem)
+                .orElseThrow(() -> new RegraDeNegocioException("Viagem não encontrada"));
     }
 }

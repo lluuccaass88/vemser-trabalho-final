@@ -103,6 +103,28 @@ public class CaminhaoService {
                 .toList();
     }
 
+    public List<CaminhaoDTO> listarAtivos() {
+        return caminhaoRepository.findAll()
+                .stream()
+                .filter(caminhao -> caminhao.getStatus().equals(StatusGeral.ATIVO))
+                .map(caminhao -> {
+                    CaminhaoDTO caminhaoDTO = objectMapper.convertValue(caminhao, CaminhaoDTO.class);
+                    caminhaoDTO.setIdUsuario(caminhao.getColaborador().getIdUsuario());
+                    return caminhaoDTO;})
+                .toList();
+    }
+
+    public List<CaminhaoDTO> listarInativos() {
+        return caminhaoRepository.findAll()
+                .stream()
+                .filter(caminhao -> caminhao.getStatus().equals(StatusGeral.INATIVO))
+                .map(caminhao -> {
+                    CaminhaoDTO caminhaoDTO = objectMapper.convertValue(caminhao, CaminhaoDTO.class);
+                    caminhaoDTO.setIdUsuario(caminhao.getColaborador().getIdUsuario());
+                    return caminhaoDTO;})
+                .toList();
+    }
+
     public CaminhaoDTO listarPorId(Integer idCaminhao) throws RegraDeNegocioException {
         CaminhaoEntity caminhaoRecuperado = buscarPorId(idCaminhao);
         try {

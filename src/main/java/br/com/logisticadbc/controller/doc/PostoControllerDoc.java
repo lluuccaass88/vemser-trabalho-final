@@ -61,11 +61,11 @@ public interface PostoControllerDoc {
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-    @PutMapping("/{idPosto}")
+    @PutMapping
     ResponseEntity<PostoDTO> update(@RequestParam("idColaborador") Integer idColaborador,
-                                    @RequestParam("idPosto") Integer idPosto,
+                                           @RequestParam("idPosto") Integer idPosto,
                                            @Valid @RequestBody PostoCreateDTO postoCreateDTO)
-            throws RegraDeNegocioException ;
+            throws RegraDeNegocioException;
 
     @Operation(summary = "Deletar Posto", description = "Deleta um posto do banco de dados")
     @ApiResponses(
@@ -75,7 +75,7 @@ public interface PostoControllerDoc {
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-    @DeleteMapping("/{idPosto}")
+    @DeleteMapping
     ResponseEntity<Void> delete(@RequestParam("idColaborador") Integer idColaborador,
                                 @RequestParam("idPosto") Integer idPosto) throws RegraDeNegocioException ;
 
@@ -101,8 +101,8 @@ public interface PostoControllerDoc {
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-    @GetMapping("/listar-postos-ativos")
-    public ResponseEntity<List<PostoDTO>> listByActiveGassStation();
+    @GetMapping("/listar-ativos")
+    ResponseEntity<List<PostoDTO>> listByActiveGassStation();
 
     @Operation(summary = "Listar postos inativos",
             description = "Lista todos postos inativos")
@@ -113,7 +113,7 @@ public interface PostoControllerDoc {
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-    @GetMapping("/listar-postos-inativos")
-    public ResponseEntity<List<PostoDTO>> listByInacctiveGassStation();
+    @GetMapping("/listar-inativos")
+    ResponseEntity<List<PostoDTO>> listByInactiveGassStation();
 
 }
