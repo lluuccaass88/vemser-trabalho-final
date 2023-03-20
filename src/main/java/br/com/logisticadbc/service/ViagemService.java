@@ -38,10 +38,11 @@ public class ViagemService {
     public ViagemDTO criar(Integer idUsuario, ViagemCreateDTO viagemCreateDTO) throws RegraDeNegocioException {
         MotoristaEntity motoristaEncontrado = motoristaService.buscarPorId(idUsuario);
         CaminhaoEntity caminhaoEncontrado = caminhaoService.buscarPorId(viagemCreateDTO.getIdCaminhao());
+        RotaEntity rotaEncontrada = rotaService.buscarPorId(viagemCreateDTO.getIdRota());
 
         // Verificações
         if (caminhaoEncontrado.getStatus().equals(StatusGeral.INATIVO)
-                || motoristaEncontrado.getStatus().equals(StatusGeral.INATIVO)) {
+                || rotaEncontrada.getStatus().equals(StatusGeral.INATIVO)) {
             throw new RegraDeNegocioException("Entidades informadas inativas!");
 
         } else if (caminhaoEncontrado.getStatusCaminhao().equals(StatusCaminhao.EM_VIAGEM)
@@ -52,9 +53,6 @@ public class ViagemService {
             throw new RegraDeNegocioException("Data final não pode ser antes da data inicial!");
         }
         try {
-
-            RotaEntity rotaEncontrada = rotaService.buscarPorId(viagemCreateDTO.getIdRota());
-
             ViagemEntity viagemEntity = objectMapper.convertValue(viagemCreateDTO, ViagemEntity.class);
             viagemEntity.setStatusViagem(StatusViagem.EM_ANDAMENTO);
             viagemEntity.setMotorista(motoristaEncontrado);
