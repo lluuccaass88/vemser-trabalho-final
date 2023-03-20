@@ -7,13 +7,13 @@
 <body>
     <div align=center style="background-color: #d12121;">
         <br>
-        <img src="/images/logo.png" alt="Logo" height="150px" width="150px">
+        <img src="https://github.com/lluuccaass88/vemser-trabalho-final/blob/main/images/logo.png" alt="Logo" height="150px" width="150px">
         <h1 style="color: #f2f2f2; font-family:courier;"> Heroes Logística </h1>
         <br>
     </div>
 
     <div style="background-color: #f2f2f2; padding: 20px;">
-        <h2 align=center>Olá, ${nomeUsuario}, seja bem vindo!</h2>
+        <h2 align=center>Olá, ${nomeUsuario}, seja bem vindo(a)!</h2>
         <br>
         <br>É com grande prazer que lhe damos as boas-vindas à equipe da <b>${nome}</b>!
         <br>
