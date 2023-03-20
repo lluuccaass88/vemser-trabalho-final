@@ -6,7 +6,7 @@
 <body>
     <div align=center style="background-color: #d12121;">
         <br>
-        <img src="https://github.com/lluuccaass88/vemser-trabalho-final/blob/main/images/logo.png" alt="Logo" height="150px" width="150px">
+        <img src="https://github.com/lluuccaass88/vemser-trabalho-final/blob/main/images/logo.png?raw=true" alt="Logo" height="150px" width="150px">
         <h1 style="color: #f2f2f2; font-family:courier;"> Heroes Logística </h1>
         <br>
     </div>
