@@ -37,7 +37,7 @@ public class EmailService {
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
             mimeMessageHelper.setFrom(from);
             mimeMessageHelper.setTo(colaborador.getEmail());
-            mimeMessageHelper.setSubject("Bem vindo ao DBC Logística");
+            mimeMessageHelper.setSubject("Bem vindo ao Heroes Logística");
 
             String mensagem = "Contamos com a sua ajuda para cada vez mais aproximarmos pessoas por meio dos nossos serviços!";
 
@@ -56,7 +56,7 @@ public class EmailService {
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
             mimeMessageHelper.setFrom(from);
             mimeMessageHelper.setTo(motorista.getEmail());
-            mimeMessageHelper.setSubject("Bem vindo ao DBC Logística");
+            mimeMessageHelper.setSubject("Bem vindo ao Heroes Logística");
 
             String mensagem = "E isto não seria possivel sem a contribuição dos nossos motoristas, " +
                     "que são peça chave neste processo!";
@@ -78,8 +78,8 @@ public class EmailService {
         dados.put("nomeUsuario", nomeUsuario);
         dados.put("mensagem", mensagem);
         dados.put("emailUsuario", emailUsuario);
-        dados.put("emailContato", "logistica.dbc@dbccompany.com.br");
-        dados.put("nome", "Sistema de Logística DBC Company");
+        dados.put("emailContato", "heroes.logistica@email.com");
+        dados.put("nome", "Heroes Logística");
 
         Template template = fmConfiguration.getTemplate("email-template-boas-vindas-usuario.ftl");
 
@@ -115,8 +115,8 @@ public class EmailService {
         dados.put("nomeUsuario", nomeUsuario);
         dados.put("mensagem", mensagem);
         dados.put("rota", rota);
-        dados.put("emailContato", "logistica.dbc@dbccompany.com.br");
-        dados.put("nome", "Sistema de Logística DBC Company");
+        dados.put("emailContato", "heroes.logistica@email.com");
+        dados.put("nome", "Heroes Logística");
 
         Template template = fmConfiguration.getTemplate("email-template-viagem.ftl");
         String html = FreeMarkerTemplateUtils.processTemplateIntoString(template, dados);

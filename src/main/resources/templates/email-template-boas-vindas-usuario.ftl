@@ -13,7 +13,7 @@
     </div>
 
     <div style="background-color: #f2f2f2; padding: 20px;">
-        <h2 align=center>Olá, ${nomeUsuario}, seja bem vindo!</h2>
+        <h2 align=center>Olá, ${nomeUsuario}, seja bem vindo(a)!</h2>
         <br>
         <br>É com grande prazer que lhe damos as boas-vindas à equipe da <b>${nome}</b>!
         <br>
