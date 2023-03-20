@@ -38,7 +38,7 @@ public class MotoristaService {
 
             motoristaRepository.save(motoristaEntity);
 
-          // emailService.enviarEmailBoasVindasMotorista(motoristaEntity);
+           emailService.enviarEmailBoasVindasMotorista(motoristaEntity);
 
             return objectMapper.convertValue(motoristaEntity, MotoristaDTO.class);
 
