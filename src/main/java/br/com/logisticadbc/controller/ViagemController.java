@@ -1,9 +1,14 @@
 package br.com.logisticadbc.controller;
 
-import br.com.logisticadbc.controller.impl.IUViagemControllerDoc;
-import br.com.logisticadbc.dto.*;
-import br.com.logisticadbc.exceptions.BancoDeDadosException;
+import br.com.logisticadbc.controller.doc.ViagemControllerDoc;
+import br.com.logisticadbc.dto.in.ViagemCreateDTO;
+import br.com.logisticadbc.dto.in.ViagemUpdateDTO;
+import br.com.logisticadbc.dto.out.PageDTO;
+import br.com.logisticadbc.dto.out.RotaDTO;
+import br.com.logisticadbc.dto.out.ViagemDTO;
+import br.com.logisticadbc.entity.enums.StatusViagem;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
+import br.com.logisticadbc.service.ValidacaoService;
 import br.com.logisticadbc.service.ViagemService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,46 +21,80 @@ import javax.validation.Valid;
 import java.util.List;
 
 @Slf4j
+@Validated
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/viagem") // localhost:8080/viagem
-@Validated
-public class ViagemController implements IUViagemControllerDoc {
+@RequestMapping("/viagem")
+public class ViagemController implements ViagemControllerDoc {
 
     private final ViagemService viagemService;
-
-    @PostMapping
-    public ResponseEntity<ViagemDTO> create(@Valid @RequestBody ViagemCreateDTO viagemCreateDTO) throws Exception {
-        log.info("Criando viagem");
-        return new ResponseEntity<>(viagemService.adicionarViagem(viagemCreateDTO), HttpStatus.CREATED);
-    }
+    private final ValidacaoService validacaoService;
 
     @GetMapping
-    public ResponseEntity<List<ViagemDTO>> listar() throws RegraDeNegocioException {
-        log.info("Recebendo requisição para listar todas as viagens");
-        return new ResponseEntity<>(viagemService.listarViagens(), HttpStatus.OK);
+    public ResponseEntity<List<ViagemDTO>> listAll() throws RegraDeNegocioException {
+        return new ResponseEntity<>(viagemService.listar(), HttpStatus.OK);
     }
 
-    @GetMapping("/viagem-finalizada")
-    public ResponseEntity<List<ViagemDTO>> listarViagensFinalizadas() throws RegraDeNegocioException {
-        log.info("Recebendo requisição para listar todas as viagens finalizadas");
-        return new ResponseEntity<>(viagemService.listarViagensFinalizadas(), HttpStatus.OK);
+    @GetMapping("/buscar-por-id")
+    public ResponseEntity<ViagemDTO> findById(@RequestParam("idViagem") Integer idViagem)
+            throws RegraDeNegocioException {
+        return new ResponseEntity<>(viagemService.listarPorId(idViagem), HttpStatus.OK);
     }
 
-    @GetMapping("/{idViagem}")
-    public ResponseEntity<ViagemDTO> listarPorId (@PathVariable("idViagem") Integer id) throws RegraDeNegocioException {
-        return new ResponseEntity<>(viagemService.listarPorId(id), HttpStatus.OK);
+    @PostMapping
+    public ResponseEntity<ViagemDTO> create(@RequestParam("idMotorista") Integer idUsuario,
+                                            @Valid @RequestBody ViagemCreateDTO viagemCreateDTO)
+            throws RegraDeNegocioException {
+
+        validacaoService.validacao(idUsuario, "motorista");
+        return new ResponseEntity<>(viagemService.criar(idUsuario,viagemCreateDTO), HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/finalizar-viagem/{idViagem}")
-    public ResponseEntity<ViagemDTO> delete(@PathVariable("idViagem") Integer id) throws RegraDeNegocioException {
-        return new ResponseEntity<>(viagemService.finalizarViagem(id), HttpStatus.NO_CONTENT);
+    @PutMapping
+    public ResponseEntity<ViagemDTO> update(@RequestParam("idMotorista") Integer idUsuario,
+                                            @RequestParam("idViagem") Integer idViagem,
+                                            @Valid @RequestBody ViagemUpdateDTO viagemUpdateDTO)
+            throws RegraDeNegocioException {
+
+        validacaoService.validacao(idUsuario, "motorista");
+        return new ResponseEntity<>(viagemService.editar(idUsuario, idViagem, viagemUpdateDTO), HttpStatus.OK);
     }
 
-    @PutMapping("/{idViagem}")
-    public ResponseEntity<ViagemDTO> update(@PathVariable("idViagem") Integer id,
-                                            @Valid @RequestBody ViagemCreateDTO viagemUpdateDTO) throws RegraDeNegocioException, BancoDeDadosException { //Recuperando os dados que serão editados pelo o body
-        log.info("Viagem editada com sucesso!");
-        return new ResponseEntity<>(viagemService.editarViagem(id, viagemUpdateDTO), HttpStatus.OK);
+    @DeleteMapping
+    public ResponseEntity<Void> delete(@RequestParam("idMotorista") Integer idUsuario,
+                                       @RequestParam("idViagem") Integer idViagem)
+            throws RegraDeNegocioException {
+
+        validacaoService.validacao(idUsuario, "motorista");
+        viagemService.finalizar(idUsuario, idViagem);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/listar-por-motorista")
+    public ResponseEntity<List<ViagemDTO>> listByIdUser(@RequestParam("idMotorista") Integer idMotorista)
+            throws RegraDeNegocioException {
+        return new ResponseEntity<>(viagemService.listarPorIdMotorista(idMotorista), HttpStatus.OK);
+    }
+
+    @GetMapping("/listar-por-rota")
+    public ResponseEntity<List<ViagemDTO>> listByIdRote(@RequestParam(value = "idRota") Integer idRota)
+            throws RegraDeNegocioException {
+        return new ResponseEntity<>(
+                viagemService.listarPorIdRota(idRota), HttpStatus.OK);
+    }
+
+    @GetMapping("/listar-por-caminhao")
+    public ResponseEntity<List<ViagemDTO>> listByIdTruck(@RequestParam(value = "idCaminhao") Integer idCaminhao)
+            throws RegraDeNegocioException {
+        return new ResponseEntity<>(viagemService.listarPorIdCaminhao(idCaminhao), HttpStatus.OK);
+    }
+
+    @GetMapping("/listar-por-status/paginacao")
+    public ResponseEntity<PageDTO<ViagemDTO>> findByStatusOrderByDataBegun(
+            @RequestParam(value = "status") StatusViagem statusViagem ,
+            @RequestParam(value = "page") Integer pagina,
+            @RequestParam(value = "size") Integer tamanho) {
+        return new ResponseEntity<>(
+                viagemService.listarPorStatusOrdenadoPorDataInicioAsc(statusViagem, pagina, tamanho), HttpStatus.OK);
     }
 }

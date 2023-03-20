@@ -1,11 +1,14 @@
 package br.com.logisticadbc.controller;
 
-import br.com.logisticadbc.controller.impl.IPostoControllerDoc;
-import br.com.logisticadbc.dto.PostoCreateDTO;
-import br.com.logisticadbc.dto.PostoDTO;
-import br.com.logisticadbc.exceptions.BancoDeDadosException;
+import br.com.logisticadbc.controller.doc.PostoControllerDoc;
+import br.com.logisticadbc.dto.in.PostoCreateDTO;
+import br.com.logisticadbc.dto.out.MotoristaDTO;
+import br.com.logisticadbc.dto.out.PostoDTO;
+import br.com.logisticadbc.dto.out.RotaDTO;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.service.PostoService;
+import br.com.logisticadbc.service.ValidacaoService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,41 +19,65 @@ import javax.validation.Valid;
 import java.util.List;
 
 @Slf4j
+@RequiredArgsConstructor
 @RestController
-@RequestMapping("/posto") // localhost:8080/contato
+@RequestMapping("/posto")
 @Validated
-public class PostoController implements IPostoControllerDoc {
+public class PostoController implements PostoControllerDoc {
     private final PostoService postoService;
+    private final ValidacaoService validacaoService;
 
-    public PostoController(PostoService postoService) {
-        this.postoService = postoService;
+    @GetMapping
+    public ResponseEntity<List<PostoDTO>> listAll(){
+        return new ResponseEntity<>(postoService.listar(), HttpStatus.OK);
     }
 
-
-    @GetMapping // GET localhost:8080/posto
-    public List<PostoDTO> list() throws BancoDeDadosException, RegraDeNegocioException {
-        return postoService.listarPosto();
+    @GetMapping("/buscar-por-id")
+    public ResponseEntity<PostoDTO> findById(@RequestParam("idPosto") Integer idPosto) throws RegraDeNegocioException {
+        return new ResponseEntity<>(postoService.listarPorId(idPosto), HttpStatus.OK);
     }
 
-    @PostMapping()// POST localhost:8080/posto
-    public ResponseEntity<PostoDTO> create(@Valid @RequestBody PostoCreateDTO postoCreateDTO)
-            throws RegraDeNegocioException, BancoDeDadosException {
-        log.info("Contato criado com sucesso!");
-        return new ResponseEntity<>(postoService.adicionaPosto(postoCreateDTO), HttpStatus.CREATED);
+    @PostMapping
+    public ResponseEntity<PostoDTO> create(@RequestParam("idColaborador") Integer idColaborador,
+                                           @Valid @RequestBody PostoCreateDTO postoCreateDTO)
+            throws RegraDeNegocioException {
+
+        validacaoService.validacao(idColaborador, "colaborador");
+        return new ResponseEntity<>(postoService.criar(idColaborador, postoCreateDTO), HttpStatus.CREATED);
     }
 
-    @PutMapping("/{idPosto}") // PUT localhost:8080/pessoa/4
-    public  ResponseEntity<Boolean> update(@PathVariable("idPosto") Integer id, //Recuperando o id a ser editado por parametro
-                                           @Valid @RequestBody PostoCreateDTO postoAtualizarDTO) throws RegraDeNegocioException, BancoDeDadosException { //Recuperando os dados que serão editados pelo o body
-        log.info("Contato editado com sucesso!");
-        return new ResponseEntity<> (postoService.editarPosto(id, postoAtualizarDTO), HttpStatus.OK);
+    @PutMapping
+    public ResponseEntity<PostoDTO> update(@RequestParam("idColaborador") Integer idColaborador,
+                                           @RequestParam("idPosto") Integer idPosto,
+                                           @Valid @RequestBody PostoCreateDTO postoCreateDTO)
+            throws RegraDeNegocioException {
+
+        validacaoService.validacao(idColaborador, "colaborador");
+        return new ResponseEntity<>(postoService.editar(idPosto, postoCreateDTO), HttpStatus.OK);
     }
 
-    @DeleteMapping("/{idPosto}") // DELETE localhost:8080/contato/2
-    public ResponseEntity<Boolean> delete(@PathVariable("idPosto") Integer id) throws RegraDeNegocioException {
-        postoService.removerPosto(id);
-        log.info("Contato deletado com sucesso!");
+    @DeleteMapping
+    public ResponseEntity<Void> delete(@RequestParam("idColaborador") Integer idColaborador,
+                                       @RequestParam("idPosto") Integer idPosto) throws RegraDeNegocioException {
+
+        validacaoService.validacao(idColaborador, "colaborador");
+        postoService.deletar(idPosto);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    @GetMapping("/listar-por-colaborador")
+    public ResponseEntity<List<PostoDTO>> listByIdUser(@RequestParam("idColaborador") Integer idColaborador)
+            throws RegraDeNegocioException {
+        return new ResponseEntity<>(postoService.listarPorIdColaborador(idColaborador), HttpStatus.OK);
+    }
+
+    @GetMapping("/listar-ativos")
+    public ResponseEntity<List<PostoDTO>> listByActiveGassStation(){
+        return new ResponseEntity<>(postoService.listarPostosAtivos(), HttpStatus.OK);
+    }
+
+    @GetMapping("/listar-inativos")
+    public ResponseEntity<List<PostoDTO>> listByInactiveGassStation(){
+        return new ResponseEntity<>(postoService.listarPostosInativos(), HttpStatus.OK);
+    }
 }

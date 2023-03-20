@@ -1,13 +1,11 @@
 package br.com.logisticadbc.controller;
 
-
-import br.com.logisticadbc.controller.impl.ICaminhaoControllerDoc;
-import br.com.logisticadbc.dto.CaminhaoCreateDTO;
-import br.com.logisticadbc.dto.CaminhaoDTO;
-import br.com.logisticadbc.dto.ViagemDTO;
-import br.com.logisticadbc.entity.Caminhao;
+import br.com.logisticadbc.controller.doc.CaminhaoControllerDoc;
+import br.com.logisticadbc.dto.in.CaminhaoCreateDTO;
+import br.com.logisticadbc.dto.out.CaminhaoDTO;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.service.CaminhaoService;
+import br.com.logisticadbc.service.ValidacaoService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -23,53 +21,69 @@ import java.util.List;
 @RequestMapping("/caminhao") // http://localhost:8080/caminhao
 @Validated
 @Slf4j
-public class CaminhaoController implements ICaminhaoControllerDoc {
+public class CaminhaoController implements CaminhaoControllerDoc {
 
     private final CaminhaoService caminhaoService;
-
-    @PostMapping
-    public ResponseEntity<CaminhaoDTO> adicionar(@Valid @RequestBody CaminhaoCreateDTO caminhao) throws Exception {
-
-        log.info("Recebendo requisição para adicionar um novo caminhão");
-        CaminhaoDTO caminhaoDTO = caminhaoService.adicionar(caminhao);
-        log.info("Caminhão adicionado com sucesso" + caminhaoDTO);
-        return new ResponseEntity<>(caminhaoDTO, HttpStatus.CREATED);
-
-    }
+    private final ValidacaoService validacaoService;
 
     @GetMapping
-    public ResponseEntity<List<CaminhaoDTO>> listar() throws Exception {
-        log.info("Recebendo requisição para listar todos os caminhões");
+    public ResponseEntity<List<CaminhaoDTO>> listAll() {
         return new ResponseEntity<>(caminhaoService.listar(), HttpStatus.OK);
     }
 
-
-    @PutMapping("/{id}")
-    public ResponseEntity<CaminhaoDTO> editar(@PathVariable Integer id,
-                                              @Valid @RequestBody CaminhaoCreateDTO caminhao) throws Exception {
-        log.info("Recebendo requisição para atualizar um caminhão");
-        CaminhaoDTO caminhaoDTO = caminhaoService.editar(id, caminhao);
-        log.info("Caminhão atualizado com sucesso" + caminhaoDTO);
-        return new ResponseEntity<>(caminhaoDTO, HttpStatus.OK);
+    @GetMapping("/buscar-por-id")
+    public ResponseEntity<CaminhaoDTO> findById(@RequestParam("idCaminhao") Integer idCaminhao)
+            throws RegraDeNegocioException {
+        return new ResponseEntity<>(caminhaoService.listarPorId(idCaminhao), HttpStatus.OK);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletar(@PathVariable Integer id) throws Exception {
-        log.info("Recebendo requisição para remover um caminhão");
-        caminhaoService.deletar(id);
-        log.info("Caminhão removido com sucesso");
+    @PostMapping
+    public ResponseEntity<CaminhaoDTO> create(@RequestParam("idColaborador") Integer idColaborador,
+                                              @Valid @RequestBody CaminhaoCreateDTO caminhaoCreateDTO)
+            throws RegraDeNegocioException {
+
+        validacaoService.validacao(idColaborador, "colaborador");
+        return new ResponseEntity<>(caminhaoService.criar(idColaborador, caminhaoCreateDTO), HttpStatus.CREATED);
+    }
+
+    @PutMapping("/abastecer")
+    public ResponseEntity<CaminhaoDTO> update(@RequestParam("idMotorista") Integer idMotorista,
+                                              @RequestParam("idCaminhao") Integer idCaminhao,
+                                              @RequestParam("Quantidade de gasolina") Integer gasolina)
+            throws RegraDeNegocioException {
+
+        validacaoService.validacao(idMotorista, "motorista");
+        return new ResponseEntity<>(caminhaoService.abastecer(idCaminhao, gasolina), HttpStatus.OK);
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Void> delete(@RequestParam("idColaborador") Integer idColaborador,
+                                       @RequestParam("idCaminhao") Integer idCaminhao) throws RegraDeNegocioException {
+
+        validacaoService.validacao(idColaborador, "colaborador");
+        caminhaoService.deletar(idCaminhao);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @PutMapping("/abastecer/{id}/")
-    public ResponseEntity<CaminhaoDTO> abastecer(@PathVariable Integer id, Integer gasolina) throws Exception {
-        CaminhaoDTO caminhaoDTO = caminhaoService.abastecerCaminhao(id,gasolina);
-        return new ResponseEntity<>(caminhaoDTO, HttpStatus.OK);
+    @GetMapping("/listar-por-colaborador")
+    public ResponseEntity<List<CaminhaoDTO>> listByIdUser(@RequestParam("idColaborador") Integer idColaborador)
+            throws RegraDeNegocioException {
+        return new ResponseEntity<>(caminhaoService.listarPorIdColaborador(idColaborador), HttpStatus.OK);
     }
 
-    @GetMapping("/caminhoesdisponiveis")
-    public ResponseEntity<List<CaminhaoDTO>> listarCaminhoesDisponiveis() throws Exception {
-        log.info("Recebendo requisição para listar todos os caminhões disponiveis");
+    @GetMapping("/listar-disponiveis")
+    public ResponseEntity<List<CaminhaoDTO>> listAllAvaiablesTrucks() {
         return new ResponseEntity<>(caminhaoService.listarCaminhoesLivres(), HttpStatus.OK);
     }
+
+    @GetMapping("/listar-ativos")
+    public ResponseEntity<List<CaminhaoDTO>> listActive() {
+        return new ResponseEntity<>(caminhaoService.listarAtivos(), HttpStatus.OK);
+    }
+
+    @GetMapping("/listar-inativos")
+    public ResponseEntity<List<CaminhaoDTO>> listInactive() {
+        return new ResponseEntity<>(caminhaoService.listarInativos(), HttpStatus.OK);
+    }
+
 }

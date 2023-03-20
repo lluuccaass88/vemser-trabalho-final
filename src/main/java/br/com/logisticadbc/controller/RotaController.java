@@ -1,14 +1,12 @@
 package br.com.logisticadbc.controller;
 
-import br.com.logisticadbc.controller.impl.IRotaControllerDoc;
-import br.com.logisticadbc.dto.PostoCreateDTO;
-import br.com.logisticadbc.dto.PostoDTO;
-import br.com.logisticadbc.dto.RotaCreateDTO;
-import br.com.logisticadbc.dto.RotaDTO;
-import br.com.logisticadbc.exceptions.BancoDeDadosException;
+import br.com.logisticadbc.controller.doc.RotaControllerDoc;
+import br.com.logisticadbc.dto.in.RotaCreateDTO;
+import br.com.logisticadbc.dto.out.RotaComPostosDTO;
+import br.com.logisticadbc.dto.out.RotaDTO;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
-import br.com.logisticadbc.repository.RotaRepository;
 import br.com.logisticadbc.service.RotaService;
+import br.com.logisticadbc.service.ValidacaoService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -22,35 +20,93 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/rota") // localhost:8080/contato
+@RequestMapping("/rota")
 @Validated
-public class RotaController implements IRotaControllerDoc {
+public class RotaController implements RotaControllerDoc {
 
     private final RotaService rotaService;
+    private final ValidacaoService validacaoService;
 
-    @GetMapping // GET localhost:8080/contato
-    public List<RotaDTO> list() throws Exception {
-        return rotaService.listarRotas();
+    @GetMapping
+    public ResponseEntity<List<RotaDTO>> listAll() {
+        return new ResponseEntity<>(rotaService.listar(), HttpStatus.OK);
     }
 
-    @PostMapping// POST localhost:8080/posto ----------- PROBLEMA - Como vamos adicionar mais de um posto aqui
-    public ResponseEntity<RotaDTO> create(@Valid @RequestBody RotaCreateDTO rotaCreateDTO) throws RegraDeNegocioException, BancoDeDadosException {
-        log.info("Criando rota");
-        return new ResponseEntity<>(rotaService.adicionaRota(rotaCreateDTO), HttpStatus.CREATED);
+    @GetMapping("/buscar-por-id")
+    public ResponseEntity<RotaDTO> findById(@RequestParam("idRota") Integer idRota) throws RegraDeNegocioException {
+        return new ResponseEntity<>(rotaService.listarPorId(idRota), HttpStatus.OK);
     }
 
-    @PutMapping("/{idRota}") // PUT localhost:8080/pessoa/4
-    public  ResponseEntity<RotaDTO> update(@PathVariable("idRota") Integer id, //Recuperando o id a ser editado por parametro
-                                           @Valid @RequestBody RotaCreateDTO rotaUpdateDTO) throws RegraDeNegocioException, BancoDeDadosException { //Recuperando os dados que serão editados pelo o body
-        log.info("Contato editado com sucesso!");
-        return new ResponseEntity<> (rotaService.editarRota(id, rotaUpdateDTO), HttpStatus.OK);
+    @PostMapping
+    public ResponseEntity<RotaDTO> create(@RequestParam("idColaborador") Integer idUsuario,
+                                          @Valid @RequestBody RotaCreateDTO rotaCreateDTO)
+            throws RegraDeNegocioException {
+
+        validacaoService.validacao(idUsuario, "colaborador");
+        return new ResponseEntity<>(rotaService.criar(idUsuario, rotaCreateDTO), HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/{idRota}") // DELETE localhost:8080/contato/2
-    public ResponseEntity<Boolean> delete(@PathVariable("idRota") Integer id) throws RegraDeNegocioException {
-        rotaService.removerRota(id);
-        log.info("Contato deletado com sucesso!");
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    @PutMapping
+    public ResponseEntity<RotaDTO> update(@RequestParam("idColaborador") Integer idUsuario,
+                                          @RequestParam("idRota") Integer idRota,
+                                                 @Valid @RequestBody RotaCreateDTO rotaCreateDTO)
+            throws RegraDeNegocioException {
+
+        validacaoService.validacao(idUsuario, "colaborador");
+        return new ResponseEntity<>(rotaService.editar(idRota, rotaCreateDTO), HttpStatus.OK);
     }
 
+    @DeleteMapping
+    public ResponseEntity<Void> delete(@RequestParam("idColaborador") Integer idUsuario,
+                                       @RequestParam("idRota") Integer idRota) throws RegraDeNegocioException {
+
+        validacaoService.validacao(idUsuario, "colaborador");
+        rotaService.deletar(idRota);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/cadastrar-posto")
+    public ResponseEntity<Void> linkEntities(@RequestParam("idColaborador") Integer idUsuario,
+                                             @RequestParam("idRota") Integer idRota,
+                                             @RequestParam("idPosto") Integer idPosto)
+            throws RegraDeNegocioException {
+
+        validacaoService.validacao(idUsuario, "colaborador");
+        rotaService.cadastrarPosto(idRota, idPosto);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/listar-postos-cadastrados")
+    public ResponseEntity<RotaComPostosDTO> listLink(@RequestParam("idRota") Integer idRota)
+            throws RegraDeNegocioException {
+        return new ResponseEntity<>(rotaService.listarPostosCadastrados(idRota), HttpStatus.OK);
+    }
+
+    @GetMapping("/listar-por-colaborador")
+    public ResponseEntity<List<RotaDTO>> listByIdUser(@RequestParam("idColaborador") Integer idColaborador)
+            throws RegraDeNegocioException {
+        return new ResponseEntity<>(rotaService.listarPorIdColaborador(idColaborador), HttpStatus.OK);
+    }
+
+    @GetMapping("/listar-ativas")
+    public ResponseEntity<List<RotaDTO>> listByActiveRoute(){
+        return new ResponseEntity<>(rotaService.listarRotasAtivas(), HttpStatus.OK);
+    }
+
+    @GetMapping("/listar-inativas")
+    public ResponseEntity<List<RotaDTO>> listByInactiveRoute(){
+        return new ResponseEntity<>(rotaService.listarRotasInativas(), HttpStatus.OK);
+    }
+
+    @GetMapping("/listar-por-local-partida")
+    public ResponseEntity<List<RotaDTO>> listByPlaceOfDeparture(@RequestParam("LocalPartida") String localPartida)
+            throws RegraDeNegocioException {
+        return new ResponseEntity<>(rotaService.listarPorLocalPartida(localPartida), HttpStatus.OK);
+    }
+
+    @GetMapping("/listar-por-local-destino")
+    public ResponseEntity<List<RotaDTO>> listByDesnitation(@RequestParam("LocalDestino") String LocalDestino)
+            throws RegraDeNegocioException {
+        return new ResponseEntity<>(rotaService.listarPorLocalDestino(LocalDestino), HttpStatus.OK);
+    }
 }
