@@ -1,19 +1,16 @@
 package br.com.logisticadbc.entity;
 
 import br.com.logisticadbc.entity.enums.StatusGeral;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
-import javax.validation.constraints.Size;
-import java.io.Serializable;
+import java.util.Set;
 
-@MappedSuperclass
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-//@EqualsAndHashCode(of = {"idUsuario"})
-public abstract class UsuarioEntity implements Serializable {
-    private static final long serialVersionUID = 1L;
+@Getter
+@Setter
+@Entity(name = "USUARIO")
+public class UsuarioEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "USUARIO_SEQ")
@@ -21,23 +18,49 @@ public abstract class UsuarioEntity implements Serializable {
     @Column(name = "id_usuario")
     private Integer idUsuario;
 
-    @Column(name = "nome", length = 100)
-    @Size(min = 2, max = 100, message = "Nome da Pessoa deve ter entre 2 e 100 letras")
-    private String nome;
-
-    @Column(name = "usuario")
-    @Size(min = 2, max = 50, message = "Login do Usuário deve ter entre 2 e 50 caracteres")
-    private String usuario;
+    @Column(name = "login")
+    private String login;
 
     @Column(name = "senha")
-    @Size(min = 2, max = 20, message = "Senha do Usuário deve ter entre 2 e 20 caracteres")
     private String senha;
+
+    @Column(name = "nome")
+    private String nome;
 
     @Column(name = "email")
     private String email;
 
+    @Column(name = "documento")
+    private String documento; // CPF | CNH
+
     @Column(name = "status")
     private StatusGeral status; // 0 - INATIVO | 1 - ATIVO
 
-    //Classe extendida por MOTORISTA e COLABORADOR
+    //RELACIONAMENTO COM CAMINHAO
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "usuario")
+    @JsonIgnore
+    private Set<CaminhaoEntity> caminhoes;
+
+    //RELACIONAMENTO COM ROTA
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "usuario")
+    @JsonIgnore
+    private Set<RotaEntity> rotas;
+
+    //RELACIONAMENTO COM POSTO
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "usuario")
+    @JsonIgnore
+    private Set<PostoEntity> postos;
+
+    //RELACIONAMENTO COM VIAGEM
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "usuario")
+    @JsonIgnore
+    private Set<ViagemEntity> viagens;
+
+    //RELACIONAMENTO COM CARGO
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "CARGO_X_USUARIO",
+            joinColumns = @JoinColumn(name = "id_usuario"),
+            inverseJoinColumns = @JoinColumn(name = "id_cargo"))
+    @JsonIgnore
+    private Set<CargoEntity> cargos;
 }

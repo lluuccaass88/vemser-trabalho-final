@@ -35,7 +35,7 @@ public class ViagemEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_usuario", referencedColumnName = "id_usuario")
     @JsonIgnore
-    private MotoristaEntity motorista;
+    private UsuarioEntity usuario;
 
     //RELACIONAMENTO COM CAMINHAO
     @ManyToOne(fetch = FetchType.LAZY)

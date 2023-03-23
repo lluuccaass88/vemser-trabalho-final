@@ -1,3 +1,4 @@
+/*
 package br.com.logisticadbc.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -33,3 +34,4 @@ public class ColaboradorEntity extends UsuarioEntity {
     @JsonIgnore
     private Set<PostoEntity> postos;
 }
+*/

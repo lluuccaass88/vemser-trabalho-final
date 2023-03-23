@@ -1,3 +1,4 @@
+/*
 package br.com.logisticadbc.entity.enums;
 
 import lombok.Getter;
@@ -6,4 +7,4 @@ import lombok.Getter;
 public enum StatusMotorista {
 
     DISPONIVEL, EM_ESTRADA
-}
+}*/

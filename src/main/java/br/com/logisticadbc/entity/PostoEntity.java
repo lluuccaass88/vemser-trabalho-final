@@ -33,7 +33,7 @@ public class PostoEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_usuario", referencedColumnName = "id_usuario")
     @JsonIgnore
-    private ColaboradorEntity colaborador;
+    private UsuarioEntity usuario;
 
     //RELACIONAMENTO COM ROTA
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "postos")

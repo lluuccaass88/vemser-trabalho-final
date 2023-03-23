@@ -39,7 +39,7 @@ public class CaminhaoEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_usuario", referencedColumnName = "id_usuario")
     @JsonIgnore
-    private ColaboradorEntity colaborador;
+    private UsuarioEntity usuario;
 
     //RELACIONAMENTO COM VIAGEM
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "caminhao")

@@ -1,3 +1,4 @@
+/*
 package br.com.logisticadbc.entity;
 
 import br.com.logisticadbc.entity.enums.StatusMotorista;
@@ -31,3 +32,4 @@ public class MotoristaEntity extends UsuarioEntity {
     @JsonIgnore
     private Set<ViagemEntity> viagens;
 }
+*/
