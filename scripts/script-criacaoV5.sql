@@ -14,7 +14,7 @@ CREATE TABLE USUARIO (
     login VARCHAR2(100) UNIQUE NOT NULL,
     senha VARCHAR2(50) NOT NULL,
     email VARCHAR2(100) UNIQUE NOT NULL,
-    status NUMBER(1) NOT NULL,
+    status VARCHAR2(100) NOT NULL,
     documento VARCHAR2(11) UNIQUE NOT NULL,
     PRIMARY KEY(id_usuario)
 );
@@ -33,8 +33,8 @@ CREATE TABLE CAMINHAO (
     modelo VARCHAR2(100) NOT NULL,
     placa VARCHAR2(10) UNIQUE NOT NULL,
     nivel_combustivel NUMBER(3) NOT NULL,
-    status_caminhao NUMBER(1) NOT NULL,
-    status NUMBER(1) NOT NULL,
+    status_caminhao VARCHAR2(100) NOT NULL,
+    status VARCHAR2(100) NOT NULL,
     PRIMARY KEY(id_caminhao),
     CONSTRAINT FK_USUARIO_CAMINHAO FOREIGN KEY (id_usuario) REFERENCES USUARIO (id_usuario)
 );
@@ -45,7 +45,7 @@ CREATE TABLE ROTA (
     descricao VARCHAR2(100) NOT NULL,
 	local_partida VARCHAR2(100) NOT NULL,
 	local_destino VARCHAR2(100) NOT NULL,
-	status NUMBER(1) NOT NULL,
+	status VARCHAR2(100) NOT NULL,
     PRIMARY KEY(id_rota),
     CONSTRAINT FK_USUARIO_ROTA FOREIGN KEY (id_usuario) REFERENCES USUARIO (id_usuario)
 );
@@ -55,7 +55,7 @@ CREATE TABLE POSTO (
     id_usuario NUMBER(10) NOT NULL,
     nome VARCHAR2(100) NOT NULL,
     valor_combustivel NUMBER(20,2) NOT NULL,
-    status NUMBER(1) NOT NULL,
+    status VARCHAR2(100) NOT NULL,
     PRIMARY KEY(id_posto),
     CONSTRAINT FK_USUARIO_POSTO FOREIGN KEY (id_usuario) REFERENCES USUARIO (id_usuario)
 );
@@ -76,7 +76,7 @@ CREATE TABLE VIAGEM (
     descricao VARCHAR2(200) NOT NULL,
     data_inicio TIMESTAMP NOT NULL,
     data_fim TIMESTAMP NOT NULL,
-    status_viagem NUMBER(1) NOT NULL,
+    status_viagem VARCHAR2(100) NOT NULL,
     PRIMARY KEY(id_viagem),
     CONSTRAINT FK_USUARIO_VIAGEM FOREIGN KEY (id_usuario) REFERENCES USUARIO (id_usuario),
     CONSTRAINT FK_CAMINHAO_VIAGEM FOREIGN KEY (id_caminhao) REFERENCES CAMINHAO (id_caminhao),
