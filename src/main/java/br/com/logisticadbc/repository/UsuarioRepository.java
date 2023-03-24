@@ -85,7 +85,8 @@ public interface UsuarioRepository extends JpaRepository<UsuarioEntity, Integer>
             "   left join u.rotas r" +
             "   left join u.postos p" +
             "   left join u.viagens v" +
-            "   left join u.cargos ca"
+            "   left join u.cargos ca" +
+            "   ORDER BY ca.nome"
     )
     Page<UsuarioCompletoDTO> relatorio (Pageable pageable); //ORDENAR POR CARGO
 }
