@@ -1,10 +1,12 @@
 package br.com.logisticadbc.controller;
 
 import br.com.logisticadbc.dto.in.UsuarioCreateDTO;
+import br.com.logisticadbc.dto.in.UsuarioUpdateDTO;
 import br.com.logisticadbc.dto.out.PageDTO;
 import br.com.logisticadbc.dto.out.UsuarioDTO;
 import br.com.logisticadbc.entity.enums.StatusViagem;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
+import br.com.logisticadbc.service.UsuarioService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -33,10 +35,10 @@ public class UsuarioController {
     // FIXME
     @PutMapping
     public ResponseEntity<UsuarioDTO> update(@RequestParam("idUsuario") Integer idUsuario,
-                                                 @Valid @RequestBody UsuarioCreateDTO usuarioCreateDTO)
+                                                 @Valid @RequestBody UsuarioUpdateDTO usuarioUpdateDTO)
             throws RegraDeNegocioException {
 
-        return new ResponseEntity<>(usuarioService.editar(idUsuario, usuarioCreateDTO), HttpStatus.OK);
+        return new ResponseEntity<>(usuarioService.editar(idUsuario, usuarioUpdateDTO), HttpStatus.OK);
     }
 
     // FIXME

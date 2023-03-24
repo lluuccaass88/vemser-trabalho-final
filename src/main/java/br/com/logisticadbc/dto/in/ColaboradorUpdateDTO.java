@@ -1,3 +1,4 @@
+/*
 package br.com.logisticadbc.dto.in;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -18,4 +19,4 @@ public class ColaboradorUpdateDTO {
     @NotBlank
     @Schema(description = "Senha do usuário", example = "123abc")
     private String senha;
-}
+}*/

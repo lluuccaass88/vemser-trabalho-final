@@ -1,3 +1,4 @@
+/*
 package br.com.logisticadbc.dto.out;
 
 import br.com.logisticadbc.entity.enums.StatusCaminhao;
@@ -41,3 +42,4 @@ public class ColaboradorCompletoDTO {
 
 
 }
+*/

@@ -33,6 +33,7 @@ public class UsuarioEntity {
     @Column(name = "documento")
     private String documento; // CPF | CNH
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private StatusGeral status; // 0 - INATIVO | 1 - ATIVO
 

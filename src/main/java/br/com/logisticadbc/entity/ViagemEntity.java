@@ -28,6 +28,7 @@ public class ViagemEntity {
     @Column(name = "data_fim")
     private LocalDateTime dataFim;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status_viagem")
     private StatusViagem statusViagem; // 0 - EM_ANDAMENTO | 1 - FINALIZADA
 

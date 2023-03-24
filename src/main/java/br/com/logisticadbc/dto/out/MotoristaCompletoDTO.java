@@ -1,3 +1,4 @@
+/*
 package br.com.logisticadbc.dto.out;
 
 import br.com.logisticadbc.entity.enums.StatusGeral;
@@ -26,3 +27,4 @@ public class MotoristaCompletoDTO {
     private StatusViagem statusViagem;
 
 }
+*/

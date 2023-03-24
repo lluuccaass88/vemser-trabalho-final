@@ -1,3 +1,4 @@
+/*
 package br.com.logisticadbc.dto.in;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -39,4 +40,4 @@ public class ColaboradorCreateDTO {
     @Size(max = 11, min = 11, message = "CPF deve conter 11 caracteres")
     @Schema(description = "CPF do Colaborador", example = "12345678901")
     private String cpf;
-}
+}*/

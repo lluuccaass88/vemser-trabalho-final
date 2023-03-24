@@ -10,6 +10,7 @@ import br.com.logisticadbc.repository.UsuarioRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.repository.core.RepositoryCreationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,9 +29,11 @@ public class UsuarioService {
 
         try {
             usuarioEntity.setStatus(StatusGeral.ATIVO);
+            // TODO CRIPTOGRAFAR SENHA
 
             usuarioRepository.save(usuarioEntity);
 
+            // TODO AJEITAR EMAIL SERVICE
             if (usuarioEntity.getCargos().equals("COLABORADOR")) {
                 emailService.enviarEmailBoasVindasColaborador(usuarioEntity);
             } else {
@@ -44,8 +47,6 @@ public class UsuarioService {
         }
     }
 
-
-    //FIXME: CRIAR DTO PARA QUE O USUÁRIO POSSA EDITAR SEUS DADOS
     public UsuarioDTO editar(Integer idUsuario, UsuarioUpdateDTO usuarioUpdateDTO)
             throws RegraDeNegocioException {
         UsuarioEntity usuarioEncontrado = buscarPorId(idUsuario);
@@ -56,12 +57,13 @@ public class UsuarioService {
             usuarioEncontrado.setSenha(usuarioUpdateDTO.getSenha());
             usuarioEncontrado.setDocumento(usuarioUpdateDTO.getDocumento());
 
+            // TODO CRIPTOGRAFAR SENHA
+
             usuarioRepository.save(usuarioEncontrado);
 
             return objectMapper.convertValue(usuarioEncontrado, UsuarioDTO.class);
 
         } catch (Exception e) {
-            e.printStackTrace();
             throw new RegraDeNegocioException("Aconteceu algum problema durante a edição.");
         }
     }

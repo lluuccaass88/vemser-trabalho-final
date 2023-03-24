@@ -28,6 +28,7 @@ public class RotaEntity {
     @Column(name = "local_destino")
     private String localDestino;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private StatusGeral status; // 0 - INATIVO | 1 - ATIVO
 

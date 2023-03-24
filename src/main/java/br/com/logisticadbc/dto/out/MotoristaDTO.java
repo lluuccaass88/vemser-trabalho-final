@@ -1,3 +1,4 @@
+/*
 package br.com.logisticadbc.dto.out;
 
 import br.com.logisticadbc.dto.in.MotoristaCreateDTO;
@@ -25,4 +26,4 @@ public class MotoristaDTO extends MotoristaCreateDTO {
     public void setSenha(@NotNull @NotBlank String senha) {
         super.setSenha("******");
     }
-}
+}*/

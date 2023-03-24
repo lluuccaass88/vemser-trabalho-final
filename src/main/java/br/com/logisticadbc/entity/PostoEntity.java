@@ -26,6 +26,7 @@ public class PostoEntity {
     @Column(name = "valor_combustivel", precision = 20, scale = 2)
     private BigDecimal valorCombustivel;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private StatusGeral status; // 0 - INATIVO | 1 - ATIVO
 

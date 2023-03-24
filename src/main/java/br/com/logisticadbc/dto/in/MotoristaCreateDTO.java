@@ -1,3 +1,4 @@
+/*
 package br.com.logisticadbc.dto.in;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -37,4 +38,4 @@ public class MotoristaCreateDTO {
     @Size(min = 11, max = 11, message = "CNH deve conter 11 caracteres")
     @Schema(description = "CNH motorista para realizar viagens", example = "14525658963")
     private String cnh;
-}
+}*/

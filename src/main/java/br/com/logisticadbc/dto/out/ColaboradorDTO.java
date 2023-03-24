@@ -1,3 +1,4 @@
+/*
 package br.com.logisticadbc.dto.out;
 
 import br.com.logisticadbc.dto.in.ColaboradorCreateDTO;
@@ -21,4 +22,4 @@ public class ColaboradorDTO extends ColaboradorCreateDTO {
     public void setSenha(@NotNull @NotBlank String senha) {
         super.setSenha("******");
     }
-}
+}*/
