@@ -47,11 +47,11 @@ public interface UsuarioRepository extends JpaRepository<UsuarioEntity, Integer>
 
     @Query(" SELECT DISTINCT new br.com.logisticadbc.dto.out.UsuarioCompletoDTO(" +
             "   u.idUsuario, " +
-            "   u.nome, " +
             "   u.login, " +
+            "   u.nome, " +
             "   u.email, " +
-            "   u.status, " +
             "   u.documento, " +
+            "   u.status, " +
 
             "   c.idCaminhao, " +
             "   c.modelo, " +

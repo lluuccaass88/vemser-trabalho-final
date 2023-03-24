@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
-//@AllArgsConstructor
+@AllArgsConstructor
 public class UsuarioCompletoDTO {
     private Integer idUsuario;
     private String login;
