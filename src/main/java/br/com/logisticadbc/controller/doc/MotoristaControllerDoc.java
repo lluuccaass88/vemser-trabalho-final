@@ -1,3 +1,4 @@
+/*
 package br.com.logisticadbc.controller.doc;
 
 import br.com.logisticadbc.dto.in.UsuarioCreateDTO;
@@ -112,3 +113,4 @@ public interface MotoristaControllerDoc {
     @GetMapping("/listar-inativos")
     ResponseEntity<List<UsuarioDTO>> listInactive();
 }
+*/
