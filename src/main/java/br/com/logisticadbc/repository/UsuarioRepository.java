@@ -1,7 +1,6 @@
 package br.com.logisticadbc.repository;
 
-import br.com.logisticadbc.dto.out.UsuarioDTO;
-import br.com.logisticadbc.entity.CargoEntity;
+import br.com.logisticadbc.dto.out.UsuarioCompletoDTO;
 import br.com.logisticadbc.entity.UsuarioEntity;
 import br.com.logisticadbc.entity.enums.StatusGeral;
 import org.springframework.data.domain.Page;
@@ -47,4 +46,49 @@ public interface UsuarioRepository extends JpaRepository<UsuarioEntity, Integer>
             " WHERE c.nome = :cargo AND u.status = :status"
     )
     Page<UsuarioEntity> findByCargosAndStatus(Pageable pageable, String cargo, StatusGeral status);
+
+        @Query( " SELECT DISTINCT new br.com.logisticadbc.dto.out.UsuarioCompletoDTO(" +
+            "   u.idUsuario, " +
+            "   u.nome, " +
+            "   u.login, " +
+            "   u.email, " +
+            "   u.status, " +
+            "   u.documento, " +
+
+            "   c.idCaminhao, " +
+            "   c.modelo, " +
+            "   c.placa, " +
+            "   c.nivelCombustivel, " +
+            "   c.status, " +
+
+            "   r.idRota, " +
+            "   r.descricao, " +
+            "   r.localPartida, " +
+            "   r.localDestino, " +
+            "   r.status, " +
+
+            "   r.idPosto, " +
+            "   r.nome, " +
+            "   r.valorCombustivel, " +
+            "   r.status, " +
+
+            "   p.idPosto, " +
+            "   p.nome, " +
+            "   p.valorCombustivel, " +
+            "   p.status, " +
+
+            "   v.idViagem, " +
+            "   v.descricao, " +
+            "   v.dataInicio, " +
+            "   v.dataFim, " +
+            "   v.status " +
+                ")" +
+            "   From USUARIO u " +
+            "   left join u.caminhoes c" +
+            "   left join u.rotas r" +
+            "   left join u.postos p" +
+            "   left join u.viagens v" +
+            "   ORDER BY u.cargo"
+    )
+    Page<UsuarioCompletoDTO> relatorio(Pageable pageable); //ORDENAR POR CARGO
 }

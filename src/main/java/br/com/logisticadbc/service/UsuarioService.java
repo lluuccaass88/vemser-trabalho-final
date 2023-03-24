@@ -3,6 +3,7 @@ package br.com.logisticadbc.service;
 import br.com.logisticadbc.dto.in.UsuarioCreateDTO;
 import br.com.logisticadbc.dto.in.UsuarioUpdateDTO;
 import br.com.logisticadbc.dto.out.PageDTO;
+import br.com.logisticadbc.dto.out.UsuarioCompletoDTO;
 import br.com.logisticadbc.dto.out.UsuarioDTO;
 import br.com.logisticadbc.entity.UsuarioEntity;
 import br.com.logisticadbc.entity.enums.StatusGeral;
@@ -154,6 +155,26 @@ public class UsuarioService {
     }
 
     // TODO gerarRelatorioCompleto
+        public PageDTO<UsuarioCompletoDTO> gerarRelatorioCompleto(Integer pagina, Integer tamanho) { //ORDENAR POR CARGO
+
+            Pageable solicitacaoPagina = PageRequest.of(pagina, tamanho);
+
+            Page<UsuarioCompletoDTO> paginacaoMotorista = usuarioRepository.relatorio(solicitacaoPagina);
+
+            List<UsuarioCompletoDTO> usuarioDTOList = paginacaoMotorista
+                    .getContent()
+                    .stream()
+                    .map(colaborador -> objectMapper.convertValue(colaborador, UsuarioCompletoDTO.class))
+                    .toList();
+
+            return new PageDTO<>(
+                    paginacaoMotorista.getTotalElements(),
+                    paginacaoMotorista.getTotalPages(),
+                    pagina,
+                    tamanho,
+                    usuarioDTOList
+            );
+        }
 
     public UsuarioEntity buscarPorId(Integer idUsuario) throws RegraDeNegocioException {
         return usuarioRepository.findById(idUsuario)

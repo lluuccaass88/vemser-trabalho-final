@@ -3,6 +3,7 @@ package br.com.logisticadbc.controller;
 import br.com.logisticadbc.dto.in.UsuarioCreateDTO;
 import br.com.logisticadbc.dto.in.UsuarioUpdateDTO;
 import br.com.logisticadbc.dto.out.PageDTO;
+import br.com.logisticadbc.dto.out.UsuarioCompletoDTO;
 import br.com.logisticadbc.dto.out.UsuarioDTO;
 import br.com.logisticadbc.entity.enums.StatusGeral;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
@@ -83,12 +84,12 @@ public class UsuarioController {
                 usuarioService.listarPorCargoEStatus(cargo, status, pagina, tamanho), HttpStatus.OK);
     }
 
-/*    // FIXME relatorio completo com paginado
+    // FIXME relatorio completo com paginado
     @GetMapping("/relatorio-completo")
-    public ResponseEntity<PageDTO<UsuarioDTO>> generateReportComplete(
+    public ResponseEntity<PageDTO<UsuarioCompletoDTO>> generateReportComplete(
             @RequestParam(value = "page") Integer pagina,
             @RequestParam(value = "size") Integer tamanho) {
         return new ResponseEntity<>(usuarioService.gerarRelatorioCompleto(pagina, tamanho)
                 , HttpStatus.OK);
-    }*/
+    }
 }
