@@ -14,6 +14,6 @@ public interface UsuarioRepository extends JpaRepository<UsuarioEntity, Integer>
 
     Optional<UsuarioEntity> findByLogin(String username);
 
-    Optional<UsuarioEntity> findByStatusEqualsIgnoreCase(StatusGeral status);
+    Optional<UsuarioEntity> findByStatusEquals(StatusGeral status);
 
 }

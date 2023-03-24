@@ -43,6 +43,7 @@ public class UsuarioService {
             return objectMapper.convertValue(usuarioEntity, UsuarioDTO.class);
 
         } catch (Exception e) {
+            e.printStackTrace();
             throw new RegraDeNegocioException("Aconteceu algum problema durante a criação.");
         }
     }
