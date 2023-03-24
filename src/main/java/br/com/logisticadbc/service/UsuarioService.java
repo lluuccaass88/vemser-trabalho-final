@@ -19,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Slf4j
@@ -199,5 +200,9 @@ public class UsuarioService {
     public UsuarioEntity buscarPorId(Integer idUsuario) throws RegraDeNegocioException {
         return usuarioRepository.findById(idUsuario)
                 .orElseThrow(() -> new RegraDeNegocioException("Usuário não encontrado"));
+    }
+
+    public Optional <UsuarioEntity> buscarPorLogin(String login) {
+        return usuarioRepository.findByLogin(login);
     }
 }
