@@ -147,7 +147,6 @@ public class UsuarioService {
         );
     }
 
-    // TODO listarPorCargoEStatus - ESTA EM CONTRUÇÃO (MARCKLEN)
     public PageDTO<UsuarioDTO> listarPorCargoEStatus(String cargo, StatusGeral status, Integer pagina, Integer tamanho) {
         Pageable solicitacaoPagina = PageRequest.of(pagina, tamanho);
 
@@ -176,7 +175,6 @@ public class UsuarioService {
                 .toList();
     }
 
-    // TODO gerarRelatorioCompleto
         public PageDTO<UsuarioCompletoDTO> gerarRelatorioCompleto(Integer pagina, Integer tamanho) { //ORDENAR POR CARGO
 
             Pageable solicitacaoPagina = PageRequest.of(pagina, tamanho);

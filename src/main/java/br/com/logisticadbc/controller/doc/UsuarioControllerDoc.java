@@ -10,7 +10,6 @@ import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -56,48 +55,86 @@ public interface UsuarioControllerDoc {
     public ResponseEntity<Void> delete(@RequestParam("idUsuario") Integer idUsuario)
             throws RegraDeNegocioException;
 
+    @Operation(summary = "Listar usuários", description = "Lista todos os usuários no banco de dados")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Retorna uma lista de usuários"),
+                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
+            }
+    )
     @GetMapping
-    public ResponseEntity<List<UsuarioDTO>> listAll() {
-        return new ResponseEntity<>(usuarioService.listar(), HttpStatus.OK);
-    }
+    public ResponseEntity<List<UsuarioDTO>> listAll();
 
+    @Operation(summary = "Listar usuário a partir de um id",
+            description = "Lista um usuário do banco de dados a partir de um id")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Retorna um usuário"),
+                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
+            }
+    )
     @GetMapping("/buscar-por-id")
     public ResponseEntity<UsuarioDTO> findById(@RequestParam("idUsuario") Integer idUsuario)
-            throws RegraDeNegocioException {
-        return new ResponseEntity<>(usuarioService.listarPorId(idUsuario), HttpStatus.OK);
-    }
+            throws RegraDeNegocioException;
 
+    @Operation(summary = "Listar usuários de um cargo",
+            description = "Lista todos usuários de um cargo")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Retorna lista com usuários"),
+                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
+            }
+    )
     @GetMapping("/listar-por-cargo")
     public ResponseEntity<PageDTO<UsuarioDTO>> listByRole(
             @RequestParam(value = "cargo") String cargo,
             @RequestParam(value = "page") Integer pagina,
-            @RequestParam(value = "size") Integer tamanho) throws RegraDeNegocioException {
-        return new ResponseEntity<>(
-                usuarioService.listarPorCargo(cargo, pagina, tamanho), HttpStatus.OK);
-    }
+            @RequestParam(value = "size") Integer tamanho) throws RegraDeNegocioException ;
 
+    @Operation(summary = "Listar usuários por cargo e status",
+            description = "Lista todos usuários por cargo e status")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Retorna lista com usuários"),
+                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
+            }
+    )
     @GetMapping("/listar-por-cargo-status/paginacao")
     public ResponseEntity<PageDTO<UsuarioDTO>> listByRoleAndStatus(
             @RequestParam(value = "cargo") String cargo,
             @RequestParam(value = "status") StatusGeral status,
             @RequestParam(value = "page") Integer pagina,
-            @RequestParam(value = "size") Integer tamanho) {
-        return new ResponseEntity<>(
-                usuarioService.listarPorCargoEStatus(cargo, status, pagina, tamanho), HttpStatus.OK);
-    }
+            @RequestParam(value = "size") Integer tamanho);
 
+    @Operation(summary = "Listar usuários com informações completas",
+            description = "Lista todos usuários com informações completas")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Retorna lista com usuários"),
+                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
+            }
+    )
     @GetMapping("/relatorio-completo")
     public ResponseEntity<PageDTO<UsuarioCompletoDTO>> generateReportComplete(
             @RequestParam(value = "page") Integer pagina,
-            @RequestParam(value = "size") Integer tamanho) {
-        return new ResponseEntity<>(usuarioService.gerarRelatorioCompleto(pagina, tamanho)
-                , HttpStatus.OK);
-    }
+            @RequestParam(value = "size") Integer tamanho);
 
+    @Operation(summary = "Listar usuários MOTORISTAS livres",
+            description = "Lista todos usuários MOTORISTAS livres")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Retorna lista com usuários"),
+                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
+            }
+    )
     @GetMapping("/motoristas-livres")
     public ResponseEntity<PageDTO<UsuarioDTO>> listAvailableDriver(
             @RequestParam(value = "page") Integer pagina,
-            @RequestParam(value = "size") Integer tamanho) {
-        return new ResponseEntity<>(usuarioService.listarMotoristasLivres(pagina, tamanho), HttpStatus.OK);
-    }
+            @RequestParam(value = "size") Integer tamanho);
 }

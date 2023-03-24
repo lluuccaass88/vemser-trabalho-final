@@ -14,7 +14,7 @@ import java.util.List;
 
 public interface PostoControllerDoc {
 
-    @Operation(summary = "Listar Postos", description = "Lista todas os postos no banco de dados")
+    @Operation(summary = "Listar Postos", description = "Lista todos os postos no banco de dados")
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "200", description = "Retorna uma lista de postos"),
@@ -37,7 +37,7 @@ public interface PostoControllerDoc {
     @GetMapping("/buscar-por-id")
     ResponseEntity<PostoDTO> findById(@RequestParam("idPosto") Integer idPosto) throws RegraDeNegocioException;
 
-    @Operation(summary = "Adicionar Posto", description = "Adicionar uma viagem no banco de dados")
+    @Operation(summary = "Adicionar Posto", description = "Adicionar um Posto no banco de dados")
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "201", description = "Retorna os dados do posto adicionado"),
