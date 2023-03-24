@@ -87,22 +87,6 @@ public class UsuarioService {
                 .toList();
     }
 
-    public List<UsuarioDTO> listarAtivos() {
-        return usuarioRepository.findAll()
-                .stream()
-                .filter(usuario -> usuario.getStatus().equals(StatusGeral.ATIVO))
-                .map(usuario -> objectMapper.convertValue(usuario, UsuarioDTO.class))
-                .toList();
-    }
-
-    public List<UsuarioDTO> listarInativos() {
-        return usuarioRepository.findAll()
-                .stream()
-                .filter(usuario -> usuario.getStatus().equals(StatusGeral.INATIVO))
-                .map(usuario -> objectMapper.convertValue(usuario, UsuarioDTO.class))
-                .toList();
-    }
-
     public UsuarioDTO listarPorId(Integer idUsuario) throws RegraDeNegocioException {
         UsuarioEntity usuarioEncontrado = buscarPorId(idUsuario);
 
@@ -115,6 +99,20 @@ public class UsuarioService {
             throw new RegraDeNegocioException("Aconteceu algum problema durante a listagem.");
         }
     }
+
+    // TODO listarPorCargo
+
+    // TODO listarPorCargoEStatus
+
+    public List<UsuarioDTO> listarAtivos() {
+        return usuarioRepository.findAll()
+                .stream()
+                .filter(usuario -> usuario.getStatus().equals(StatusGeral.ATIVO))
+                .map(usuario -> objectMapper.convertValue(usuario, UsuarioDTO.class))
+                .toList();
+    }
+
+    // TODO gerarRelatorioCompleto
 
     public UsuarioEntity buscarPorId(Integer idUsuario) throws RegraDeNegocioException {
         return usuarioRepository.findById(idUsuario)

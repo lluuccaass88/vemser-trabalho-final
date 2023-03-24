@@ -15,6 +15,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @Slf4j
 @Validated
@@ -52,7 +53,7 @@ public class UsuarioController {
 
     // FIXME listar todos com paginaçao
     @GetMapping
-    public ResponseEntity<PageDTO<UsuarioDTO>> listAll() {
+    public ResponseEntity<List<UsuarioDTO>> listAll() {
         return new ResponseEntity<>(usuarioService.listar(), HttpStatus.OK);
     }
 
@@ -63,7 +64,7 @@ public class UsuarioController {
         return new ResponseEntity<>(usuarioService.listarPorId(idUsuario), HttpStatus.OK);
     }
 
-    // FIXME listar por cargo
+   /* // FIXME listar por cargo
     @GetMapping("/listar-por-cargo")
     public ResponseEntity<PageDTO<UsuarioDTO>> listByRole(
             @RequestParam(value = "cargo") String cargo,
@@ -91,5 +92,5 @@ public class UsuarioController {
             @RequestParam(value = "size") Integer tamanho) {
         return new ResponseEntity<>(usuarioService.gerarRelatorioCompleto(pagina, tamanho)
                 , HttpStatus.OK);
-    }
+    }*/
 }
