@@ -2,7 +2,8 @@ package br.com.logisticadbc.entity;
 
 import br.com.logisticadbc.entity.enums.StatusGeral;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 

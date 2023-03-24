@@ -1,10 +1,10 @@
 package br.com.logisticadbc.service;
 
 import br.com.logisticadbc.dto.in.CargoCreateDTO;
-import br.com.logisticadbc.dto.out.*;
+import br.com.logisticadbc.dto.out.CargoDTO;
+import br.com.logisticadbc.dto.out.CargosDeUsuarioDTO;
+import br.com.logisticadbc.dto.out.UsuarioDTO;
 import br.com.logisticadbc.entity.CargoEntity;
-import br.com.logisticadbc.entity.PostoEntity;
-import br.com.logisticadbc.entity.RotaEntity;
 import br.com.logisticadbc.entity.UsuarioEntity;
 import br.com.logisticadbc.entity.enums.StatusGeral;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;

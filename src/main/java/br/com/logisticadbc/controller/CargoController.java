@@ -1,12 +1,8 @@
 package br.com.logisticadbc.controller;
 
 import br.com.logisticadbc.dto.in.CargoCreateDTO;
-import br.com.logisticadbc.dto.in.UsuarioCreateDTO;
-import br.com.logisticadbc.dto.in.UsuarioUpdateDTO;
 import br.com.logisticadbc.dto.out.CargoDTO;
 import br.com.logisticadbc.dto.out.CargosDeUsuarioDTO;
-import br.com.logisticadbc.dto.out.RotaComPostosDTO;
-import br.com.logisticadbc.dto.out.UsuarioDTO;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.service.CargoService;
 import lombok.RequiredArgsConstructor;

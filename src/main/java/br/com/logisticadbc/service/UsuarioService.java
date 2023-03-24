@@ -13,7 +13,6 @@ import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.repository.UsuarioRepository;
 import br.com.logisticadbc.security.TokenService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
@@ -29,7 +28,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Slf4j
 @Service
@@ -40,7 +38,7 @@ public class UsuarioService {
     private final TokenService tokenService;
     public final AuthenticationManager authenticationManager;
     private final ObjectMapper objectMapper;
-    private final PasswordEncoder passwordEncoder;
+    private  PasswordEncoder passwordEncoder;
 
     public UsuarioService(UsuarioRepository usuarioRepository,
                           EmailService emailService,

@@ -2,7 +2,6 @@ package br.com.logisticadbc.controller.doc;
 
 import br.com.logisticadbc.dto.in.CaminhaoCreateDTO;
 import br.com.logisticadbc.dto.out.CaminhaoDTO;
-import br.com.logisticadbc.dto.out.PostoDTO;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
