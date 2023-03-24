@@ -100,8 +100,8 @@ public class CargoService {
             UsuarioDTO usuarioDTO = objectMapper.convertValue(usuarioEncontrado, UsuarioDTO.class);
 
             CargosDeUsuarioDTO cargosDeUsuarioDTO = new CargosDeUsuarioDTO();
-            cargosDeUsuarioDTO.setUsuarioDTO(usuarioDTO);
-            cargosDeUsuarioDTO.setCargoDTOS(usuarioEncontrado.getCargos()
+            cargosDeUsuarioDTO.setUsuario(usuarioDTO);
+            cargosDeUsuarioDTO.setCargos(usuarioEncontrado.getCargos()
                     .stream()
                     .map(cargo -> objectMapper.convertValue(cargo, CargoDTO.class))
                     .collect(Collectors.toSet()));

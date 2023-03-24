@@ -9,8 +9,8 @@ import java.util.Set;
 public class CargosDeUsuarioDTO {
 
     @Schema(description = "Usuário")
-    private UsuarioDTO usuarioDTO;
+    private UsuarioDTO usuario;
 
     @Schema(description = "Cargos do usuário")
-    private Set<CargoDTO> cargoDTOS;
+    private Set<CargoDTO> cargos;
 }
