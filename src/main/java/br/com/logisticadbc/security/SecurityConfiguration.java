@@ -3,6 +3,7 @@ package br.com.logisticadbc.security;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -28,6 +29,10 @@ public class SecurityConfiguration {
                 .cors().and()
                 .csrf().disable()
                 .authorizeHttpRequests((authz) -> authz
+                        .antMatchers("/**").hasRole("ADMIN")
+                        .antMatchers(HttpMethod.PUT, "/usuario/**").hasAnyRole("COLABORADOR", "MOTORISTA")
+                        .antMatchers("/rota/**", "/caminhao/**","/posto/**").hasRole("COLABORADOR")
+                        .antMatchers("/caminhao/abastecer", "/viagem/**").hasRole("MOTORISTA")
                         .anyRequest().authenticated());
 
         http.addFilterBefore(new TokenAuthenticationFilter(tokenService),
@@ -42,8 +47,7 @@ public class SecurityConfiguration {
                 "/v3/api-docs",
                 "/v3/api-docs/**",
                 "/swagger-resources/**",
-                "/swagger-ui/**",
-                "/usuario/**");
+                "/swagger-ui/**");
     }
 
     @Bean
