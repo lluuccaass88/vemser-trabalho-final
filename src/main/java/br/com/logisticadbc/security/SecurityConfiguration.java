@@ -30,7 +30,8 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests((authz) -> authz
                         .anyRequest().authenticated());
 
-        http.addFilterBefore(new TokenAuthenticationFilter(tokenService), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new TokenAuthenticationFilter(tokenService),
+                UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
