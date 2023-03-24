@@ -41,4 +41,10 @@ public interface UsuarioRepository extends JpaRepository<UsuarioEntity, Integer>
 		WHERE cxu.ID_CARGO  = 2
     * */
 
+    @Query(" SELECT u " +
+            "  FROM USUARIO u " +
+            "  JOIN u.cargos c " +
+            " WHERE c.nome = :cargo AND u.status = :status"
+    )
+    Page<UsuarioEntity> findByCargosAndStatus(Pageable pageable, String cargo, StatusGeral status);
 }

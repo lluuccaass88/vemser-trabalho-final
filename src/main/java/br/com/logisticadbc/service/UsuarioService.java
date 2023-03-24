@@ -124,7 +124,26 @@ public class UsuarioService {
         );
     }
 
-    // TODO listarPorCargoEStatus
+    // TODO listarPorCargoEStatus - ESTA EM CONTRUÇÃO (MARCKLEN)
+    public PageDTO<UsuarioDTO> listarPorCargoEStatus(String cargo, StatusGeral status, Integer pagina, Integer tamanho) {
+        Pageable solicitacaoPagina = PageRequest.of(pagina, tamanho);
+
+        Page<UsuarioEntity> paginacaoUsuario = usuarioRepository.findByCargosAndStatus(solicitacaoPagina, cargo, status);
+
+        List<UsuarioDTO> usuarioDTOList = paginacaoUsuario
+                .getContent()
+                .stream()
+                .map(usuario -> objectMapper.convertValue(usuario, UsuarioDTO.class))
+                .toList();
+
+        return new PageDTO<>(
+                paginacaoUsuario.getTotalElements(),
+                paginacaoUsuario.getTotalPages(),
+                pagina,
+                tamanho,
+                usuarioDTOList
+        );
+    }
 
     public List<UsuarioDTO> listarAtivos() {
         return usuarioRepository.findAll()
