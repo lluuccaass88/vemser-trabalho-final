@@ -1,8 +1,6 @@
 package br.com.logisticadbc.repository;
 
 import br.com.logisticadbc.dto.out.UsuarioCompletoDTO;
-import br.com.logisticadbc.dto.out.UsuarioDTO;
-import br.com.logisticadbc.entity.CargoEntity;
 import br.com.logisticadbc.entity.UsuarioEntity;
 import br.com.logisticadbc.entity.enums.StatusGeral;
 import org.springframework.data.domain.Page;
@@ -11,9 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Repository
 public interface UsuarioRepository extends JpaRepository<UsuarioEntity, Integer> {
@@ -49,7 +45,7 @@ public interface UsuarioRepository extends JpaRepository<UsuarioEntity, Integer>
     )
     Page<UsuarioEntity> findByCargosAndStatus(Pageable pageable, String cargo, StatusGeral status);
 
-    @Query( " SELECT DISTINCT new br.com.logisticadbc.dto.out.UsuarioCompletoDTO(" +
+    @Query(" SELECT DISTINCT new br.com.logisticadbc.dto.out.UsuarioCompletoDTO(" +
             "   u.idUsuario, " +
             "   u.nome, " +
             "   u.login, " +
@@ -61,17 +57,13 @@ public interface UsuarioRepository extends JpaRepository<UsuarioEntity, Integer>
             "   c.modelo, " +
             "   c.placa, " +
             "   c.nivelCombustivel, " +
+            "   c.statusCaminhao, " +
             "   c.status, " +
 
             "   r.idRota, " +
             "   r.descricao, " +
             "   r.localPartida, " +
             "   r.localDestino, " +
-            "   r.status, " +
-
-            "   r.idPosto, " +
-            "   r.nome, " +
-            "   r.valorCombustivel, " +
             "   r.status, " +
 
             "   p.idPosto, " +
@@ -83,14 +75,14 @@ public interface UsuarioRepository extends JpaRepository<UsuarioEntity, Integer>
             "   v.descricao, " +
             "   v.dataInicio, " +
             "   v.dataFim, " +
-            "   v.status " +
+            "   v.statusViagem " +
             ")" +
             "   From USUARIO u " +
             "   left join u.caminhoes c" +
             "   left join u.rotas r" +
             "   left join u.postos p" +
             "   left join u.viagens v" +
-            "   ORDER BY u.cargo"
+            "   left join u.cargos ca"
     )
-    Page<UsuarioCompletoDTO> relatorio(Pageable pageable); //ORDENAR POR CARGO
+    Page<UsuarioCompletoDTO> relatorio (Pageable pageable); //ORDENAR POR CARGO
 }

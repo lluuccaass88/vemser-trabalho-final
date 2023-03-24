@@ -1,5 +1,6 @@
 package br.com.logisticadbc.dto.out;
 
+import br.com.logisticadbc.entity.enums.StatusCaminhao;
 import br.com.logisticadbc.entity.enums.StatusGeral;
 import br.com.logisticadbc.entity.enums.StatusViagem;
 import lombok.AllArgsConstructor;
@@ -12,11 +13,10 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
-@AllArgsConstructor
+//@AllArgsConstructor
 public class UsuarioCompletoDTO {
     private Integer idUsuario;
     private String login;
-    private String senha;
     private String nomeUsuario;
     private String email;
     private String documento;
@@ -26,7 +26,8 @@ public class UsuarioCompletoDTO {
     private String modelo;
     private String placa;
     private Integer nivelCombustivel;
-    private StatusGeral statusCaminhao;
+    private StatusCaminhao statusCaminhao;
+    private StatusGeral statusGeralCaminhao;
 
     private Integer idRota;
     private String descricaoRota;
