@@ -29,9 +29,9 @@ public class SecurityConfiguration {
                 .cors().and()
                 .csrf().disable()
                 .authorizeHttpRequests((authz) -> authz
-                        .antMatchers("/**").hasRole("ADMIN")
-                        .antMatchers(HttpMethod.PUT, "/usuario/**").hasAnyRole("COLABORADOR", "MOTORISTA")
-                        .antMatchers("/rota/**", "/caminhao/**","/posto/**").hasRole("COLABORADOR")
+//                        .antMatchers("/**").hasRole("ADMIN")
+//                        .antMatchers(HttpMethod.PUT, "/usuario").hasAnyRole("COLABORADOR", "MOTORISTA")
+//                        .antMatchers("/rota/**", "/caminhao/**", "/posto/**").hasRole("COLABORADOR")
                         .antMatchers("/caminhao/abastecer", "/viagem/**").hasRole("MOTORISTA")
                         .anyRequest().authenticated());
 
@@ -44,6 +44,8 @@ public class SecurityConfiguration {
     public WebSecurityCustomizer webSecurityCustomizer() {
         return (web) -> web.ignoring().antMatchers("/",
                 "/auth",
+                /*"/usuario/**",
+                "/cargo/**",*/
                 "/v3/api-docs",
                 "/v3/api-docs/**",
                 "/swagger-resources/**",
