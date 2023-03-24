@@ -262,4 +262,6 @@ public class UsuarioService {
         Optional<UsuarioEntity> usuarioOptional = usuarioRepository.findById(getIdLoggedUser());
         return objectMapper.convertValue(usuarioOptional, UsuarioDTO.class);
     }
+
+    
 }

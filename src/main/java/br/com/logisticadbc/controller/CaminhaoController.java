@@ -36,16 +36,14 @@ public class CaminhaoController implements CaminhaoControllerDoc {
     }
 
     @PostMapping
-    public ResponseEntity<CaminhaoDTO> create(@RequestParam("idColaborador") Integer idColaborador,
-                                              @Valid @RequestBody CaminhaoCreateDTO caminhaoCreateDTO)
+    public ResponseEntity<CaminhaoDTO> create(@Valid @RequestBody CaminhaoCreateDTO caminhaoCreateDTO)
             throws RegraDeNegocioException {
 
         return new ResponseEntity<>(caminhaoService.criar(idColaborador, caminhaoCreateDTO), HttpStatus.CREATED);
     }
 
     @PutMapping("/abastecer")
-    public ResponseEntity<CaminhaoDTO> update(@RequestParam("idMotorista") Integer idMotorista,
-                                              @RequestParam("idCaminhao") Integer idCaminhao,
+    public ResponseEntity<CaminhaoDTO> update(@RequestParam("idCaminhao") Integer idCaminhao,
                                               @RequestParam("Quantidade de gasolina") Integer gasolina)
             throws RegraDeNegocioException {
 
@@ -53,8 +51,7 @@ public class CaminhaoController implements CaminhaoControllerDoc {
     }
 
     @DeleteMapping
-    public ResponseEntity<Void> delete(@RequestParam("idColaborador") Integer idColaborador,
-                                       @RequestParam("idCaminhao") Integer idCaminhao) throws RegraDeNegocioException {
+    public ResponseEntity<Void> delete(@RequestParam("idCaminhao") Integer idCaminhao) throws RegraDeNegocioException {
 
         caminhaoService.deletar(idCaminhao);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

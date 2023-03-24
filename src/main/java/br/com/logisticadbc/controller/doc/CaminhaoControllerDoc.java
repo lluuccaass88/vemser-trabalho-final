@@ -47,8 +47,7 @@ public interface CaminhaoControllerDoc {
             }
     )
     @PostMapping
-    ResponseEntity<CaminhaoDTO> create(@RequestParam("idColaborador") Integer idColaborador,
-                                              @Valid @RequestBody CaminhaoCreateDTO caminhaoCreateDTO)
+    ResponseEntity<CaminhaoDTO> create(@Valid @RequestBody CaminhaoCreateDTO caminhaoCreateDTO)
             throws RegraDeNegocioException;
 
     @Operation(summary = "Abastecer caminhão", description = "Abastecer o caminhão")
@@ -60,8 +59,7 @@ public interface CaminhaoControllerDoc {
             }
     )
     @PutMapping("/abastecer")
-    ResponseEntity<CaminhaoDTO> update(@RequestParam("idMotorista") Integer idMotorista,
-                                              @RequestParam("idCaminhao") Integer idCaminhao,
+    ResponseEntity<CaminhaoDTO> update(@RequestParam("idCaminhao") Integer idCaminhao,
                                               @RequestParam("Quantidade de gasolina") Integer gasolina)
             throws RegraDeNegocioException;
 
@@ -74,8 +72,7 @@ public interface CaminhaoControllerDoc {
             }
     )
     @DeleteMapping
-    ResponseEntity<Void> delete(@RequestParam("idColaborador") Integer idColaborador,
-                                       @RequestParam("idCaminhao") Integer idCaminhao) throws RegraDeNegocioException;
+    ResponseEntity<Void> delete(@RequestParam("idCaminhao") Integer idCaminhao) throws RegraDeNegocioException;
 
     @Operation(summary = "Listar caminhões de um colaborador",
             description = "Lista todos caminhões de um colaborador")
