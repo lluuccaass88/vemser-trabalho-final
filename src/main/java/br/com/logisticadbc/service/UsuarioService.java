@@ -99,8 +99,10 @@ public class UsuarioService {
         }
     }
 
-    // TODO listarPorCargo
-
+    // TODO listarPorCargo - ESTA EM CONTRUÇÃO (LUCAS)
+//    public UsuarioDTO listarPorCargo(String cargo) throws RegraDeNegocioException{
+//        Set<UsuarioEntity> listaUsuarios = usuarioRepository.findByCargosEquals()
+//    }
     // TODO listarPorCargoEStatus
 
     public List<UsuarioDTO> listarAtivos() {
