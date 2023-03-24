@@ -64,15 +64,16 @@ public class UsuarioController {
         return new ResponseEntity<>(usuarioService.listarPorId(idUsuario), HttpStatus.OK);
     }
 
-    /*// FIXME listar por cargo
+   // FIXME listar por cargo
     @GetMapping("/listar-por-cargo")
     public ResponseEntity<PageDTO<UsuarioDTO>> listByRole(
             @RequestParam(value = "cargo") String cargo,
             @RequestParam(value = "page") Integer pagina,
-            @RequestParam(value = "size") Integer tamanho) {
+            @RequestParam(value = "size") Integer tamanho) throws RegraDeNegocioException {
         return new ResponseEntity<>(
                 usuarioService.listarPorCargo(cargo, pagina, tamanho), HttpStatus.OK);
-    }*/
+    }
+
 
     /*// FIXME listar por cargo e status (aitvos/inativos)
     @GetMapping("/listar-por-cargo-status/paginacao")

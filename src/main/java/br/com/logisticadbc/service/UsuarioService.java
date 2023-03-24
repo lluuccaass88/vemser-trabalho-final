@@ -2,6 +2,7 @@ package br.com.logisticadbc.service;
 
 import br.com.logisticadbc.dto.in.UsuarioCreateDTO;
 import br.com.logisticadbc.dto.in.UsuarioUpdateDTO;
+import br.com.logisticadbc.dto.out.PageDTO;
 import br.com.logisticadbc.dto.out.UsuarioDTO;
 import br.com.logisticadbc.entity.UsuarioEntity;
 import br.com.logisticadbc.entity.enums.StatusGeral;
@@ -10,10 +11,13 @@ import br.com.logisticadbc.repository.UsuarioRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.repository.core.RepositoryCreationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 
 @Slf4j
 @Service
@@ -100,9 +104,26 @@ public class UsuarioService {
     }
 
     // TODO listarPorCargo - ESTA EM CONTRUÇÃO (LUCAS)
-//    public UsuarioDTO listarPorCargo(String cargo) throws RegraDeNegocioException{
-//        Set<UsuarioEntity> listaUsuarios = usuarioRepository.findByCargosEquals()
-//    }
+    public PageDTO<UsuarioDTO> listarPorCargo(String cargo, Integer pagina, Integer tamanho) {
+        Pageable solicitacaoPagina = PageRequest.of(pagina, tamanho);
+
+        Page<UsuarioEntity> paginacaoUsuario = usuarioRepository.findByCargoUsuario(solicitacaoPagina, cargo);
+
+        List<UsuarioDTO> usuarioDTOList = paginacaoUsuario
+                .getContent()
+                .stream()
+                .map(usuario -> objectMapper.convertValue(usuario, UsuarioDTO.class))
+                .toList();
+
+        return new PageDTO<>(
+                paginacaoUsuario.getTotalElements(),
+                paginacaoUsuario.getTotalPages(),
+                pagina,
+                tamanho,
+                usuarioDTOList
+        );
+    }
+
     // TODO listarPorCargoEStatus
 
     public List<UsuarioDTO> listarAtivos() {

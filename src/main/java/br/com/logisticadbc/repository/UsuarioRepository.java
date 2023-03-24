@@ -1,11 +1,16 @@
 package br.com.logisticadbc.repository;
 
+import br.com.logisticadbc.dto.out.UsuarioDTO;
 import br.com.logisticadbc.entity.CargoEntity;
 import br.com.logisticadbc.entity.UsuarioEntity;
 import br.com.logisticadbc.entity.enums.StatusGeral;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -18,7 +23,17 @@ public interface UsuarioRepository extends JpaRepository<UsuarioEntity, Integer>
 
     Optional<UsuarioEntity> findByStatusEquals(StatusGeral status);
 
-//    Set<UsuarioEntity> findByCargosEquals(Set<CargoEntity> cargos);
+//    @Query("SELECT u FROM UsuarioEntity u JOIN u.cargos c WHERE c.id = :id")
+//    Set<UsuarioEntity> findByCargoUsuario(Integer id);
+
+    @Query("  SELECT u " +
+            "  from USUARIO u" +
+            "  JOIN u.cargos c" +
+            "  WHERE  c.nome = :cargo"
+    )
+    Page<UsuarioEntity> findByCargoUsuario(Pageable pageable, String cargo);
+
+//    Set<UsuarioEntity>;
     /*
     * SE BASEAR NISSO
     * SELECT * FROM USUARIO u
