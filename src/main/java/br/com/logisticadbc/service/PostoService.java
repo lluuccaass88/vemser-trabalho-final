@@ -4,6 +4,7 @@ import br.com.logisticadbc.dto.in.PostoCreateDTO;
 import br.com.logisticadbc.dto.out.PostoDTO;
 import br.com.logisticadbc.entity.ColaboradorEntity;
 import br.com.logisticadbc.entity.PostoEntity;
+import br.com.logisticadbc.entity.UsuarioEntity;
 import br.com.logisticadbc.entity.enums.StatusGeral;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.repository.PostoRepository;
@@ -20,18 +21,18 @@ import java.util.List;
 public class PostoService {
 
     private final PostoRepository postoRepository;
-    private final ColaboradorService colaboradorService;
+    private final UsuarioService usuarioService;
     private final ObjectMapper objectMapper;
 
     public PostoDTO criar(Integer idUsuario, PostoCreateDTO postoCreateDTO) throws RegraDeNegocioException {
-        ColaboradorEntity colaboradorEntity = colaboradorService.buscarPorId(idUsuario);
+        UsuarioEntity usuarioEntity = UsuarioService.buscarPorId(idUsuario);
 
         try {
             PostoEntity postoEntity = objectMapper.convertValue(postoCreateDTO, PostoEntity.class);
             postoEntity.setStatus(StatusGeral.ATIVO);
-            postoEntity.setColaborador(colaboradorEntity);
+            postoEntity.setUsuario(usuarioEntity);
 
-            colaboradorEntity.getPostos().add(postoEntity);
+            usuarioEntity.getPostos().add(postoEntity);
 
             postoRepository.save(postoEntity);
 
@@ -54,14 +55,15 @@ public class PostoService {
             postoEncontrado.setNome(postoCreateDTO.getNome());
             postoEncontrado.setValorCombustivel(postoCreateDTO.getValorCombustivel());
 
-            ColaboradorEntity colaboradorEntity =
-                    colaboradorService.buscarPorId(postoEncontrado.getColaborador().getIdUsuario());
-            colaboradorEntity.getPostos().add(postoEncontrado);
+            UsuarioEntity usuarioEntity =
+                    usuarioService.buscarPorId(postoEncontrado.getUsuario().getIdUsuario());
+
+            usuarioEntity.getPostos().add(postoEncontrado);
 
             postoRepository.save(postoEncontrado);
 
             PostoDTO postoDTO = objectMapper.convertValue(postoEncontrado, PostoDTO.class);
-            postoDTO.setIdUsuario(colaboradorEntity.getIdUsuario());
+            postoDTO.setIdUsuario(usuarioEntity.getIdUsuario());
             return postoDTO;
 
         } catch (Exception e) {
@@ -79,9 +81,10 @@ public class PostoService {
             postoEncontrado.setStatus(StatusGeral.INATIVO);
             postoRepository.save(postoEncontrado);
 
-            ColaboradorEntity colaboradorEntity =
-                    colaboradorService.buscarPorId(postoEncontrado.getColaborador().getIdUsuario());
-            colaboradorEntity.getPostos().add(postoEncontrado);
+            UsuarioEntity usuarioEntity =
+                    usuarioService.buscarPorId(postoEncontrado.getUsuario().getIdUsuario());
+
+            usuarioEntity.getPostos().add(postoEncontrado);
 
         } catch (Exception e) {
             throw new RegraDeNegocioException("Aconteceu algum problema durante a exclusão.");
@@ -132,7 +135,7 @@ public class PostoService {
                 .stream()
                 .map(posto -> {
                     PostoDTO postoDTO = objectMapper.convertValue(posto, PostoDTO.class);
-                    postoDTO.setIdUsuario(posto.getColaborador().getIdUsuario());
+                    postoDTO.setIdUsuario(posto.getUsuario().getIdUsuario());
                     return postoDTO;
                 })
                 .toList();
@@ -143,7 +146,7 @@ public class PostoService {
             .stream()
             .map(posto -> {
                 PostoDTO postoDTO = objectMapper.convertValue(posto, PostoDTO.class);
-                postoDTO.setIdUsuario(posto.getColaborador().getIdUsuario());
+                postoDTO.setIdUsuario(posto.getUsuario().getIdUsuario());
                 return postoDTO;
             })
             .toList();
