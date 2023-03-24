@@ -28,7 +28,7 @@ public class TokenService {
         Date exp = new Date(System.currentTimeMillis() + Long.parseLong(expiration));
         String token =
                 Jwts.builder()
-                        .claim(Claims.ID, usuarioEntity.getIdUsuario().toString())
+                        .claim(Claims.ID, usuarioEntity.getIdUsuario())
                         .claim(CHAVE_LOGIN, usuarioEntity.getLogin())
                         // TODO COLOCAR CARGOS
                         .setIssuedAt(Date.valueOf(LocalDate.now()))
@@ -46,7 +46,7 @@ public class TokenService {
                     .parseClaimsJws(token.replace(TOKEN_PREFIX, ""))
                     .getBody();
 
-            String id = body.get(Claims.ID, String.class);
+            String id = body.getId();
 
             if (id != null) {
                 return new UsernamePasswordAuthenticationToken(id, null, Collections.emptyList());

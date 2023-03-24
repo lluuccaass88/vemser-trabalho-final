@@ -11,4 +11,5 @@ LogisticaDbcApplication {
 		SpringApplication.run(LogisticaDbcApplication.class, args);
 	}
 
+
 }

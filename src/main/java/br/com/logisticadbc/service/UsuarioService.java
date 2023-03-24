@@ -62,7 +62,7 @@ public class UsuarioService {
         try {
             usuarioEntity.setStatus(StatusGeral.ATIVO);
             //criptografa senha
-//            usuarioEntity.setSenha(passwordEncoder.encode(usuarioEntity.getSenha()));
+            usuarioEntity.setSenha(passwordEncoder.encode(usuarioEntity.getSenha()));
 
             usuarioRepository.save(usuarioEntity);
 
@@ -85,7 +85,7 @@ public class UsuarioService {
         try {
             usuarioEncontrado.setNome(usuarioUpdateDTO.getNome());
             usuarioEncontrado.setEmail(usuarioUpdateDTO.getEmail());
-            usuarioEncontrado.setSenha(/*passwordEncoder.encode(*/usuarioUpdateDTO.getSenha()/*)*/);
+            usuarioEncontrado.setSenha(passwordEncoder.encode(usuarioUpdateDTO.getSenha()));
             usuarioEncontrado.setDocumento(usuarioUpdateDTO.getDocumento());
 
             usuarioRepository.save(usuarioEncontrado);
