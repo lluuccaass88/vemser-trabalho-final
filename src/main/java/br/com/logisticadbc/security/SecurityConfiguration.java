@@ -29,10 +29,10 @@ public class SecurityConfiguration {
                 .cors().and()
                 .csrf().disable()
                 .authorizeHttpRequests((authz) -> authz
-                        .antMatchers("/**").hasRole("ADMIN")
-                        .antMatchers(HttpMethod.PUT, "/usuario/**").hasAnyRole("COLABORADOR", "MOTORISTA")
-                        .antMatchers("/rota/**", "/caminhao/**","/posto/**").hasRole("COLABORADOR")
-                        .antMatchers("/caminhao/abastecer", "/viagem/**").hasRole("MOTORISTA")
+                        .antMatchers("/caminhao/**").hasRole("ADMIN")
+//                        .antMatchers(HttpMethod.PUT, "/usuario/**").hasAnyRole("COLABORADOR", "MOTORISTA")
+//                        .antMatchers("/rota/**", "/caminhao/**","/posto/**").hasRole("COLABORADOR")
+//                        .antMatchers("/caminhao/abastecer", "/viagem/**").hasRole("MOTORISTA")
                         .anyRequest().authenticated());
 
         http.addFilterBefore(new TokenAuthenticationFilter(tokenService),
