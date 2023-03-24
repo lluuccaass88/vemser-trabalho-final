@@ -7,6 +7,7 @@ import br.com.logisticadbc.dto.out.UsuarioCompletoDTO;
 import br.com.logisticadbc.dto.out.UsuarioDTO;
 import br.com.logisticadbc.entity.UsuarioEntity;
 import br.com.logisticadbc.entity.enums.StatusGeral;
+import br.com.logisticadbc.entity.enums.StatusViagem;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.repository.UsuarioRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -104,7 +105,6 @@ public class UsuarioService {
         }
     }
 
-    // TODO listarPorCargo - ESTA EM CONTRUÇÃO (LUCAS)
     public PageDTO<UsuarioDTO> listarPorCargo(String cargo, Integer pagina, Integer tamanho) {
         Pageable solicitacaoPagina = PageRequest.of(pagina, tamanho);
 
@@ -175,6 +175,26 @@ public class UsuarioService {
                     usuarioDTOList
             );
         }
+
+    public PageDTO<UsuarioDTO> listarMotoristasLivres(Integer pagina, Integer tamanho) {
+        Pageable solicitacaoPagina = PageRequest.of(pagina, tamanho);
+
+        Page<UsuarioEntity> paginacaoUsuario = usuarioRepository.findByUsuarioLivre(solicitacaoPagina, StatusViagem.FINALIZADA, "ROLE_MOTORISTA");
+
+        List<UsuarioDTO> usuarioDTOList = paginacaoUsuario
+                .getContent()
+                .stream()
+                .map(usuario -> objectMapper.convertValue(usuario, UsuarioDTO.class))
+                .toList();
+
+        return new PageDTO<>(
+                paginacaoUsuario.getTotalElements(),
+                paginacaoUsuario.getTotalPages(),
+                pagina,
+                tamanho,
+                usuarioDTOList
+        );
+    }
 
     public UsuarioEntity buscarPorId(Integer idUsuario) throws RegraDeNegocioException {
         return usuarioRepository.findById(idUsuario)

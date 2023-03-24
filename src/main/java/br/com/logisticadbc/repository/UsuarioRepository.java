@@ -3,6 +3,7 @@ package br.com.logisticadbc.repository;
 import br.com.logisticadbc.dto.out.UsuarioCompletoDTO;
 import br.com.logisticadbc.entity.UsuarioEntity;
 import br.com.logisticadbc.entity.enums.StatusGeral;
+import br.com.logisticadbc.entity.enums.StatusViagem;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -88,5 +89,13 @@ public interface UsuarioRepository extends JpaRepository<UsuarioEntity, Integer>
             "   left join u.cargos ca" +
             "   ORDER BY ca.nome"
     )
-    Page<UsuarioCompletoDTO> relatorio (Pageable pageable); //ORDENAR POR CARGO
+    Page<UsuarioCompletoDTO> relatorio (Pageable pageable);
+
+    @Query(" SELECT u " +
+            " FROM USUARIO u " +
+            " LEFT JOIN u.viagens v " +
+            " LEFT JOIN u.cargos c " +
+            " WHERE v.statusViagem = :statusViagem AND u.status = 'ATIVO' OR c.nome = :cargo"
+    )
+    Page<UsuarioEntity> findByUsuarioLivre(Pageable pageable, StatusViagem statusViagem, String cargo);
 }

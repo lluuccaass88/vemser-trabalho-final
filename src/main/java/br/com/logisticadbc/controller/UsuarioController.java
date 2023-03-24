@@ -92,4 +92,11 @@ public class UsuarioController {
         return new ResponseEntity<>(usuarioService.gerarRelatorioCompleto(pagina, tamanho)
                 , HttpStatus.OK);
     }
+
+    @GetMapping("/motoristas-livres")
+    public ResponseEntity<PageDTO<UsuarioDTO>> listAvailableDriver(
+            @RequestParam(value = "page") Integer pagina,
+            @RequestParam(value = "size") Integer tamanho) {
+        return new ResponseEntity<>(usuarioService.listarMotoristasLivres(pagina, tamanho), HttpStatus.OK);
+    }
 }
