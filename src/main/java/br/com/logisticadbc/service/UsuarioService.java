@@ -34,11 +34,9 @@ public class UsuarioService {
             usuarioRepository.save(usuarioEntity);
 
             // TODO AJEITAR EMAIL SERVICE
-//            if (usuarioEntity.getCargos().equals("COLABORADOR")) {
-//                emailService.enviarEmailBoasVindasColaborador(usuarioEntity);
-//            } else {
-//                emailService.enviarEmailBoasVindasMotorista(usuarioEntity);
-//            }
+
+//          emailService.enviarEmailBoasVindasColaborador(usuarioEntity); - ESTA COMENTADO POIS VAI BUGAR NO CARGO
+
 
             return objectMapper.convertValue(usuarioEntity, UsuarioDTO.class);
 

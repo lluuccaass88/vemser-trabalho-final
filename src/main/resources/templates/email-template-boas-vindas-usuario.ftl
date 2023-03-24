@@ -19,10 +19,11 @@
         <br>
         <br>Nosso principal objetivo é fornecer aos nossos clientes os melhores serviços personalizados e soluções em logística.
         <br>
-        <br>${mensagem}
+        <br>E isto não seria possivel sem a sua contribuição. Você é peça chave neste processo!
         <br>
         <br>Seguem seus dados cadastrados:
         <br><b>Email:</b>  ${emailUsuario}
+        <br><b>Cargo:</b>  ${cargoUsuario}
         <br>
         <br>Qualquer duvida é só contatar o suporte pelo email ->  ${emailContato}
         <br>
