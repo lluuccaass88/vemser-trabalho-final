@@ -4,6 +4,8 @@ import br.com.logisticadbc.dto.in.CargoCreateDTO;
 import br.com.logisticadbc.dto.in.UsuarioCreateDTO;
 import br.com.logisticadbc.dto.in.UsuarioUpdateDTO;
 import br.com.logisticadbc.dto.out.CargoDTO;
+import br.com.logisticadbc.dto.out.CargosDeUsuarioDTO;
+import br.com.logisticadbc.dto.out.RotaComPostosDTO;
 import br.com.logisticadbc.dto.out.UsuarioDTO;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.service.CargoService;
@@ -51,4 +53,17 @@ public class CargoController {
         return new ResponseEntity<>(cargoService.listarPorId(idCargo), HttpStatus.OK);
     }
 
+    @PostMapping("/cadastrar-usuario")
+    public ResponseEntity<CargosDeUsuarioDTO> linkEntities(@RequestParam("idCargo") Integer idCargo,
+                                             @RequestParam("idUsuario") Integer idUsuario)
+            throws RegraDeNegocioException {
+        
+        return new ResponseEntity<>(cargoService.cadastrarUsuario(idCargo, idUsuario), HttpStatus.CREATED);
+    }
+
+    @GetMapping("/listar-por-usuario")
+    public ResponseEntity<CargosDeUsuarioDTO> listByUser(@RequestParam("idUsuario") Integer idUsuario)
+            throws RegraDeNegocioException {
+        return new ResponseEntity<>(cargoService.listarPorUsuario(idUsuario), HttpStatus.OK);
+    }
 }
