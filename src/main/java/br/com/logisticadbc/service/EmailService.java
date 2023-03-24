@@ -1,8 +1,5 @@
-
 package br.com.logisticadbc.service;
 
-import br.com.logisticadbc.entity.ColaboradorEntity;
-import br.com.logisticadbc.entity.MotoristaEntity;
 import br.com.logisticadbc.entity.RotaEntity;
 import br.com.logisticadbc.entity.UsuarioEntity;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
