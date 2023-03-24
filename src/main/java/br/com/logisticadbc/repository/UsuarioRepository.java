@@ -50,8 +50,8 @@ public interface UsuarioRepository extends JpaRepository<UsuarioEntity, Integer>
             "   u.nome, " +
             "   u.login, " +
             "   u.email, " +
-            "   u.status, " +
             "   u.documento, " +
+            "   u.status, " +
 
             "   c.idCaminhao, " +
             "   c.modelo, " +
