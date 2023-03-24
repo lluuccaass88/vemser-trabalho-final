@@ -1,9 +1,9 @@
 package br.com.logisticadbc.controller.doc;
 
-import br.com.logisticadbc.dto.in.MotoristaCreateDTO;
-import br.com.logisticadbc.dto.in.MotoristaUpdateDTO;
-import br.com.logisticadbc.dto.out.MotoristaDTO;
+import br.com.logisticadbc.dto.in.UsuarioCreateDTO;
+import br.com.logisticadbc.dto.in.UsuarioUpdateDTO;
 import br.com.logisticadbc.dto.out.PageDTO;
+import br.com.logisticadbc.dto.out.UsuarioDTO;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -23,7 +23,7 @@ public interface MotoristaControllerDoc {
             }
     )
     @GetMapping
-    ResponseEntity<List<MotoristaDTO>> listAll();
+    ResponseEntity<List<UsuarioDTO>> listAll();
 
     @Operation(summary = "Listar Motorista a partir de um id",
             description = "Lista um Motorista do banco de dados a partir de um id")
@@ -35,7 +35,7 @@ public interface MotoristaControllerDoc {
             }
     )
     @GetMapping("/buscar-por-id")
-    ResponseEntity<MotoristaDTO> findById(@RequestParam("idUsuario") Integer idUsuario)
+    ResponseEntity<UsuarioDTO> findById(@RequestParam("idUsuario") Integer idUsuario)
             throws RegraDeNegocioException;
 
     @Operation(summary = "Adicionar motorista", description = "Adicionar um motorista no banco de dados")
@@ -47,7 +47,7 @@ public interface MotoristaControllerDoc {
             }
     )
     @PostMapping
-    ResponseEntity<MotoristaDTO> create(@Valid @RequestBody MotoristaCreateDTO motoristaCreateDTO)
+    ResponseEntity<UsuarioDTO> create(@Valid @RequestBody UsuarioCreateDTO usuarioCreateDTO)
             throws RegraDeNegocioException;
 
     @Operation(summary = "Editar motorista", description = "Edita um motorista no banco de dados")
@@ -59,8 +59,8 @@ public interface MotoristaControllerDoc {
             }
     )
     @PutMapping
-    ResponseEntity<MotoristaDTO> update(@RequestParam("idMotorista") Integer idMotorista,
-                                               @Valid @RequestBody MotoristaUpdateDTO motoristaUpdateDTO)
+    ResponseEntity<UsuarioDTO> update(@RequestParam("idMotorista") Integer idMotorista,
+                                               @Valid @RequestBody UsuarioUpdateDTO usuarioUpdateDTO)
             throws RegraDeNegocioException;
 
     @Operation(summary = "Deletar motorista", description = "Realiza um soft delete do motorista")
@@ -84,7 +84,7 @@ public interface MotoristaControllerDoc {
             }
     )
     @GetMapping("/ativo-disponivel/paginacao")
-    ResponseEntity<PageDTO<MotoristaDTO>> listAllPagination(
+    ResponseEntity<PageDTO<UsuarioDTO>> listAllPagination(
             @RequestParam(value = "page") Integer pagina,
             @RequestParam(value = "size") Integer tamanho);
 
@@ -98,7 +98,7 @@ public interface MotoristaControllerDoc {
             }
     )
     @GetMapping("/listar-ativos")
-    ResponseEntity<List<MotoristaDTO>> listActive();
+    ResponseEntity<List<UsuarioDTO>> listActive();
 
     @Operation(summary = "Listar motoristas inativos",
             description = "Lista todos os motoristas inativos do banco de dados")
@@ -110,5 +110,5 @@ public interface MotoristaControllerDoc {
             }
     )
     @GetMapping("/listar-inativos")
-    ResponseEntity<List<MotoristaDTO>> listInactive();
+    ResponseEntity<List<UsuarioDTO>> listInactive();
 }

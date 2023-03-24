@@ -1,9 +1,8 @@
 package br.com.logisticadbc.controller.doc;
 
-import br.com.logisticadbc.dto.in.ColaboradorCreateDTO;
-import br.com.logisticadbc.dto.in.ColaboradorUpdateDTO;
-import br.com.logisticadbc.dto.out.ColaboradorDTO;
-import br.com.logisticadbc.dto.out.MotoristaDTO;
+import br.com.logisticadbc.dto.in.UsuarioCreateDTO;
+import br.com.logisticadbc.dto.in.UsuarioUpdateDTO;
+import br.com.logisticadbc.dto.out.UsuarioDTO;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -24,7 +23,7 @@ public interface ColaboradorControllerDoc {
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-    ResponseEntity<List<ColaboradorDTO>> listAll();
+    ResponseEntity<List<UsuarioDTO>> listAll();
 
     @Operation(summary = "Listar colaborador a partir de um id",
             description = "Lista um colaborador do banco de dados a partir de um id")
@@ -36,7 +35,7 @@ public interface ColaboradorControllerDoc {
             }
     )
     @GetMapping("/buscar-por-id")
-    ResponseEntity<ColaboradorDTO> findById(@RequestParam("idUsuario") Integer idUsuario)
+    ResponseEntity<UsuarioDTO> findById(@RequestParam("idUsuario") Integer idUsuario)
     throws RegraDeNegocioException;
 
     @Operation(summary = "Adicionar colaborador", description = "Adicionar um colaborador no banco de dados")
@@ -48,7 +47,7 @@ public interface ColaboradorControllerDoc {
             }
     )
     @PostMapping
-    ResponseEntity<ColaboradorDTO> create(@Valid @RequestBody ColaboradorCreateDTO colaboradorCreateDTO)
+    ResponseEntity<UsuarioDTO> create(@Valid @RequestBody UsuarioCreateDTO usuarioCreateDTO)
             throws RegraDeNegocioException;
 
     @Operation(summary = "Edita colaborador", description = "Editar um colaborador no banco de dados")
@@ -60,8 +59,8 @@ public interface ColaboradorControllerDoc {
             }
     )
     @PutMapping
-    ResponseEntity<ColaboradorDTO> update(@RequestParam("idColaborador") Integer idColaborador,
-                                                 @Valid @RequestBody ColaboradorUpdateDTO colaboradorUpdateDTO)
+    ResponseEntity<UsuarioDTO> update(@RequestParam("idColaborador") Integer idColaborador,
+                                                 @Valid @RequestBody UsuarioUpdateDTO usuarioUpdateDTO)
             throws RegraDeNegocioException;
 
 
@@ -87,7 +86,7 @@ public interface ColaboradorControllerDoc {
             }
     )
     @GetMapping("/listar-ativos")
-    ResponseEntity<List<ColaboradorDTO>> listActive();
+    ResponseEntity<List<UsuarioDTO>> listActive();
 
     @Operation(summary = "Listar Colaboradores inativos",
             description = "Lista todos os Colaboradores inativos do banco de dados")
@@ -99,5 +98,5 @@ public interface ColaboradorControllerDoc {
             }
     )
     @GetMapping("/listar-inativos")
-    ResponseEntity<List<ColaboradorDTO>> listInactive();
+    ResponseEntity<List<UsuarioDTO>> listInactive();
 }
