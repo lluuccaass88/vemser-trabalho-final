@@ -18,7 +18,7 @@ public class OpenApiConfig {
         return new OpenAPI()
                 .info(new Info().title("Heroes Logistica Application")
                         .description("Heroes Logistica documentação")
-                        .version("v4.0.0")
+                        .version("v5.0.0")
                         .license(new License().name("Apache 2.0").url("springdoc.org")))
                 .addSecurityItem(new SecurityRequirement().addList(securitySchemeName))
                 .components(

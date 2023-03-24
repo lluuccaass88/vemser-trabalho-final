@@ -1,5 +1,6 @@
 package br.com.logisticadbc.service;
 
+import br.com.logisticadbc.dto.in.LoginDTO;
 import br.com.logisticadbc.dto.in.UsuarioCreateDTO;
 import br.com.logisticadbc.dto.in.UsuarioUpdateDTO;
 import br.com.logisticadbc.dto.out.PageDTO;
@@ -10,12 +11,20 @@ import br.com.logisticadbc.entity.enums.StatusGeral;
 import br.com.logisticadbc.entity.enums.StatusViagem;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.repository.UsuarioRepository;
+import br.com.logisticadbc.security.TokenService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,24 +33,40 @@ import java.util.Set;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
-    private final ObjectMapper objectMapper;
     private final EmailService emailService;
+    private final TokenService tokenService;
+    public final AuthenticationManager authenticationManager;
+    private final ObjectMapper objectMapper;
+    private final PasswordEncoder passwordEncoder;
+
+    public UsuarioService(UsuarioRepository usuarioRepository,
+                          EmailService emailService,
+                          TokenService tokenService,
+                          @Lazy AuthenticationManager authenticationManager,
+                          ObjectMapper objectMapper,
+                          PasswordEncoder passwordEncoder) {
+        this.usuarioRepository = usuarioRepository;
+        this.emailService = emailService;
+        this.tokenService = tokenService;
+        this.authenticationManager = authenticationManager;
+        this.objectMapper = objectMapper;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     public UsuarioDTO criar(UsuarioCreateDTO usuarioCreateDTO) throws RegraDeNegocioException {
         UsuarioEntity usuarioEntity = objectMapper.convertValue(usuarioCreateDTO, UsuarioEntity.class);
 
         try {
             usuarioEntity.setStatus(StatusGeral.ATIVO);
-            // TODO CRIPTOGRAFAR SENHA
+            //criptografa senha
+//            usuarioEntity.setSenha(passwordEncoder.encode(usuarioEntity.getSenha()));
 
             usuarioRepository.save(usuarioEntity);
 
             // TODO AJEITAR EMAIL SERVICE
-
 //          emailService.enviarEmailBoasVindasColaborador(usuarioEntity); - ESTA COMENTADO POIS VAI BUGAR NO CARGO
 
 
@@ -60,10 +85,8 @@ public class UsuarioService {
         try {
             usuarioEncontrado.setNome(usuarioUpdateDTO.getNome());
             usuarioEncontrado.setEmail(usuarioUpdateDTO.getEmail());
-            usuarioEncontrado.setSenha(usuarioUpdateDTO.getSenha());
+            usuarioEncontrado.setSenha(/*passwordEncoder.encode(*/usuarioUpdateDTO.getSenha()/*)*/);
             usuarioEncontrado.setDocumento(usuarioUpdateDTO.getDocumento());
-
-            // TODO CRIPTOGRAFAR SENHA
 
             usuarioRepository.save(usuarioEncontrado);
 
@@ -204,5 +227,43 @@ public class UsuarioService {
 
     public Optional <UsuarioEntity> buscarPorLogin(String login) {
         return usuarioRepository.findByLogin(login);
+    }
+
+    public String autenticar (LoginDTO loginDTO) throws RegraDeNegocioException {
+        try {
+            // cria dto do spring
+            UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
+                    new UsernamePasswordAuthenticationToken(
+                            loginDTO.getLogin(),
+                            loginDTO.getSenha()
+                    );
+
+            // autentica
+            Authentication authentication = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
+            // user details
+            Object principal = authentication.getPrincipal();
+            // recupera usuario da autenticação
+            UsuarioEntity usuarioEntity = (UsuarioEntity) principal;
+
+            return tokenService.gerarToken(usuarioEntity);
+
+        } catch (BadCredentialsException e) {
+            throw new RegraDeNegocioException("Credenciais inválidas");
+        }
+
+    }
+
+    // recupera id do usuário do Token
+    public Integer getIdLoggedUser() {
+        return Integer.parseInt(SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getPrincipal()
+                .toString());
+    }
+
+    // recupera usuário do Token
+    public UsuarioDTO getLoggedUser() {
+        Optional<UsuarioEntity> usuarioOptional = usuarioRepository.findById(getIdLoggedUser());
+        return objectMapper.convertValue(usuarioOptional, UsuarioDTO.class);
     }
 }

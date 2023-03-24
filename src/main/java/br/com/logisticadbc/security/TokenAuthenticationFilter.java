@@ -16,12 +16,16 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
     private final TokenService tokenService;
     private final String BEARER = "Bearer ";
+
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
-                                    FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    FilterChain filterChain)
+            throws ServletException, IOException {
         String tokenFromHeader = getTokenFromHeader(request);
 
-        UsernamePasswordAuthenticationToken usuario = tokenService.isValid(tokenFromHeader);
+        UsernamePasswordAuthenticationToken usuario = tokenService.validarToken(tokenFromHeader);
+
         SecurityContextHolder.getContext().setAuthentication(usuario);
 
         filterChain.doFilter(request, response);
@@ -29,9 +33,11 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
     private String getTokenFromHeader(HttpServletRequest request) {
         String token = request.getHeader("Authorization");
+
         if(token == null || token.isEmpty() || !token.startsWith(BEARER)) {
             return null;
         }
+
         return token.replace(BEARER, "");
     }
 }

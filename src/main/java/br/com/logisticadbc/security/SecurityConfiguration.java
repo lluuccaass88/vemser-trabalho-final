@@ -8,7 +8,6 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.crypto.scrypt.SCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -42,7 +41,8 @@ public class SecurityConfiguration {
                 "/v3/api-docs",
                 "/v3/api-docs/**",
                 "/swagger-resources/**",
-                "/swagger-ui/**");
+                "/swagger-ui/**",
+                "/usuario/**");
     }
 
     @Bean
@@ -56,7 +56,6 @@ public class SecurityConfiguration {
             }
         };
     }
-
 
     @Bean
     public PasswordEncoder passwordEncoder() {

@@ -17,19 +17,20 @@ public class TokenService {
 
     private static final String CHAVE_LOGIN = "login";
     private static final String TOKEN_PREFIX = "Bearer ";
+
     @Value("${jwt.secret}")
     private String secret;
 
     @Value("${jwt.expiration}")
     private String expiration;
 
-
     public String gerarToken(UsuarioEntity usuarioEntity) {
         Date exp = new Date(System.currentTimeMillis() + Long.parseLong(expiration));
         String token =
                 Jwts.builder()
-                        .claim(CHAVE_LOGIN, usuarioEntity.getLogin())
                         .claim(Claims.ID, usuarioEntity.getIdUsuario().toString())
+                        .claim(CHAVE_LOGIN, usuarioEntity.getLogin())
+                        // TODO COLOCAR CARGOS
                         .setIssuedAt(Date.valueOf(LocalDate.now()))
                         .setExpiration(exp)
                         .signWith(SignatureAlgorithm.HS256, secret)
@@ -38,15 +39,17 @@ public class TokenService {
     }
 
 
-    public UsernamePasswordAuthenticationToken isValid(String token) {
+    public UsernamePasswordAuthenticationToken validarToken(String token) {
         if (token != null) {
             Claims body = Jwts.parser()
                     .setSigningKey(secret)
                     .parseClaimsJws(token.replace(TOKEN_PREFIX, ""))
                     .getBody();
-            String user = body.get(Claims.ID, String.class);
-            if (user != null) {
-                return new UsernamePasswordAuthenticationToken(user, null, Collections.emptyList());
+
+            String id = body.get(Claims.ID, String.class);
+
+            if (id != null) {
+                return new UsernamePasswordAuthenticationToken(id, null, Collections.emptyList());
             }
         }
         return null;
