@@ -69,7 +69,7 @@ public class ViagemService {
             viagemDTO.setIdCaminhao(caminhaoEncontrado.getIdCaminhao());
             viagemDTO.setIdRota(rotaEncontrada.getIdRota());
 
-            emailService.enviarEmailViagemMotorista(rotaEncontrada, usuarioEncontrado);
+            emailService.enviarEmailViagem(rotaEncontrada, usuarioEncontrado);
 
             return viagemDTO;
 

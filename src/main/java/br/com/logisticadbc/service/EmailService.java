@@ -28,54 +28,31 @@ public class EmailService {
     private final Configuration fmConfiguration;
     private final JavaMailSender emailSender;
 
-    public void enviarEmailBoasVindasColaborador(UsuarioEntity colaborador) throws RegraDeNegocioException {
+    public void enviarEmailBoasVindas(UsuarioEntity usuario) throws RegraDeNegocioException {
         MimeMessage mimeMessage = emailSender.createMimeMessage();
         Integer op = 2;
         try {
+            String mensagem = null;
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
             mimeMessageHelper.setFrom(from);
-            mimeMessageHelper.setTo(colaborador.getEmail());
+            mimeMessageHelper.setTo(usuario.getEmail());
             mimeMessageHelper.setSubject("Bem vindo ao Heroes Logística");
 
-            String mensagem = "Contamos com a sua ajuda para cada vez mais aproximarmos pessoas por meio dos nossos serviços!";
-
-            mimeMessageHelper.setText(getBoasVindasTemplate(colaborador.getEmail(), colaborador.getNome(), mensagem, op), true);
+            mimeMessageHelper.setText(getBoasVindasTemplate(usuario, op), true);
 
             emailSender.send(mimeMessageHelper.getMimeMessage());
         } catch (MessagingException | IOException | TemplateException e) {
-            throw new RegraDeNegocioException("Erro ao enviar email para o motorsita: " + colaborador.getNome() + e.getMessage());
+            throw new RegraDeNegocioException("Erro ao enviar email para o motorsita: " + usuario.getNome() + e.getMessage());
         }
     }
 
-    public void enviarEmailBoasVindasMotorista(UsuarioEntity motorista) throws RegraDeNegocioException {
-        MimeMessage mimeMessage = emailSender.createMimeMessage();
-        Integer op = 2;
-        try {
-            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
-            mimeMessageHelper.setFrom(from);
-            mimeMessageHelper.setTo(motorista.getEmail());
-            mimeMessageHelper.setSubject("Bem vindo ao Heroes Logística");
-
-            String mensagem = "E isto não seria possivel sem a contribuição dos nossos motoristas, " +
-                    "que são peça chave neste processo!";
-
-            mimeMessageHelper.setText(getBoasVindasTemplate(motorista.getEmail(), motorista.getNome(), mensagem, op),
-                    true);
-
-            emailSender.send(mimeMessageHelper.getMimeMessage());
-        } catch (MessagingException | IOException | TemplateException e) {
-            throw new RegraDeNegocioException("Erro ao enviar email para o motorsita: " +
-                    motorista.getNome() + e.getMessage());
-        }
-    }
-
-    private String getBoasVindasTemplate(String emailUsuario, String nomeUsuario, String mensagem, Integer op)
+    private String getBoasVindasTemplate(UsuarioEntity usuario, Integer op)
             throws IOException, TemplateException {
 
         Map<String, Object> dados = new HashMap<>();
-        dados.put("nomeUsuario", nomeUsuario);
-        dados.put("mensagem", mensagem);
-        dados.put("emailUsuario", emailUsuario);
+        dados.put("nomeUsuario", usuario.getNome());
+        dados.put("emailUsuario", usuario.getEmail());
+        dados.put("cargoUsuario", usuario.getCargos());
         dados.put("emailContato", "heroes.logistica@email.com");
         dados.put("nome", "Heroes Logística");
 
@@ -85,7 +62,7 @@ public class EmailService {
         return html;
     }
 
-    public void enviarEmailViagemMotorista(RotaEntity rota, UsuarioEntity motorista) throws RegraDeNegocioException {
+    public void enviarEmailViagem(RotaEntity rota, UsuarioEntity motorista) throws RegraDeNegocioException {
         MimeMessage mimeMessage = emailSender.createMimeMessage();
         Integer op = 2;
         try {
