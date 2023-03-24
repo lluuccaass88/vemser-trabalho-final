@@ -5,7 +5,7 @@ CREATE TABLE CARGO(
 	id_cargo NUMBER(10) NOT NULL,
 	nome VARCHAR(100) NOT NULL,
 	PRIMARY KEY(id_cargo)
-);
+)
 
 CREATE TABLE USUARIO (
     
