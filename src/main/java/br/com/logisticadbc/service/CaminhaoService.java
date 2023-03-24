@@ -4,7 +4,7 @@ package br.com.logisticadbc.service;
 import br.com.logisticadbc.dto.in.CaminhaoCreateDTO;
 import br.com.logisticadbc.dto.out.CaminhaoDTO;
 import br.com.logisticadbc.entity.CaminhaoEntity;
-import br.com.logisticadbc.entity.ColaboradorEntity;
+import br.com.logisticadbc.entity.UsuarioEntity;
 import br.com.logisticadbc.entity.enums.StatusCaminhao;
 import br.com.logisticadbc.entity.enums.StatusGeral;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
@@ -15,7 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -23,20 +22,20 @@ import java.util.stream.Collectors;
 public class CaminhaoService {
 
     private final CaminhaoRepository caminhaoRepository;
-    private final ColaboradorService colaboradorService;
+    private final UsuarioService usuarioService;
     private final ObjectMapper objectMapper;
 
     public CaminhaoDTO criar(Integer idUsuario, CaminhaoCreateDTO caminhaoCreateDTO)
             throws RegraDeNegocioException {
-        ColaboradorEntity colaboradorEntity = colaboradorService.buscarPorId(idUsuario);
+        UsuarioEntity usuarioEntity = usuarioService.buscarPorId(idUsuario);
 
         try {
             CaminhaoEntity caminhaoEntity = objectMapper.convertValue(caminhaoCreateDTO, CaminhaoEntity.class);
             caminhaoEntity.setStatus(StatusGeral.ATIVO);
             caminhaoEntity.setStatusCaminhao(StatusCaminhao.ESTACIONADO);
-            caminhaoEntity.setColaborador(colaboradorEntity);
+            caminhaoEntity.setUsuario(usuarioEntity);
 
-            colaboradorEntity.getCaminhoes().add(caminhaoEntity);
+            usuarioEntity.getCaminhoes().add(caminhaoEntity);
 
             caminhaoRepository.save(caminhaoEntity);
 
@@ -64,13 +63,13 @@ public class CaminhaoService {
         try {
             caminhaoRecuperado.setNivelCombustivel(caminhaoRecuperado.getNivelCombustivel() + gasolina);
 
-            ColaboradorEntity colaboradorEntity =
-                    colaboradorService.buscarPorId(caminhaoRecuperado.getColaborador().getIdUsuario());
+            UsuarioEntity usuarioEntity =
+                    usuarioService.buscarPorId(caminhaoRecuperado.getUsuario().getIdUsuario());
 
             caminhaoRepository.save(caminhaoRecuperado);
 
             CaminhaoDTO caminhaoDTO = objectMapper.convertValue(caminhaoRecuperado, CaminhaoDTO.class);
-            caminhaoDTO.setIdUsuario(colaboradorEntity.getIdUsuario());
+            caminhaoDTO.setIdUsuario(usuarioEntity.getIdUsuario());
             return caminhaoDTO;
 
         } catch (Exception e) {
@@ -98,7 +97,7 @@ public class CaminhaoService {
                 .stream()
                 .map(caminhao -> {
                     CaminhaoDTO caminhaoDTO = objectMapper.convertValue(caminhao, CaminhaoDTO.class);
-                    caminhaoDTO.setIdUsuario(caminhao.getColaborador().getIdUsuario());
+                    caminhaoDTO.setIdUsuario(caminhao.getUsuario().getIdUsuario());
                     return caminhaoDTO;})
                 .toList();
     }
@@ -109,7 +108,7 @@ public class CaminhaoService {
                 .filter(caminhao -> caminhao.getStatus().equals(StatusGeral.ATIVO))
                 .map(caminhao -> {
                     CaminhaoDTO caminhaoDTO = objectMapper.convertValue(caminhao, CaminhaoDTO.class);
-                    caminhaoDTO.setIdUsuario(caminhao.getColaborador().getIdUsuario());
+                    caminhaoDTO.setIdUsuario(caminhao.getUsuario().getIdUsuario());
                     return caminhaoDTO;})
                 .toList();
     }
@@ -120,7 +119,7 @@ public class CaminhaoService {
                 .filter(caminhao -> caminhao.getStatus().equals(StatusGeral.INATIVO))
                 .map(caminhao -> {
                     CaminhaoDTO caminhaoDTO = objectMapper.convertValue(caminhao, CaminhaoDTO.class);
-                    caminhaoDTO.setIdUsuario(caminhao.getColaborador().getIdUsuario());
+                    caminhaoDTO.setIdUsuario(caminhao.getUsuario().getIdUsuario());
                     return caminhaoDTO;})
                 .toList();
     }
@@ -129,7 +128,7 @@ public class CaminhaoService {
         CaminhaoEntity caminhaoRecuperado = buscarPorId(idCaminhao);
         try {
             CaminhaoDTO caminhaoDTO = objectMapper.convertValue(caminhaoRecuperado, CaminhaoDTO.class);
-            caminhaoDTO.setIdUsuario(caminhaoRecuperado.getColaborador().getIdUsuario());
+            caminhaoDTO.setIdUsuario(caminhaoRecuperado.getUsuario().getIdUsuario());
             return caminhaoDTO;
 
         } catch (Exception e) {
@@ -144,19 +143,19 @@ public class CaminhaoService {
                 .filter(caminhao -> caminhao.getStatus().equals(StatusGeral.ATIVO))
                 .map(caminhao -> {
                     CaminhaoDTO caminhaoDTO = objectMapper.convertValue(caminhao, CaminhaoDTO.class);
-                    caminhaoDTO.setIdUsuario(caminhao.getColaborador().getIdUsuario());
+                    caminhaoDTO.setIdUsuario(caminhao.getUsuario().getIdUsuario());
                     return caminhaoDTO;})
                 .toList();
     }
 
-    public List<CaminhaoDTO> listarPorIdColaborador(Integer idColaborador) throws RegraDeNegocioException {
-        ColaboradorEntity colaboradorEncontrado = colaboradorService.buscarPorId(idColaborador);
+    public List<CaminhaoDTO> listarPorIdColaborador(Integer idUsuario) throws RegraDeNegocioException {
+        UsuarioEntity usuarioEntity = usuarioService.buscarPorId(idUsuario);
 
-        return colaboradorEncontrado.getCaminhoes()
+        return usuarioEntity.getCaminhoes()
                 .stream()
                 .map(caminhao -> {
                     CaminhaoDTO caminhaoDTO = objectMapper.convertValue(caminhao, CaminhaoDTO.class);
-                    caminhaoDTO.setIdUsuario(idColaborador);
+                    caminhaoDTO.setIdUsuario(idUsuario);
                     return caminhaoDTO;
                 })
                 .toList();
