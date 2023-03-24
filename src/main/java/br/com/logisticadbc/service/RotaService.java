@@ -189,7 +189,7 @@ public class RotaService {
                 .toList();
     }
 
-    public void cadastrarPosto(Integer idRota, Integer idPosto) throws RegraDeNegocioException {
+    public RotaComPostosDTO cadastrarPosto(Integer idRota, Integer idPosto) throws RegraDeNegocioException {
         RotaEntity rotaEncontrada = buscarPorId(idRota);
         PostoEntity postoEncontrado = postoService.buscarPorId(idPosto);
 
@@ -202,6 +202,8 @@ public class RotaService {
             postoEncontrado.getRotas().add(rotaEncontrada);
 
             rotaRepository.save(rotaEncontrada);
+
+            return listarPostosCadastrados(idRota);
 
         } catch (Exception e) {
             throw new RegraDeNegocioException("Aconteceu algum problema durante o cadastro.");

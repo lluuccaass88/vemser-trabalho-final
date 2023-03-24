@@ -89,9 +89,8 @@ public interface RotaControllerDoc {
             }
     )
     @PostMapping("/cadastrar-posto")
-    ResponseEntity<Void> linkEntities(@RequestParam("idColaborador") Integer idUsuario,
-                                      @RequestParam("idRota") Integer idRota,
-                                    @RequestParam("idPosto") Integer idPosto)
+    ResponseEntity<RotaComPostosDTO> linkEntities(@RequestParam("idRota") Integer idRota,
+                                      @RequestParam("idPosto") Integer idPosto)
             throws RegraDeNegocioException;
 
     @Operation(summary = "Listar Postos cadastrados na rota",

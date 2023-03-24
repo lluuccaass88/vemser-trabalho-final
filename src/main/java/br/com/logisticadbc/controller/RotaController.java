@@ -61,13 +61,11 @@ public class RotaController implements RotaControllerDoc {
     }
 
     @PostMapping("/cadastrar-posto")
-    public ResponseEntity<Void> linkEntities(@RequestParam("idColaborador") Integer idUsuario,
-                                             @RequestParam("idRota") Integer idRota,
-                                             @RequestParam("idPosto") Integer idPosto)
+    public ResponseEntity<RotaComPostosDTO> linkEntities(@RequestParam("idRota") Integer idRota,
+                                                         @RequestParam("idPosto") Integer idPosto)
             throws RegraDeNegocioException {
 
-        rotaService.cadastrarPosto(idRota, idPosto);
-        return ResponseEntity.ok().build();
+        return  new ResponseEntity<>(rotaService.cadastrarPosto(idRota, idPosto), HttpStatus.CREATED);
     }
 
     @GetMapping("/listar-postos-cadastrados")
