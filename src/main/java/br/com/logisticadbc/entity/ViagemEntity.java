@@ -1,12 +1,13 @@
 package br.com.logisticadbc.entity;
 
 import br.com.logisticadbc.entity.enums.StatusViagem;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -23,10 +24,10 @@ public class ViagemEntity {
     private String descricao;
 
     @Column(name = "data_inicio")
-    private LocalDateTime dataInicio;
+    private LocalDate dataInicio;
 
     @Column(name = "data_fim")
-    private LocalDateTime dataFim;
+    private LocalDate dataFim;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status_viagem")

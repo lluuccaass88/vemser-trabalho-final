@@ -6,11 +6,8 @@ import br.com.logisticadbc.entity.enums.StatusViagem;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import javax.persistence.Column;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Data
 @AllArgsConstructor
@@ -45,7 +42,7 @@ public class UsuarioCompletoDTO {
 
     private Integer idViagem;
     private String descricaoViagem;
-    private LocalDateTime dataInicio;
-    private LocalDateTime dataFim;
+    private LocalDate dataInicio;
+    private LocalDate dataFim;
     private StatusViagem statusViagem;
 }
