@@ -15,6 +15,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @Slf4j
 @Validated
@@ -39,11 +40,15 @@ public class CargoController {
         return new ResponseEntity<>(cargoService.editar(idCargo, cargoCreateDTO), HttpStatus.OK);
     }
 
-    @DeleteMapping
-    public ResponseEntity<Void> delete(@RequestParam("idCargo") Integer idCargo)
-            throws RegraDeNegocioException {
-
-        cargoService.deletar(idCargo);
-        return ResponseEntity.ok().build();
+    @GetMapping
+    public ResponseEntity<List<CargoDTO>> listAll() {
+        return new ResponseEntity<>(cargoService.listar(), HttpStatus.OK);
     }
+
+    @GetMapping("/buscar-por-id")
+    public ResponseEntity<CargoDTO> findById(@RequestParam("idCargo") Integer idCargo)
+            throws RegraDeNegocioException {
+        return new ResponseEntity<>(cargoService.listarPorId(idCargo), HttpStatus.OK);
+    }
+
 }
