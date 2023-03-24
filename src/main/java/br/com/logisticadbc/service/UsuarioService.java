@@ -1,0 +1,121 @@
+package br.com.logisticadbc.service;
+
+import br.com.logisticadbc.dto.in.UsuarioCreateDTO;
+import br.com.logisticadbc.dto.in.UsuarioUpdateDTO;
+import br.com.logisticadbc.dto.out.UsuarioDTO;
+import br.com.logisticadbc.entity.UsuarioEntity;
+import br.com.logisticadbc.entity.enums.StatusGeral;
+import br.com.logisticadbc.exceptions.RegraDeNegocioException;
+import br.com.logisticadbc.repository.UsuarioRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Slf4j
+@Service
+@RequiredArgsConstructor
+public class UsuarioService {
+
+    private final UsuarioRepository usuarioRepository;
+    private final ObjectMapper objectMapper;
+    private final EmailService emailService;
+
+    public UsuarioDTO criar(UsuarioCreateDTO usuarioCreateDTO) throws RegraDeNegocioException {
+        UsuarioEntity usuarioEntity = objectMapper.convertValue(usuarioCreateDTO, UsuarioEntity.class);
+
+        try {
+            usuarioEntity.setStatus(StatusGeral.ATIVO);
+
+            usuarioRepository.save(usuarioEntity);
+
+            if (usuarioEntity.getCargos().equals("COLABORADOR")) {
+                emailService.enviarEmailBoasVindasColaborador(usuarioEntity);
+            } else {
+                emailService.enviarEmailBoasVindasMotorista(usuarioEntity);
+            }
+
+            return objectMapper.convertValue(usuarioEntity, UsuarioDTO.class);
+
+        } catch (Exception e) {
+            throw new RegraDeNegocioException("Aconteceu algum problema durante a criação.");
+        }
+    }
+
+
+    //FIXME: CRIAR DTO PARA QUE O USUÁRIO POSSA EDITAR SEUS DADOS
+    public UsuarioDTO editar(Integer idUsuario, UsuarioUpdateDTO usuarioUpdateDTO)
+            throws RegraDeNegocioException {
+        UsuarioEntity usuarioEncontrado = buscarPorId(idUsuario);
+
+        try {
+            usuarioEncontrado.setNome(usuarioUpdateDTO.getNome());
+            usuarioEncontrado.setEmail(usuarioUpdateDTO.getEmail());
+            usuarioEncontrado.setSenha(usuarioUpdateDTO.getSenha());
+            usuarioEncontrado.setDocumento(usuarioUpdateDTO.getDocumento());
+
+            usuarioRepository.save(usuarioEncontrado);
+
+            return objectMapper.convertValue(usuarioEncontrado, UsuarioDTO.class);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RegraDeNegocioException("Aconteceu algum problema durante a edição.");
+        }
+    }
+
+    public void deletar(Integer idUsuario) throws RegraDeNegocioException {
+        UsuarioEntity usuarioEncontrado = buscarPorId(idUsuario);
+
+        try {
+            usuarioEncontrado.setStatus(StatusGeral.INATIVO);
+            usuarioRepository.save(usuarioEncontrado);
+
+        } catch (Exception e) {
+            throw new RegraDeNegocioException("Aconteceu algum problema durante a exclusão.");
+        }
+    }
+
+    public List<UsuarioDTO> listar() {
+        return usuarioRepository.findAll()
+                .stream()
+                .map(usuario -> objectMapper.convertValue(usuario, UsuarioDTO.class))
+                .toList();
+    }
+
+    public List<UsuarioDTO> listarAtivos() {
+        return usuarioRepository.findAll()
+                .stream()
+                .filter(usuario -> usuario.getStatus().equals(StatusGeral.ATIVO))
+                .map(usuario -> objectMapper.convertValue(usuario, UsuarioDTO.class))
+                .toList();
+    }
+
+    public List<UsuarioDTO> listarInativos() {
+        return usuarioRepository.findAll()
+                .stream()
+                .filter(usuario -> usuario.getStatus().equals(StatusGeral.INATIVO))
+                .map(usuario -> objectMapper.convertValue(usuario, UsuarioDTO.class))
+                .toList();
+    }
+
+    public UsuarioDTO listarPorId(Integer idUsuario) throws RegraDeNegocioException {
+        UsuarioEntity usuarioEncontrado = buscarPorId(idUsuario);
+
+        try {
+            UsuarioDTO usuarioDTO = objectMapper.convertValue(usuarioEncontrado, UsuarioDTO.class);
+            usuarioDTO.setIdUsuario(idUsuario);
+            return usuarioDTO;
+
+        } catch (Exception e) {
+            throw new RegraDeNegocioException("Aconteceu algum problema durante a listagem.");
+        }
+    }
+
+    public UsuarioEntity buscarPorId(Integer idUsuario) throws RegraDeNegocioException {
+        return usuarioRepository.findById(idUsuario)
+                .orElseThrow(() -> new RegraDeNegocioException("Usuário não encontrado"));
+    }
+}

@@ -4,6 +4,7 @@ package br.com.logisticadbc.service;
 import br.com.logisticadbc.entity.ColaboradorEntity;
 import br.com.logisticadbc.entity.MotoristaEntity;
 import br.com.logisticadbc.entity.RotaEntity;
+import br.com.logisticadbc.entity.UsuarioEntity;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -30,7 +31,7 @@ public class EmailService {
     private final Configuration fmConfiguration;
     private final JavaMailSender emailSender;
 
-    public void enviarEmailBoasVindasColabotador(ColaboradorEntity colaborador) throws RegraDeNegocioException {
+    public void enviarEmailBoasVindasColaborador(UsuarioEntity colaborador) throws RegraDeNegocioException {
         MimeMessage mimeMessage = emailSender.createMimeMessage();
         Integer op = 2;
         try {
@@ -49,7 +50,7 @@ public class EmailService {
         }
     }
 
-    public void enviarEmailBoasVindasMotorista(MotoristaEntity motorista) throws RegraDeNegocioException {
+    public void enviarEmailBoasVindasMotorista(UsuarioEntity motorista) throws RegraDeNegocioException {
         MimeMessage mimeMessage = emailSender.createMimeMessage();
         Integer op = 2;
         try {
@@ -87,7 +88,7 @@ public class EmailService {
         return html;
     }
 
-    public void enviarEmailViagemMotorista(RotaEntity rota, MotoristaEntity motorista) throws RegraDeNegocioException {
+    public void enviarEmailViagemMotorista(RotaEntity rota, UsuarioEntity motorista) throws RegraDeNegocioException {
         MimeMessage mimeMessage = emailSender.createMimeMessage();
         Integer op = 2;
         try {
