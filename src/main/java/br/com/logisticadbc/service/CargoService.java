@@ -2,9 +2,7 @@ package br.com.logisticadbc.service;
 
 import br.com.logisticadbc.dto.in.CargoCreateDTO;
 import br.com.logisticadbc.dto.out.CargoDTO;
-import br.com.logisticadbc.dto.out.UsuarioDTO;
 import br.com.logisticadbc.entity.CargoEntity;
-import br.com.logisticadbc.entity.UsuarioEntity;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.repository.CargoRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
