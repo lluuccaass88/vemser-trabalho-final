@@ -1,3 +1,4 @@
+/*
 package br.com.logisticadbc.service;
 
 import br.com.logisticadbc.entity.ColaboradorEntity;
@@ -32,3 +33,4 @@ public class ValidacaoService {
         }
     }
 }
+*/
