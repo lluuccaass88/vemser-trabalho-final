@@ -22,6 +22,9 @@ public class UsuarioCompletoDTO {
     private String documento;
     private StatusGeral statusUsuario;
 
+    private Integer idCargo;
+    private String nome;
+
     private Integer idCaminhao;
     private String modelo;
     private String placa;

@@ -53,6 +53,9 @@ public interface UsuarioRepository extends JpaRepository<UsuarioEntity, Integer>
             "   u.documento, " +
             "   u.status, " +
 
+            "   ca.idCargo, " +
+            "   ca.nome, " +
+
             "   c.idCaminhao, " +
             "   c.modelo, " +
             "   c.placa, " +
