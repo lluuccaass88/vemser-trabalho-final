@@ -34,7 +34,7 @@ public class CargoController {
 
     @PutMapping
     public ResponseEntity<CargoDTO> update(@RequestParam("idCargo") Integer idCargo,
-                                             @Valid @RequestBody CargoDTO cargoCreateDTO)
+                                             @Valid @RequestBody CargoCreateDTO cargoCreateDTO)
             throws RegraDeNegocioException {
 
         return new ResponseEntity<>(cargoService.editar(idCargo, cargoCreateDTO), HttpStatus.OK);
