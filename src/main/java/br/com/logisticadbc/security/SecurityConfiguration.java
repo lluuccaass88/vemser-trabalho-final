@@ -3,6 +3,7 @@ package br.com.logisticadbc.security;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -28,10 +29,34 @@ public class SecurityConfiguration {
                 .cors().and()
                 .csrf().disable()
                 .authorizeHttpRequests((authz) -> authz
-//                        .antMatchers("/**").hasRole("ADMIN")
-//                        .antMatchers(HttpMethod.PUT, "/usuario").hasAnyRole("COLABORADOR", "MOTORISTA")
-//                        .antMatchers("/rota/**", "/caminhao/**", "/posto/**").hasRole("COLABORADOR")
-                        .antMatchers("/caminhao/abastecer", "/viagem/**").hasRole("MOTORISTA")
+                        // TODO metodos por ordem de aparição no SWAGGER
+                        // viagem, usuario, rota, posto, cargo e caminhao
+                        .antMatchers(HttpMethod.GET, "/viagem/**").hasRole("ADMIN")
+                        .antMatchers(HttpMethod.POST, "/viagem/**").hasAnyRole("ADMIN", "MOTORISTA")
+                        .antMatchers(HttpMethod.PUT, "/viagem/**").hasAnyRole("ADMIN", "MOTORISTA")
+                        .antMatchers(HttpMethod.DELETE, "/viagem/**").hasRole("ADMIN")
+
+                        .antMatchers(HttpMethod.GET, "/usuario/**").hasRole("ADMIN")
+                        .antMatchers(HttpMethod.POST, "/usuario/**").hasRole("ADMIN")
+                        .antMatchers(HttpMethod.PUT, "/usuario/**").hasAnyRole("ADMIN", "MOTORISTA", "COLABORADOR")
+                        .antMatchers(HttpMethod.DELETE, "/usuario/**").hasRole("ADMIN")
+
+                        .antMatchers(HttpMethod.GET, "/rota/**").hasAnyRole("ADMIN", "MOTORISTA", "COLABORADOR")
+                        .antMatchers(HttpMethod.POST, "/rota/**").hasAnyRole("ADMIN", "COLABORADOR")
+                        .antMatchers(HttpMethod.PUT, "/rota/**").hasAnyRole("ADMIN", "COLABORADOR")
+                        .antMatchers(HttpMethod.DELETE, "/rota/**").hasRole("ADMIN")
+
+                        .antMatchers(HttpMethod.GET, "/posto/**").hasAnyRole("ADMIN", "MOTORISTA", "COLABORADOR")
+                        .antMatchers(HttpMethod.POST, "/posto/**").hasAnyRole("ADMIN", "COLABORADOR")
+                        .antMatchers(HttpMethod.PUT, "/posto/**").hasAnyRole("ADMIN", "COLABORADOR")
+                        .antMatchers(HttpMethod.DELETE, "/posto/**").hasRole("ADMIN")
+
+                        .antMatchers("/cargo/**").hasRole("ADMIN")
+
+                        .antMatchers(HttpMethod.GET, "/caminhao/**").hasAnyRole("ADMIN", "MOTORISTA", "COLABORADOR")
+                        .antMatchers(HttpMethod.POST, "/caminhao/**").hasAnyRole("ADMIN", "COLABORADOR")
+                        .antMatchers(HttpMethod.PUT, "/caminhao/**").hasAnyRole("ADMIN", "MOTORISTA")
+                        .antMatchers(HttpMethod.DELETE, "/caminhao/**").hasRole("ADMIN")
                         .anyRequest().authenticated());
 
         http.addFilterBefore(new TokenAuthenticationFilter(tokenService),
@@ -43,8 +68,6 @@ public class SecurityConfiguration {
     public WebSecurityCustomizer webSecurityCustomizer() {
         return (web) -> web.ignoring().antMatchers("/",
                 "/auth",
-//                "/usuario/**",
-//                "/cargo/**",
                 "/v3/api-docs",
                 "/v3/api-docs/**",
                 "/swagger-resources/**",
