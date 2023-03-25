@@ -50,9 +50,9 @@ public interface ViagemControllerDoc {
             }
     )
     @PostMapping
-    ResponseEntity<ViagemDTO> create(@RequestParam("idMotorista") Integer idUsuario,
-                                     @Valid @RequestBody ViagemCreateDTO viagemCreateDTO)
-    throws RegraDeNegocioException;
+    public ResponseEntity<ViagemDTO> create(@RequestParam("idMotorista") Integer idMotorista,
+                                            @Valid @RequestBody ViagemCreateDTO viagemCreateDTO)
+            throws RegraDeNegocioException;
 
     @Operation(summary = "Editar Viagem", description = "Edita uma Viagem no banco de dados")
     @ApiResponses(
@@ -63,9 +63,9 @@ public interface ViagemControllerDoc {
             }
     )
     @PutMapping
-    ResponseEntity<ViagemDTO> update(@RequestParam("idMotorista") Integer idUsuario,
-                                     @RequestParam("idViagem") Integer idViagem,
-                                     @Valid @RequestBody ViagemUpdateDTO viagemUpdateDTO)
+    public ResponseEntity<ViagemDTO> update(@RequestParam("idMotorista") Integer idMotorista,
+                                            @RequestParam("idViagem") Integer idViagem,
+                                            @Valid @RequestBody ViagemUpdateDTO viagemUpdateDTO)
             throws RegraDeNegocioException;
 
     @Operation(summary = "Finalizar Viagem", description = "Realiza um soft delete da viagem")
@@ -76,8 +76,8 @@ public interface ViagemControllerDoc {
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-    @DeleteMapping("/{idMotorista}/{idViagem}")
-    ResponseEntity<Void> delete(@RequestParam("idMotorista") Integer idUsuario,
+    @DeleteMapping
+    ResponseEntity<Void> delete(@RequestParam("idMotorista") Integer idMotorista,
                                 @RequestParam("idViagem") Integer idViagem)
             throws RegraDeNegocioException;
 

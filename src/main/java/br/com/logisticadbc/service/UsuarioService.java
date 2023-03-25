@@ -263,5 +263,12 @@ public class UsuarioService {
         return objectMapper.convertValue(usuarioOptional, UsuarioDTO.class);
     }
 
-    
+    public void ativo(LoginDTO loginDTO) throws RegraDeNegocioException {
+        UsuarioEntity usuarioEntity = usuarioRepository.findByLogin(loginDTO.getLogin()).get();
+
+        if (usuarioEntity.getStatus().equals(StatusGeral.INATIVO)) {
+            throw new RegraDeNegocioException("Usuário inativo!");
+        }
+    } 
+
 }
