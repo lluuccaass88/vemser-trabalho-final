@@ -47,7 +47,7 @@ public interface UsuarioRepository extends JpaRepository<UsuarioEntity, Integer>
     )
     Page<UsuarioEntity> findByCargosAndStatus(Pageable pageable, String cargo, StatusGeral status);
 
-    @Query(" SELECT DISTINCT new br.com.logisticadbc.dto.out.UsuarioCompletoDTO(" +
+    @Query(" SELECT new br.com.logisticadbc.dto.out.UsuarioCompletoDTO(" +
             "   u.idUsuario, " +
             "   u.login, " +
             "   u.nome, " +

@@ -184,7 +184,7 @@ public class UsuarioService {
             List<UsuarioCompletoDTO> usuarioDTOList = paginacaoMotorista
                     .getContent()
                     .stream()
-                    .map(colaborador -> objectMapper.convertValue(colaborador, UsuarioCompletoDTO.class))
+                    .map(usuario -> objectMapper.convertValue(usuario, UsuarioCompletoDTO.class))
                     .toList();
 
             return new PageDTO<>(

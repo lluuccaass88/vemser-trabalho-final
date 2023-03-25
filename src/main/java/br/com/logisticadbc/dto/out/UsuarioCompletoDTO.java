@@ -12,6 +12,7 @@ import java.time.LocalDate;
 @Data
 @AllArgsConstructor
 public class UsuarioCompletoDTO {
+
     private Integer idUsuario;
     private String login;
     private String nomeUsuario;
