@@ -19,7 +19,7 @@ public class TokenService {
 
     private static final String CHAVE_LOGIN = "login";
     private static final String TOKEN_PREFIX = "Bearer ";
-    private static final String CARGOS_TOKEN = "cargos ";
+    private static final String CHAVE_CARGOS = "cargos ";
 
     @Value("${jwt.secret}")
     private String secret;
@@ -38,7 +38,7 @@ public class TokenService {
                 Jwts.builder()
                         .claim(Claims.ID, usuarioEntity.getIdUsuario())
                         .claim(CHAVE_LOGIN, usuarioEntity.getLogin())
-                        .claim(CARGOS_TOKEN, cargos)
+                        .claim(CHAVE_CARGOS, cargos)
                         .setIssuedAt(Date.valueOf(LocalDate.now()))
                         .setExpiration(exp)
                         .signWith(SignatureAlgorithm.HS256, secret)
@@ -57,7 +57,7 @@ public class TokenService {
             String id = body.getId();
 
             if (id != null) {
-                List<String> cargos = body.get(CARGOS_TOKEN, List.class);
+                List<String> cargos = body.get(CHAVE_CARGOS, List.class);
                 List<SimpleGrantedAuthority> cargosUsuario = cargos.stream()
                         .map(authority -> new SimpleGrantedAuthority(authority))
                         .toList();

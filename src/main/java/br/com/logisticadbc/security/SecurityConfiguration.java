@@ -29,10 +29,17 @@ public class SecurityConfiguration {
                 .cors().and()
                 .csrf().disable()
                 .authorizeHttpRequests((authz) -> authz
-                        .antMatchers("/caminhao/**").hasRole("ADMIN")
+                        .antMatchers("/caminhao/**").hasRole("COLABORADOR")
+                        .antMatchers("/posto/**").hasRole("COLABORADOR")
+                        .antMatchers("/rota/**").hasRole("COLABORADOR")
 //                        .antMatchers(HttpMethod.PUT, "/usuario/**").hasAnyRole("COLABORADOR", "MOTORISTA")
 //                        .antMatchers("/rota/**", "/caminhao/**","/posto/**").hasRole("COLABORADOR")
 //                        .antMatchers("/caminhao/abastecer", "/viagem/**").hasRole("MOTORISTA")
+//                        .antMatchers("/**").hasRole("ADMIN")
+//                        .antMatchers(HttpMethod.PUT, "/usuario").hasAnyRole("COLABORADOR", "MOTORISTA")
+//                        .antMatchers("/rota/**", "/caminhao/**", "/posto/**").hasRole("COLABORADOR")
+//                        .antMatchers("/caminhao/abastecer", "/viagem/**").hasRole("MOTORISTA")
+
                         .anyRequest().authenticated());
 
         http.addFilterBefore(new TokenAuthenticationFilter(tokenService),
@@ -44,6 +51,8 @@ public class SecurityConfiguration {
     public WebSecurityCustomizer webSecurityCustomizer() {
         return (web) -> web.ignoring().antMatchers("/",
                 "/auth",
+                "/usuario/**",
+                "/cargo/**",
                 "/v3/api-docs",
                 "/v3/api-docs/**",
                 "/swagger-resources/**",

@@ -67,7 +67,7 @@ public interface PostoControllerDoc {
     @Operation(summary = "Deletar Posto", description = "Deleta um posto do banco de dados")
     @ApiResponses(
             value = {
-                    @ApiResponse(responseCode = "204", description = "Retorno positivo ao deletar a viagem"),
+                    @ApiResponse(responseCode = "204", description = "Retorno positivo ao deletar posto"),
                     @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }

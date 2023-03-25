@@ -1,5 +1,6 @@
 package br.com.logisticadbc.controller;
 
+//import br.com.logisticadbc.controller.doc.UsuarioControllerDoc;
 import br.com.logisticadbc.dto.in.UsuarioCreateDTO;
 import br.com.logisticadbc.dto.in.UsuarioUpdateDTO;
 import br.com.logisticadbc.dto.out.PageDTO;
@@ -23,7 +24,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/usuario")
-public class UsuarioController {
+public class UsuarioController {//implements UsuarioControllerDoc {
 
     private final UsuarioService usuarioService;
 
@@ -49,20 +50,17 @@ public class UsuarioController {
         return ResponseEntity.ok().build();
     }
 
-    // FIXME listar todos com paginaçao
     @GetMapping
     public ResponseEntity<List<UsuarioDTO>> listAll() {
         return new ResponseEntity<>(usuarioService.listar(), HttpStatus.OK);
     }
 
-    // FIXME buscar por id
     @GetMapping("/buscar-por-id")
     public ResponseEntity<UsuarioDTO> findById(@RequestParam("idUsuario") Integer idUsuario)
             throws RegraDeNegocioException {
         return new ResponseEntity<>(usuarioService.listarPorId(idUsuario), HttpStatus.OK);
     }
 
-    // FIXME listar por cargo
     @GetMapping("/listar-por-cargo")
     public ResponseEntity<PageDTO<UsuarioDTO>> listByRole(
             @RequestParam(value = "cargo") String cargo,
@@ -72,8 +70,6 @@ public class UsuarioController {
                 usuarioService.listarPorCargo(cargo, pagina, tamanho), HttpStatus.OK);
     }
 
-
-    // FIXME listar por cargo e status (aitvos/inativos)
     @GetMapping("/listar-por-cargo-status/paginacao")
     public ResponseEntity<PageDTO<UsuarioDTO>> listByRoleAndStatus(
             @RequestParam(value = "cargo") String cargo,
@@ -84,7 +80,6 @@ public class UsuarioController {
                 usuarioService.listarPorCargoEStatus(cargo, status, pagina, tamanho), HttpStatus.OK);
     }
 
-    // FIXME relatorio completo com paginado
     @GetMapping("/relatorio-completo")
     public ResponseEntity<PageDTO<UsuarioCompletoDTO>> generateReportComplete(
             @RequestParam(value = "page") Integer pagina,
