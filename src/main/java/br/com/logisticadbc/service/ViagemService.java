@@ -34,13 +34,20 @@ public class ViagemService {
     private final RotaService rotaService;
     private final ObjectMapper objectMapper;
 
-    public ViagemDTO criar(Integer idUsuario, ViagemCreateDTO viagemCreateDTO) throws RegraDeNegocioException {
-        UsuarioEntity usuarioEncontrado = usuarioService.buscarPorId(idUsuario);
+    public ViagemDTO criar(Integer idMotorista, ViagemCreateDTO viagemCreateDTO) throws RegraDeNegocioException {
+        UsuarioEntity usuarioEncontrado = usuarioService.buscarPorId(idMotorista);
         CaminhaoEntity caminhaoEncontrado = caminhaoService.buscarPorId(viagemCreateDTO.getIdCaminhao());
         RotaEntity rotaEncontrada = rotaService.buscarPorId(viagemCreateDTO.getIdRota());
 
         // Verificações
-        if (caminhaoEncontrado.getStatus().equals(StatusGeral.INATIVO)
+        boolean motoristaJaEmViagem = usuarioEncontrado.getViagens()
+                .stream()
+                .anyMatch(viagem -> viagem.getStatusViagem().equals(StatusViagem.EM_ANDAMENTO));
+
+        if (motoristaJaEmViagem) {
+            throw new RegraDeNegocioException("Motorista já em viagem!");
+
+        } else if (caminhaoEncontrado.getStatus().equals(StatusGeral.INATIVO)
                 || rotaEncontrada.getStatus().equals(StatusGeral.INATIVO)) {
             throw new RegraDeNegocioException("Entidades informadas inativas!");
 
@@ -65,7 +72,7 @@ public class ViagemService {
             viagemRepository.save(viagemEntity);
 
             ViagemDTO viagemDTO = objectMapper.convertValue(viagemEntity, ViagemDTO.class);
-            viagemDTO.setIdUsuario(idUsuario);
+            viagemDTO.setIdUsuario(idMotorista);
             viagemDTO.setIdCaminhao(caminhaoEncontrado.getIdCaminhao());
             viagemDTO.setIdRota(rotaEncontrada.getIdRota());
 
@@ -82,14 +89,16 @@ public class ViagemService {
             throws RegraDeNegocioException {
         ViagemEntity viagemEncontrada = buscarPorId(idViagem);
 
-        if (!viagemEncontrada.getUsuario().getIdUsuario().equals(idMotorista)){
+        if (viagemEncontrada.getStatusViagem().equals(StatusViagem.FINALIZADA)) {
+            throw new RegraDeNegocioException("Permissão negada, não pode editar viagem já finalizada!");
+
+        } else if (!viagemEncontrada.getUsuario().getIdUsuario().equals(idMotorista)){
             throw new RegraDeNegocioException("Permissão negada, motorista não criou a viagem!");
 
         } else if (viagemUpdateDTO.getDataFim().isBefore(viagemUpdateDTO.getDataInicio())) {
             throw new RegraDeNegocioException("Data final não pode ser antes da data inicial!");
         }
         try {
-
             viagemEncontrada.setDescricao(viagemUpdateDTO.getDescricao());
             viagemEncontrada.setDataInicio(viagemUpdateDTO.getDataInicio());
             viagemEncontrada.setDataFim(viagemUpdateDTO.getDataFim());

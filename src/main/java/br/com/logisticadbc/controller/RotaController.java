@@ -57,7 +57,7 @@ public class RotaController implements RotaControllerDoc {
     public ResponseEntity<Void> delete(@RequestParam("idRota") Integer idRota) throws RegraDeNegocioException {
 
         rotaService.deletar(idRota);
-        return ResponseEntity.ok().build();
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PostMapping("/cadastrar-posto")

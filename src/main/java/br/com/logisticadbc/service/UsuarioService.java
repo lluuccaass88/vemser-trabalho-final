@@ -78,7 +78,26 @@ public class UsuarioService {
 
     public UsuarioDTO editar(Integer idUsuario, UsuarioUpdateDTO usuarioUpdateDTO)
             throws RegraDeNegocioException {
-        UsuarioEntity usuarioEncontrado = buscarPorId(idUsuario);
+        Integer idLoggedUser = getIdLoggedUser();
+        UsuarioEntity usuarioLogado = buscarPorId(idLoggedUser);
+
+        UsuarioEntity usuarioEncontrado = null;
+
+        // se tiver parâmetro verifica se é admin
+        if (idUsuario != null) {
+            boolean isAdmin = usuarioLogado.getCargos()
+                    .stream()
+                    .anyMatch(cargo -> cargo.getNome().equals("ROLE_ADMIN"));
+
+            if (!isAdmin) {
+                throw new RegraDeNegocioException("Só admin pode editar outros usuários.");
+            }
+            usuarioEncontrado = buscarPorId(idUsuario);
+
+        // se nao, usa o proprio usuario logado
+        } else {
+            usuarioEncontrado = usuarioLogado;
+        }
 
         try {
             usuarioEncontrado.setNome(usuarioUpdateDTO.getNome());

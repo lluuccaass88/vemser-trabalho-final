@@ -61,7 +61,7 @@ public class ViagemController implements ViagemControllerDoc {
             throws RegraDeNegocioException {
 
         viagemService.finalizar(idMotorista, idViagem);
-        return ResponseEntity.ok().build();
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @GetMapping("/listar-por-idUsuario")

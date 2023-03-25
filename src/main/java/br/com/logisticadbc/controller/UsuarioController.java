@@ -35,7 +35,7 @@ public class UsuarioController {//implements UsuarioControllerDoc {
     }
 
     @PutMapping
-    public ResponseEntity<UsuarioDTO> update(@RequestParam("idUsuario") Integer idUsuario,
+    public ResponseEntity<UsuarioDTO> update(@RequestParam(value = "idUsuario", required = false) Integer idUsuario,
                                              @Valid @RequestBody UsuarioUpdateDTO usuarioUpdateDTO)
             throws RegraDeNegocioException {
 
@@ -47,7 +47,7 @@ public class UsuarioController {//implements UsuarioControllerDoc {
             throws RegraDeNegocioException {
 
         usuarioService.deletar(idUsuario);
-        return ResponseEntity.ok().build();
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @GetMapping
