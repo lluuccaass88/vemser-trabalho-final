@@ -39,7 +39,7 @@ public class EmailService {
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
             mimeMessageHelper.setFrom(from);
             mimeMessageHelper.setTo(usuario.getEmail());
-            mimeMessageHelper.setSubject("Bem vindo ao Heroes Logística");
+            mimeMessageHelper.setSubject("Bem vindo ao " + NOME_LOG);
 
             mimeMessageHelper.setText(getBoasVindasTemplate(usuario, op), true);
 
@@ -81,7 +81,7 @@ public class EmailService {
             emailSender.send(mimeMessageHelper.getMimeMessage());
 
         } catch (MessagingException | IOException | TemplateException e) {
-            throw new RegraDeNegocioException("Erro ao enviar email para o motorsita: " +
+            throw new RegraDeNegocioException("Erro ao enviar email para o motorista: " +
                     motorista.getNome() + e.getMessage());
         }
     }
