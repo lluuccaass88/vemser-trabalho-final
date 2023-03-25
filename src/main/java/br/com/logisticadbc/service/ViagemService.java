@@ -44,7 +44,14 @@ public class ViagemService {
                 .stream()
                 .anyMatch(viagem -> viagem.getStatusViagem().equals(StatusViagem.EM_ANDAMENTO));
 
-        if (motoristaJaEmViagem) {
+        boolean isMotorista = usuarioEncontrado.getCargos()
+                .stream()
+                .anyMatch(cargo -> cargo.getNome().equals("ROLE_MOTORISTA"));
+
+        if (!isMotorista) {
+            throw new RegraDeNegocioException("Usuário não é motorista!");
+
+        } else if (motoristaJaEmViagem) {
             throw new RegraDeNegocioException("Motorista já em viagem!");
 
         } else if (caminhaoEncontrado.getStatus().equals(StatusGeral.INATIVO)
