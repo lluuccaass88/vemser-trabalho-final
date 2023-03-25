@@ -6,7 +6,7 @@
 <body>
     <div align=center style="background-color: #94caba;">
         <br><br>
-        <img src="https://github.com/lluuccaass88/vemser-trabalho-final/blob/main/images/truck-log-log.png?raw=true" alt="Logo" height="100px" width="150px">
+        <img src="https://github.com/lluuccaass88/vemser-trabalho-final/blob/main/images/trucklog-logo.png?raw=true" alt="Logo" height="100px" width="150px">
         <br><br>
     </div>
 

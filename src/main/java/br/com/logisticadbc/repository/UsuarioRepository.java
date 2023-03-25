@@ -15,15 +15,8 @@ import java.util.Optional;
 @Repository
 public interface UsuarioRepository extends JpaRepository<UsuarioEntity, Integer> {
 
-    Optional<UsuarioEntity> findByLoginAndSenha(String login, String senha);
-
     Optional<UsuarioEntity> findByLogin(String username);
     Optional<UsuarioEntity> findById(Integer id);
-
-    Optional<UsuarioEntity> findByStatusEquals(StatusGeral status);
-
-//    @Query("SELECT u FROM UsuarioEntity u JOIN u.cargos c WHERE c.id = :id")
-//    Set<UsuarioEntity> findByCargoUsuario(Integer id);
 
     @Query("  SELECT u " +
             "  from USUARIO u" +
@@ -32,13 +25,6 @@ public interface UsuarioRepository extends JpaRepository<UsuarioEntity, Integer>
     )
     Page<UsuarioEntity> findByCargoUsuario(Pageable pageable, String cargo);
 
-//    Set<UsuarioEntity>;
-    /*
-    * SE BASEAR NISSO
-    * SELECT * FROM USUARIO u
-	JOIN CARGO_X_USUARIO cxu ON u.ID_USUARIO = cxu.ID_USUARIO
-		WHERE cxu.ID_CARGO  = 2
-    * */
 
     @Query(" SELECT u " +
             "  FROM USUARIO u " +
@@ -94,9 +80,10 @@ public interface UsuarioRepository extends JpaRepository<UsuarioEntity, Integer>
 
     @Query(" SELECT u " +
             " FROM USUARIO u " +
+            " JOIN u.cargos c " +
             " LEFT JOIN u.viagens v " +
-            " LEFT JOIN u.cargos c " +
-            " WHERE v.statusViagem = :statusViagem AND u.status = 'ATIVO' OR c.nome = :cargo"
+            " WHERE (c.nome = 'ROLE_MOTORISTA' AND u.status = 'ATIVO' AND v.statusViagem IS NULL) " +
+            " OR (v.statusViagem = 'FINALIZADA' AND u.status = 'ATIVO')"
     )
-    Page<UsuarioEntity> findByUsuarioLivre(Pageable pageable, StatusViagem statusViagem, String cargo);
+    Page<UsuarioEntity> findByMotoristasLivres(Pageable pageable);
 }

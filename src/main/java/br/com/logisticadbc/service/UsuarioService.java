@@ -199,7 +199,8 @@ public class UsuarioService {
     public PageDTO<UsuarioDTO> listarMotoristasLivres(Integer pagina, Integer tamanho) {
         Pageable solicitacaoPagina = PageRequest.of(pagina, tamanho);
 
-        Page<UsuarioEntity> paginacaoUsuario = usuarioRepository.findByUsuarioLivre(solicitacaoPagina, StatusViagem.FINALIZADA, "ROLE_MOTORISTA");
+        Page<UsuarioEntity> paginacaoUsuario = usuarioRepository
+                .findByMotoristasLivres(solicitacaoPagina);
 
         List<UsuarioDTO> usuarioDTOList = paginacaoUsuario
                 .getContent()
