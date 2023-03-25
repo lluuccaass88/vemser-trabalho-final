@@ -5,6 +5,7 @@ import br.com.logisticadbc.dto.in.CaminhaoCreateDTO;
 import br.com.logisticadbc.dto.out.CaminhaoDTO;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.service.CaminhaoService;
+import br.com.logisticadbc.service.UsuarioService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -23,6 +24,7 @@ import java.util.List;
 public class CaminhaoController implements CaminhaoControllerDoc {
 
     private final CaminhaoService caminhaoService;
+    private final UsuarioService usuarioService;
 
     @GetMapping
     public ResponseEntity<List<CaminhaoDTO>> listAll() {
@@ -36,16 +38,15 @@ public class CaminhaoController implements CaminhaoControllerDoc {
     }
 
     @PostMapping
-    public ResponseEntity<CaminhaoDTO> create(@RequestParam("idColaborador") Integer idColaborador,
-                                              @Valid @RequestBody CaminhaoCreateDTO caminhaoCreateDTO)
+    public ResponseEntity<CaminhaoDTO> create(@Valid @RequestBody CaminhaoCreateDTO caminhaoCreateDTO)
             throws RegraDeNegocioException {
 
-        return new ResponseEntity<>(caminhaoService.criar(idColaborador, caminhaoCreateDTO), HttpStatus.CREATED);
+        Integer idLoggedUser = usuarioService.getIdLoggedUser();
+        return new ResponseEntity<>(caminhaoService.criar(idLoggedUser, caminhaoCreateDTO), HttpStatus.CREATED);
     }
 
     @PutMapping("/abastecer")
-    public ResponseEntity<CaminhaoDTO> update(@RequestParam("idMotorista") Integer idMotorista,
-                                              @RequestParam("idCaminhao") Integer idCaminhao,
+    public ResponseEntity<CaminhaoDTO> update(@RequestParam("idCaminhao") Integer idCaminhao,
                                               @RequestParam("Quantidade de gasolina") Integer gasolina)
             throws RegraDeNegocioException {
 
@@ -53,17 +54,16 @@ public class CaminhaoController implements CaminhaoControllerDoc {
     }
 
     @DeleteMapping
-    public ResponseEntity<Void> delete(@RequestParam("idColaborador") Integer idColaborador,
-                                       @RequestParam("idCaminhao") Integer idCaminhao) throws RegraDeNegocioException {
+    public ResponseEntity<Void> delete(@RequestParam("idCaminhao") Integer idCaminhao) throws RegraDeNegocioException {
 
         caminhaoService.deletar(idCaminhao);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping("/listar-por-colaborador")
-    public ResponseEntity<List<CaminhaoDTO>> listByIdUser(@RequestParam("idColaborador") Integer idColaborador)
+    @GetMapping("/listar-por-usuario")
+    public ResponseEntity<List<CaminhaoDTO>> listByIdUser(@RequestParam("idUsuario") Integer idUsuario)
             throws RegraDeNegocioException {
-        return new ResponseEntity<>(caminhaoService.listarPorIdColaborador(idColaborador), HttpStatus.OK);
+        return new ResponseEntity<>(caminhaoService.listarPorIdColaborador(idUsuario), HttpStatus.OK);
     }
 
     @GetMapping("/listar-disponiveis")

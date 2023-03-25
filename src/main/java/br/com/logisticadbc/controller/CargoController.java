@@ -1,5 +1,6 @@
 package br.com.logisticadbc.controller;
 
+import br.com.logisticadbc.controller.doc.CargoControllerDoc;
 import br.com.logisticadbc.dto.in.CargoCreateDTO;
 import br.com.logisticadbc.dto.out.CargoDTO;
 import br.com.logisticadbc.dto.out.CargosDeUsuarioDTO;
@@ -20,7 +21,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/cargo")
-public class CargoController {
+public class CargoController implements CargoControllerDoc {
 
     private final CargoService cargoService;
 

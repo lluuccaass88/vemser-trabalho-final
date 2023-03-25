@@ -65,7 +65,7 @@ public class UsuarioService {
             usuarioRepository.save(usuarioEntity);
 
             // TODO AJEITAR EMAIL SERVICE
-//          emailService.enviarEmailBoasVindasColaborador(usuarioEntity); - ESTA COMENTADO POIS VAI BUGAR NO CARGO
+          emailService.enviarEmailBoasVindas(usuarioEntity);
 
 
             return objectMapper.convertValue(usuarioEntity, UsuarioDTO.class);
@@ -147,7 +147,6 @@ public class UsuarioService {
         );
     }
 
-    // TODO listarPorCargoEStatus - ESTA EM CONTRUÇÃO (MARCKLEN)
     public PageDTO<UsuarioDTO> listarPorCargoEStatus(String cargo, StatusGeral status, Integer pagina, Integer tamanho) {
         Pageable solicitacaoPagina = PageRequest.of(pagina, tamanho);
 
@@ -176,7 +175,6 @@ public class UsuarioService {
                 .toList();
     }
 
-    // TODO gerarRelatorioCompleto
         public PageDTO<UsuarioCompletoDTO> gerarRelatorioCompleto(Integer pagina, Integer tamanho) { //ORDENAR POR CARGO
 
             Pageable solicitacaoPagina = PageRequest.of(pagina, tamanho);
@@ -264,4 +262,13 @@ public class UsuarioService {
         Optional<UsuarioEntity> usuarioOptional = usuarioRepository.findById(getIdLoggedUser());
         return objectMapper.convertValue(usuarioOptional, UsuarioDTO.class);
     }
+
+    public void ativo(LoginDTO loginDTO) throws RegraDeNegocioException {
+        UsuarioEntity usuarioEntity = usuarioRepository.findByLogin(loginDTO.getLogin()).get();
+
+        if (usuarioEntity.getStatus().equals(StatusGeral.INATIVO)) {
+            throw new RegraDeNegocioException("Usuário inativo!");
+        }
+    } 
+
 }

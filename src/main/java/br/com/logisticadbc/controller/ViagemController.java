@@ -39,32 +39,32 @@ public class ViagemController implements ViagemControllerDoc {
     }
 
     @PostMapping
-    public ResponseEntity<ViagemDTO> create(@RequestParam("idMotorista") Integer idUsuario,
+    public ResponseEntity<ViagemDTO> create(@RequestParam("idMotorista") Integer idMotorista,
                                             @Valid @RequestBody ViagemCreateDTO viagemCreateDTO)
             throws RegraDeNegocioException {
 
-        return new ResponseEntity<>(viagemService.criar(idUsuario, viagemCreateDTO), HttpStatus.CREATED);
+        return new ResponseEntity<>(viagemService.criar(idMotorista, viagemCreateDTO), HttpStatus.CREATED);
     }
 
     @PutMapping
-    public ResponseEntity<ViagemDTO> update(@RequestParam("idMotorista") Integer idUsuario,
+    public ResponseEntity<ViagemDTO> update(@RequestParam("idMotorista") Integer idMotorista,
                                             @RequestParam("idViagem") Integer idViagem,
                                             @Valid @RequestBody ViagemUpdateDTO viagemUpdateDTO)
             throws RegraDeNegocioException {
 
-        return new ResponseEntity<>(viagemService.editar(idUsuario, idViagem, viagemUpdateDTO), HttpStatus.OK);
+        return new ResponseEntity<>(viagemService.editar(idMotorista, idViagem, viagemUpdateDTO), HttpStatus.OK);
     }
 
     @DeleteMapping
-    public ResponseEntity<Void> delete(@RequestParam("idMotorista") Integer idUsuario,
+    public ResponseEntity<Void> delete(@RequestParam("idMotorista") Integer idMotorista,
                                        @RequestParam("idViagem") Integer idViagem)
             throws RegraDeNegocioException {
 
-        viagemService.finalizar(idUsuario, idViagem);
+        viagemService.finalizar(idMotorista, idViagem);
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/listar-por-motorista")
+    @GetMapping("/listar-por-idUsuario")
     public ResponseEntity<List<ViagemDTO>> listByIdUser(@RequestParam("idMotorista") Integer idMotorista)
             throws RegraDeNegocioException {
         return new ResponseEntity<>(viagemService.listarPorIdMotorista(idMotorista), HttpStatus.OK);

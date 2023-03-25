@@ -1,5 +1,6 @@
 package br.com.logisticadbc.controller;
 
+import br.com.logisticadbc.controller.doc.AuthControllerDoc;
 import br.com.logisticadbc.dto.in.LoginDTO;
 import br.com.logisticadbc.dto.out.UsuarioDTO;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
@@ -16,12 +17,14 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/auth")
-public class AuthController {
+public class AuthController implements AuthControllerDoc {
 
     private final UsuarioService usuarioService;
 
     @PostMapping
     public ResponseEntity<String> auth(@RequestBody @Valid LoginDTO loginDTO) throws RegraDeNegocioException {
+        // verifica se usuário está ativo
+        usuarioService.ativo(loginDTO);
         // adiciona mecanismo de autenticação para verificar se o usuário é válido e retornar o token
         return new ResponseEntity<>(usuarioService.autenticar(loginDTO), HttpStatus.ACCEPTED);
     }
