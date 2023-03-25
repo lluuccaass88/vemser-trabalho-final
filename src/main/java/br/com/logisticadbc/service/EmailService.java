@@ -27,6 +27,9 @@ public class EmailService {
     private String from;
     private final Configuration fmConfiguration;
     private final JavaMailSender emailSender;
+    private static String NOME_LOG = "TruckLog";
+    private static String EMAIL_LOG = "trucklog@email.com";
+
 
     public void enviarEmailBoasVindas(UsuarioEntity usuario) throws RegraDeNegocioException {
         MimeMessage mimeMessage = emailSender.createMimeMessage();
@@ -53,8 +56,8 @@ public class EmailService {
         dados.put("nomeUsuario", usuario.getNome());
         dados.put("emailUsuario", usuario.getEmail());
         dados.put("cargoUsuario", usuario.getCargos());
-        dados.put("emailContato", "heroes.logistica@email.com");
-        dados.put("nome", "Heroes Logística");
+        dados.put("emailContato", EMAIL_LOG);
+        dados.put("nome", NOME_LOG);
 
         Template template = fmConfiguration.getTemplate("email-template-boas-vindas-usuario.ftl");
 
@@ -90,8 +93,8 @@ public class EmailService {
         dados.put("nomeUsuario", nomeUsuario);
         dados.put("mensagem", mensagem);
         dados.put("rota", rota);
-        dados.put("emailContato", "heroes.logistica@email.com");
-        dados.put("nome", "Heroes Logística");
+        dados.put("emailContato", EMAIL_LOG);
+        dados.put("nome", NOME_LOG);
 
         Template template = fmConfiguration.getTemplate("email-template-viagem.ftl");
         String html = FreeMarkerTemplateUtils.processTemplateIntoString(template, dados);

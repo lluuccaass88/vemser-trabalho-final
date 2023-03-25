@@ -47,7 +47,7 @@ public interface CaminhaoControllerDoc {
             }
     )
     @PostMapping
-    ResponseEntity<CaminhaoDTO> create(@RequestParam Integer idUsuario, @Valid @RequestBody CaminhaoCreateDTO caminhaoCreateDTO)
+    ResponseEntity<CaminhaoDTO> create(@Valid @RequestBody CaminhaoCreateDTO caminhaoCreateDTO)
             throws RegraDeNegocioException;
 
     @Operation(summary = "Abastecer caminhão", description = "Abastecer o caminhão")

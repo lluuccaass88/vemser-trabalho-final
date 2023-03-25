@@ -38,7 +38,7 @@ public class CaminhaoController implements CaminhaoControllerDoc {
     }
 
     @PostMapping
-    public ResponseEntity<CaminhaoDTO> create(@RequestParam("idUsuario") Integer idUsuario, @Valid @RequestBody CaminhaoCreateDTO caminhaoCreateDTO)
+    public ResponseEntity<CaminhaoDTO> create(@Valid @RequestBody CaminhaoCreateDTO caminhaoCreateDTO)
             throws RegraDeNegocioException {
 
         Integer idLoggedUser = usuarioService.getIdLoggedUser();

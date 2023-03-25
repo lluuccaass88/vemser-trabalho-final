@@ -29,8 +29,7 @@ public class SecurityConfiguration {
                 .cors().and()
                 .csrf().disable()
                 .authorizeHttpRequests((authz) -> authz
-                        // TODO metodos por ordem de aparição no SWAGGER
-                        // viagem, usuario, rota, posto, cargo e caminhao
+
                         .antMatchers(HttpMethod.GET, "/viagem/**").hasRole("ADMIN")
                         .antMatchers(HttpMethod.POST, "/viagem/**").hasAnyRole("ADMIN", "MOTORISTA")
                         .antMatchers(HttpMethod.PUT, "/viagem/**").hasAnyRole("ADMIN", "MOTORISTA")
@@ -57,6 +56,9 @@ public class SecurityConfiguration {
                         .antMatchers(HttpMethod.POST, "/caminhao/**").hasAnyRole("ADMIN", "COLABORADOR")
                         .antMatchers(HttpMethod.PUT, "/caminhao/**").hasAnyRole("ADMIN", "MOTORISTA")
                         .antMatchers(HttpMethod.DELETE, "/caminhao/**").hasRole("ADMIN")
+
+                        .antMatchers("/auth/usuario-logado").hasAnyRole("ADMIN", "MOTORISTA", "COLABORADOR")
+
                         .anyRequest().authenticated());
 
         http.addFilterBefore(new TokenAuthenticationFilter(tokenService),
