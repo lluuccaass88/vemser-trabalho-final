@@ -36,10 +36,10 @@ public class CaminhaoController implements CaminhaoControllerDoc {
     }
 
     @PostMapping
-    public ResponseEntity<CaminhaoDTO> create(@Valid @RequestBody CaminhaoCreateDTO caminhaoCreateDTO)
+    public ResponseEntity<CaminhaoDTO> create(@RequestParam("idUsuario") Integer idUsuario, @Valid @RequestBody CaminhaoCreateDTO caminhaoCreateDTO)
             throws RegraDeNegocioException {
 
-        return new ResponseEntity<>(caminhaoService.criar(idColaborador, caminhaoCreateDTO), HttpStatus.CREATED);
+        return new ResponseEntity<>(caminhaoService.criar(idUsuario, caminhaoCreateDTO), HttpStatus.CREATED);
     }
 
     @PutMapping("/abastecer")
