@@ -4,11 +4,9 @@ import br.com.logisticadbc.controller.doc.ViagemControllerDoc;
 import br.com.logisticadbc.dto.in.ViagemCreateDTO;
 import br.com.logisticadbc.dto.in.ViagemUpdateDTO;
 import br.com.logisticadbc.dto.out.PageDTO;
-import br.com.logisticadbc.dto.out.RotaDTO;
 import br.com.logisticadbc.dto.out.ViagemDTO;
 import br.com.logisticadbc.entity.enums.StatusViagem;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
-import br.com.logisticadbc.service.ValidacaoService;
 import br.com.logisticadbc.service.ViagemService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +26,6 @@ import java.util.List;
 public class ViagemController implements ViagemControllerDoc {
 
     private final ViagemService viagemService;
-    private final ValidacaoService validacaoService;
 
     @GetMapping
     public ResponseEntity<List<ViagemDTO>> listAll() throws RegraDeNegocioException {
@@ -42,35 +39,32 @@ public class ViagemController implements ViagemControllerDoc {
     }
 
     @PostMapping
-    public ResponseEntity<ViagemDTO> create(@RequestParam("idMotorista") Integer idUsuario,
+    public ResponseEntity<ViagemDTO> create(@RequestParam("idMotorista") Integer idMotorista,
                                             @Valid @RequestBody ViagemCreateDTO viagemCreateDTO)
             throws RegraDeNegocioException {
 
-        validacaoService.validacao(idUsuario, "motorista");
-        return new ResponseEntity<>(viagemService.criar(idUsuario,viagemCreateDTO), HttpStatus.CREATED);
+        return new ResponseEntity<>(viagemService.criar(idMotorista, viagemCreateDTO), HttpStatus.CREATED);
     }
 
     @PutMapping
-    public ResponseEntity<ViagemDTO> update(@RequestParam("idMotorista") Integer idUsuario,
+    public ResponseEntity<ViagemDTO> update(@RequestParam("idMotorista") Integer idMotorista,
                                             @RequestParam("idViagem") Integer idViagem,
                                             @Valid @RequestBody ViagemUpdateDTO viagemUpdateDTO)
             throws RegraDeNegocioException {
 
-        validacaoService.validacao(idUsuario, "motorista");
-        return new ResponseEntity<>(viagemService.editar(idUsuario, idViagem, viagemUpdateDTO), HttpStatus.OK);
+        return new ResponseEntity<>(viagemService.editar(idMotorista, idViagem, viagemUpdateDTO), HttpStatus.OK);
     }
 
     @DeleteMapping
-    public ResponseEntity<Void> delete(@RequestParam("idMotorista") Integer idUsuario,
+    public ResponseEntity<Void> delete(@RequestParam("idMotorista") Integer idMotorista,
                                        @RequestParam("idViagem") Integer idViagem)
             throws RegraDeNegocioException {
 
-        validacaoService.validacao(idUsuario, "motorista");
-        viagemService.finalizar(idUsuario, idViagem);
-        return ResponseEntity.ok().build();
+        viagemService.finalizar(idMotorista, idViagem);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping("/listar-por-motorista")
+    @GetMapping("/listar-por-idUsuario")
     public ResponseEntity<List<ViagemDTO>> listByIdUser(@RequestParam("idMotorista") Integer idMotorista)
             throws RegraDeNegocioException {
         return new ResponseEntity<>(viagemService.listarPorIdMotorista(idMotorista), HttpStatus.OK);
@@ -91,7 +85,7 @@ public class ViagemController implements ViagemControllerDoc {
 
     @GetMapping("/listar-por-status/paginacao")
     public ResponseEntity<PageDTO<ViagemDTO>> findByStatusOrderByDataBegun(
-            @RequestParam(value = "status") StatusViagem statusViagem ,
+            @RequestParam(value = "status") StatusViagem statusViagem,
             @RequestParam(value = "page") Integer pagina,
             @RequestParam(value = "size") Integer tamanho) {
         return new ResponseEntity<>(

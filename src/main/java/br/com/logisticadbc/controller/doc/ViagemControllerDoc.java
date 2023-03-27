@@ -5,12 +5,10 @@ import br.com.logisticadbc.dto.in.ViagemUpdateDTO;
 import br.com.logisticadbc.dto.out.PageDTO;
 import br.com.logisticadbc.dto.out.ViagemDTO;
 import br.com.logisticadbc.entity.enums.StatusViagem;
-import br.com.logisticadbc.exceptions.BancoDeDadosException;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,7 +37,7 @@ public interface ViagemControllerDoc {
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-    @GetMapping("/buscar-por-id/{idViagem}")
+    @GetMapping("/buscar-por-id")
     ResponseEntity<ViagemDTO> findById(@RequestParam("idViagem") Integer idViagem)
             throws RegraDeNegocioException;
 
@@ -51,10 +49,10 @@ public interface ViagemControllerDoc {
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-    @PostMapping("/{idMotorista}")
-    ResponseEntity<ViagemDTO> create(@RequestParam("idMotorista") Integer idUsuario,
-                                     @Valid @RequestBody ViagemCreateDTO viagemCreateDTO)
-    throws RegraDeNegocioException;
+    @PostMapping
+    public ResponseEntity<ViagemDTO> create(@RequestParam("idMotorista") Integer idMotorista,
+                                            @Valid @RequestBody ViagemCreateDTO viagemCreateDTO)
+            throws RegraDeNegocioException;
 
     @Operation(summary = "Editar Viagem", description = "Edita uma Viagem no banco de dados")
     @ApiResponses(
@@ -64,10 +62,10 @@ public interface ViagemControllerDoc {
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-    @PutMapping("/{idMotorista}/{idViagem}")
-    ResponseEntity<ViagemDTO> update(@RequestParam("idMotorista") Integer idUsuario,
-                                     @RequestParam("idViagem") Integer idViagem,
-                                     @Valid @RequestBody ViagemUpdateDTO viagemUpdateDTO)
+    @PutMapping
+    public ResponseEntity<ViagemDTO> update(@RequestParam("idMotorista") Integer idMotorista,
+                                            @RequestParam("idViagem") Integer idViagem,
+                                            @Valid @RequestBody ViagemUpdateDTO viagemUpdateDTO)
             throws RegraDeNegocioException;
 
     @Operation(summary = "Finalizar Viagem", description = "Realiza um soft delete da viagem")
@@ -78,8 +76,8 @@ public interface ViagemControllerDoc {
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-    @DeleteMapping("/{idMotorista}/{idViagem}")
-    ResponseEntity<Void> delete(@RequestParam("idMotorista") Integer idUsuario,
+    @DeleteMapping
+    ResponseEntity<Void> delete(@RequestParam("idMotorista") Integer idMotorista,
                                 @RequestParam("idViagem") Integer idViagem)
             throws RegraDeNegocioException;
 
@@ -92,7 +90,7 @@ public interface ViagemControllerDoc {
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-    @GetMapping("/listar-por-motorista/{idMotorista}")
+    @GetMapping("/listar-por-motorista")
     ResponseEntity<List<ViagemDTO>> listByIdUser(@RequestParam("idMotorista") Integer idMotorista)
     throws RegraDeNegocioException;
 
@@ -105,7 +103,7 @@ public interface ViagemControllerDoc {
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-    @GetMapping("/listar-por-rota/{idRota}")
+    @GetMapping("/listar-por-rota")
     ResponseEntity<List<ViagemDTO>> listByIdRote(@RequestParam(value = "idRota") Integer idRota)
             throws RegraDeNegocioException;
 
@@ -118,7 +116,7 @@ public interface ViagemControllerDoc {
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-    @GetMapping("/listar-por-caminhao/{idCaminhao}")
+    @GetMapping("/listar-por-caminhao")
     ResponseEntity<List<ViagemDTO>> listByIdTruck(@RequestParam(value = "idCaminhao") Integer idCaminhao)
             throws RegraDeNegocioException;
 

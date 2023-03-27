@@ -2,13 +2,10 @@ package br.com.logisticadbc.controller.doc;
 
 import br.com.logisticadbc.dto.in.PostoCreateDTO;
 import br.com.logisticadbc.dto.out.PostoDTO;
-import br.com.logisticadbc.dto.out.RotaDTO;
-import br.com.logisticadbc.exceptions.BancoDeDadosException;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,7 +14,7 @@ import java.util.List;
 
 public interface PostoControllerDoc {
 
-    @Operation(summary = "Listar Postos", description = "Lista todas os postos no banco de dados")
+    @Operation(summary = "Listar Postos", description = "Lista todos os postos no banco de dados")
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "200", description = "Retorna uma lista de postos"),
@@ -40,7 +37,7 @@ public interface PostoControllerDoc {
     @GetMapping("/buscar-por-id")
     ResponseEntity<PostoDTO> findById(@RequestParam("idPosto") Integer idPosto) throws RegraDeNegocioException;
 
-    @Operation(summary = "Adicionar Posto", description = "Adicionar uma viagem no banco de dados")
+    @Operation(summary = "Adicionar Posto", description = "Adicionar um Posto no banco de dados")
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "201", description = "Retorna os dados do posto adicionado"),
@@ -49,8 +46,7 @@ public interface PostoControllerDoc {
             }
     )
     @PostMapping
-    ResponseEntity<PostoDTO> create(@RequestParam("idColaborador") Integer idColaborador,
-                                           @Valid @RequestBody PostoCreateDTO postoCreateDTO)
+    public ResponseEntity<PostoDTO> create(@Valid @RequestBody PostoCreateDTO postoCreateDTO)
             throws RegraDeNegocioException;
 
     @Operation(summary = "Editar Posto", description = "Edita um posto do banco de dados")
@@ -62,25 +58,23 @@ public interface PostoControllerDoc {
             }
     )
     @PutMapping
-    ResponseEntity<PostoDTO> update(@RequestParam("idColaborador") Integer idColaborador,
-                                           @RequestParam("idPosto") Integer idPosto,
+    public ResponseEntity<PostoDTO> update(@RequestParam("idPosto") Integer idPosto,
                                            @Valid @RequestBody PostoCreateDTO postoCreateDTO)
             throws RegraDeNegocioException;
 
     @Operation(summary = "Deletar Posto", description = "Deleta um posto do banco de dados")
     @ApiResponses(
             value = {
-                    @ApiResponse(responseCode = "204", description = "Retorno positivo ao deletar a viagem"),
+                    @ApiResponse(responseCode = "204", description = "Retorno positivo ao deletar posto"),
                     @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
     @DeleteMapping
-    ResponseEntity<Void> delete(@RequestParam("idColaborador") Integer idColaborador,
-                                @RequestParam("idPosto") Integer idPosto) throws RegraDeNegocioException ;
+    public ResponseEntity<Void> delete(@RequestParam("idPosto") Integer idPosto) throws RegraDeNegocioException;
 
-    @Operation(summary = "Listar postos de um colaborador",
-            description = "Lista todos postos de um colaborador")
+    @Operation(summary = "Listar postos de um usuario",
+            description = "Lista todos postos de um usuario")
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "200", description = "Retorna lista com postos"),
@@ -88,8 +82,8 @@ public interface PostoControllerDoc {
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-    @GetMapping("/listar-por-colaborador")
-    ResponseEntity<List<PostoDTO>> listByIdUser(@RequestParam("idColaborador") Integer idColaborador)
+    @GetMapping("/listar-por-usuario")
+    public ResponseEntity<List<PostoDTO>> listByIdUser(@RequestParam("idUsuario") Integer idUsuario)
             throws RegraDeNegocioException;
 
     @Operation(summary = "Listar postos ativos",

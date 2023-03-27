@@ -5,12 +5,11 @@ import br.com.logisticadbc.dto.in.ViagemUpdateDTO;
 import br.com.logisticadbc.dto.out.PageDTO;
 import br.com.logisticadbc.dto.out.ViagemDTO;
 import br.com.logisticadbc.entity.CaminhaoEntity;
-import br.com.logisticadbc.entity.MotoristaEntity;
 import br.com.logisticadbc.entity.RotaEntity;
+import br.com.logisticadbc.entity.UsuarioEntity;
 import br.com.logisticadbc.entity.ViagemEntity;
 import br.com.logisticadbc.entity.enums.StatusCaminhao;
 import br.com.logisticadbc.entity.enums.StatusGeral;
-import br.com.logisticadbc.entity.enums.StatusMotorista;
 import br.com.logisticadbc.entity.enums.StatusViagem;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.repository.ViagemRepository;
@@ -29,25 +28,38 @@ import java.util.List;
 @Service
 public class ViagemService {
     private final ViagemRepository viagemRepository;
-    private final MotoristaService motoristaService;
+    private final UsuarioService usuarioService;
     private final CaminhaoService caminhaoService;
     private final EmailService emailService;
     private final RotaService rotaService;
     private final ObjectMapper objectMapper;
 
-    public ViagemDTO criar(Integer idUsuario, ViagemCreateDTO viagemCreateDTO) throws RegraDeNegocioException {
-        MotoristaEntity motoristaEncontrado = motoristaService.buscarPorId(idUsuario);
+    public ViagemDTO criar(Integer idMotorista, ViagemCreateDTO viagemCreateDTO) throws RegraDeNegocioException {
+        UsuarioEntity usuarioEncontrado = usuarioService.buscarPorId(idMotorista);
         CaminhaoEntity caminhaoEncontrado = caminhaoService.buscarPorId(viagemCreateDTO.getIdCaminhao());
         RotaEntity rotaEncontrada = rotaService.buscarPorId(viagemCreateDTO.getIdRota());
 
         // Verificações
-        if (caminhaoEncontrado.getStatus().equals(StatusGeral.INATIVO)
+        boolean motoristaJaEmViagem = usuarioEncontrado.getViagens()
+                .stream()
+                .anyMatch(viagem -> viagem.getStatusViagem().equals(StatusViagem.EM_ANDAMENTO));
+
+        boolean isMotorista = usuarioEncontrado.getCargos()
+                .stream()
+                .anyMatch(cargo -> cargo.getNome().equals("ROLE_MOTORISTA"));
+
+        if (!isMotorista) {
+            throw new RegraDeNegocioException("Usuário não é motorista!");
+
+        } else if (motoristaJaEmViagem) {
+            throw new RegraDeNegocioException("Motorista já em viagem!");
+
+        } else if (caminhaoEncontrado.getStatus().equals(StatusGeral.INATIVO)
                 || rotaEncontrada.getStatus().equals(StatusGeral.INATIVO)) {
             throw new RegraDeNegocioException("Entidades informadas inativas!");
 
-        } else if (caminhaoEncontrado.getStatusCaminhao().equals(StatusCaminhao.EM_VIAGEM)
-                || motoristaEncontrado.getStatusMotorista().equals(StatusMotorista.EM_ESTRADA)) {
-            throw new RegraDeNegocioException("Entidades informadas indisponíveis!");
+        } else if (caminhaoEncontrado.getStatusCaminhao().equals(StatusCaminhao.EM_VIAGEM)) {
+            throw new RegraDeNegocioException("Caminhão informado indisponível!");
 
         } else if (viagemCreateDTO.getDataFim().isBefore(viagemCreateDTO.getDataInicio())) {
             throw new RegraDeNegocioException("Data final não pode ser antes da data inicial!");
@@ -55,12 +67,11 @@ public class ViagemService {
         try {
             ViagemEntity viagemEntity = objectMapper.convertValue(viagemCreateDTO, ViagemEntity.class);
             viagemEntity.setStatusViagem(StatusViagem.EM_ANDAMENTO);
-            viagemEntity.setMotorista(motoristaEncontrado);
+            viagemEntity.setUsuario(usuarioEncontrado);
             viagemEntity.setCaminhao(caminhaoEncontrado);
             viagemEntity.setRota(rotaEncontrada);
 
-            motoristaService.mudarStatus(motoristaEncontrado, StatusMotorista.EM_ESTRADA);
-            motoristaEncontrado.getViagens().add(viagemEntity);
+            usuarioEncontrado.getViagens().add(viagemEntity);
             caminhaoService.mudarStatus(caminhaoEncontrado, StatusCaminhao.EM_VIAGEM);
             caminhaoEncontrado.getViagens().add(viagemEntity);
             rotaEncontrada.getViagens().add(viagemEntity);
@@ -68,11 +79,11 @@ public class ViagemService {
             viagemRepository.save(viagemEntity);
 
             ViagemDTO viagemDTO = objectMapper.convertValue(viagemEntity, ViagemDTO.class);
-            viagemDTO.setIdUsuario(idUsuario);
+            viagemDTO.setIdUsuario(idMotorista);
             viagemDTO.setIdCaminhao(caminhaoEncontrado.getIdCaminhao());
             viagemDTO.setIdRota(rotaEncontrada.getIdRota());
 
-            emailService.enviarEmailViagemMotorista(rotaEncontrada, motoristaEncontrado);
+            emailService.enviarEmailViagem(rotaEncontrada,viagemEntity, usuarioEncontrado);
 
             return viagemDTO;
 
@@ -85,20 +96,22 @@ public class ViagemService {
             throws RegraDeNegocioException {
         ViagemEntity viagemEncontrada = buscarPorId(idViagem);
 
-        if (!viagemEncontrada.getMotorista().getIdUsuario().equals(idMotorista)){
+        if (viagemEncontrada.getStatusViagem().equals(StatusViagem.FINALIZADA)) {
+            throw new RegraDeNegocioException("Permissão negada, não pode editar viagem já finalizada!");
+
+        } else if (!viagemEncontrada.getUsuario().getIdUsuario().equals(idMotorista)){
             throw new RegraDeNegocioException("Permissão negada, motorista não criou a viagem!");
 
         } else if (viagemUpdateDTO.getDataFim().isBefore(viagemUpdateDTO.getDataInicio())) {
             throw new RegraDeNegocioException("Data final não pode ser antes da data inicial!");
         }
         try {
-
             viagemEncontrada.setDescricao(viagemUpdateDTO.getDescricao());
             viagemEncontrada.setDataInicio(viagemUpdateDTO.getDataInicio());
             viagemEncontrada.setDataFim(viagemUpdateDTO.getDataFim());
 
-            MotoristaEntity motoristaEncontrado = motoristaService.buscarPorId(
-                    viagemEncontrada.getMotorista().getIdUsuario());
+            UsuarioEntity motoristaEncontrado = usuarioService.buscarPorId(
+                    viagemEncontrada.getUsuario().getIdUsuario());
             motoristaEncontrado.getViagens().add(viagemEncontrada);
 
             CaminhaoEntity caminhaoEncontrado = caminhaoService.buscarPorId(
@@ -125,17 +138,15 @@ public class ViagemService {
     public void finalizar(Integer idMotorista, Integer idViagem) throws RegraDeNegocioException {
         ViagemEntity viagemEncontrada = buscarPorId(idViagem);
 
-        if (!viagemEncontrada.getMotorista().getIdUsuario().equals(idMotorista)){
+        if (!viagemEncontrada.getUsuario().getIdUsuario().equals(idMotorista)){
             throw new RegraDeNegocioException("Permissão negada, motorista não criou a viagem!");
         }
         try {
             viagemEncontrada.setStatusViagem(StatusViagem.FINALIZADA);
 
-            MotoristaEntity motoristaEncontrado = motoristaService.buscarPorId(
-                    viagemEncontrada.getMotorista().getIdUsuario());
-            motoristaEncontrado.getViagens().add(viagemEncontrada);
-            motoristaService.mudarStatus(motoristaEncontrado, StatusMotorista.DISPONIVEL);
-
+            UsuarioEntity usuarioEncontrado = usuarioService.buscarPorId(
+                    viagemEncontrada.getUsuario().getIdUsuario());
+            usuarioEncontrado.getViagens().add(viagemEncontrada);
 
             CaminhaoEntity caminhaoEncontrado = caminhaoService.buscarPorId(
                     viagemEncontrada.getCaminhao().getIdCaminhao());
@@ -158,7 +169,7 @@ public class ViagemService {
                 .stream()
                 .map(viagem -> {
                     ViagemDTO viagemDTO = objectMapper.convertValue(viagem, ViagemDTO.class);
-                    viagemDTO.setIdUsuario(viagem.getMotorista().getIdUsuario());
+                    viagemDTO.setIdUsuario(viagem.getUsuario().getIdUsuario());
                     viagemDTO.setIdCaminhao(viagem.getCaminhao().getIdCaminhao());
                     viagemDTO.setIdRota(viagem.getRota().getIdRota());
                     return viagemDTO;
@@ -175,7 +186,7 @@ public class ViagemService {
             ViagemDTO viagemDTO = objectMapper.convertValue(viagemRecuperada, ViagemDTO.class);
             viagemDTO.setIdRota(viagemRecuperada.getRota().getIdRota());
             viagemDTO.setIdCaminhao(viagemRecuperada.getCaminhao().getIdCaminhao());
-            viagemDTO.setIdUsuario(viagemRecuperada.getMotorista().getIdUsuario());
+            viagemDTO.setIdUsuario(viagemRecuperada.getUsuario().getIdUsuario());
             return viagemDTO;
 
         } catch (Exception e) {
@@ -184,9 +195,9 @@ public class ViagemService {
     }
 
     public List<ViagemDTO> listarPorIdMotorista(Integer idMotorista) throws RegraDeNegocioException {
-        MotoristaEntity motoristaEncontrado = motoristaService.buscarPorId(idMotorista);
+        UsuarioEntity usuarioEncontrado = usuarioService.buscarPorId(idMotorista);
 
-        return motoristaEncontrado.getViagens()
+        return usuarioEncontrado.getViagens()
                 .stream()
                 .map(viagem -> {
                     ViagemDTO viagemDTO = objectMapper.convertValue(viagem, ViagemDTO.class);
@@ -205,7 +216,7 @@ public class ViagemService {
                 .stream()
                 .map(viagem -> {
                     ViagemDTO viagemDTO = objectMapper.convertValue(viagem, ViagemDTO.class);
-                    viagemDTO.setIdUsuario(viagem.getMotorista().getIdUsuario());
+                    viagemDTO.setIdUsuario(viagem.getUsuario().getIdUsuario());
                     viagemDTO.setIdCaminhao(viagem.getCaminhao().getIdCaminhao());
                     viagemDTO.setIdRota(idRota);
                     return viagemDTO;
@@ -220,7 +231,7 @@ public class ViagemService {
                 .stream()
                 .map(viagem -> {
                     ViagemDTO viagemDTO = objectMapper.convertValue(viagem, ViagemDTO.class);
-                    viagemDTO.setIdUsuario(viagem.getMotorista().getIdUsuario());
+                    viagemDTO.setIdUsuario(viagem.getUsuario().getIdUsuario());
                     viagemDTO.setIdRota(viagem.getRota().getIdRota());
                     viagemDTO.setIdCaminhao(idCaminhao);
                     return viagemDTO;
@@ -241,7 +252,7 @@ public class ViagemService {
                 .stream()
                 .map(viagem -> {
                     ViagemDTO viagemDTO = objectMapper.convertValue(viagem, ViagemDTO.class);
-                    viagemDTO.setIdUsuario(viagem.getMotorista().getIdUsuario());
+                    viagemDTO.setIdUsuario(viagem.getUsuario().getIdUsuario());
                     viagemDTO.setIdCaminhao(viagem.getCaminhao().getIdCaminhao());
                     viagemDTO.setIdRota(viagem.getRota().getIdRota());
                 return viagemDTO;

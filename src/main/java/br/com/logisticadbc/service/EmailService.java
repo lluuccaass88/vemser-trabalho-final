@@ -1,9 +1,8 @@
-
 package br.com.logisticadbc.service;
 
-import br.com.logisticadbc.entity.ColaboradorEntity;
-import br.com.logisticadbc.entity.MotoristaEntity;
 import br.com.logisticadbc.entity.RotaEntity;
+import br.com.logisticadbc.entity.UsuarioEntity;
+import br.com.logisticadbc.entity.ViagemEntity;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -29,57 +28,37 @@ public class EmailService {
     private String from;
     private final Configuration fmConfiguration;
     private final JavaMailSender emailSender;
+    private static String NOME_LOG = "TruckLog";
+    private static String EMAIL_LOG = "trucklog@email.com";
 
-    public void enviarEmailBoasVindasColabotador(ColaboradorEntity colaborador) throws RegraDeNegocioException {
+
+    public void enviarEmailBoasVindas(UsuarioEntity usuario) throws RegraDeNegocioException {
         MimeMessage mimeMessage = emailSender.createMimeMessage();
         Integer op = 2;
         try {
+            String mensagem = null;
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
             mimeMessageHelper.setFrom(from);
-            mimeMessageHelper.setTo(colaborador.getEmail());
-            mimeMessageHelper.setSubject("Bem vindo ao Heroes Logística");
+            mimeMessageHelper.setTo(usuario.getEmail());
+            mimeMessageHelper.setSubject("Bem vindo ao " + NOME_LOG);
 
-            String mensagem = "Contamos com a sua ajuda para cada vez mais aproximarmos pessoas por meio dos nossos serviços!";
-
-            mimeMessageHelper.setText(getBoasVindasTemplate(colaborador.getEmail(), colaborador.getNome(), mensagem, op), true);
+            mimeMessageHelper.setText(getBoasVindasTemplate(usuario, op), true);
 
             emailSender.send(mimeMessageHelper.getMimeMessage());
         } catch (MessagingException | IOException | TemplateException e) {
-            throw new RegraDeNegocioException("Erro ao enviar email para o motorsita: " + colaborador.getNome() + e.getMessage());
+            throw new RegraDeNegocioException("Erro ao enviar email para o motorsita: " + usuario.getNome() + e.getMessage());
         }
     }
 
-    public void enviarEmailBoasVindasMotorista(MotoristaEntity motorista) throws RegraDeNegocioException {
-        MimeMessage mimeMessage = emailSender.createMimeMessage();
-        Integer op = 2;
-        try {
-            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
-            mimeMessageHelper.setFrom(from);
-            mimeMessageHelper.setTo(motorista.getEmail());
-            mimeMessageHelper.setSubject("Bem vindo ao Heroes Logística");
-
-            String mensagem = "E isto não seria possivel sem a contribuição dos nossos motoristas, " +
-                    "que são peça chave neste processo!";
-
-            mimeMessageHelper.setText(getBoasVindasTemplate(motorista.getEmail(), motorista.getNome(), mensagem, op),
-                    true);
-
-            emailSender.send(mimeMessageHelper.getMimeMessage());
-        } catch (MessagingException | IOException | TemplateException e) {
-            throw new RegraDeNegocioException("Erro ao enviar email para o motorsita: " +
-                    motorista.getNome() + e.getMessage());
-        }
-    }
-
-    private String getBoasVindasTemplate(String emailUsuario, String nomeUsuario, String mensagem, Integer op)
+    private String getBoasVindasTemplate(UsuarioEntity usuario, Integer op)
             throws IOException, TemplateException {
 
         Map<String, Object> dados = new HashMap<>();
-        dados.put("nomeUsuario", nomeUsuario);
-        dados.put("mensagem", mensagem);
-        dados.put("emailUsuario", emailUsuario);
-        dados.put("emailContato", "heroes.logistica@email.com");
-        dados.put("nome", "Heroes Logística");
+        dados.put("nomeUsuario", usuario.getNome());
+        dados.put("emailUsuario", usuario.getEmail());
+        dados.put("cargoUsuario", usuario.getCargos());
+        dados.put("emailContato", EMAIL_LOG);
+        dados.put("nome", NOME_LOG);
 
         Template template = fmConfiguration.getTemplate("email-template-boas-vindas-usuario.ftl");
 
@@ -87,7 +66,7 @@ public class EmailService {
         return html;
     }
 
-    public void enviarEmailViagemMotorista(RotaEntity rota, MotoristaEntity motorista) throws RegraDeNegocioException {
+    public void enviarEmailViagem(RotaEntity rota, ViagemEntity viagem, UsuarioEntity motorista) throws RegraDeNegocioException {
         MimeMessage mimeMessage = emailSender.createMimeMessage();
         Integer op = 2;
         try {
@@ -98,25 +77,26 @@ public class EmailService {
 
             String mensagem = "Foi atribuido a você uma nova viagem. Seguem os dados da viagem: ";
 
-            mimeMessageHelper.setText(getViagemTemplate(rota, motorista.getNome(), mensagem, op), true);
+            mimeMessageHelper.setText(getViagemTemplate(rota, viagem, motorista.getNome(), mensagem, op), true);
 
             emailSender.send(mimeMessageHelper.getMimeMessage());
 
         } catch (MessagingException | IOException | TemplateException e) {
-            throw new RegraDeNegocioException("Erro ao enviar email para o motorsita: " +
+            throw new RegraDeNegocioException("Erro ao enviar email para o motorista: " +
                     motorista.getNome() + e.getMessage());
         }
     }
 
-    private String getViagemTemplate(RotaEntity rota, String nomeUsuario,String mensagem, Integer op)
+    private String getViagemTemplate(RotaEntity rota, ViagemEntity viagem, String nomeUsuario,String mensagem, Integer op)
             throws IOException, TemplateException {
 
         Map<String, Object> dados = new HashMap<>();
         dados.put("nomeUsuario", nomeUsuario);
         dados.put("mensagem", mensagem);
         dados.put("rota", rota);
-        dados.put("emailContato", "heroes.logistica@email.com");
-        dados.put("nome", "Heroes Logística");
+        dados.put("viagem", viagem);
+        dados.put("emailContato", EMAIL_LOG);
+        dados.put("nome", NOME_LOG);
 
         Template template = fmConfiguration.getTemplate("email-template-viagem.ftl");
         String html = FreeMarkerTemplateUtils.processTemplateIntoString(template, dados);

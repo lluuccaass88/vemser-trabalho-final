@@ -3,12 +3,10 @@ package br.com.logisticadbc.controller.doc;
 import br.com.logisticadbc.dto.in.RotaCreateDTO;
 import br.com.logisticadbc.dto.out.RotaComPostosDTO;
 import br.com.logisticadbc.dto.out.RotaDTO;
-import br.com.logisticadbc.exceptions.BancoDeDadosException;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -49,8 +47,7 @@ public interface RotaControllerDoc {
             }
     )
     @PostMapping
-    ResponseEntity<RotaDTO> create(@RequestParam("idColaborador") Integer idUsuario,
-                                          @Valid @RequestBody RotaCreateDTO rotaCreateDTO)
+    public ResponseEntity<RotaDTO> create(@Valid @RequestBody RotaCreateDTO rotaCreateDTO)
             throws RegraDeNegocioException;
 
     @Operation(summary = "Editar Rota", description = "Edita uma rota ao banco de dados")
@@ -62,8 +59,7 @@ public interface RotaControllerDoc {
             }
     )
     @PutMapping
-    ResponseEntity<RotaDTO> update(@RequestParam("idColaborador") Integer idUsuario,
-                                   @RequestParam("idRota") Integer idRota,
+    public ResponseEntity<RotaDTO> update(@RequestParam("idRota") Integer idRota,
                                           @Valid @RequestBody RotaCreateDTO rotaCreateDTO)
             throws RegraDeNegocioException;
 
@@ -76,8 +72,7 @@ public interface RotaControllerDoc {
             }
     )
     @DeleteMapping
-    ResponseEntity<Void> delete(@RequestParam("idColaborador") Integer idUsuario,
-                                @RequestParam("idRota") Integer idRota) throws RegraDeNegocioException;
+    public ResponseEntity<Void> delete(@RequestParam("idRota") Integer idRota) throws RegraDeNegocioException;
 
     @Operation(summary = "Cadastrar Posto na Rota",
             description = "Cadastra posto na rota passando id de ambos")
@@ -89,9 +84,8 @@ public interface RotaControllerDoc {
             }
     )
     @PostMapping("/cadastrar-posto")
-    ResponseEntity<Void> linkEntities(@RequestParam("idColaborador") Integer idUsuario,
-                                      @RequestParam("idRota") Integer idRota,
-                                    @RequestParam("idPosto") Integer idPosto)
+    ResponseEntity<RotaComPostosDTO> linkEntities(@RequestParam("idRota") Integer idRota,
+                                      @RequestParam("idPosto") Integer idPosto)
             throws RegraDeNegocioException;
 
     @Operation(summary = "Listar Postos cadastrados na rota",
@@ -107,8 +101,8 @@ public interface RotaControllerDoc {
     ResponseEntity<RotaComPostosDTO> listLink(@RequestParam("idRota") Integer idRota)
             throws RegraDeNegocioException;
 
-    @Operation(summary = "Listar rotas de um colaborador",
-            description = "Lista todas rotas de um colaborador")
+    @Operation(summary = "Listar rotas de um usuario",
+            description = "Lista todas rotas de um usuario")
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "200", description = "Retorna lista com rotas"),
@@ -116,8 +110,8 @@ public interface RotaControllerDoc {
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-    @GetMapping("/listar-por-colaborador")
-    ResponseEntity<List<RotaDTO>> listByIdUser(@RequestParam("idColaborador") Integer idColaborador)
+    @GetMapping("/listar-por-usuario")
+    public ResponseEntity<List<RotaDTO>> listByIdUser(@RequestParam("idUsuario") Integer idUsuario)
             throws RegraDeNegocioException;
 
     @Operation(summary = "Listar rotas ativas",

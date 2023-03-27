@@ -29,9 +29,11 @@ public class CaminhaoEntity {
     @Column(name = "nivel_combustivel")
     private Integer nivelCombustivel;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status_caminhao")
     private StatusCaminhao statusCaminhao; // 0 - estacionado | 1 - em viagem
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private StatusGeral status; // 0 - INATIVO | 1 - ATIVO
 
@@ -39,7 +41,7 @@ public class CaminhaoEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_usuario", referencedColumnName = "id_usuario")
     @JsonIgnore
-    private ColaboradorEntity colaborador;
+    private UsuarioEntity usuario;
 
     //RELACIONAMENTO COM VIAGEM
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "caminhao")

@@ -2,7 +2,6 @@ package br.com.logisticadbc.controller.doc;
 
 import br.com.logisticadbc.dto.in.CaminhaoCreateDTO;
 import br.com.logisticadbc.dto.out.CaminhaoDTO;
-import br.com.logisticadbc.dto.out.PostoDTO;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -48,8 +47,7 @@ public interface CaminhaoControllerDoc {
             }
     )
     @PostMapping
-    ResponseEntity<CaminhaoDTO> create(@RequestParam("idColaborador") Integer idColaborador,
-                                              @Valid @RequestBody CaminhaoCreateDTO caminhaoCreateDTO)
+    ResponseEntity<CaminhaoDTO> create(@Valid @RequestBody CaminhaoCreateDTO caminhaoCreateDTO)
             throws RegraDeNegocioException;
 
     @Operation(summary = "Abastecer caminhão", description = "Abastecer o caminhão")
@@ -61,8 +59,7 @@ public interface CaminhaoControllerDoc {
             }
     )
     @PutMapping("/abastecer")
-    ResponseEntity<CaminhaoDTO> update(@RequestParam("idMotorista") Integer idMotorista,
-                                              @RequestParam("idCaminhao") Integer idCaminhao,
+    ResponseEntity<CaminhaoDTO> update(@RequestParam("idCaminhao") Integer idCaminhao,
                                               @RequestParam("Quantidade de gasolina") Integer gasolina)
             throws RegraDeNegocioException;
 
@@ -75,11 +72,10 @@ public interface CaminhaoControllerDoc {
             }
     )
     @DeleteMapping
-    ResponseEntity<Void> delete(@RequestParam("idColaborador") Integer idColaborador,
-                                       @RequestParam("idCaminhao") Integer idCaminhao) throws RegraDeNegocioException;
+    ResponseEntity<Void> delete(@RequestParam("idCaminhao") Integer idCaminhao) throws RegraDeNegocioException;
 
-    @Operation(summary = "Listar caminhões de um colaborador",
-            description = "Lista todos caminhões de um colaborador")
+    @Operation(summary = "Listar caminhões de um usuario",
+            description = "Lista todos caminhões de um usuario")
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "200", description = "Retorna lista com caminhões"),
@@ -87,8 +83,8 @@ public interface CaminhaoControllerDoc {
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-    @GetMapping("/listar-por-colaborador")
-    ResponseEntity<List<CaminhaoDTO>> listByIdUser(@RequestParam("idColaborador") Integer idColaborador)
+    @GetMapping("/listar-por-usuario")
+    public ResponseEntity<List<CaminhaoDTO>> listByIdUser(@RequestParam("idUsuario") Integer idUsuario)
             throws RegraDeNegocioException;
 
     @Operation(summary = "Listar caminhões disponiveis", description = "Listar caminhões disponiveis no banco de dados")

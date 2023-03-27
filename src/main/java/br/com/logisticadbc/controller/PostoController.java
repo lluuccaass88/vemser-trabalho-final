@@ -2,12 +2,10 @@ package br.com.logisticadbc.controller;
 
 import br.com.logisticadbc.controller.doc.PostoControllerDoc;
 import br.com.logisticadbc.dto.in.PostoCreateDTO;
-import br.com.logisticadbc.dto.out.MotoristaDTO;
 import br.com.logisticadbc.dto.out.PostoDTO;
-import br.com.logisticadbc.dto.out.RotaDTO;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.service.PostoService;
-import br.com.logisticadbc.service.ValidacaoService;
+import br.com.logisticadbc.service.UsuarioService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -24,8 +22,9 @@ import java.util.List;
 @RequestMapping("/posto")
 @Validated
 public class PostoController implements PostoControllerDoc {
+
     private final PostoService postoService;
-    private final ValidacaoService validacaoService;
+    private final UsuarioService usuarioService;
 
     @GetMapping
     public ResponseEntity<List<PostoDTO>> listAll(){
@@ -38,37 +37,32 @@ public class PostoController implements PostoControllerDoc {
     }
 
     @PostMapping
-    public ResponseEntity<PostoDTO> create(@RequestParam("idColaborador") Integer idColaborador,
-                                           @Valid @RequestBody PostoCreateDTO postoCreateDTO)
+    public ResponseEntity<PostoDTO> create(@Valid @RequestBody PostoCreateDTO postoCreateDTO)
             throws RegraDeNegocioException {
 
-        validacaoService.validacao(idColaborador, "colaborador");
-        return new ResponseEntity<>(postoService.criar(idColaborador, postoCreateDTO), HttpStatus.CREATED);
+        Integer idLoggedUser = usuarioService.getIdLoggedUser();
+        return new ResponseEntity<>(postoService.criar(idLoggedUser, postoCreateDTO), HttpStatus.CREATED);
     }
 
     @PutMapping
-    public ResponseEntity<PostoDTO> update(@RequestParam("idColaborador") Integer idColaborador,
-                                           @RequestParam("idPosto") Integer idPosto,
+    public ResponseEntity<PostoDTO> update(@RequestParam("idPosto") Integer idPosto,
                                            @Valid @RequestBody PostoCreateDTO postoCreateDTO)
             throws RegraDeNegocioException {
 
-        validacaoService.validacao(idColaborador, "colaborador");
         return new ResponseEntity<>(postoService.editar(idPosto, postoCreateDTO), HttpStatus.OK);
     }
 
     @DeleteMapping
-    public ResponseEntity<Void> delete(@RequestParam("idColaborador") Integer idColaborador,
-                                       @RequestParam("idPosto") Integer idPosto) throws RegraDeNegocioException {
+    public ResponseEntity<Void> delete(@RequestParam("idPosto") Integer idPosto) throws RegraDeNegocioException {
 
-        validacaoService.validacao(idColaborador, "colaborador");
         postoService.deletar(idPosto);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping("/listar-por-colaborador")
-    public ResponseEntity<List<PostoDTO>> listByIdUser(@RequestParam("idColaborador") Integer idColaborador)
+    @GetMapping("/listar-por-usuario")
+    public ResponseEntity<List<PostoDTO>> listByIdUser(@RequestParam("idUsuario") Integer idUsuario)
             throws RegraDeNegocioException {
-        return new ResponseEntity<>(postoService.listarPorIdColaborador(idColaborador), HttpStatus.OK);
+        return new ResponseEntity<>(postoService.listarPorIdColaborador(idUsuario), HttpStatus.OK);
     }
 
     @GetMapping("/listar-ativos")

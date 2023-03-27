@@ -28,6 +28,7 @@ public class RotaEntity {
     @Column(name = "local_destino")
     private String localDestino;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private StatusGeral status; // 0 - INATIVO | 1 - ATIVO
 
@@ -35,7 +36,7 @@ public class RotaEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_usuario", referencedColumnName = "id_usuario")
     @JsonIgnore
-    private ColaboradorEntity colaborador;
+    private UsuarioEntity usuario;
 
     //RELACIONAMENTO COM POSTO
     @ManyToMany(fetch = FetchType.LAZY)

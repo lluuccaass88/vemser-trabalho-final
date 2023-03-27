@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -23,11 +23,12 @@ public class ViagemEntity {
     private String descricao;
 
     @Column(name = "data_inicio")
-    private LocalDateTime dataInicio;
+    private LocalDate dataInicio;
 
     @Column(name = "data_fim")
-    private LocalDateTime dataFim;
+    private LocalDate dataFim;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status_viagem")
     private StatusViagem statusViagem; // 0 - EM_ANDAMENTO | 1 - FINALIZADA
 
@@ -35,7 +36,7 @@ public class ViagemEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_usuario", referencedColumnName = "id_usuario")
     @JsonIgnore
-    private MotoristaEntity motorista;
+    private UsuarioEntity usuario;
 
     //RELACIONAMENTO COM CAMINHAO
     @ManyToOne(fetch = FetchType.LAZY)

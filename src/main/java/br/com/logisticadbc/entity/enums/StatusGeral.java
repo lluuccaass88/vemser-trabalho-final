@@ -5,5 +5,7 @@ import lombok.Getter;
 @Getter
 public enum StatusGeral {
 
-    INATIVO, ATIVO
+    INATIVO,
+    ATIVO
+
 }

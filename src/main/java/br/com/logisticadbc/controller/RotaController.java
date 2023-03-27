@@ -6,7 +6,7 @@ import br.com.logisticadbc.dto.out.RotaComPostosDTO;
 import br.com.logisticadbc.dto.out.RotaDTO;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.service.RotaService;
-import br.com.logisticadbc.service.ValidacaoService;
+import br.com.logisticadbc.service.UsuarioService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -25,7 +25,7 @@ import java.util.List;
 public class RotaController implements RotaControllerDoc {
 
     private final RotaService rotaService;
-    private final ValidacaoService validacaoService;
+    private final UsuarioService usuarioService;
 
     @GetMapping
     public ResponseEntity<List<RotaDTO>> listAll() {
@@ -38,42 +38,34 @@ public class RotaController implements RotaControllerDoc {
     }
 
     @PostMapping
-    public ResponseEntity<RotaDTO> create(@RequestParam("idColaborador") Integer idUsuario,
-                                          @Valid @RequestBody RotaCreateDTO rotaCreateDTO)
+    public ResponseEntity<RotaDTO> create(@Valid @RequestBody RotaCreateDTO rotaCreateDTO)
             throws RegraDeNegocioException {
 
-        validacaoService.validacao(idUsuario, "colaborador");
-        return new ResponseEntity<>(rotaService.criar(idUsuario, rotaCreateDTO), HttpStatus.CREATED);
+        Integer idLoggedUser = usuarioService.getIdLoggedUser();
+        return new ResponseEntity<>(rotaService.criar(idLoggedUser, rotaCreateDTO), HttpStatus.CREATED);
     }
 
     @PutMapping
-    public ResponseEntity<RotaDTO> update(@RequestParam("idColaborador") Integer idUsuario,
-                                          @RequestParam("idRota") Integer idRota,
+    public ResponseEntity<RotaDTO> update(@RequestParam("idRota") Integer idRota,
                                                  @Valid @RequestBody RotaCreateDTO rotaCreateDTO)
             throws RegraDeNegocioException {
 
-        validacaoService.validacao(idUsuario, "colaborador");
         return new ResponseEntity<>(rotaService.editar(idRota, rotaCreateDTO), HttpStatus.OK);
     }
 
     @DeleteMapping
-    public ResponseEntity<Void> delete(@RequestParam("idColaborador") Integer idUsuario,
-                                       @RequestParam("idRota") Integer idRota) throws RegraDeNegocioException {
+    public ResponseEntity<Void> delete(@RequestParam("idRota") Integer idRota) throws RegraDeNegocioException {
 
-        validacaoService.validacao(idUsuario, "colaborador");
         rotaService.deletar(idRota);
-        return ResponseEntity.ok().build();
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PostMapping("/cadastrar-posto")
-    public ResponseEntity<Void> linkEntities(@RequestParam("idColaborador") Integer idUsuario,
-                                             @RequestParam("idRota") Integer idRota,
-                                             @RequestParam("idPosto") Integer idPosto)
+    public ResponseEntity<RotaComPostosDTO> linkEntities(@RequestParam("idRota") Integer idRota,
+                                                         @RequestParam("idPosto") Integer idPosto)
             throws RegraDeNegocioException {
 
-        validacaoService.validacao(idUsuario, "colaborador");
-        rotaService.cadastrarPosto(idRota, idPosto);
-        return ResponseEntity.ok().build();
+        return  new ResponseEntity<>(rotaService.cadastrarPosto(idRota, idPosto), HttpStatus.CREATED);
     }
 
     @GetMapping("/listar-postos-cadastrados")
@@ -82,10 +74,10 @@ public class RotaController implements RotaControllerDoc {
         return new ResponseEntity<>(rotaService.listarPostosCadastrados(idRota), HttpStatus.OK);
     }
 
-    @GetMapping("/listar-por-colaborador")
-    public ResponseEntity<List<RotaDTO>> listByIdUser(@RequestParam("idColaborador") Integer idColaborador)
+    @GetMapping("/listar-por-usuario")
+    public ResponseEntity<List<RotaDTO>> listByIdUser(@RequestParam("idUsuario") Integer idUsuario)
             throws RegraDeNegocioException {
-        return new ResponseEntity<>(rotaService.listarPorIdColaborador(idColaborador), HttpStatus.OK);
+        return new ResponseEntity<>(rotaService.listarPorIdColaborador(idUsuario), HttpStatus.OK);
     }
 
     @GetMapping("/listar-ativas")

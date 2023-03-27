@@ -26,6 +26,7 @@ public class PostoEntity {
     @Column(name = "valor_combustivel", precision = 20, scale = 2)
     private BigDecimal valorCombustivel;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private StatusGeral status; // 0 - INATIVO | 1 - ATIVO
 
@@ -33,7 +34,7 @@ public class PostoEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_usuario", referencedColumnName = "id_usuario")
     @JsonIgnore
-    private ColaboradorEntity colaborador;
+    private UsuarioEntity usuario;
 
     //RELACIONAMENTO COM ROTA
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "postos")
