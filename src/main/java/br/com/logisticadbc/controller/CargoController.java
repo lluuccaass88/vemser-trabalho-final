@@ -6,6 +6,7 @@ import br.com.logisticadbc.dto.out.CargoDTO;
 import br.com.logisticadbc.dto.out.CargosDeUsuarioDTO;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.service.CargoService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,7 @@ import java.util.List;
 @Validated
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "Cargo")
 @RequestMapping("/cargo")
 public class CargoController implements CargoControllerDoc {
 
