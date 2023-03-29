@@ -8,6 +8,7 @@ import br.com.logisticadbc.dto.out.ViagemDTO;
 import br.com.logisticadbc.entity.enums.StatusViagem;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.service.ViagemService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -22,6 +23,7 @@ import java.util.List;
 @Validated
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "Viagem")
 @RequestMapping("/viagem")
 public class ViagemController implements ViagemControllerDoc {
 
