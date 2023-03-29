@@ -46,6 +46,7 @@ public class PostoService {
         }
     }
 
+    // TODO REVISAR
     public PostoDTO editar(String idPosto, PostoCreateDTO postoCreateDTO) throws RegraDeNegocioException {
         PostoEntity postoEncontrado = buscarPorId(idPosto);
 
@@ -66,6 +67,7 @@ public class PostoService {
         }
     }
 
+    // TODO REVISAR
     public void deletar(String idPosto) throws RegraDeNegocioException {
         PostoEntity postoEncontrado = buscarPorId(idPosto);
 
