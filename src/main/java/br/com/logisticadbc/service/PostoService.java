@@ -2,14 +2,17 @@ package br.com.logisticadbc.service;
 
 import br.com.logisticadbc.dto.in.PostoCreateDTO;
 import br.com.logisticadbc.dto.out.PostoDTO;
-import br.com.logisticadbc.entity.PostoEntity;
-import br.com.logisticadbc.entity.UsuarioEntity;
 import br.com.logisticadbc.entity.enums.StatusGeral;
+import br.com.logisticadbc.entity.mongodb.PostoEntity;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.repository.PostoRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.geo.Distance;
+import org.springframework.data.geo.Metrics;
+import org.springframework.data.geo.Point;
+import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,23 +23,22 @@ import java.util.List;
 public class PostoService {
 
     private final PostoRepository postoRepository;
-    private final UsuarioService usuarioService;
     private final ObjectMapper objectMapper;
 
-    public PostoDTO criar(Integer idUsuario, PostoCreateDTO postoCreateDTO) throws RegraDeNegocioException {
-        UsuarioEntity usuarioEntity = usuarioService.buscarPorId(idUsuario);
+    public PostoDTO criar(PostoCreateDTO postoCreateDTO) throws RegraDeNegocioException {
 
         try {
-            PostoEntity postoEntity = objectMapper.convertValue(postoCreateDTO, PostoEntity.class);
-            postoEntity.setStatus(StatusGeral.ATIVO);
-            postoEntity.setUsuario(usuarioEntity);
+            GeoJsonPoint locationPoint = new GeoJsonPoint(
+                    Double.parseDouble(postoCreateDTO.getLongitude()),
+                    Double.parseDouble(postoCreateDTO.getLatitude()));
 
-            usuarioEntity.getPostos().add(postoEntity);
+            PostoEntity postoEntity = objectMapper.convertValue(postoCreateDTO, PostoEntity.class);
+            postoEntity.setLocation(locationPoint);
+            postoEntity.setStatus(StatusGeral.ATIVO);
 
             postoRepository.save(postoEntity);
 
             PostoDTO postoDTO = objectMapper.convertValue(postoEntity, PostoDTO.class);
-            postoDTO.setIdUsuario(idUsuario);
             return postoDTO;
 
         } catch (Exception e) {
@@ -44,7 +46,7 @@ public class PostoService {
         }
     }
 
-    public PostoDTO editar(Integer idPosto, PostoCreateDTO postoCreateDTO) throws RegraDeNegocioException {
+    public PostoDTO editar(String idPosto, PostoCreateDTO postoCreateDTO) throws RegraDeNegocioException {
         PostoEntity postoEncontrado = buscarPorId(idPosto);
 
         if (postoEncontrado.getStatus().equals(StatusGeral.INATIVO)) {
@@ -54,15 +56,9 @@ public class PostoService {
             postoEncontrado.setNome(postoCreateDTO.getNome());
             postoEncontrado.setValorCombustivel(postoCreateDTO.getValorCombustivel());
 
-            UsuarioEntity usuarioEntity =
-                    usuarioService.buscarPorId(postoEncontrado.getUsuario().getIdUsuario());
-
-            usuarioEntity.getPostos().add(postoEncontrado);
-
             postoRepository.save(postoEncontrado);
 
             PostoDTO postoDTO = objectMapper.convertValue(postoEncontrado, PostoDTO.class);
-            postoDTO.setIdUsuario(usuarioEntity.getIdUsuario());
             return postoDTO;
 
         } catch (Exception e) {
@@ -70,7 +66,7 @@ public class PostoService {
         }
     }
 
-    public void deletar(Integer idPosto) throws RegraDeNegocioException {
+    public void deletar(String idPosto) throws RegraDeNegocioException {
         PostoEntity postoEncontrado = buscarPorId(idPosto);
 
         if (postoEncontrado.getStatus().equals(StatusGeral.INATIVO)) {
@@ -79,11 +75,6 @@ public class PostoService {
         try {
             postoEncontrado.setStatus(StatusGeral.INATIVO);
             postoRepository.save(postoEncontrado);
-
-            UsuarioEntity usuarioEntity =
-                    usuarioService.buscarPorId(postoEncontrado.getUsuario().getIdUsuario());
-
-            usuarioEntity.getPostos().add(postoEncontrado);
 
         } catch (Exception e) {
             throw new RegraDeNegocioException("Aconteceu algum problema durante a exclusão.");
@@ -95,37 +86,22 @@ public class PostoService {
                 .stream()
                 .map(posto -> {
                     PostoDTO postoDTO = objectMapper.convertValue(posto, PostoDTO.class);
-                    postoDTO.setIdUsuario(posto.getUsuario().getIdUsuario());
                     return postoDTO;
                 })
                 .toList();
     }
 
-    public PostoDTO listarPorId(Integer idPosto) throws RegraDeNegocioException {
+    public PostoDTO listarPorId(String idPosto) throws RegraDeNegocioException {
         PostoEntity postoRecuperado = buscarPorId(idPosto);
 
         try {
             PostoDTO postoDTO = objectMapper.convertValue(postoRecuperado, PostoDTO.class);
-            postoDTO.setIdUsuario(postoRecuperado.getUsuario().getIdUsuario());
-            postoDTO.setIdPosto(idPosto);
+            postoDTO.setId(idPosto);
             return postoDTO;
 
         } catch (Exception e) {
             throw new RegraDeNegocioException("Aconteceu algum problema durante a listagem.");
         }
-    }
-
-    public List<PostoDTO> listarPorIdColaborador(Integer idColaborador) throws RegraDeNegocioException {
-        UsuarioEntity usuarioEncontrado = usuarioService.buscarPorId(idColaborador);
-
-        return usuarioEncontrado.getPostos()
-                .stream()
-                .map(posto -> {
-                    PostoDTO postoDTO = objectMapper.convertValue(posto, PostoDTO.class);
-                    postoDTO.setIdUsuario(idColaborador);
-                    return postoDTO;
-                })
-                .toList();
     }
 
     public List<PostoDTO> listarPostosAtivos() {
@@ -134,7 +110,6 @@ public class PostoService {
                 .stream()
                 .map(posto -> {
                     PostoDTO postoDTO = objectMapper.convertValue(posto, PostoDTO.class);
-                    postoDTO.setIdUsuario(posto.getUsuario().getIdUsuario());
                     return postoDTO;
                 })
                 .toList();
@@ -145,13 +120,32 @@ public class PostoService {
             .stream()
             .map(posto -> {
                 PostoDTO postoDTO = objectMapper.convertValue(posto, PostoDTO.class);
-                postoDTO.setIdUsuario(posto.getUsuario().getIdUsuario());
                 return postoDTO;
             })
             .toList();
     }
 
-    public PostoEntity buscarPorId(Integer idPosto) throws RegraDeNegocioException {
+    public List<PostoDTO> listarPorLocalizacao(String longitude, String latitude, Double distancia) {
+        List<PostoEntity> postos = postoRepository.findByLocationNear(
+                new Point(Double.parseDouble(longitude), Double.parseDouble(latitude)),
+                new Distance(distancia, Metrics.KILOMETERS));
+
+        return postos
+                .stream()
+                .map(posto -> objectMapper.convertValue(posto, PostoDTO.class))
+                .toList();
+    }
+
+    public List<PostoDTO> listByCidade (String cidade) {
+        List<PostoEntity> postos = postoRepository.findByCidadeIgnoreCase(cidade);
+
+        return postos
+                .stream()
+                .map(posto -> objectMapper.convertValue(posto, PostoDTO.class))
+                .toList();
+    }
+
+    public PostoEntity buscarPorId(String idPosto) throws RegraDeNegocioException {
         return postoRepository.findById(idPosto)
                 .orElseThrow(() -> new RegraDeNegocioException("Posto não encontrado"));
     }

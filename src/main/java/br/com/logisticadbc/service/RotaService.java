@@ -1,10 +1,7 @@
 package br.com.logisticadbc.service;
 
 import br.com.logisticadbc.dto.in.RotaCreateDTO;
-import br.com.logisticadbc.dto.out.PostoDTO;
-import br.com.logisticadbc.dto.out.RotaComPostosDTO;
 import br.com.logisticadbc.dto.out.RotaDTO;
-import br.com.logisticadbc.entity.PostoEntity;
 import br.com.logisticadbc.entity.RotaEntity;
 import br.com.logisticadbc.entity.UsuarioEntity;
 import br.com.logisticadbc.entity.enums.StatusGeral;
@@ -16,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -25,7 +21,7 @@ public class RotaService {
 
     private final RotaRepository rotaRepository;
     private final UsuarioService usuarioService;
-    private final PostoService postoService;
+//    private final PostoService postoService;
     private final ObjectMapper objectMapper;
 
     public RotaDTO criar(Integer idUsuario, RotaCreateDTO rotaCreateDTO) throws RegraDeNegocioException {
@@ -189,7 +185,7 @@ public class RotaService {
                 .toList();
     }
 
-    public RotaComPostosDTO cadastrarPosto(Integer idRota, Integer idPosto) throws RegraDeNegocioException {
+/*    public RotaComPostosDTO cadastrarPosto(Integer idRota, Integer idPosto) throws RegraDeNegocioException {
         RotaEntity rotaEncontrada = buscarPorId(idRota);
         PostoEntity postoEncontrado = postoService.buscarPorId(idPosto);
 
@@ -235,7 +231,7 @@ public class RotaService {
         } catch (Exception e) {
             throw new RegraDeNegocioException("Aconteceu algum problema durante a listagem.");
         }
-    }
+    }*/
 
     public List<RotaDTO> listarPorIdColaborador(Integer idColaborador) throws RegraDeNegocioException {
         UsuarioEntity usuarioEncontrado = usuarioService.buscarPorId(idColaborador);

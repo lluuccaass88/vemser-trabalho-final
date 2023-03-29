@@ -51,11 +51,6 @@ public class UsuarioEntity implements UserDetails {
     @JsonIgnore
     private Set<RotaEntity> rotas;
 
-    //RELACIONAMENTO COM POSTO
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "usuario")
-    @JsonIgnore
-    private Set<PostoEntity> postos;
-
     //RELACIONAMENTO COM VIAGEM
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "usuario")
     @JsonIgnore
