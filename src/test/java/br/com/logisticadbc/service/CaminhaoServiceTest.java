@@ -25,6 +25,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import javax.validation.constraints.NotNull;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -85,26 +86,46 @@ public class CaminhaoServiceTest {
     }
 
     @Test
-    public void deveTestarAbastecerComSucesso() {
+    public void deveTestarAbastecerComSucesso() throws RegraDeNegocioException {
         // SETUP
+        Integer combustivel = 20;
+        CaminhaoEntity caminhaoEntityMock = getCaminhaoEntityMock();
 
+        CaminhaoEntity caminhaoAbastecido = new CaminhaoEntity();
+        caminhaoAbastecido.setIdCaminhao(1);
+        caminhaoAbastecido.setModelo("VUC");
+        caminhaoAbastecido.setPlaca("ABC1D23");
+        caminhaoAbastecido.setNivelCombustivel(50);
+        caminhaoAbastecido.setStatusCaminhao(StatusCaminhao.ESTACIONADO);
+        caminhaoAbastecido.setStatus(StatusGeral.ATIVO);
+        caminhaoAbastecido.setNivelCombustivel(caminhaoAbastecido.getNivelCombustivel() + combustivel);
+
+        Mockito.when(caminhaoRepository.findById(Mockito.anyInt())).thenReturn(Optional.of(caminhaoEntityMock));
+        Mockito.when(caminhaoRepository.save(Mockito.any())).thenReturn(caminhaoAbastecido);
 
         // ACT
-
+        CaminhaoDTO caminhaoDTOAbastecido = caminhaoService.abastecer(1, combustivel);
 
         // ASSERT
+        Assertions.assertEquals(caminhaoEntityMock.getNivelCombustivel(),
+                caminhaoDTOAbastecido.getNivelCombustivel());
 
     }
 
     @Test
-    public void deveTestarRemoverComSucesso() {
+    public void deveTestarRemoverComSucesso() throws RegraDeNegocioException {
         // SETUP
+        CaminhaoEntity caminhaoInativo = new CaminhaoEntity();
+        caminhaoInativo.setStatus(StatusGeral.INATIVO);
 
+        Mockito.when(caminhaoRepository.findById(Mockito.anyInt())).thenReturn(Optional.of(getCaminhaoEntityMock()));
+        Mockito.when(caminhaoRepository.save(Mockito.any())).thenReturn(caminhaoInativo);
 
         // ACT
-
+        caminhaoService.deletar(1);
 
         // ASSERT
+        Assertions.assertEquals(StatusGeral.INATIVO, caminhaoInativo.getStatus());
 
     }
 
@@ -124,6 +145,21 @@ public class CaminhaoServiceTest {
         Assertions.assertEquals(3, listaCaminhaoDTO.size());
 
     }
+
+/*    @Test
+    public void deveListarAtivosComSucesso() {
+        // SETUP
+        List<CaminhaoEntity> listaCaminhaoAtivos = List.of(
+                getCaminhaoEntityMock(), getCaminhaoEntityMock(), getCaminhaoEntityMock());
+
+
+        // ACT
+        List<CaminhaoDTO> caminhaoDTOSAtivos = caminhaoService.listarAtivos();
+
+        // ASSERT
+        Assertions.assert
+
+    }*/
 
     @NotNull
     private static CaminhaoEntity getCaminhaoEntityMock() {

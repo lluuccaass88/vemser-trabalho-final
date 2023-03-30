@@ -63,13 +63,12 @@ public class CaminhaoService {
         try {
             caminhaoRecuperado.setNivelCombustivel(caminhaoRecuperado.getNivelCombustivel() + gasolina);
 
-            UsuarioEntity usuarioEntity =
-                    usuarioService.buscarPorId(caminhaoRecuperado.getUsuario().getIdUsuario());
+            CaminhaoEntity caminhaoAbastecido = caminhaoRepository.save(caminhaoRecuperado);
 
-            caminhaoRepository.save(caminhaoRecuperado);
+            Integer idUsuario = caminhaoRecuperado.getUsuario().getIdUsuario();
 
-            CaminhaoDTO caminhaoDTO = objectMapper.convertValue(caminhaoRecuperado, CaminhaoDTO.class);
-            caminhaoDTO.setIdUsuario(usuarioEntity.getIdUsuario());
+            CaminhaoDTO caminhaoDTO = objectMapper.convertValue(caminhaoAbastecido, CaminhaoDTO.class);
+            caminhaoDTO.setIdUsuario(idUsuario);
             return caminhaoDTO;
 
         } catch (Exception e) {
