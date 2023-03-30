@@ -61,7 +61,6 @@ public class RotaServiceTest {
         ReflectionTestUtils.setField(rotaService, "objectMapper", objectMapper);
     }
 
-
     @Test
     public void deveCriarComSucesso() throws RegraDeNegocioException {
         //Setup
@@ -341,7 +340,6 @@ public class RotaServiceTest {
 
         Mockito.when(rotaRepository.findById(Mockito.anyInt())).thenReturn(Optional.of(rotaInativa));
         Mockito.when(usuarioService.buscarPorId(Mockito.anyInt())).thenReturn(usuarioMockadoBanco);
-
         Mockito.when(rotaRepository.save(Mockito.any())).thenReturn(rotaInativa);
 
         // ACT
@@ -362,6 +360,7 @@ public class RotaServiceTest {
                 "Salvador",
                 "São Paulo"
         );
+
 
         UsuarioEntity usuarioMockadoBanco = new UsuarioEntity();
 
