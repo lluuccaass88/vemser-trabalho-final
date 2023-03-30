@@ -1,11 +1,11 @@
 package br.com.logisticadbc.service;
 
 import br.com.logisticadbc.dto.out.CaminhaoDTO;
+import br.com.logisticadbc.dto.out.CargoDTO;
 import br.com.logisticadbc.dto.out.CargosDeUsuarioDTO;
 import br.com.logisticadbc.entity.CaminhaoEntity;
 import br.com.logisticadbc.entity.CargoEntity;
 import br.com.logisticadbc.entity.UsuarioEntity;
-import br.com.logisticadbc.entity.enums.StatusCaminhao;
 import br.com.logisticadbc.entity.enums.StatusGeral;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.repository.CargoRepository;
@@ -76,6 +76,22 @@ public class CargoServiceTest {
         Assertions.assertEquals(usuarioEntityMock.getIdUsuario(), cargosDeUsuarioDTO.getUsuario().getIdUsuario());
     }
 
+    @Test
+    public void deveListarComSucesso() {
+        // SETUP
+        List<CargoEntity> listaCargo = List.of(
+                getCargoEntityMock(), getCargoEntityMock(), getCargoEntityMock());
+
+        Mockito.when(cargoRepository.findAll()).thenReturn(listaCargo);
+
+        // ACT
+        List<CargoDTO> cargoDTOS = cargoService.listar();
+
+        // ASSERT
+        Assertions.assertNotNull(cargoDTOS);
+        Assertions.assertEquals(3, cargoDTOS.size());
+
+    }
 
     @NotNull
     private static CargoEntity getCargoEntityMock() {
