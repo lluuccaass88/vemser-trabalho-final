@@ -59,6 +59,7 @@ public class RotaService {
 
             UsuarioEntity usuarioEncontrado = usuarioService.buscarPorId(
                     rotaEncontrada.getUsuario().getIdUsuario());
+
             usuarioEncontrado.getRotas().add(rotaEncontrada);
 
             rotaRepository.save(rotaEncontrada);
@@ -68,6 +69,7 @@ public class RotaService {
             return rotaDTO;
 
         } catch (Exception e) {
+            e.printStackTrace();
             throw new RegraDeNegocioException("Aconteceu algum problema durante a edição.");
         }
     }

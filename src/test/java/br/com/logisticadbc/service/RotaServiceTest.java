@@ -95,7 +95,6 @@ public class RotaServiceTest {
         Assertions.assertEquals(StatusGeral.ATIVO, rotaRetornada.getStatus());
     }
 
-
     @Test
     public void deveListarRotasComSucesso(){
         // SETUP
@@ -239,23 +238,91 @@ public class RotaServiceTest {
         Assertions.assertEquals(idRota, rotaRetornada.getIdRota());
     }
 
-//    @Test
-//    public void deveTestarDeletar() throws RegraDeNegocioException {
-//        // SETUP
-//        RotaEntity rotaMockadoDoBanco = getRotaEntityMock();
-//
-//        when(rotaRepository.findById(anyInt())).thenReturn(Optional.of(getRotaEntityMock()));
-//        when(rotaRepository.save(any())).thenReturn(Optional.of(rotaMockadoDoBanco));
-//
-//        // ACT
-//        rotaService.deletar(1);
-//
-//
-//        // ASSERT
-//        verify(pessoaRepository, times(1)).deleteById(anyInt());
-//        // chamou pelo menos 1 X esse método
-//
-//    }
+    @Test
+    public void deveTestarDeletar() throws RegraDeNegocioException {
+        // SETUP
+        int idRota = 1;
+
+        UsuarioEntity usuarioMockadoBanco = getUsuarioEntityMock();
+
+        Set<RotaEntity> rotaEntities = new HashSet<>();
+        rotaEntities.add(getRotaEntityMock());
+        rotaEntities.add(getRotaEntityMock());
+        usuarioMockadoBanco.setRotas(rotaEntities);
+
+        RotaEntity rotaInativa = new RotaEntity();
+        rotaInativa.setStatus(StatusGeral.INATIVO);
+
+        Mockito.when(rotaRepository.findById(Mockito.anyInt())).thenReturn(Optional.of(getRotaEntityMock()));
+        Mockito.when(usuarioService.buscarPorId(Mockito.anyInt())).thenReturn(usuarioMockadoBanco);
+
+        Mockito.when(rotaRepository.save(Mockito.any())).thenReturn(rotaInativa);
+
+        // ACT
+        rotaService.deletar(idRota);
+
+        // ASSERT
+        Assertions.assertEquals(StatusGeral.INATIVO, rotaInativa.getStatus());
+//        Assertions.assertEquals(idRota, rotaInativa.getIdRota());
+    }
+
+    @Test(expected = RegraDeNegocioException.class)
+    public void deveTestarDeletarComRotaInativa() throws RegraDeNegocioException{
+        // SETUP
+        int idRota = 6;
+
+        UsuarioEntity usuarioMockadoBanco = getUsuarioEntityMock();
+
+        Set<RotaEntity> rotaEntities = new HashSet<>();
+        rotaEntities.add(getRotaEntityMock());
+        rotaEntities.add(getRotaEntityMock());
+        usuarioMockadoBanco.setRotas(rotaEntities);
+
+        RotaEntity rotaInativa = new RotaEntity();
+        rotaInativa.setStatus(StatusGeral.INATIVO);
+
+        Mockito.when(rotaRepository.findById(Mockito.anyInt())).thenReturn(Optional.of(rotaInativa));
+        Mockito.when(usuarioService.buscarPorId(Mockito.anyInt())).thenReturn(usuarioMockadoBanco);
+
+        Mockito.when(rotaRepository.save(Mockito.any())).thenReturn(rotaInativa);
+
+        // ACT
+        rotaService.deletar(idRota);
+
+        // ASSERT
+        Assertions.assertEquals(StatusGeral.INATIVO, rotaInativa.getStatus());
+//        Assertions.assertEquals(idRota, rotaInativa.getIdRota());
+    }
+
+    @Test
+    public void deveTestarEditar() throws RegraDeNegocioException {
+        // SETUP
+        int idRota = 1;
+        RotaCreateDTO rotaEditada = new RotaCreateDTO(
+                "Rota de Salvador até São Paulo",
+                "Salvador",
+                "São Paulo"
+        );
+
+        UsuarioEntity usuarioMockadoBanco = new UsuarioEntity();
+
+        Set<RotaEntity> rotaEntities = new HashSet<>();
+        rotaEntities.add(getRotaEntityMock());
+        rotaEntities.add(getRotaEntityMock());
+        usuarioMockadoBanco.setRotas(rotaEntities);
+
+        when(rotaRepository.findById(Mockito.anyInt())).thenReturn(Optional.of(getRotaEntityMock()));
+        when(usuarioService.buscarPorId(anyInt())).thenReturn(usuarioMockadoBanco);
+
+        when(rotaRepository.save(any())).thenReturn(getRotaEntityMock());
+
+        // ACT
+        RotaDTO rotaEditadaDTO = rotaService.editar(idRota, rotaEditada);
+
+        // ASSERT
+        assertNotNull(rotaEditadaDTO);
+        Assertions.assertEquals("Salvador", rotaEditadaDTO.getLocalPartida());
+    }
 
     @NotNull
     private static RotaEntity getRotaEntityMock() {
