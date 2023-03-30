@@ -222,7 +222,7 @@ public class RotaServiceTest {
         Assertions.assertNotNull(listaRotaRetornadaDTO);
         Assertions.assertEquals(idColaborador, listaRotaRetornadaDTO.get(0).getIdUsuario()); //TODO DESCOBRIR COMO TESTAR QUANDO VOLTA UMA LISTA
         Assertions.assertEquals(2, listaRotaRetornadaDTO.size());
-        Assertions.assertIterableEquals();
+//        Assertions.assertIterableEquals();
     }
 
     @Test
