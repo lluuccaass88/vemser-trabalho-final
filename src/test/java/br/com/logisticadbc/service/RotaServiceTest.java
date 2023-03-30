@@ -61,7 +61,6 @@ public class RotaServiceTest {
         ReflectionTestUtils.setField(rotaService, "objectMapper", objectMapper);
     }
 
-
     @Test
     public void deveCriarComSucesso() throws RegraDeNegocioException {
         //Setup
@@ -116,7 +115,26 @@ public class RotaServiceTest {
     public void deveListarPorIdComSucesso() throws RegraDeNegocioException {
         // SETUP
         Integer idRota = 1;
+
         RotaEntity rotaMockadoDoBanco = getRotaEntityMock();
+
+        when(rotaRepository.findById(anyInt())).thenReturn(Optional.of(rotaMockadoDoBanco));
+
+        // ACT
+        RotaDTO rotaRetornadaDTO = rotaService.listarPorId(idRota);
+
+        // ASSERT
+        Assertions.assertNotNull(rotaRetornadaDTO);
+        Assertions.assertEquals(idRota, rotaRetornadaDTO.getIdRota());
+    }
+
+    @Test(expected = RegraDeNegocioException.class)
+    public void deveTestarListarPorIdSemEncontrarId() throws RegraDeNegocioException {
+        // SETUP
+        Integer idRota = 1;
+
+        RotaEntity rotaMockadoDoBanco = new RotaEntity();
+
         when(rotaRepository.findById(anyInt())).thenReturn(Optional.of(rotaMockadoDoBanco));
 
         // ACT
@@ -134,6 +152,25 @@ public class RotaServiceTest {
 
         List<RotaEntity> listaRota = List.of(
                 getRotaEntityMock(), getRotaEntityMock(), getRotaEntityMock());
+
+        when(rotaRepository.findBylocalPartidaIgnoreCase(any())).thenReturn(listaRota);
+
+        // ACT
+        List<RotaDTO> listaRotaRetornadaDTO = rotaService.listarPorLocalPartida(localPartida);
+
+        // ASSERT
+        Assertions.assertNotNull(listaRotaRetornadaDTO);
+        Assertions.assertEquals(localPartida, listaRotaRetornadaDTO.get(0).getLocalPartida()); //TODO DESCOBRIR COMO TESTAR QUANDO VOLTA UMA LISTA
+        Assertions.assertEquals(3, listaRotaRetornadaDTO.size());
+    }
+
+    @Test(expected = RegraDeNegocioException.class)
+    public void deveTestarLocalDePartidaNaoEncontrado() throws RegraDeNegocioException {
+        // SETUP
+        String localPartida = "Brasilia";
+
+        List<RotaEntity> listaRota = List.of();
+
         when(rotaRepository.findBylocalPartidaIgnoreCase(any())).thenReturn(listaRota);
 
         // ACT
@@ -163,6 +200,23 @@ public class RotaServiceTest {
         Assertions.assertEquals(3, listaRotaRetornadaDTO.size());
     }
 
+    @Test(expected = RegraDeNegocioException.class)
+    public void deveTestarLocalDeDestinoNaoEncontrado() throws RegraDeNegocioException {
+        // SETUP
+        String localDestino = "São Paulo";
+
+        List<RotaEntity> listaRota = List.of();
+
+        when(rotaRepository.findBylocalPartidaIgnoreCase(any())).thenReturn(listaRota);
+
+        // ACT
+        List<RotaDTO> listaRotaRetornadaDTO = rotaService.listarPorLocalDestino(localDestino);
+
+        // ASSERT
+        Assertions.assertNotNull(listaRotaRetornadaDTO);
+        Assertions.assertEquals(localDestino, listaRotaRetornadaDTO.get(0).getLocalPartida()); //TODO DESCOBRIR COMO TESTAR QUANDO VOLTA UMA LISTA
+        Assertions.assertEquals(3, listaRotaRetornadaDTO.size());
+    }
     @Test
     public void deveListarRotasAtivasComSucesso() throws RegraDeNegocioException {
         // SETUP
@@ -192,7 +246,7 @@ public class RotaServiceTest {
         when(rotaRepository.findByStatusEquals(any())).thenReturn(listaRota);
 
         // ACT
-        List<RotaDTO> listaRotaRetornadaDTO = rotaService.listarRotasAtivas();
+        List<RotaDTO> listaRotaRetornadaDTO = rotaService.listarRotasInativas();
 
         // ASSERT
         Assertions.assertNotNull(listaRotaRetornadaDTO);
@@ -224,6 +278,7 @@ public class RotaServiceTest {
 //        Assertions.assertIterableEquals();
     }
 
+    //Buscar por id testes
     @Test
     public void deveBuscarPorIdComSucesso() throws RegraDeNegocioException {
         Integer idRota = 1;
@@ -238,6 +293,8 @@ public class RotaServiceTest {
         Assertions.assertEquals(idRota, rotaRetornada.getIdRota());
     }
 
+
+    //Testes deletar
     @Test
     public void deveTestarDeletar() throws RegraDeNegocioException {
         // SETUP
@@ -283,7 +340,6 @@ public class RotaServiceTest {
 
         Mockito.when(rotaRepository.findById(Mockito.anyInt())).thenReturn(Optional.of(rotaInativa));
         Mockito.when(usuarioService.buscarPorId(Mockito.anyInt())).thenReturn(usuarioMockadoBanco);
-
         Mockito.when(rotaRepository.save(Mockito.any())).thenReturn(rotaInativa);
 
         // ACT
@@ -294,6 +350,7 @@ public class RotaServiceTest {
 //        Assertions.assertEquals(idRota, rotaInativa.getIdRota());
     }
 
+    //Testes editar
     @Test
     public void deveTestarEditar() throws RegraDeNegocioException {
         // SETUP
@@ -303,6 +360,7 @@ public class RotaServiceTest {
                 "Salvador",
                 "São Paulo"
         );
+
 
         UsuarioEntity usuarioMockadoBanco = new UsuarioEntity();
 

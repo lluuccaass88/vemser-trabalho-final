@@ -59,15 +59,11 @@ public class RotaService {
 
             UsuarioEntity usuarioEncontrado = usuarioService.buscarPorId(
                     rotaEncontrada.getUsuario().getIdUsuario());
-
             usuarioEncontrado.getRotas().add(rotaEncontrada);
-
             rotaRepository.save(rotaEncontrada);
-
             RotaDTO rotaDTO = objectMapper.convertValue(rotaEncontrada, RotaDTO.class);
             rotaDTO.setIdUsuario(usuarioEncontrado.getIdUsuario());
             return rotaDTO;
-
         } catch (Exception e) {
             e.printStackTrace();
             throw new RegraDeNegocioException("Aconteceu algum problema durante a edição.");
@@ -76,19 +72,15 @@ public class RotaService {
 
     public void deletar(Integer idRota) throws RegraDeNegocioException {
         RotaEntity rotaEncontrada = buscarPorId(idRota);
-
         if (rotaEncontrada.getStatus().equals(StatusGeral.INATIVO)) {
             throw new RegraDeNegocioException("Rota já inativa!");
         }
         try {
                 rotaEncontrada.setStatus(StatusGeral.INATIVO);
                 rotaRepository.save(rotaEncontrada);
-
                 UsuarioEntity usuarioEncontrado = usuarioService.buscarPorId(
                         rotaEncontrada.getUsuario().getIdUsuario());
-
                 usuarioEncontrado.getRotas().add(rotaEncontrada);
-
         } catch (Exception e) {
             throw new RegraDeNegocioException("Aconteceu algum problema durante a exclusão.");
         }
@@ -103,7 +95,6 @@ public class RotaService {
                     return rotaDTO;
                 })
                 .toList();
-
         return rotasDTO;
     }
 
@@ -114,7 +105,6 @@ public class RotaService {
             RotaDTO rotaDTO = objectMapper.convertValue(rotaRecuperado, RotaDTO.class);
             rotaDTO.setIdUsuario(rotaRecuperado.getUsuario().getIdUsuario());
             return rotaDTO;
-
         } catch (Exception e) {
             throw new RegraDeNegocioException("Aconteceu algum problema durante a listagem.");
         }
@@ -123,11 +113,9 @@ public class RotaService {
     public List<RotaDTO> listarPorLocalPartida(String localPartida) throws RegraDeNegocioException {
         try{
             List<RotaEntity> rotasPartida = rotaRepository.findBylocalPartidaIgnoreCase(localPartida);
-
             if (rotasPartida.size() == 0) {
                 throw new RegraDeNegocioException("Local de partida não encontrado.");
             }
-
             return rotasPartida
                     .stream()
                     .map(rota -> {
@@ -136,7 +124,6 @@ public class RotaService {
                         return rotaDTO;
                     })
                     .toList();
-
         }catch (Exception e){
             throw new RegraDeNegocioException(e.getMessage());
         }
@@ -145,11 +132,9 @@ public class RotaService {
     public List<RotaDTO> listarPorLocalDestino(String localDestino) throws RegraDeNegocioException {
         try{
             List<RotaEntity> rotasDestino = rotaRepository.findBylocalDestinoIgnoreCase(localDestino);
-
             if (rotasDestino.size() == 0) {
                 throw new RegraDeNegocioException("Local de destino não encontrado.");
             }
-
             return rotasDestino
                     .stream()
                     .map(rota -> {
@@ -158,7 +143,6 @@ public class RotaService {
                         return rotaDTO;
                     })
                     .toList();
-
         }catch(Exception e){
             throw new RegraDeNegocioException (e.getMessage());
         }
