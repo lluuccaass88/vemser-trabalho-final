@@ -32,7 +32,7 @@ public class RotaService {
             rotaEntity.setStatus(StatusGeral.ATIVO);
             rotaEntity.setUsuario(usuarioEncontrado); // Atribui idusuario a rota criada
 
-            usuarioEncontrado.getRotas().add(rotaEntity); // Atribui rota criada ao Colaborador
+            /*usuarioEncontrado.getRotas().add(rotaEntity);*/ // Atribui rota criada ao Colaborador //TODO DESCOBRIR COMO TESTA A RELAÇÃO
 
             rotaRepository.save(rotaEntity);
 
@@ -41,6 +41,7 @@ public class RotaService {
             return rotaDTO;
 
         } catch (Exception e) {
+            e.printStackTrace();
             throw new RegraDeNegocioException("Aconteceu algum problema durante a criação.");
         }
     }
