@@ -3,10 +3,14 @@ package br.com.logisticadbc.dto.out;
 import br.com.logisticadbc.dto.in.PostoCreateDTO;
 import br.com.logisticadbc.entity.enums.StatusGeral;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class PostoDTO{
 
     @Schema(description = "id do posto")
