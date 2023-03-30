@@ -1,10 +1,7 @@
 package br.com.logisticadbc.service;
 
 import br.com.logisticadbc.dto.in.RotaCreateDTO;
-import br.com.logisticadbc.dto.out.PostoDTO;
-import br.com.logisticadbc.dto.out.RotaComPostosDTO;
 import br.com.logisticadbc.dto.out.RotaDTO;
-import br.com.logisticadbc.entity.PostoEntity;
 import br.com.logisticadbc.entity.RotaEntity;
 import br.com.logisticadbc.entity.UsuarioEntity;
 import br.com.logisticadbc.entity.enums.StatusGeral;
@@ -16,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -25,7 +21,7 @@ public class RotaService {
 
     private final RotaRepository rotaRepository;
     private final UsuarioService usuarioService;
-    private final PostoService postoService;
+//    private final PostoService postoService;
     private final ObjectMapper objectMapper;
 
     public RotaDTO criar(Integer idUsuario, RotaCreateDTO rotaCreateDTO) throws RegraDeNegocioException {
@@ -36,7 +32,7 @@ public class RotaService {
             rotaEntity.setStatus(StatusGeral.ATIVO);
             rotaEntity.setUsuario(usuarioEncontrado); // Atribui idusuario a rota criada
 
-            usuarioEncontrado.getRotas().add(rotaEntity); // Atribui rota criada ao Colaborador
+            usuarioEncontrado.getRotas().add(rotaEntity); // Atribui rota criada ao Colaborador //TODO DESCOBRIR COMO TESTA A RELAÇÃO
 
             rotaRepository.save(rotaEntity);
 
@@ -45,6 +41,7 @@ public class RotaService {
             return rotaDTO;
 
         } catch (Exception e) {
+            e.printStackTrace();
             throw new RegraDeNegocioException("Aconteceu algum problema durante a criação.");
         }
     }
@@ -63,33 +60,27 @@ public class RotaService {
             UsuarioEntity usuarioEncontrado = usuarioService.buscarPorId(
                     rotaEncontrada.getUsuario().getIdUsuario());
             usuarioEncontrado.getRotas().add(rotaEncontrada);
-
             rotaRepository.save(rotaEncontrada);
-
             RotaDTO rotaDTO = objectMapper.convertValue(rotaEncontrada, RotaDTO.class);
             rotaDTO.setIdUsuario(usuarioEncontrado.getIdUsuario());
             return rotaDTO;
-
         } catch (Exception e) {
+            e.printStackTrace();
             throw new RegraDeNegocioException("Aconteceu algum problema durante a edição.");
         }
     }
 
     public void deletar(Integer idRota) throws RegraDeNegocioException {
         RotaEntity rotaEncontrada = buscarPorId(idRota);
-
         if (rotaEncontrada.getStatus().equals(StatusGeral.INATIVO)) {
             throw new RegraDeNegocioException("Rota já inativa!");
         }
         try {
                 rotaEncontrada.setStatus(StatusGeral.INATIVO);
                 rotaRepository.save(rotaEncontrada);
-
                 UsuarioEntity usuarioEncontrado = usuarioService.buscarPorId(
                         rotaEncontrada.getUsuario().getIdUsuario());
-
                 usuarioEncontrado.getRotas().add(rotaEncontrada);
-
         } catch (Exception e) {
             throw new RegraDeNegocioException("Aconteceu algum problema durante a exclusão.");
         }
@@ -104,7 +95,6 @@ public class RotaService {
                     return rotaDTO;
                 })
                 .toList();
-
         return rotasDTO;
     }
 
@@ -115,7 +105,6 @@ public class RotaService {
             RotaDTO rotaDTO = objectMapper.convertValue(rotaRecuperado, RotaDTO.class);
             rotaDTO.setIdUsuario(rotaRecuperado.getUsuario().getIdUsuario());
             return rotaDTO;
-
         } catch (Exception e) {
             throw new RegraDeNegocioException("Aconteceu algum problema durante a listagem.");
         }
@@ -124,11 +113,9 @@ public class RotaService {
     public List<RotaDTO> listarPorLocalPartida(String localPartida) throws RegraDeNegocioException {
         try{
             List<RotaEntity> rotasPartida = rotaRepository.findBylocalPartidaIgnoreCase(localPartida);
-
             if (rotasPartida.size() == 0) {
                 throw new RegraDeNegocioException("Local de partida não encontrado.");
             }
-
             return rotasPartida
                     .stream()
                     .map(rota -> {
@@ -137,7 +124,6 @@ public class RotaService {
                         return rotaDTO;
                     })
                     .toList();
-
         }catch (Exception e){
             throw new RegraDeNegocioException(e.getMessage());
         }
@@ -146,11 +132,9 @@ public class RotaService {
     public List<RotaDTO> listarPorLocalDestino(String localDestino) throws RegraDeNegocioException {
         try{
             List<RotaEntity> rotasDestino = rotaRepository.findBylocalDestinoIgnoreCase(localDestino);
-
             if (rotasDestino.size() == 0) {
                 throw new RegraDeNegocioException("Local de destino não encontrado.");
             }
-
             return rotasDestino
                     .stream()
                     .map(rota -> {
@@ -159,7 +143,6 @@ public class RotaService {
                         return rotaDTO;
                     })
                     .toList();
-
         }catch(Exception e){
             throw new RegraDeNegocioException (e.getMessage());
         }
@@ -189,7 +172,7 @@ public class RotaService {
                 .toList();
     }
 
-    public RotaComPostosDTO cadastrarPosto(Integer idRota, Integer idPosto) throws RegraDeNegocioException {
+/*    public RotaComPostosDTO cadastrarPosto(Integer idRota, Integer idPosto) throws RegraDeNegocioException {
         RotaEntity rotaEncontrada = buscarPorId(idRota);
         PostoEntity postoEncontrado = postoService.buscarPorId(idPosto);
 
@@ -235,7 +218,7 @@ public class RotaService {
         } catch (Exception e) {
             throw new RegraDeNegocioException("Aconteceu algum problema durante a listagem.");
         }
-    }
+    }*/
 
     public List<RotaDTO> listarPorIdColaborador(Integer idColaborador) throws RegraDeNegocioException {
         UsuarioEntity usuarioEncontrado = usuarioService.buscarPorId(idColaborador);

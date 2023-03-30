@@ -6,7 +6,6 @@ import br.com.logisticadbc.entity.enums.StatusViagem;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Data
@@ -35,11 +34,6 @@ public class UsuarioCompletoDTO {
     private String localPartida;
     private String localDestino;
     private StatusGeral statusRota;
-
-    private Integer idPosto;
-    private String nomePosto;
-    private BigDecimal valorCombustivel;
-    private StatusGeral statusPosto;
 
     private Integer idViagem;
     private String descricaoViagem;

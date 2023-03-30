@@ -8,7 +8,6 @@ import br.com.logisticadbc.dto.out.UsuarioCompletoDTO;
 import br.com.logisticadbc.dto.out.UsuarioDTO;
 import br.com.logisticadbc.entity.UsuarioEntity;
 import br.com.logisticadbc.entity.enums.StatusGeral;
-import br.com.logisticadbc.entity.enums.StatusViagem;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.repository.UsuarioRepository;
 import br.com.logisticadbc.security.TokenService;
@@ -64,9 +63,7 @@ public class UsuarioService {
 
             usuarioRepository.save(usuarioEntity);
 
-            // TODO AJEITAR EMAIL SERVICE
-          emailService.enviarEmailBoasVindas(usuarioEntity);
-
+            emailService.enviarEmailBoasVindas(usuarioEntity);
 
             return objectMapper.convertValue(usuarioEntity, UsuarioDTO.class);
 

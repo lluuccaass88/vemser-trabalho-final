@@ -2,7 +2,9 @@ package br.com.logisticadbc.entity;
 
 import br.com.logisticadbc.entity.enums.StatusGeral;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,6 +15,8 @@ import java.util.Set;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity(name = "USUARIO")
 public class UsuarioEntity implements UserDetails {
 
@@ -50,11 +54,6 @@ public class UsuarioEntity implements UserDetails {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "usuario")
     @JsonIgnore
     private Set<RotaEntity> rotas;
-
-    //RELACIONAMENTO COM POSTO
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "usuario")
-    @JsonIgnore
-    private Set<PostoEntity> postos;
 
     //RELACIONAMENTO COM VIAGEM
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "usuario")

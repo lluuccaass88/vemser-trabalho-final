@@ -1,3 +1,4 @@
+/*
 package br.com.logisticadbc.dto.out;
 
 import br.com.logisticadbc.dto.in.RotaCreateDTO;
@@ -32,3 +33,4 @@ public class RotaComPostosDTO extends RotaCreateDTO {
     private Set<PostoDTO> postos;
 
 }
+*/
