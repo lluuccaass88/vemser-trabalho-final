@@ -240,7 +240,54 @@ public class CaminhaoServiceTest {
         Assertions.assertEquals(StatusCaminhao.EM_VIAGEM, caminhaoMudado.getStatusCaminhao());
 
     }
-    
+
+    @Test
+    public void deveListarAtivosComSucesso() {
+        // SETUP
+        CaminhaoEntity caminhaoInativo = new CaminhaoEntity();
+        caminhaoInativo.setStatus(StatusGeral.INATIVO);
+
+        List<CaminhaoEntity> listaCaminhao = List.of(
+                getCaminhaoEntityMock(), getCaminhaoEntityMock(), caminhaoInativo);
+
+        Mockito.when(caminhaoRepository.findAll()).thenReturn(listaCaminhao);
+
+        // ACT
+        List<CaminhaoDTO> listaCaminhaoDTOS = caminhaoService.listarAtivos();
+
+        // ASSERT
+        Assertions.assertNotNull(listaCaminhaoDTOS);
+        Assertions.assertEquals(2, listaCaminhaoDTOS.size());
+    }
+
+    @Test
+    public void deveListarInativosComSucesso() {
+        // SETUP
+        CaminhaoEntity caminhaoInativo = new CaminhaoEntity();
+        caminhaoInativo.setUsuario(getUsuarioEntityMock());
+        caminhaoInativo.setStatus(StatusGeral.INATIVO);
+
+        List<CaminhaoEntity> listaCaminhao = List.of(
+                getCaminhaoEntityMock(), getCaminhaoEntityMock(), caminhaoInativo);
+
+        Mockito.when(caminhaoRepository.findAll()).thenReturn(listaCaminhao);
+
+        // ACT
+        List<CaminhaoDTO> listaCaminhaoDTOS = caminhaoService.listarInativos();
+
+        // ASSERT
+        Assertions.assertNotNull(listaCaminhaoDTOS);
+        Assertions.assertEquals(1, listaCaminhaoDTOS.size());
+    }
+
+    @Test(expected = RegraDeNegocioException.class)
+    public void deveTestarIdNaoEncontrado() throws RegraDeNegocioException {
+        //SETUP
+        Integer idProcurado = 5;
+
+        //ACT
+        caminhaoService.buscarPorId(idProcurado);
+    }
 
     @NotNull
     private static CaminhaoEntity getCaminhaoEntityMock() {
