@@ -26,6 +26,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import javax.validation.constraints.NotNull;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -91,6 +92,32 @@ public class CargoServiceTest {
         Assertions.assertNotNull(cargoDTOS);
         Assertions.assertEquals(3, cargoDTOS.size());
 
+    }
+
+    @Test
+    public void deveListarPorIdComSucesso() throws RegraDeNegocioException {
+        // SETUP
+        Mockito.when(cargoRepository.findById(Mockito.anyInt())).thenReturn(Optional.of(getCargoEntityMock()));
+
+        // ACT
+        CargoDTO cargoDTO = cargoService.listarPorId(1);
+
+        // ASSERT
+        Assertions.assertNotNull(cargoDTO);
+        Assertions.assertEquals(1, cargoDTO.getIdCargo());
+    }
+
+    @Test
+    public void deveBuscarPorIdComSucesso() throws RegraDeNegocioException {
+        // SETUP
+        Mockito.when(cargoRepository.findById(Mockito.anyInt())).thenReturn(Optional.of(getCargoEntityMock()));
+
+        // ACT
+        CargoEntity cargoEntity = cargoService.buscarPorId(1);
+
+        // ASSERT
+        Assertions.assertNotNull(cargoEntity);
+        Assertions.assertEquals(1, cargoEntity.getIdCargo());
     }
 
     @NotNull
