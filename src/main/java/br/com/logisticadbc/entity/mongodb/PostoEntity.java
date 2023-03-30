@@ -3,6 +3,7 @@ package br.com.logisticadbc.entity.mongodb;
 import br.com.logisticadbc.entity.enums.StatusGeral;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -14,6 +15,7 @@ import javax.persistence.Id;
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 @Document(collection = "postos")
 public class PostoEntity {
 
