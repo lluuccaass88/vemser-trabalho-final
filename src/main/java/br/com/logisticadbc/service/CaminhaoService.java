@@ -37,9 +37,9 @@ public class CaminhaoService {
 
             usuarioEntity.getCaminhoes().add(caminhaoEntity);
 
-            caminhaoRepository.save(caminhaoEntity);
+            CaminhaoEntity caminhaoCriado = caminhaoRepository.save(caminhaoEntity);
 
-            CaminhaoDTO caminhaoDTO = objectMapper.convertValue(caminhaoEntity, CaminhaoDTO.class);
+            CaminhaoDTO caminhaoDTO = objectMapper.convertValue(caminhaoCriado, CaminhaoDTO.class);
             caminhaoDTO.setIdUsuario(idUsuario);
             return caminhaoDTO;
 
