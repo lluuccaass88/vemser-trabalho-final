@@ -32,7 +32,7 @@ public class RotaService {
             rotaEntity.setStatus(StatusGeral.ATIVO);
             rotaEntity.setUsuario(usuarioEncontrado); // Atribui idusuario a rota criada
 
-            /*usuarioEncontrado.getRotas().add(rotaEntity);*/ // Atribui rota criada ao Colaborador //TODO DESCOBRIR COMO TESTA A RELAÇÃO
+            usuarioEncontrado.getRotas().add(rotaEntity); // Atribui rota criada ao Colaborador //TODO DESCOBRIR COMO TESTA A RELAÇÃO
 
             rotaRepository.save(rotaEntity);
 
