@@ -215,14 +215,12 @@ public class ViagemServiceTest {
                 .thenReturn(pageViagem);
 
         // ACT
-        PageDTO<ViagemDTO> listViagensDTO = viagemService.listarPorStatusOrdenadoPorDataInicioAsc(statusViagem, pagina, tamanho);
+        PageDTO<ViagemDTO> viagensPaginadasDTO = viagemService.listarPorStatusOrdenadoPorDataInicioAsc(statusViagem, pagina, tamanho);
 
         // ASSERT
-        Assertions.assertNotNull(listViagensDTO);
-
-
-
-
+        Assertions.assertNotNull(viagensPaginadasDTO);
+        Assertions.assertEquals(pagina, viagensPaginadasDTO.getPagina());
+        Assertions.assertEquals(tamanho, viagensPaginadasDTO.getTamanho());
 
     }
 
