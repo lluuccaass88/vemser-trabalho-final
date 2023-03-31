@@ -5,8 +5,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.Id;
 
 @Getter
 @Setter
@@ -22,6 +25,7 @@ public class LogEntity {
 
     private String descricao;
 
+    @Enumerated(EnumType.STRING)
     private TipoOperacao tipoOperacao;
 
 }

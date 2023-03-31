@@ -3,6 +3,7 @@ package br.com.logisticadbc.service;
 
 import br.com.logisticadbc.dto.in.CaminhaoCreateDTO;
 import br.com.logisticadbc.dto.out.CaminhaoDTO;
+import br.com.logisticadbc.dto.out.LogDTO;
 import br.com.logisticadbc.entity.CaminhaoEntity;
 import br.com.logisticadbc.entity.UsuarioEntity;
 import br.com.logisticadbc.entity.enums.StatusCaminhao;
@@ -41,9 +42,8 @@ public class CaminhaoService {
 
             usuarioEntity.getCaminhoes().add(caminhaoEntity);
 
-            LogEntity logEntity = getLog(usuarioEntity, "Operação de Criaçao de Caminhões",
+            logService.gerarLog(usuarioEntity, "Operação de Cadastro de Caminhões",
                     TipoOperacao.CADASTRO);
-            logService.save(logEntity);
 
             CaminhaoEntity caminhaoCriado = caminhaoRepository.save(caminhaoEntity);
 
@@ -75,7 +75,7 @@ public class CaminhaoService {
 
             Integer idUsuario = caminhaoRecuperado.getUsuario().getIdUsuario();
             UsuarioEntity usuarioEntity = usuarioService.buscarPorId(idUsuario);
-            LogEntity logEntity = getLog(usuarioEntity, "Operação de Abastecimento de Caminhões",
+            logService.gerarLog(usuarioEntity, "Operação de Abastecimento de Caminhões",
                     TipoOperacao.OUTROS);
 
             CaminhaoDTO caminhaoDTO = objectMapper.convertValue(caminhaoAbastecido, CaminhaoDTO.class);
@@ -96,6 +96,10 @@ public class CaminhaoService {
         try {
             caminhaoRecuperado.setStatus(StatusGeral.INATIVO);
             caminhaoRepository.save(caminhaoRecuperado);
+            Integer idUsuario = caminhaoRecuperado.getUsuario().getIdUsuario();
+            UsuarioEntity usuarioEntity = usuarioService.buscarPorId(idUsuario);
+            logService.gerarLog(usuarioEntity, "Operação de Inativação de Caminhões",
+                    TipoOperacao.EXCLUSAO);
 
         } catch (Exception e) {
             throw new RegraDeNegocioException("Aconteceu algum problema durante a exclusão");
@@ -183,18 +187,5 @@ public class CaminhaoService {
     public void mudarStatus(CaminhaoEntity caminhao, StatusCaminhao status) {
         caminhao.setStatusCaminhao(status);
         caminhaoRepository.save(caminhao);
-    }
-
-    public LogEntity getLog(UsuarioEntity usuario, String descricao, TipoOperacao tipoOperacao) throws RegraDeNegocioException {
-        Integer idUsuario = usuario.getIdUsuario();
-        UsuarioEntity usuarioEntity = usuarioService.buscarPorId(idUsuario);
-
-        LogEntity log = new LogEntity();
-        log.setId(usuarioEntity.getIdUsuario().toString());
-        log.setLoginOperador(usuarioEntity.getLogin());
-        log.setDescricao(descricao);
-        log.setTipoOperacao(tipoOperacao);
-
-        return log;
     }
 }
