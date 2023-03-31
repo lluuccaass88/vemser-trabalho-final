@@ -1,9 +1,7 @@
 package br.com.logisticadbc.service;
 
-import br.com.logisticadbc.dto.out.CaminhaoDTO;
 import br.com.logisticadbc.dto.out.CargoDTO;
 import br.com.logisticadbc.dto.out.CargosDeUsuarioDTO;
-import br.com.logisticadbc.entity.CaminhaoEntity;
 import br.com.logisticadbc.entity.CargoEntity;
 import br.com.logisticadbc.entity.UsuarioEntity;
 import br.com.logisticadbc.entity.enums.StatusGeral;

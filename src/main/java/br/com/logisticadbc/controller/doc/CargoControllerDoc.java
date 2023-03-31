@@ -2,7 +2,7 @@ package br.com.logisticadbc.controller.doc;
 
 import br.com.logisticadbc.dto.in.CargoCreateDTO;
 import br.com.logisticadbc.dto.out.CargoDTO;
-import br.com.logisticadbc.dto.out.CargosDeUsuarioDTO;
+import br.com.logisticadbc.dto.out.UsuarioDTO;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -73,20 +73,7 @@ public interface CargoControllerDoc {
             }
     )
     @PostMapping("/cadastrar-usuario")
-    public ResponseEntity<CargosDeUsuarioDTO> linkEntities(@RequestParam("idCargo") Integer idCargo,
-                                                           @RequestParam("idUsuario") Integer idUsuario)
-            throws RegraDeNegocioException;
-
-    @Operation(summary = "Listar cargos por usuário",
-            description = "Lista cargos por usuário")
-    @ApiResponses(
-            value = {
-                    @ApiResponse(responseCode = "200", description = "Retorna cargos de um usuário"),
-                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
-                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
-            }
-    )
-    @GetMapping("/listar-por-usuario")
-    public ResponseEntity<CargosDeUsuarioDTO> listByUser(@RequestParam("idUsuario") Integer idUsuario)
+    public ResponseEntity<UsuarioDTO> linkEntities(@RequestParam("idCargo") Integer idCargo,
+                                                   @RequestParam("idUsuario") Integer idUsuario)
             throws RegraDeNegocioException;
 }

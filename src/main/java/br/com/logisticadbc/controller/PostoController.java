@@ -1,6 +1,5 @@
 package br.com.logisticadbc.controller;
 
-import br.com.logisticadbc.controller.doc.PostoControllerDoc;
 import br.com.logisticadbc.dto.in.PostoCreateDTO;
 import br.com.logisticadbc.dto.out.PostoDTO;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;

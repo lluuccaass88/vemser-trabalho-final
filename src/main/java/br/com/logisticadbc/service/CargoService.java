@@ -2,7 +2,6 @@ package br.com.logisticadbc.service;
 
 import br.com.logisticadbc.dto.in.CargoCreateDTO;
 import br.com.logisticadbc.dto.out.CargoDTO;
-import br.com.logisticadbc.dto.out.CargosDeUsuarioDTO;
 import br.com.logisticadbc.dto.out.UsuarioDTO;
 import br.com.logisticadbc.entity.CargoEntity;
 import br.com.logisticadbc.entity.UsuarioEntity;
@@ -14,7 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Set;
 
 @RequiredArgsConstructor
 @Service
@@ -65,32 +64,39 @@ public class CargoService {
         return objectMapper.convertValue(cargoEncontrado, CargoDTO.class);
     }
 
-    public CargoEntity buscarPorId(Integer idCargo) throws RegraDeNegocioException {
-        return cargoRepository.findById(idCargo)
-                .orElseThrow(() -> new RegraDeNegocioException("Cargo não encontrado!"));
-    }
-
-    public CargosDeUsuarioDTO cadastrarUsuario(Integer idCargo, Integer idUsuario) throws RegraDeNegocioException {
+    public UsuarioDTO cadastrarUsuario(Integer idCargo, Integer idUsuario) throws RegraDeNegocioException {
         CargoEntity cargoEncontrado = buscarPorId(idCargo);
         UsuarioEntity usuarioEncontrado = usuarioService.buscarPorId(idUsuario);
 
         if (usuarioEncontrado.getStatus().equals(StatusGeral.INATIVO)) {
             throw new RegraDeNegocioException("Usuário informado inativo!");
         }
+
         try {
             cargoEncontrado.getUsuarios().add(usuarioEncontrado);
             usuarioEncontrado.getCargos().add(cargoEncontrado);
 
             cargoRepository.save(cargoEncontrado);
 
-            return listarPorUsuario(idUsuario);
+            return usuarioService.listarPorId(idUsuario);
 
         } catch (Exception e) {
-            throw new RegraDeNegocioException("Aconteceu algum problema durante o cadastro.");
+            e.printStackTrace();
+            throw new RegraDeNegocioException("Aconteceu algum problema durante o cadastro de cargo.");
         }
     }
 
-    public CargosDeUsuarioDTO listarPorUsuario(Integer idUsuario) throws RegraDeNegocioException {
+    public CargoEntity buscarPorId(Integer idCargo) throws RegraDeNegocioException {
+        return cargoRepository.findById(idCargo)
+                .orElseThrow(() -> new RegraDeNegocioException("Cargo não encontrado!"));
+    }
+
+    public CargoEntity buscarPorNome(String nome) throws RegraDeNegocioException {
+        return cargoRepository.findByNome(nome)
+                .orElseThrow(() -> new RegraDeNegocioException("Cargo não encontrado!"));
+    }
+
+    /*public CargosDeUsuarioDTO listarPorUsuario(Integer idUsuario) throws RegraDeNegocioException {
         UsuarioEntity usuarioEncontrado = usuarioService.buscarPorId(idUsuario);
 
         if (usuarioEncontrado.getStatus().equals(StatusGeral.INATIVO)) {
@@ -111,5 +117,5 @@ public class CargoService {
         } catch (Exception e) {
             throw new RegraDeNegocioException("Aconteceu algum problema durante a listagem.");
         }
-    }
+    }*/
 }
