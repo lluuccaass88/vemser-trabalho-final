@@ -304,7 +304,7 @@ public class UsuarioService {
     }
 
     // retorna usuarioDTO já com os cargos convertidos
-    private UsuarioDTO transformaEmUsuarioDTO(UsuarioEntity usuarioEntity) {
+    public UsuarioDTO transformaEmUsuarioDTO(UsuarioEntity usuarioEntity) {
         UsuarioDTO usuarioDTO = objectMapper.convertValue(usuarioEntity, UsuarioDTO.class);
 
         Set<CargoDTO> cargoDTOSet = usuarioEntity.getCargos()
@@ -320,7 +320,7 @@ public class UsuarioService {
     }
 
     // verifica se usuario é admin
-    private static boolean isAdmin(UsuarioEntity usuarioEncontrado) {
+    public boolean isAdmin(UsuarioEntity usuarioEncontrado) {
         boolean isAdmin = usuarioEncontrado.getCargos()
                 .stream()
                 .anyMatch(cargo -> cargo.getNome().equals("ROLE_ADMIN"));
