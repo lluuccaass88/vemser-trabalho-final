@@ -1,6 +1,7 @@
 package br.com.logisticadbc.service;
 
 import br.com.logisticadbc.dto.in.PostoCreateDTO;
+import br.com.logisticadbc.dto.out.PostoDTO;
 import br.com.logisticadbc.entity.enums.StatusGeral;
 import br.com.logisticadbc.entity.mongodb.PostoEntity;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
@@ -22,6 +23,7 @@ import javax.validation.constraints.NotNull;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -33,6 +35,9 @@ public class PostoServiceTest {
     private PostoService postoService;
     @Mock
     private PostoRepository postoRepository;
+    @Mock
+    private GeoJsonPoint geoJsonPoint;
+
     private ObjectMapper objectMapper = new ObjectMapper();
 
     @Before
@@ -43,29 +48,29 @@ public class PostoServiceTest {
         ReflectionTestUtils.setField(postoService, "objectMapper", objectMapper);
     }
 
-    @Test
+    /*@Test
     public void deveCriarPostoComSucesso() throws RegraDeNegocioException {
         // SETUP
-//        PostoCreateDTO novoPosto = new PostoCreateDTO();
-//        novoPosto.setNome("Posto Ipiranga");
-//        novoPosto.setCidade("Fortaleza");
-//        novoPosto.setLatitude("3.123456");
-//        novoPosto.setLongitude("4.123456");
-//        novoPosto.setValorCombustivel(4.50);
+        PostoCreateDTO postoCreateDTO = new PostoCreateDTO();
+        postoCreateDTO.setNome("Posto Ipiranga");
+        postoCreateDTO.setCidade("Fortaleza");
+        postoCreateDTO.setLongitude("3.123456");
+        postoCreateDTO.setLatitude("4.123456");
+        postoCreateDTO.setValorCombustivel(4.50);
 
-//        PostoEntity postoMockado = getPostoEntityMock();
+        PostoEntity postoEntityMock = getPostoEntityMock();
 
-//        when(postoRepository.save(any())).thenReturn(postoMockado);
+        when(postoRepository.save(any())).thenReturn(postoEntityMock);
+
         // ACTION
-//        PostoDTO postoRetornado = postoService.criar(novoPosto);
+        PostoDTO postoDTO = postoService.criar(postoCreateDTO);
 
         // ASSERT
-//        assertNotNull(postoRetornado);
-//        assertEquals(novoPosto.getNome(), postoRetornado.getNome());
-//        assertEquals(novoPosto.getCidade(), postoRetornado.getCidade());
-//        assertEquals(novoPosto.getValorCombustivel(), postoRetornado.getValorCombustivel());
-//        assertEquals("1", postoRetornado.getId());
-    }
+        assertNotNull(postoDTO);
+        assertEquals(postoCreateDTO.getNome(), postoDTO.getNome());
+        assertEquals(postoCreateDTO.getCidade(), postoDTO.getCidade());
+        assertEquals(postoCreateDTO.getValorCombustivel(), postoDTO.getValorCombustivel());
+    }*/
 
     @Test
     public void deveAtualizarComSucesso() {
@@ -127,12 +132,6 @@ public class PostoServiceTest {
 
     @NotNull
     private GeoJsonPoint getGeoJsonPointMock() {
-        PostoCreateDTO postoComCordenadas = new PostoCreateDTO();
-        postoComCordenadas.setLatitude("3.123456");
-        postoComCordenadas.setLongitude("4.123456");
-        GeoJsonPoint locationPoint = new GeoJsonPoint(
-                Double.parseDouble(postoComCordenadas.getLongitude()),
-                Double.parseDouble(postoComCordenadas.getLatitude()));
-        return locationPoint;
+        return new GeoJsonPoint(3.123456, 4.123456);
     }
 }

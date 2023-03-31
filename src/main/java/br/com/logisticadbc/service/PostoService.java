@@ -28,17 +28,18 @@ public class PostoService {
     public PostoDTO criar(PostoCreateDTO postoCreateDTO) throws RegraDeNegocioException {
 
         try {
-            GeoJsonPoint locationPoint = new GeoJsonPoint(
-                    Double.parseDouble(postoCreateDTO.getLongitude()),
-                    Double.parseDouble(postoCreateDTO.getLatitude()));
+            Point point = new Point(Double.parseDouble(postoCreateDTO.getLongitude()),
+                                    Double.parseDouble(postoCreateDTO.getLongitude()));
+
+            GeoJsonPoint locationPoint = new GeoJsonPoint(point);
 
             PostoEntity postoEntity = objectMapper.convertValue(postoCreateDTO, PostoEntity.class);
             postoEntity.setLocation(locationPoint);
             postoEntity.setStatus(StatusGeral.ATIVO);
 
-            postoRepository.save(postoEntity);
+            PostoEntity postoCriado = postoRepository.save(postoEntity);
 
-            PostoDTO postoDTO = objectMapper.convertValue(postoEntity, PostoDTO.class);
+            PostoDTO postoDTO = objectMapper.convertValue(postoCriado, PostoDTO.class);
             return postoDTO;
 
         } catch (Exception e) {
