@@ -1,7 +1,11 @@
 package br.com.logisticadbc.service;
 
+import br.com.logisticadbc.dto.in.CargoCreateDTO;
+import br.com.logisticadbc.dto.in.RotaCreateDTO;
 import br.com.logisticadbc.dto.out.CargoDTO;
+import br.com.logisticadbc.dto.out.RotaDTO;
 import br.com.logisticadbc.entity.CargoEntity;
+import br.com.logisticadbc.entity.RotaEntity;
 import br.com.logisticadbc.entity.UsuarioEntity;
 import br.com.logisticadbc.entity.enums.StatusGeral;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
@@ -25,6 +29,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CargoServiceTest {
@@ -73,6 +82,27 @@ public class CargoServiceTest {
 //        Assertions.assertNotNull(cargosDeUsuarioDTO);
 //        Assertions.assertEquals(usuarioEntityMock.getIdUsuario(), cargosDeUsuarioDTO.getUsuario().getIdUsuario());
 //    }
+
+    //Testa criar
+    @Test
+    public void deveTestarCriar() throws RegraDeNegocioException {
+        //Setup
+        Integer idUsuario = 1;
+        CargoCreateDTO novoCargo = new CargoCreateDTO(
+                "ROLE_BACKEND"
+        );
+
+        CargoEntity cargoMockadoDoBanco = getCargoEntityMock();
+
+        when(cargoRepository.save(any())).thenReturn(cargoMockadoDoBanco);
+
+        //Action
+        CargoDTO cargoSalvo = cargoService.criar(novoCargo);
+
+        //Assert
+        assertNotNull(cargoSalvo);
+        Assertions.assertEquals(novoCargo.getNome(), cargoSalvo.getNome());
+    }
 
     @Test
     public void deveListarComSucesso() {

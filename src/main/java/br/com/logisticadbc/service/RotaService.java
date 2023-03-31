@@ -205,16 +205,4 @@ public class RotaService {
                 .orElseThrow(() -> new RegraDeNegocioException("Rota não encontrada"));
     }
 
-    public LogEntity getLog(UsuarioEntity usuario, String descricao, TipoOperacao tipoOperacao) throws RegraDeNegocioException {
-        Integer idUsuario = usuario.getIdUsuario();
-        UsuarioEntity usuarioEntity = usuarioService.buscarPorId(idUsuario);
-
-        LogEntity log = new LogEntity();
-        log.setId(usuarioEntity.getIdUsuario().toString());
-        log.setLoginOperador(usuarioEntity.getLogin());
-        log.setDescricao(descricao);
-        log.setTipoOperacao(tipoOperacao);
-
-        return log;
-    }
 }

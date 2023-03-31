@@ -287,7 +287,6 @@ public class RotaServiceTest {
         Assertions.assertEquals(idRota, rotaRetornada.getIdRota());
     }
 
-
     //Testes deletar
     @Test
     public void deveTestarDeletar() throws RegraDeNegocioException {
@@ -357,6 +356,40 @@ public class RotaServiceTest {
 
 
         UsuarioEntity usuarioMockadoBanco = new UsuarioEntity();
+
+        Set<RotaEntity> rotaEntities = new HashSet<>();
+        rotaEntities.add(getRotaEntityMock());
+        rotaEntities.add(getRotaEntityMock());
+        usuarioMockadoBanco.setRotas(rotaEntities);
+
+        when(rotaRepository.findById(Mockito.anyInt())).thenReturn(Optional.of(getRotaEntityMock()));
+        when(usuarioService.buscarPorId(anyInt())).thenReturn(usuarioMockadoBanco);
+
+        when(rotaRepository.save(any())).thenReturn(getRotaEntityMock());
+
+        // ACT
+        RotaDTO rotaEditadaDTO = rotaService.editar(idRota, rotaEditada);
+
+        // ASSERT
+        assertNotNull(rotaEditadaDTO);
+        Assertions.assertEquals("Salvador", rotaEditadaDTO.getLocalPartida());
+    }
+
+    //Testar Get Log
+    @Test
+    public void deveTestarGetLog() throws RegraDeNegocioException {
+        // SETUP
+        int idRota = 1;
+        RotaCreateDTO rotaEditada = new RotaCreateDTO(
+                "Rota de Salvador até São Paulo",
+                "Salvador",
+                "São Paulo"
+        );
+
+
+        UsuarioEntity usuarioMockadoBanco = new UsuarioEntity();
+        String descricao = "Log de criacao";
+
 
         Set<RotaEntity> rotaEntities = new HashSet<>();
         rotaEntities.add(getRotaEntityMock());
