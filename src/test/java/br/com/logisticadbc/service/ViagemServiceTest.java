@@ -4,6 +4,7 @@ import br.com.logisticadbc.dto.in.RotaCreateDTO;
 import br.com.logisticadbc.dto.in.ViagemCreateDTO;
 import br.com.logisticadbc.dto.out.PageDTO;
 import br.com.logisticadbc.dto.out.RotaDTO;
+
 import br.com.logisticadbc.dto.out.ViagemDTO;
 import br.com.logisticadbc.entity.CaminhaoEntity;
 import br.com.logisticadbc.entity.RotaEntity;
@@ -39,8 +40,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 
@@ -321,4 +320,8 @@ public class ViagemServiceTest {
         viagemMockadaDoBanco.setDataFim(LocalDate.of(2023, 04, 22));
         return viagemMockadaDoBanco;
     }
+
+
+
+
 }

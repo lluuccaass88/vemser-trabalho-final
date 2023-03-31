@@ -7,7 +7,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
-@AllArgsConstructor
 public class ViagemDTO extends ViagemCreateDTO {
 
     @Schema(description = "ID da viagem", example = "1")
