@@ -83,11 +83,12 @@ public class ViagemService {
             viagemDTO.setIdCaminhao(caminhaoEncontrado.getIdCaminhao());
             viagemDTO.setIdRota(rotaEncontrada.getIdRota());
 
-            emailService.enviarEmailViagem(rotaEncontrada,viagemEntity, usuarioEncontrado);
+            //emailService.enviarEmailViagem(rotaEncontrada,viagemEntity, usuarioEncontrado);
 
             return viagemDTO;
 
         } catch (Exception e) {
+            e.printStackTrace();
             throw new RegraDeNegocioException("Aconteceu algum problema durante a criação.");
         }
     }
@@ -131,6 +132,7 @@ public class ViagemService {
             return viagemDTO;
 
         } catch (Exception e) {
+            e.printStackTrace();
             throw new RegraDeNegocioException("Aconteceu algum problema durante a edição.");
         }
     }

@@ -44,6 +44,8 @@ public class CaminhaoServiceTest {
     @Mock
     private UsuarioService usuarioService;
 
+    @Mock
+    private LogService logService;
     // Executa primeiro
     @Before
     public void init() {
