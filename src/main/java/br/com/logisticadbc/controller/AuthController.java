@@ -5,6 +5,7 @@ import br.com.logisticadbc.dto.in.LoginDTO;
 import br.com.logisticadbc.dto.out.UsuarioDTO;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.service.UsuarioService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,7 @@ import javax.validation.Valid;
 @Validated
 @RequiredArgsConstructor
 @RestController
+@Tag(name = "Autenticação")
 @RequestMapping("/auth")
 public class AuthController implements AuthControllerDoc {
 

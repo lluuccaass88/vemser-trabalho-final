@@ -2,11 +2,11 @@ package br.com.logisticadbc.controller;
 
 import br.com.logisticadbc.controller.doc.RotaControllerDoc;
 import br.com.logisticadbc.dto.in.RotaCreateDTO;
-import br.com.logisticadbc.dto.out.RotaComPostosDTO;
 import br.com.logisticadbc.dto.out.RotaDTO;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.service.RotaService;
 import br.com.logisticadbc.service.UsuarioService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -20,6 +20,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "Rota")
 @RequestMapping("/rota")
 @Validated
 public class RotaController implements RotaControllerDoc {
@@ -58,20 +59,6 @@ public class RotaController implements RotaControllerDoc {
 
         rotaService.deletar(idRota);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-    }
-
-    @PostMapping("/cadastrar-posto")
-    public ResponseEntity<RotaComPostosDTO> linkEntities(@RequestParam("idRota") Integer idRota,
-                                                         @RequestParam("idPosto") Integer idPosto)
-            throws RegraDeNegocioException {
-
-        return  new ResponseEntity<>(rotaService.cadastrarPosto(idRota, idPosto), HttpStatus.CREATED);
-    }
-
-    @GetMapping("/listar-postos-cadastrados")
-    public ResponseEntity<RotaComPostosDTO> listLink(@RequestParam("idRota") Integer idRota)
-            throws RegraDeNegocioException {
-        return new ResponseEntity<>(rotaService.listarPostosCadastrados(idRota), HttpStatus.OK);
     }
 
     @GetMapping("/listar-por-usuario")

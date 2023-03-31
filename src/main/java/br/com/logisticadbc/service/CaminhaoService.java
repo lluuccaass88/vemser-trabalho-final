@@ -3,12 +3,16 @@ package br.com.logisticadbc.service;
 
 import br.com.logisticadbc.dto.in.CaminhaoCreateDTO;
 import br.com.logisticadbc.dto.out.CaminhaoDTO;
+import br.com.logisticadbc.dto.out.LogDTO;
 import br.com.logisticadbc.entity.CaminhaoEntity;
 import br.com.logisticadbc.entity.UsuarioEntity;
 import br.com.logisticadbc.entity.enums.StatusCaminhao;
 import br.com.logisticadbc.entity.enums.StatusGeral;
+import br.com.logisticadbc.entity.enums.TipoOperacao;
+import br.com.logisticadbc.entity.mongodb.LogEntity;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.repository.CaminhaoRepository;
+import br.com.logisticadbc.repository.LogRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +28,7 @@ public class CaminhaoService {
     private final CaminhaoRepository caminhaoRepository;
     private final UsuarioService usuarioService;
     private final ObjectMapper objectMapper;
+    private final LogService logService;
 
     public CaminhaoDTO criar(Integer idUsuario, CaminhaoCreateDTO caminhaoCreateDTO)
             throws RegraDeNegocioException {
@@ -37,9 +42,12 @@ public class CaminhaoService {
 
             usuarioEntity.getCaminhoes().add(caminhaoEntity);
 
-            caminhaoRepository.save(caminhaoEntity);
+            logService.gerarLog(usuarioEntity, "Operação de Cadastro de Caminhões",
+                    TipoOperacao.CADASTRO);
 
-            CaminhaoDTO caminhaoDTO = objectMapper.convertValue(caminhaoEntity, CaminhaoDTO.class);
+            CaminhaoEntity caminhaoCriado = caminhaoRepository.save(caminhaoEntity);
+
+            CaminhaoDTO caminhaoDTO = objectMapper.convertValue(caminhaoCriado, CaminhaoDTO.class);
             caminhaoDTO.setIdUsuario(idUsuario);
             return caminhaoDTO;
 
@@ -63,13 +71,15 @@ public class CaminhaoService {
         try {
             caminhaoRecuperado.setNivelCombustivel(caminhaoRecuperado.getNivelCombustivel() + gasolina);
 
-            UsuarioEntity usuarioEntity =
-                    usuarioService.buscarPorId(caminhaoRecuperado.getUsuario().getIdUsuario());
+            CaminhaoEntity caminhaoAbastecido = caminhaoRepository.save(caminhaoRecuperado);
 
-            caminhaoRepository.save(caminhaoRecuperado);
+            Integer idUsuario = caminhaoRecuperado.getUsuario().getIdUsuario();
+            UsuarioEntity usuarioEntity = usuarioService.buscarPorId(idUsuario);
+            logService.gerarLog(usuarioEntity, "Operação de Abastecimento de Caminhões",
+                    TipoOperacao.OUTROS);
 
-            CaminhaoDTO caminhaoDTO = objectMapper.convertValue(caminhaoRecuperado, CaminhaoDTO.class);
-            caminhaoDTO.setIdUsuario(usuarioEntity.getIdUsuario());
+            CaminhaoDTO caminhaoDTO = objectMapper.convertValue(caminhaoAbastecido, CaminhaoDTO.class);
+            caminhaoDTO.setIdUsuario(idUsuario);
             return caminhaoDTO;
 
         } catch (Exception e) {
@@ -86,6 +96,10 @@ public class CaminhaoService {
         try {
             caminhaoRecuperado.setStatus(StatusGeral.INATIVO);
             caminhaoRepository.save(caminhaoRecuperado);
+            Integer idUsuario = caminhaoRecuperado.getUsuario().getIdUsuario();
+            UsuarioEntity usuarioEntity = usuarioService.buscarPorId(idUsuario);
+            logService.gerarLog(usuarioEntity, "Operação de Inativação de Caminhões",
+                    TipoOperacao.EXCLUSAO);
 
         } catch (Exception e) {
             throw new RegraDeNegocioException("Aconteceu algum problema durante a exclusão");
@@ -98,7 +112,8 @@ public class CaminhaoService {
                 .map(caminhao -> {
                     CaminhaoDTO caminhaoDTO = objectMapper.convertValue(caminhao, CaminhaoDTO.class);
                     caminhaoDTO.setIdUsuario(caminhao.getUsuario().getIdUsuario());
-                    return caminhaoDTO;})
+                    return caminhaoDTO;
+                })
                 .toList();
     }
 
@@ -109,7 +124,8 @@ public class CaminhaoService {
                 .map(caminhao -> {
                     CaminhaoDTO caminhaoDTO = objectMapper.convertValue(caminhao, CaminhaoDTO.class);
                     caminhaoDTO.setIdUsuario(caminhao.getUsuario().getIdUsuario());
-                    return caminhaoDTO;})
+                    return caminhaoDTO;
+                })
                 .toList();
     }
 
@@ -120,7 +136,8 @@ public class CaminhaoService {
                 .map(caminhao -> {
                     CaminhaoDTO caminhaoDTO = objectMapper.convertValue(caminhao, CaminhaoDTO.class);
                     caminhaoDTO.setIdUsuario(caminhao.getUsuario().getIdUsuario());
-                    return caminhaoDTO;})
+                    return caminhaoDTO;
+                })
                 .toList();
     }
 
@@ -144,7 +161,8 @@ public class CaminhaoService {
                 .map(caminhao -> {
                     CaminhaoDTO caminhaoDTO = objectMapper.convertValue(caminhao, CaminhaoDTO.class);
                     caminhaoDTO.setIdUsuario(caminhao.getUsuario().getIdUsuario());
-                    return caminhaoDTO;})
+                    return caminhaoDTO;
+                })
                 .toList();
     }
 

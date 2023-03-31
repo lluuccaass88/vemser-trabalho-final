@@ -38,17 +38,8 @@ public class RotaEntity {
     @JsonIgnore
     private UsuarioEntity usuario;
 
-    //RELACIONAMENTO COM POSTO
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "ROTA_X_POSTO",
-            joinColumns = @JoinColumn(name = "id_rota"),
-            inverseJoinColumns = @JoinColumn(name = "id_posto"))
-    @JsonIgnore
-    private Set<PostoEntity> postos;
-
     //RELACIONAMENTO COM VIAGEM
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "rota")
     @JsonIgnore
     private Set<ViagemEntity> viagens;
-
 }

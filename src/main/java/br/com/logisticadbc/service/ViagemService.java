@@ -190,14 +190,32 @@ public class ViagemService {
             return viagemDTO;
 
         } catch (Exception e) {
+            e.printStackTrace();
             throw new RegraDeNegocioException("Aconteceu algum problema durante a listagem.");
         }
     }
 
     public List<ViagemDTO> listarPorIdMotorista(Integer idMotorista) throws RegraDeNegocioException {
-        UsuarioEntity usuarioEncontrado = usuarioService.buscarPorId(idMotorista);
+        Integer idLoggedUser = usuarioService.getIdLoggedUser();
+        UsuarioEntity usuarioLogado = usuarioService.buscarPorId(idLoggedUser);
 
-        return usuarioEncontrado.getViagens()
+        UsuarioEntity motoristaEncontrado = null;
+
+        // se tiver parâmetro verifica se é admin
+        if (idMotorista != null) {
+
+            if (!usuarioService.isAdmin(usuarioLogado)) {
+                throw new RegraDeNegocioException("Só admin pode listar de outro usuário.");
+            }
+
+            motoristaEncontrado = usuarioService.buscarPorId(idMotorista);
+
+        // se nao tiver parâmetro, usa o proprio usuario logado
+        } else {
+            motoristaEncontrado = usuarioLogado;
+        }
+
+        return motoristaEncontrado.getViagens()
                 .stream()
                 .map(viagem -> {
                     ViagemDTO viagemDTO = objectMapper.convertValue(viagem, ViagemDTO.class);
@@ -225,9 +243,9 @@ public class ViagemService {
     }
 
     public List<ViagemDTO> listarPorIdCaminhao(Integer idCaminhao) throws RegraDeNegocioException {
-        RotaEntity rotaEncontrada = rotaService.buscarPorId(idCaminhao);
+        CaminhaoEntity caminhaoEncontrado = caminhaoService.buscarPorId(idCaminhao);
 
-        return rotaEncontrada.getViagens()
+        return caminhaoEncontrado.getViagens()
                 .stream()
                 .map(viagem -> {
                     ViagemDTO viagemDTO = objectMapper.convertValue(viagem, ViagemDTO.class);

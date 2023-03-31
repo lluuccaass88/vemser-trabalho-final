@@ -35,7 +35,7 @@ public interface PostoControllerDoc {
             }
     )
     @GetMapping("/buscar-por-id")
-    ResponseEntity<PostoDTO> findById(@RequestParam("idPosto") Integer idPosto) throws RegraDeNegocioException;
+    ResponseEntity<PostoDTO> findById(@RequestParam("idPosto") String idPosto) throws RegraDeNegocioException;
 
     @Operation(summary = "Adicionar Posto", description = "Adicionar um Posto no banco de dados")
     @ApiResponses(
@@ -58,7 +58,7 @@ public interface PostoControllerDoc {
             }
     )
     @PutMapping
-    public ResponseEntity<PostoDTO> update(@RequestParam("idPosto") Integer idPosto,
+    public ResponseEntity<PostoDTO> update(@RequestParam("idPosto") String idPosto,
                                            @Valid @RequestBody PostoCreateDTO postoCreateDTO)
             throws RegraDeNegocioException;
 
@@ -71,20 +71,7 @@ public interface PostoControllerDoc {
             }
     )
     @DeleteMapping
-    public ResponseEntity<Void> delete(@RequestParam("idPosto") Integer idPosto) throws RegraDeNegocioException;
-
-    @Operation(summary = "Listar postos de um usuario",
-            description = "Lista todos postos de um usuario")
-    @ApiResponses(
-            value = {
-                    @ApiResponse(responseCode = "200", description = "Retorna lista com postos"),
-                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
-                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
-            }
-    )
-    @GetMapping("/listar-por-usuario")
-    public ResponseEntity<List<PostoDTO>> listByIdUser(@RequestParam("idUsuario") Integer idUsuario)
-            throws RegraDeNegocioException;
+    public ResponseEntity<Void> delete(@RequestParam("idPosto") String idPosto) throws RegraDeNegocioException;
 
     @Operation(summary = "Listar postos ativos",
             description = "Lista todos postos ativos")

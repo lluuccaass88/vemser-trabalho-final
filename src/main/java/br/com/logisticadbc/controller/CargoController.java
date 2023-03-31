@@ -3,9 +3,10 @@ package br.com.logisticadbc.controller;
 import br.com.logisticadbc.controller.doc.CargoControllerDoc;
 import br.com.logisticadbc.dto.in.CargoCreateDTO;
 import br.com.logisticadbc.dto.out.CargoDTO;
-import br.com.logisticadbc.dto.out.CargosDeUsuarioDTO;
+import br.com.logisticadbc.dto.out.UsuarioDTO;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.service.CargoService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,7 @@ import java.util.List;
 @Validated
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "Cargo")
 @RequestMapping("/cargo")
 public class CargoController implements CargoControllerDoc {
 
@@ -51,16 +53,11 @@ public class CargoController implements CargoControllerDoc {
     }
 
     @PostMapping("/cadastrar-usuario")
-    public ResponseEntity<CargosDeUsuarioDTO> linkEntities(@RequestParam("idCargo") Integer idCargo,
-                                             @RequestParam("idUsuario") Integer idUsuario)
+    public ResponseEntity<UsuarioDTO> linkEntities(@RequestParam("idCargo") Integer idCargo,
+                                                   @RequestParam("idUsuario") Integer idUsuario)
             throws RegraDeNegocioException {
         
         return new ResponseEntity<>(cargoService.cadastrarUsuario(idCargo, idUsuario), HttpStatus.CREATED);
     }
 
-    @GetMapping("/listar-por-usuario")
-    public ResponseEntity<CargosDeUsuarioDTO> listByUser(@RequestParam("idUsuario") Integer idUsuario)
-            throws RegraDeNegocioException {
-        return new ResponseEntity<>(cargoService.listarPorUsuario(idUsuario), HttpStatus.OK);
-    }
 }
