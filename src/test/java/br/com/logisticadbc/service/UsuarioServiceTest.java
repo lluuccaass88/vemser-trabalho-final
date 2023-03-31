@@ -1,5 +1,7 @@
 package br.com.logisticadbc.service;
 
+
+import br.com.logisticadbc.dto.in.LoginDTO;
 import br.com.logisticadbc.dto.out.UsuarioDTO;
 import br.com.logisticadbc.entity.UsuarioEntity;
 import br.com.logisticadbc.entity.enums.StatusGeral;
@@ -10,6 +12,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import lombok.SneakyThrows;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -139,6 +142,43 @@ public class UsuarioServiceTest {
         assertEquals("maicon", usuarioEntity.get().getLogin());
     }
 
+    @Test
+    public void deveAutenticarComSucesso() {
+    }
+
+    @Test
+    public void deveRetornargetIdLoggedUser() {
+//        when(usuarioRepository.findById(anyInt())).thenReturn(Optional.of(getUsuarioEntityMock()));
+//
+//        Integer idUsuario = Integer.parseInt(SecurityContextHolder.getContext()
+//                .getAuthentication()
+//                .getPrincipal()
+//                .toString());
+//
+//        assertNotNull(idUsuario);
+//        assertEquals(1, idUsuario);
+    }
+
+    @Test
+    public void deveRetornargetLoggedUser() {
+
+    }
+
+    @SneakyThrows
+    @Test
+    public void deveRetornarAtivo() throws RegraDeNegocioException {
+        // Setup
+        LoginDTO loginDTO = new LoginDTO();
+        loginDTO.setLogin("maicon");
+        UsuarioEntity usuarioAtivo = new UsuarioEntity();
+        usuarioAtivo.setStatus(StatusGeral.ATIVO);
+
+        when(usuarioRepository.findByLogin(anyString())).thenReturn(Optional.of(getUsuarioEntityMock()));
+        // Action
+        usuarioService.ativo(loginDTO);
+        // Assertations
+        assertEquals(StatusGeral.ATIVO, usuarioAtivo.getStatus());
+    }
 
     @NotNull
     private static UsuarioEntity getUsuarioEntityMock() {

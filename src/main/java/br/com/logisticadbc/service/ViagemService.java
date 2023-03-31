@@ -190,6 +190,7 @@ public class ViagemService {
             return viagemDTO;
 
         } catch (Exception e) {
+            e.printStackTrace();
             throw new RegraDeNegocioException("Aconteceu algum problema durante a listagem.");
         }
     }
@@ -225,9 +226,9 @@ public class ViagemService {
     }
 
     public List<ViagemDTO> listarPorIdCaminhao(Integer idCaminhao) throws RegraDeNegocioException {
-        RotaEntity rotaEncontrada = rotaService.buscarPorId(idCaminhao);
+        CaminhaoEntity caminhaoEncontrado = caminhaoService.buscarPorId(idCaminhao);
 
-        return rotaEncontrada.getViagens()
+        return caminhaoEncontrado.getViagens()
                 .stream()
                 .map(viagem -> {
                     ViagemDTO viagemDTO = objectMapper.convertValue(viagem, ViagemDTO.class);
