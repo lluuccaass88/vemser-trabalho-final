@@ -7,8 +7,11 @@ import br.com.logisticadbc.entity.CaminhaoEntity;
 import br.com.logisticadbc.entity.UsuarioEntity;
 import br.com.logisticadbc.entity.enums.StatusCaminhao;
 import br.com.logisticadbc.entity.enums.StatusGeral;
+import br.com.logisticadbc.entity.enums.TipoOperacao;
+import br.com.logisticadbc.entity.mongodb.LogEntity;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.repository.CaminhaoRepository;
+import br.com.logisticadbc.repository.LogRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +27,7 @@ public class CaminhaoService {
     private final CaminhaoRepository caminhaoRepository;
     private final UsuarioService usuarioService;
     private final ObjectMapper objectMapper;
+    private final LogService logService;
 
     public CaminhaoDTO criar(Integer idUsuario, CaminhaoCreateDTO caminhaoCreateDTO)
             throws RegraDeNegocioException {
@@ -36,6 +40,10 @@ public class CaminhaoService {
             caminhaoEntity.setUsuario(usuarioEntity);
 
             usuarioEntity.getCaminhoes().add(caminhaoEntity);
+
+            LogEntity logEntity = getLog(usuarioEntity, "Operação de Criaçao de Caminhões",
+                    TipoOperacao.CADASTRO);
+            logService.save(logEntity);
 
             CaminhaoEntity caminhaoCriado = caminhaoRepository.save(caminhaoEntity);
 
@@ -66,6 +74,9 @@ public class CaminhaoService {
             CaminhaoEntity caminhaoAbastecido = caminhaoRepository.save(caminhaoRecuperado);
 
             Integer idUsuario = caminhaoRecuperado.getUsuario().getIdUsuario();
+            UsuarioEntity usuarioEntity = usuarioService.buscarPorId(idUsuario);
+            LogEntity logEntity = getLog(usuarioEntity, "Operação de Abastecimento de Caminhões",
+                    TipoOperacao.OUTROS);
 
             CaminhaoDTO caminhaoDTO = objectMapper.convertValue(caminhaoAbastecido, CaminhaoDTO.class);
             caminhaoDTO.setIdUsuario(idUsuario);
@@ -97,7 +108,8 @@ public class CaminhaoService {
                 .map(caminhao -> {
                     CaminhaoDTO caminhaoDTO = objectMapper.convertValue(caminhao, CaminhaoDTO.class);
                     caminhaoDTO.setIdUsuario(caminhao.getUsuario().getIdUsuario());
-                    return caminhaoDTO;})
+                    return caminhaoDTO;
+                })
                 .toList();
     }
 
@@ -108,7 +120,8 @@ public class CaminhaoService {
                 .map(caminhao -> {
                     CaminhaoDTO caminhaoDTO = objectMapper.convertValue(caminhao, CaminhaoDTO.class);
                     caminhaoDTO.setIdUsuario(caminhao.getUsuario().getIdUsuario());
-                    return caminhaoDTO;})
+                    return caminhaoDTO;
+                })
                 .toList();
     }
 
@@ -119,7 +132,8 @@ public class CaminhaoService {
                 .map(caminhao -> {
                     CaminhaoDTO caminhaoDTO = objectMapper.convertValue(caminhao, CaminhaoDTO.class);
                     caminhaoDTO.setIdUsuario(caminhao.getUsuario().getIdUsuario());
-                    return caminhaoDTO;})
+                    return caminhaoDTO;
+                })
                 .toList();
     }
 
@@ -143,7 +157,8 @@ public class CaminhaoService {
                 .map(caminhao -> {
                     CaminhaoDTO caminhaoDTO = objectMapper.convertValue(caminhao, CaminhaoDTO.class);
                     caminhaoDTO.setIdUsuario(caminhao.getUsuario().getIdUsuario());
-                    return caminhaoDTO;})
+                    return caminhaoDTO;
+                })
                 .toList();
     }
 
@@ -168,5 +183,18 @@ public class CaminhaoService {
     public void mudarStatus(CaminhaoEntity caminhao, StatusCaminhao status) {
         caminhao.setStatusCaminhao(status);
         caminhaoRepository.save(caminhao);
+    }
+
+    public LogEntity getLog(UsuarioEntity usuario, String descricao, TipoOperacao tipoOperacao) throws RegraDeNegocioException {
+        Integer idUsuario = usuario.getIdUsuario();
+        UsuarioEntity usuarioEntity = usuarioService.buscarPorId(idUsuario);
+
+        LogEntity log = new LogEntity();
+        log.setId(usuarioEntity.getIdUsuario().toString());
+        log.setLoginOperador(usuarioEntity.getLogin());
+        log.setDescricao(descricao);
+        log.setTipoOperacao(tipoOperacao);
+
+        return log;
     }
 }

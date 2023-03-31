@@ -1,6 +1,6 @@
 package br.com.logisticadbc.controller;
 
-//import br.com.logisticadbc.controller.doc.UsuarioControllerDoc;
+import br.com.logisticadbc.controller.doc.UsuarioControllerDoc;
 import br.com.logisticadbc.dto.in.UsuarioCreateDTO;
 import br.com.logisticadbc.dto.in.UsuarioUpdateDTO;
 import br.com.logisticadbc.dto.out.PageDTO;
@@ -26,7 +26,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Tag(name = "Usuário")
 @RequestMapping("/usuario")
-public class UsuarioController {//implements UsuarioControllerDoc {
+public class UsuarioController implements UsuarioControllerDoc {
 
     private final UsuarioService usuarioService;
 

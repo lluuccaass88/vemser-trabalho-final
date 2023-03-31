@@ -36,4 +36,8 @@ public class UsuarioCreateDTO {
     @Schema(description = "Documento de identificação(CPF/CNH)", example = "12345678910")
     private String documento;
 
+    @NotNull
+    @NotBlank
+    @Schema(description = "Nome do cargo", example = "ROLE_ADMIN")
+    private String nomeCargo;
 }

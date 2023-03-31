@@ -3,9 +3,11 @@ package br.com.logisticadbc.service;
 import br.com.logisticadbc.dto.in.LoginDTO;
 import br.com.logisticadbc.dto.in.UsuarioCreateDTO;
 import br.com.logisticadbc.dto.in.UsuarioUpdateDTO;
+import br.com.logisticadbc.dto.out.CargoDTO;
 import br.com.logisticadbc.dto.out.PageDTO;
 import br.com.logisticadbc.dto.out.UsuarioCompletoDTO;
 import br.com.logisticadbc.dto.out.UsuarioDTO;
+import br.com.logisticadbc.entity.CargoEntity;
 import br.com.logisticadbc.entity.UsuarioEntity;
 import br.com.logisticadbc.entity.enums.StatusGeral;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
@@ -25,8 +27,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -35,6 +40,7 @@ public class UsuarioService {
     private final UsuarioRepository usuarioRepository;
     private final EmailService emailService;
     private final TokenService tokenService;
+    private final CargoService cargoService;
     public final AuthenticationManager authenticationManager;
     private final ObjectMapper objectMapper;
     private  PasswordEncoder passwordEncoder;
@@ -42,11 +48,13 @@ public class UsuarioService {
     public UsuarioService(UsuarioRepository usuarioRepository,
                           EmailService emailService,
                           TokenService tokenService,
+                          @Lazy CargoService cargoService,
                           @Lazy AuthenticationManager authenticationManager,
                           ObjectMapper objectMapper,
                           PasswordEncoder passwordEncoder) {
         this.usuarioRepository = usuarioRepository;
         this.emailService = emailService;
+        this.cargoService = cargoService;
         this.tokenService = tokenService;
         this.authenticationManager = authenticationManager;
         this.objectMapper = objectMapper;
@@ -56,19 +64,24 @@ public class UsuarioService {
     public UsuarioDTO criar(UsuarioCreateDTO usuarioCreateDTO) throws RegraDeNegocioException {
         UsuarioEntity usuarioEntity = objectMapper.convertValue(usuarioCreateDTO, UsuarioEntity.class);
 
+        // retorna cargo informado no usuarioCreateDTO
+        CargoEntity cargoEntity = cargoService.buscarPorNome(usuarioCreateDTO.getNomeCargo());
+        Set<CargoEntity> cargos = new HashSet<>();
+        cargos.add(cargoEntity);
+
         try {
             usuarioEntity.setStatus(StatusGeral.ATIVO);
             //criptografa senha
             usuarioEntity.setSenha(passwordEncoder.encode(usuarioEntity.getSenha()));
+            usuarioEntity.setCargos(cargos);
 
-            usuarioRepository.save(usuarioEntity);
+            UsuarioEntity usuarioCriado = usuarioRepository.save(usuarioEntity);
 
-            emailService.enviarEmailBoasVindas(usuarioEntity);
+            emailService.enviarEmailBoasVindas(usuarioCriado);
 
-            return objectMapper.convertValue(usuarioEntity, UsuarioDTO.class);
+            return transformaEmUsuarioDTO(usuarioCriado);
 
         } catch (Exception e) {
-            e.printStackTrace();
             throw new RegraDeNegocioException("Aconteceu algum problema durante a criação.");
         }
     }
@@ -82,16 +95,18 @@ public class UsuarioService {
 
         // se tiver parâmetro verifica se é admin
         if (idUsuario != null) {
-            boolean isAdmin = usuarioLogado.getCargos()
-                    .stream()
-                    .anyMatch(cargo -> cargo.getNome().equals("ROLE_ADMIN"));
 
-            if (!isAdmin) {
+            if (!isAdmin(usuarioLogado)) {
                 throw new RegraDeNegocioException("Só admin pode editar outros usuários.");
             }
+
             usuarioEncontrado = buscarPorId(idUsuario);
 
-        // se nao, usa o proprio usuario logado
+            if (isAdmin(usuarioEncontrado)) {
+                throw new RegraDeNegocioException("Não é possível editar um admin.");
+            }
+
+        // se nao tiver parâmetro, usa o proprio usuario logado
         } else {
             usuarioEncontrado = usuarioLogado;
         }
@@ -102,9 +117,9 @@ public class UsuarioService {
             usuarioEncontrado.setSenha(passwordEncoder.encode(usuarioUpdateDTO.getSenha()));
             usuarioEncontrado.setDocumento(usuarioUpdateDTO.getDocumento());
 
-            usuarioRepository.save(usuarioEncontrado);
+            UsuarioEntity usuarioEditado = usuarioRepository.save(usuarioEncontrado);
 
-            return objectMapper.convertValue(usuarioEncontrado, UsuarioDTO.class);
+            return transformaEmUsuarioDTO(usuarioEditado);
 
         } catch (Exception e) {
             throw new RegraDeNegocioException("Aconteceu algum problema durante a edição.");
@@ -113,6 +128,10 @@ public class UsuarioService {
 
     public void deletar(Integer idUsuario) throws RegraDeNegocioException {
         UsuarioEntity usuarioEncontrado = buscarPorId(idUsuario);
+
+        if (isAdmin(usuarioEncontrado)) {
+            throw new RegraDeNegocioException("Não é possível deletar um admin.");
+        }
 
         try {
             usuarioEncontrado.setStatus(StatusGeral.INATIVO);
@@ -126,7 +145,7 @@ public class UsuarioService {
     public List<UsuarioDTO> listar() {
         return usuarioRepository.findAll()
                 .stream()
-                .map(usuario -> objectMapper.convertValue(usuario, UsuarioDTO.class))
+                .map(usuario -> transformaEmUsuarioDTO(usuario))
                 .toList();
     }
 
@@ -134,9 +153,7 @@ public class UsuarioService {
         UsuarioEntity usuarioEncontrado = buscarPorId(idUsuario);
 
         try {
-            UsuarioDTO usuarioDTO = objectMapper.convertValue(usuarioEncontrado, UsuarioDTO.class);
-            usuarioDTO.setIdUsuario(idUsuario);
-            return usuarioDTO;
+            return transformaEmUsuarioDTO(usuarioEncontrado);
 
         } catch (Exception e) {
             throw new RegraDeNegocioException("Aconteceu algum problema durante a listagem.");
@@ -151,7 +168,7 @@ public class UsuarioService {
         List<UsuarioDTO> usuarioDTOList = paginacaoUsuario
                 .getContent()
                 .stream()
-                .map(usuario -> objectMapper.convertValue(usuario, UsuarioDTO.class))
+                .map(usuario -> transformaEmUsuarioDTO(usuario))
                 .toList();
 
         return new PageDTO<>(
@@ -171,7 +188,7 @@ public class UsuarioService {
         List<UsuarioDTO> usuarioDTOList = paginacaoUsuario
                 .getContent()
                 .stream()
-                .map(usuario -> objectMapper.convertValue(usuario, UsuarioDTO.class))
+                .map(usuario -> transformaEmUsuarioDTO(usuario))
                 .toList();
 
         return new PageDTO<>(
@@ -187,7 +204,7 @@ public class UsuarioService {
         return usuarioRepository.findAll()
                 .stream()
                 .filter(usuario -> usuario.getStatus().equals(StatusGeral.ATIVO))
-                .map(usuario -> objectMapper.convertValue(usuario, UsuarioDTO.class))
+                .map(usuario -> transformaEmUsuarioDTO(usuario))
                 .toList();
     }
 
@@ -221,7 +238,7 @@ public class UsuarioService {
         List<UsuarioDTO> usuarioDTOList = paginacaoUsuario
                 .getContent()
                 .stream()
-                .map(usuario -> objectMapper.convertValue(usuario, UsuarioDTO.class))
+                .map(usuario -> transformaEmUsuarioDTO(usuario))
                 .toList();
 
         return new PageDTO<>(
@@ -238,7 +255,7 @@ public class UsuarioService {
                 .orElseThrow(() -> new RegraDeNegocioException("Usuário não encontrado"));
     }
 
-    public Optional <UsuarioEntity> buscarPorLogin(String login) {
+    public Optional<UsuarioEntity> buscarPorLogin(String login) {
         return usuarioRepository.findByLogin(login);
     }
 
@@ -263,7 +280,6 @@ public class UsuarioService {
         } catch (BadCredentialsException e) {
             throw new RegraDeNegocioException("Credenciais inválidas");
         }
-
     }
 
     // recupera id do usuário do Token
@@ -277,15 +293,37 @@ public class UsuarioService {
     // recupera usuário do Token
     public UsuarioDTO getLoggedUser() {
         Optional<UsuarioEntity> usuarioOptional = usuarioRepository.findById(getIdLoggedUser());
-        return objectMapper.convertValue(usuarioOptional, UsuarioDTO.class);
+        return transformaEmUsuarioDTO(usuarioOptional.get());
     }
-
     public void ativo(LoginDTO loginDTO) throws RegraDeNegocioException {
         UsuarioEntity usuarioEntity = usuarioRepository.findByLogin(loginDTO.getLogin()).get();
 
         if (usuarioEntity.getStatus().equals(StatusGeral.INATIVO)) {
             throw new RegraDeNegocioException("Usuário inativo!");
         }
-    } 
+    }
 
+    // retorna usuarioDTO já com os cargos convertidos
+    private UsuarioDTO transformaEmUsuarioDTO(UsuarioEntity usuarioEntity) {
+        UsuarioDTO usuarioDTO = objectMapper.convertValue(usuarioEntity, UsuarioDTO.class);
+
+        Set<CargoDTO> cargoDTOSet = usuarioEntity.getCargos()
+                .stream()
+                .map(cargo -> {
+                    CargoDTO cargoDTO = objectMapper.convertValue(cargo, CargoDTO.class);
+                    return cargoDTO;
+                })
+                .collect(Collectors.toSet());
+
+        usuarioDTO.setCargos(cargoDTOSet);
+        return usuarioDTO;
+    }
+
+    // verifica se usuario é admin
+    private static boolean isAdmin(UsuarioEntity usuarioEncontrado) {
+        boolean isAdmin = usuarioEncontrado.getCargos()
+                .stream()
+                .anyMatch(cargo -> cargo.getNome().equals("ROLE_ADMIN"));
+        return isAdmin;
+    }
 }
