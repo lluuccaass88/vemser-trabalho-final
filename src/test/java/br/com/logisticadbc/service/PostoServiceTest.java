@@ -20,14 +20,12 @@ import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import javax.validation.constraints.NotNull;
-
-import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.verify;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -46,10 +44,6 @@ public class PostoServiceTest {
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         ReflectionTestUtils.setField(postoService, "objectMapper", objectMapper);
     }
-
-    // TODO - Implementar testes unitários (CRIAR, EDITAR, DELETAR, LISTAR TODOS, LISTAR POR ID, LISTAR POSTOS ATIVOS
-    //  LISTAR POSTOS INATIVOS, LISTAR POSTOS POR CIDADE, BUSCAR POR ID)
-    // FIXME - SABER A DIFERENÇA ENTRE BUSCAR POR ID E LISTAR POR ID , POIS LISTAR IMPLEMENTA BUSCAR POR ID ?
 
     @Test
     public void deveCriarPostoComSucesso() throws RegraDeNegocioException {
@@ -71,14 +65,13 @@ public class PostoServiceTest {
 //        assertNotNull(postoRetornado);
 //        assertEquals(novoPosto.getNome(), postoRetornado.getNome());
 //        assertEquals(novoPosto.getCidade(), postoRetornado.getCidade());
-//        assertEquals(novoPosto.getLatitude(), postoRetornado.getLocation().getCoordinates().toString());
-//        assertEquals(novoPosto.getLongitude(), postoRetornado.getLocation().getCoordinates().toString());
 //        assertEquals(novoPosto.getValorCombustivel(), postoRetornado.getValorCombustivel());
 //        assertEquals("1", postoRetornado.getId());
     }
 
     @Test
-    public void deveAtualizarComSucesso(){}
+    public void deveAtualizarComSucesso() {
+    }
 
     @Test
     public void deveListarComSucesso() {
@@ -120,7 +113,6 @@ public class PostoServiceTest {
         // ASSERT
         assertEquals(StatusGeral.INATIVO, postoInativo.getStatus());
     }
-
 
 
     @NotNull
