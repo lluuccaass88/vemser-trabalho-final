@@ -20,6 +20,7 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.io.IOException;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
@@ -55,6 +56,22 @@ public class EmailServiceTest {
         verify(emailSender).createMimeMessage();
         verify(emailSender, times(1)).send(mimeMessage);
     }
+
+    @Test(expected = RegraDeNegocioException.class)
+    public void deveFalharAoEnviarEmailDeBoasVindas() throws MessagingException, IOException, TemplateException, RegraDeNegocioException {
+        //SETUP
+        UsuarioEntity usuarioEntity = getUsuarioEntityMockado();
+        //ACT
+        doNothing().when(emailSender).send(mimeMessage);
+    }
+
+        @Test
+    public void deveEnviarEmailDeViagemComSucesso() {
+        //SETUP
+        //ACT
+        //ASSERT
+    }
+
 
     private UsuarioEntity getUsuarioEntityMockado() {
         UsuarioEntity usuarioEntity = new UsuarioEntity();
