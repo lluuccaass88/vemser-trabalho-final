@@ -18,7 +18,7 @@ public interface AuthControllerDoc {
     @Operation(summary = "Autenticar usuário", description = "Autentica um usuário no sistema")
     @ApiResponses(
             value = {
-                    @ApiResponse(responseCode = "201", description = "Retorna token"),
+                    @ApiResponse(responseCode = "202", description = "Retorna token"),
                     @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }

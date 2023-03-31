@@ -27,10 +27,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -261,6 +258,8 @@ public class UsuarioService {
 
     public String autenticar (LoginDTO loginDTO) throws RegraDeNegocioException {
         try {
+            ativo(loginDTO);
+
             // cria dto do spring
             UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
                     new UsernamePasswordAuthenticationToken(
@@ -277,7 +276,7 @@ public class UsuarioService {
 
             return tokenService.gerarToken(usuarioEntity);
 
-        } catch (BadCredentialsException e) {
+        } catch (NoSuchElementException | BadCredentialsException e) {
             throw new RegraDeNegocioException("Credenciais inválidas");
         }
     }
@@ -298,7 +297,9 @@ public class UsuarioService {
     public void ativo(LoginDTO loginDTO) throws RegraDeNegocioException {
         UsuarioEntity usuarioEntity = usuarioRepository.findByLogin(loginDTO.getLogin()).get();
 
-        if (usuarioEntity.getStatus().equals(StatusGeral.INATIVO)) {
+        if (usuarioEntity.getIdUsuario() == null) {
+            throw new RegraDeNegocioException("Usuário não encontrado!");
+        } else if (usuarioEntity.getStatus().equals(StatusGeral.INATIVO)) {
             throw new RegraDeNegocioException("Usuário inativo!");
         }
     }
