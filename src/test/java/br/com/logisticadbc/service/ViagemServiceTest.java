@@ -1,5 +1,7 @@
 package br.com.logisticadbc.service;
 
+import br.com.logisticadbc.dto.in.RotaCreateDTO;
+import br.com.logisticadbc.dto.in.ViagemCreateDTO;
 import br.com.logisticadbc.dto.out.PageDTO;
 import br.com.logisticadbc.dto.out.RotaDTO;
 import br.com.logisticadbc.dto.out.ViagemDTO;
@@ -37,6 +39,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
@@ -64,6 +67,59 @@ public class ViagemServiceTest {
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         ReflectionTestUtils.setField(viagemService, "objectMapper", objectMapper);
     }
+    //Testar criar
+//    @Test
+//    public void deveCriarComSucesso() throws RegraDeNegocioException {
+//        //Setup
+//        Integer idMotorista = 1;
+//        ViagemCreateDTO novaViagem = new ViagemCreateDTO(
+//                "Viagem longa com duas paradas",
+//                LocalDate.of(2023, 04, 22),
+//                LocalDate.of(2023, 05, 22),
+//                1,
+//                1
+//        );
+//
+//        List<ViagemEntity> listaDeViagens
+//
+//
+//        ViagemEntity viagemMockadoDoBanco = getViagemEntityMock();
+//
+//        UsuarioEntity usuarioMockadoDoBanco = getUsuarioEntityMock();
+//        usuarioMockadoDoBanco
+//
+//
+//        CaminhaoEntity caminhaoEntityMockadoDoBanco = getCaminhaoEntityMock();
+//        RotaEntity rotaEntityMockadoDoBanco = getRotaEntityMock();
+//
+//        when(usuarioService.buscarPorId(anyInt())).thenReturn(getUsuarioEntityMock());
+//        when(caminhaoService.buscarPorId(anyInt())).thenReturn(getCaminhaoEntityMock());
+//        when(rotaService.buscarPorId(anyInt())).thenReturn(getRotaEntityMock());
+//        when(viagemRepository.save(any())).thenReturn(viagemMockadoDoBanco);
+//
+//
+////        RotaEntity rotaMockadoDoBanco = getRotaEntityMock();
+////        UsuarioEntity usuarioMockadoBanco = getUsuarioEntityMock();
+////
+////        Set<RotaEntity> rotaEntities = new HashSet<>();
+////        rotaEntities.add(getRotaEntityMock());
+////        rotaEntities.add(getRotaEntityMock());
+////        usuarioMockadoBanco.setRotas(rotaEntities);
+////
+////        when(usuarioService.buscarPorId(anyInt())).thenReturn(usuarioMockadoBanco);
+////
+////        when(rotaRepository.save(any())).thenReturn(rotaMockadoDoBanco);
+//
+//        //Action
+//        ViagemDTO viagemRetornada = viagemService.criar(idMotorista, novaViagem);
+//
+//        //Assert
+//        assertNotNull(viagemRetornada);
+////        Assertions.assertEquals(novaRota.getDescricao(), rotaRetornada.getDescricao());
+////        Assertions.assertEquals(novaRota.getLocalPartida(), rotaRetornada.getLocalPartida());
+////        Assertions.assertEquals(novaRota.getLocalDestino(), rotaRetornada.getLocalDestino());
+////        Assertions.assertEquals(StatusGeral.ATIVO, rotaRetornada.getStatus());
+//    }
 
     //Teste Listar
     @Test
@@ -83,7 +139,6 @@ public class ViagemServiceTest {
         Assertions.assertEquals(3, listaViagemDTO.size());
     }
 
-
     //Teste listar por id
     @Test
     public void deveListaPorID() throws RegraDeNegocioException {
@@ -100,21 +155,6 @@ public class ViagemServiceTest {
         Assertions.assertNotNull(viagemDTO);
         Assertions.assertEquals(idViagem, viagemDTO.getIdViagem());
     }
-//    @Test(expected = RegraDeNegocioException.class) ERRADO
-//    public void deveTestarListaPorIDComEntidadeNula() throws RegraDeNegocioException {
-//        // SETUP
-//        Integer idViagem = 1;
-//        ViagemEntity viagemMockadoBanco = new ViagemEntity();
-//
-//        when(viagemRepository.findById(anyInt())).thenReturn(Optional.of(viagemMockadoBanco));
-//
-//        // ACT
-//        ViagemDTO viagemDTO = viagemService.listarPorId(idViagem); TEM QUE TROCAR O MÉTODO
-//
-//        // ASSERT
-//        Assertions.assertNotNull(viagemDTO);
-//        Assertions.assertEquals(idViagem, viagemDTO.getIdViagem());
-//    }
 
     //Teste listar Por Id do motorista
     @Test

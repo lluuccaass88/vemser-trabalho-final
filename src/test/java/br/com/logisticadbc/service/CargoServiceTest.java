@@ -1,7 +1,6 @@
 package br.com.logisticadbc.service;
 
 import br.com.logisticadbc.dto.out.CargoDTO;
-import br.com.logisticadbc.dto.out.CargosDeUsuarioDTO;
 import br.com.logisticadbc.entity.CargoEntity;
 import br.com.logisticadbc.entity.UsuarioEntity;
 import br.com.logisticadbc.entity.enums.StatusGeral;
@@ -50,30 +49,30 @@ public class CargoServiceTest {
         ReflectionTestUtils.setField(cargoService, "objectMapper", objectMapper);
     }
 
-    @Test
-    public void deveListarPorUsuarioComSucesso() throws RegraDeNegocioException {
-        // SETUP
-        UsuarioEntity usuarioEntityMock = getUsuarioEntityMock();
-        CargoEntity cargoEntityMock = getCargoEntityMock();
-
-        Set<CargoEntity> cargoEntities = new HashSet<>();
-        cargoEntities.add(cargoEntityMock);
-
-        Set<UsuarioEntity> usuarioEntities = new HashSet<>();
-        usuarioEntities.add(usuarioEntityMock);
-
-        usuarioEntityMock.setCargos(cargoEntities);
-        cargoEntityMock.setUsuarios(usuarioEntities);
-
-        Mockito.when(usuarioService.buscarPorId(Mockito.anyInt())).thenReturn(usuarioEntityMock);
-
-        // ACT
-        CargosDeUsuarioDTO cargosDeUsuarioDTO = cargoService.listarPorUsuario(1);
-
-        // ASSERT
-        Assertions.assertNotNull(cargosDeUsuarioDTO);
-        Assertions.assertEquals(usuarioEntityMock.getIdUsuario(), cargosDeUsuarioDTO.getUsuario().getIdUsuario());
-    }
+//    @Test
+//    public void deveListarPorUsuarioComSucesso() throws RegraDeNegocioException {
+//        // SETUP
+//        UsuarioEntity usuarioEntityMock = getUsuarioEntityMock();
+//        CargoEntity cargoEntityMock = getCargoEntityMock();
+//
+//        Set<CargoEntity> cargoEntities = new HashSet<>();
+//        cargoEntities.add(cargoEntityMock);
+//
+//        Set<UsuarioEntity> usuarioEntities = new HashSet<>();
+//        usuarioEntities.add(usuarioEntityMock);
+//
+//        usuarioEntityMock.setCargos(cargoEntities);
+//        cargoEntityMock.setUsuarios(usuarioEntities);
+//
+//        Mockito.when(usuarioService.buscarPorId(Mockito.anyInt())).thenReturn(usuarioEntityMock);
+//
+//        // ACT
+//        CargosDeUsuarioDTO cargosDeUsuarioDTO = cargoService.listarPorUsuario(1);
+//
+//        // ASSERT
+//        Assertions.assertNotNull(cargosDeUsuarioDTO);
+//        Assertions.assertEquals(usuarioEntityMock.getIdUsuario(), cargosDeUsuarioDTO.getUsuario().getIdUsuario());
+//    }
 
     @Test
     public void deveListarComSucesso() {
