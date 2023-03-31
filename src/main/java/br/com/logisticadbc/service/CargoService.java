@@ -95,27 +95,4 @@ public class CargoService {
         return cargoRepository.findByNome(nome)
                 .orElseThrow(() -> new RegraDeNegocioException("Cargo não encontrado!"));
     }
-
-    /*public CargosDeUsuarioDTO listarPorUsuario(Integer idUsuario) throws RegraDeNegocioException {
-        UsuarioEntity usuarioEncontrado = usuarioService.buscarPorId(idUsuario);
-
-        if (usuarioEncontrado.getStatus().equals(StatusGeral.INATIVO)) {
-            throw new RegraDeNegocioException("Usuário inativo!");
-        }
-        try {
-            UsuarioDTO usuarioDTO = objectMapper.convertValue(usuarioEncontrado, UsuarioDTO.class);
-
-            CargosDeUsuarioDTO cargosDeUsuarioDTO = new CargosDeUsuarioDTO();
-            cargosDeUsuarioDTO.setUsuario(usuarioDTO);
-            cargosDeUsuarioDTO.setCargos(usuarioEncontrado.getCargos()
-                    .stream()
-                    .map(cargo -> objectMapper.convertValue(cargo, CargoDTO.class))
-                    .collect(Collectors.toSet()));
-
-            return cargosDeUsuarioDTO;
-
-        } catch (Exception e) {
-            throw new RegraDeNegocioException("Aconteceu algum problema durante a listagem.");
-        }
-    }*/
 }

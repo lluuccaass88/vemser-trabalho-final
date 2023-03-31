@@ -67,7 +67,8 @@ public class ViagemController implements ViagemControllerDoc {
     }
 
     @GetMapping("/listar-por-idUsuario")
-    public ResponseEntity<List<ViagemDTO>> listByIdUser(@RequestParam("idMotorista") Integer idMotorista)
+    public ResponseEntity<List<ViagemDTO>> listByIdUser(
+            @RequestParam(value = "idMotorista", required = false) Integer idMotorista)
             throws RegraDeNegocioException {
         return new ResponseEntity<>(viagemService.listarPorIdMotorista(idMotorista), HttpStatus.OK);
     }
