@@ -39,10 +39,8 @@ public class RotaService {
 
             usuarioEncontrado.getRotas().add(rotaEntity); // Atribui rota criada ao Colaborador //TODO DESCOBRIR COMO TESTA A RELAÇÃO
 
-            LogEntity logEntity = getLog(usuarioEncontrado, "Operação de Criaçao de Rotas",
+            logService.gerarLog(usuarioEncontrado, "Operação de Cadastro de Rotas",
                     TipoOperacao.CADASTRO);
-            LogDTO logDTO = objectMapper.convertValue(logEntity, LogDTO.class);
-            logService.save(logDTO);
             rotaRepository.save(rotaEntity);
 
             RotaDTO rotaDTO = objectMapper.convertValue(rotaEntity, RotaDTO.class);
@@ -70,10 +68,8 @@ public class RotaService {
                     rotaEncontrada.getUsuario().getIdUsuario());
             usuarioEncontrado.getRotas().add(rotaEncontrada);
 
-            LogEntity logEntity = getLog(usuarioEncontrado, "Operação de Criaçao de Rotas",
-                    TipoOperacao.CADASTRO);
-            LogDTO logDTO = objectMapper.convertValue(logEntity, LogDTO.class);
-            logService.save(logDTO);
+            logService.gerarLog(usuarioEncontrado, "Operação de Alteração de Rotas",
+                    TipoOperacao.ALTERACAO);
 
             rotaRepository.save(rotaEncontrada);
             RotaDTO rotaDTO = objectMapper.convertValue(rotaEncontrada, RotaDTO.class);
@@ -97,10 +93,8 @@ public class RotaService {
                     rotaEncontrada.getUsuario().getIdUsuario());
             usuarioEncontrado.getRotas().add(rotaEncontrada);
 
-            LogEntity logEntity = getLog(usuarioEncontrado, "Operação de Criaçao de Rotas",
-                    TipoOperacao.CADASTRO);
-            LogDTO logDTO = objectMapper.convertValue(logEntity, LogDTO.class);
-            logService.save(logDTO);
+            logService.gerarLog(usuarioEncontrado, "Operação de Inativação de Rotas",
+                    TipoOperacao.EXCLUSAO);
 
         } catch (Exception e) {
             throw new RegraDeNegocioException("Aconteceu algum problema durante a exclusão.");
