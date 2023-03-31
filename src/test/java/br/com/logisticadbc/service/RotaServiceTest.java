@@ -44,6 +44,9 @@ public class RotaServiceTest {
     @Mock
     private UsuarioService usuarioService;
 
+    @Mock
+    private LogService logService;
+
     @Before
     public void init() {
         objectMapper.registerModule(new JavaTimeModule());
