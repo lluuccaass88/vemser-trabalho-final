@@ -81,7 +81,6 @@ public class CargoService {
             return usuarioService.listarPorId(idUsuario);
 
         } catch (Exception e) {
-            e.printStackTrace();
             throw new RegraDeNegocioException("Aconteceu algum problema durante o cadastro de cargo.");
         }
     }
