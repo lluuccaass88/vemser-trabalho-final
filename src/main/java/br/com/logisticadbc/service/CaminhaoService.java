@@ -13,6 +13,8 @@ import br.com.logisticadbc.repository.CaminhaoRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.ObjectNotFoundException;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -48,7 +50,7 @@ public class CaminhaoService {
             caminhaoDTO.setIdUsuario(idUsuario);
             return caminhaoDTO;
 
-        } catch (Exception e) {
+        } catch (DataAccessException e) {
             throw new RegraDeNegocioException("Aconteceu algum problema durante a criação.");
         }
     }
@@ -79,7 +81,7 @@ public class CaminhaoService {
             caminhaoDTO.setIdUsuario(idUsuario);
             return caminhaoDTO;
 
-        } catch (Exception e) {
+        } catch (DataAccessException e) {
             throw new RegraDeNegocioException(e.getMessage());
         }
     }
@@ -98,7 +100,7 @@ public class CaminhaoService {
             logService.gerarLog(usuarioEntity, "Operação de Inativação de Caminhões",
                     TipoOperacao.EXCLUSAO);
 
-        } catch (Exception e) {
+        } catch (DataAccessException e) {
             throw new RegraDeNegocioException("Aconteceu algum problema durante a exclusão");
         }
     }

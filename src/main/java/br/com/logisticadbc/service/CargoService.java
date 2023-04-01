@@ -10,6 +10,7 @@ import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.repository.CargoRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,7 +31,7 @@ public class CargoService {
 
             return objectMapper.convertValue(cargoEntity, CargoDTO.class);
 
-        } catch (Exception e) {
+        } catch (DataAccessException e) {
             throw new RegraDeNegocioException("Aconteceu algum problema durante a criação.");
         }
     }
@@ -45,7 +46,7 @@ public class CargoService {
 
             return objectMapper.convertValue(cargoEncontrado, CargoDTO.class);
 
-        } catch (Exception e) {
+        } catch (DataAccessException e) {
             throw new RegraDeNegocioException("Aconteceu algum problema durante a edição.");
         }
     }
@@ -79,7 +80,7 @@ public class CargoService {
 
             return usuarioService.listarPorId(idUsuario);
 
-        } catch (Exception e) {
+        } catch (DataAccessException e) {
             throw new RegraDeNegocioException("Aconteceu algum problema durante o cadastro de cargo.");
         }
     }
