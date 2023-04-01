@@ -9,17 +9,16 @@ import br.com.logisticadbc.entity.enums.StatusViagem;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
-import freemarker.template.TemplateException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -48,7 +47,7 @@ public class EmailServiceTest {
     }
 
     @Test
-    public void deveEnviarEmailDeBoasVindasComSucesso() throws MessagingException, IOException, TemplateException, RegraDeNegocioException {
+    public void deveEnviarEmailDeBoasVindasComSucesso() throws RegraDeNegocioException {
         //SETUP
         UsuarioEntity usuarioEntity = getUsuarioEntityMockado();
         when(emailSender.createMimeMessage()).thenReturn(mimeMessage);
@@ -61,16 +60,14 @@ public class EmailServiceTest {
     }
 
     @Test(expected = RegraDeNegocioException.class)
-    public void deveFalharAoEnviarEmailDeBoasVindas() {
+    public void deveFalharAoEnviarEmailDeBoasVindas() throws RegraDeNegocioException {
         //SETUP
         UsuarioEntity usuarioEntity = getUsuarioEntityMockado();
+
         //ACT
-        doNothing().when(emailSender).send(mimeMessage);
-//        RegraDeNegocioException regraDeNegocioException =
-//                assertThrows(RegraDeNegocioException.class,
-//                        () -> emailService.enviarEmailBoasVindas(usuarioEntity));
-//        assertTrue(regraDeNegocioException.getMessage().contains("Erro ao enviar email para o motorsita: "));
-        verify(emailSender, times(0)).send(mimeMessage);
+        emailService.enviarEmailBoasVindas(usuarioEntity);
+
+        verify(emailSender, times(0)).send((MimeMessage) Mockito.any());
     }
 
     @Test
@@ -89,6 +86,18 @@ public class EmailServiceTest {
         verify(emailSender, times(1)).send(mimeMessage);
     }
 
+    @Test(expected = RegraDeNegocioException.class)
+    public void deveFalharAoEnviarEmailDeViagem() throws RegraDeNegocioException {
+        //SETUP
+        UsuarioEntity usuarioEntity = getUsuarioEntityMockado();
+        RotaEntity rotaEntity = getRotaEntityMockado();
+        ViagemEntity viagemEntity = getViagemEntityMockado();
+
+        //ACT
+        emailService.enviarEmailViagem(rotaEntity, viagemEntity, usuarioEntity);
+
+        verify(emailSender, times(0)).send((MimeMessage) Mockito.any());
+    }
 
     private UsuarioEntity getUsuarioEntityMockado() {
         UsuarioEntity usuarioEntity = new UsuarioEntity();
