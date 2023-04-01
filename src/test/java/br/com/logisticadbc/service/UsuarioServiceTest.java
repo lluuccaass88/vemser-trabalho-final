@@ -2,7 +2,11 @@ package br.com.logisticadbc.service;
 
 
 import br.com.logisticadbc.dto.in.LoginDTO;
+import br.com.logisticadbc.dto.in.UsuarioCreateDTO;
+import br.com.logisticadbc.dto.in.UsuarioUpdateDTO;
 import br.com.logisticadbc.dto.out.UsuarioDTO;
+import br.com.logisticadbc.entity.CaminhaoEntity;
+import br.com.logisticadbc.entity.CargoEntity;
 import br.com.logisticadbc.entity.UsuarioEntity;
 import br.com.logisticadbc.entity.enums.StatusGeral;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
@@ -18,19 +22,26 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import javax.validation.constraints.NotNull;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
+import static org.bouncycastle.asn1.iana.IANAObjectIdentifiers.security;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -53,6 +64,12 @@ public class UsuarioServiceTest {
     @Mock
     private PasswordEncoder passwordEncoder;
 
+    @Mock
+    private CargoService cargoService;
+
+    @Mock
+    private EmailService emailService;
+
 
     @Before
     public void init() {
@@ -65,11 +82,95 @@ public class UsuarioServiceTest {
 
 
     @Test
-    public void deveCriarComSucesso() {
+    public void deveCriarComSucesso() throws RegraDeNegocioException {
+        // SETUP
+        UsuarioCreateDTO usuarioCreateDTO = new UsuarioCreateDTO();
+        usuarioCreateDTO.setLogin("maicon");
+        usuarioCreateDTO.setSenha("123");
+        usuarioCreateDTO.setEmail("maicon@email.com");
+        usuarioCreateDTO.setNome("Maicon");
+        usuarioCreateDTO.setDocumento("12345678910");
+        usuarioCreateDTO.setNomeCargo("ROLE_ADMIN");
+
+        UsuarioEntity usuarioEntityMock = getUsuarioEntityMock();
+        CargoEntity cargoMock = getCargoMock();
+
+        when(cargoService.buscarPorNome(anyString())).thenReturn(cargoMock);
+        when(passwordEncoder.encode(anyString())).thenReturn(usuarioEntityMock.getSenha());
+        when(usuarioRepository.save(any())).thenReturn(usuarioEntityMock);
+
+        // ACT
+        UsuarioDTO usuarioDTO = usuarioService.criar(usuarioCreateDTO);
+
+        // ASSERT
+        Mockito.verify(emailService, times(1)).enviarEmailBoasVindas(any());
+        assertNotNull(usuarioDTO);
+        assertEquals(usuarioEntityMock.getIdUsuario(), usuarioDTO.getIdUsuario());
+        assertEquals(usuarioEntityMock.getNome(), usuarioDTO.getNome());
+        assertEquals(usuarioEntityMock.getEmail(), usuarioDTO.getEmail());
+        assertEquals(usuarioEntityMock.getLogin(), usuarioDTO.getLogin());
+        assertEquals(usuarioEntityMock.getDocumento(), usuarioDTO.getDocumento());
+        assertEquals(usuarioEntityMock.getCargos().contains(cargoMock), usuarioDTO.getCargos().contains(cargoMock));
     }
 
     @Test
-    public void deveEditarComSucesso() {
+    public void deveEditarSemParametroComSucesso() throws RegraDeNegocioException {
+        // SETUP
+        Integer id = null;
+        UsuarioUpdateDTO usuarioUpdateDTO = new UsuarioUpdateDTO();
+        usuarioUpdateDTO.setNome("Joao");
+        usuarioUpdateDTO.setDocumento("12345678901");
+        usuarioUpdateDTO.setEmail("joao@email.com");
+        usuarioUpdateDTO.setSenha("abc");
+
+        UsuarioEntity usuarioLogadoMock = getUsuarioEntityMock();
+        CargoEntity cargoMock = getCargoMock();
+        usuarioLogadoMock.getCargos().add(cargoMock);
+
+        getSecurityContextMock();
+        when(usuarioRepository.findById(anyInt())).thenReturn(Optional.of(usuarioLogadoMock));
+        when(passwordEncoder.encode(anyString())).thenReturn(usuarioUpdateDTO.getSenha());
+        when(usuarioRepository.save(any())).thenReturn(usuarioLogadoMock);
+
+        //ACT
+        UsuarioDTO usuarioDTO = usuarioService.editar(id, usuarioUpdateDTO);
+
+        //ASSERT
+        assertNotNull(usuarioDTO);
+        assertEquals(usuarioLogadoMock.getNome(), usuarioDTO.getNome());
+        assertEquals(usuarioLogadoMock.getEmail(), usuarioDTO.getEmail());
+        assertEquals(usuarioLogadoMock.getDocumento(), usuarioDTO.getDocumento());
+        assertEquals(usuarioUpdateDTO.getSenha(), usuarioLogadoMock.getSenha());
+    }
+
+    @Test
+    public void deveEditarComParametroComSucesso() throws RegraDeNegocioException {
+        // SETUP
+        Integer id = null;
+        UsuarioUpdateDTO usuarioUpdateDTO = new UsuarioUpdateDTO();
+        usuarioUpdateDTO.setNome("Joao");
+        usuarioUpdateDTO.setDocumento("12345678901");
+        usuarioUpdateDTO.setEmail("joao@email.com");
+        usuarioUpdateDTO.setSenha("abc");
+
+        UsuarioEntity usuarioLogadoMock = getUsuarioEntityMock();
+        CargoEntity cargoMock = getCargoMock();
+        usuarioLogadoMock.getCargos().add(cargoMock);
+
+        getSecurityContextMock();
+        when(usuarioRepository.findById(anyInt())).thenReturn(Optional.of(usuarioLogadoMock));
+        when(passwordEncoder.encode(anyString())).thenReturn(usuarioUpdateDTO.getSenha());
+        when(usuarioRepository.save(any())).thenReturn(usuarioLogadoMock);
+
+        //ACT
+        UsuarioDTO usuarioDTO = usuarioService.editar(id, usuarioUpdateDTO);
+
+        //ASSERT
+        assertNotNull(usuarioDTO);
+        assertEquals(usuarioLogadoMock.getNome(), usuarioDTO.getNome());
+        assertEquals(usuarioLogadoMock.getEmail(), usuarioDTO.getEmail());
+        assertEquals(usuarioLogadoMock.getDocumento(), usuarioDTO.getDocumento());
+        assertEquals(usuarioUpdateDTO.getSenha(), usuarioLogadoMock.getSenha());
     }
 
     @Test
@@ -180,7 +281,6 @@ public class UsuarioServiceTest {
         assertEquals(StatusGeral.ATIVO, usuarioAtivo.getStatus());
     }
 
-    @NotNull
     private static UsuarioEntity getUsuarioEntityMock() {
         UsuarioEntity usuarioMockado = new UsuarioEntity();
         usuarioMockado.setIdUsuario(1);
@@ -191,6 +291,31 @@ public class UsuarioServiceTest {
         usuarioMockado.setDocumento("12345678910");
         usuarioMockado.setStatus(StatusGeral.ATIVO);
 
+        Set<CargoEntity> cargoEntitySet = new HashSet<>();
+        usuarioMockado.setCargos(cargoEntitySet);
+
         return usuarioMockado;
+    }
+
+    private static CargoEntity getCargoMock() {
+        CargoEntity cargoMockado = new CargoEntity();
+        cargoMockado.setIdCargo(1);
+        cargoMockado.setNome("ROLE_ADMIN");
+
+        Set<UsuarioEntity> usuarioEntitySet = new HashSet<>();
+        cargoMockado.setUsuarios(usuarioEntitySet);
+
+        return cargoMockado;
+    }
+
+    private static void getSecurityContextMock() {
+        Integer idUsuarioToken = 1;
+        Authentication authentication = Mockito.mock(Authentication.class);
+        SecurityContext securityContext = Mockito.mock(SecurityContext.class);
+
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+
+        SecurityContextHolder.setContext(securityContext);
+        when(authentication.getPrincipal()).thenReturn(idUsuarioToken);
     }
 }
