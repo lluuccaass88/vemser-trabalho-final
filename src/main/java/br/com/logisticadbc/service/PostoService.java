@@ -9,6 +9,8 @@ import br.com.logisticadbc.repository.PostoRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.ObjectNotFoundException;
+import org.springframework.dao.DataAccessException;
 import org.springframework.data.geo.Distance;
 import org.springframework.data.geo.Metrics;
 import org.springframework.data.geo.Point;
@@ -40,7 +42,7 @@ public class PostoService {
             PostoDTO postoDTO = objectMapper.convertValue(postoCriado, PostoDTO.class);
             return postoDTO;
 
-        } catch (Exception e) {
+        } catch (DataAccessException e) {
             throw new RegraDeNegocioException("Aconteceu algum problema durante a criação.");
         }
     }
@@ -65,12 +67,11 @@ public class PostoService {
             PostoDTO postoDTO = objectMapper.convertValue(postoEditado, PostoDTO.class);
             return postoDTO;
 
-        } catch (Exception e) {
+        } catch (DataAccessException e) {
             throw new RegraDeNegocioException("Aconteceu algum problema durante a edição.");
         }
     }
 
-    // TODO REVISAR
     public void deletar(String idPosto) throws RegraDeNegocioException {
         PostoEntity postoEncontrado = buscarPorId(idPosto);
 
@@ -81,7 +82,7 @@ public class PostoService {
             postoEncontrado.setStatus(StatusGeral.INATIVO);
             postoRepository.save(postoEncontrado);
 
-        } catch (Exception e) {
+        } catch (DataAccessException e) {
             throw new RegraDeNegocioException("Aconteceu algum problema durante a exclusão.");
         }
     }
@@ -98,13 +99,12 @@ public class PostoService {
 
     public PostoDTO listarPorId(String idPosto) throws RegraDeNegocioException {
         PostoEntity postoRecuperado = buscarPorId(idPosto);
-
         try {
             PostoDTO postoDTO = objectMapper.convertValue(postoRecuperado, PostoDTO.class);
             postoDTO.setId(idPosto);
             return postoDTO;
 
-        } catch (Exception e) {
+        } catch (ObjectNotFoundException e) {
             throw new RegraDeNegocioException("Aconteceu algum problema durante a listagem.");
         }
     }

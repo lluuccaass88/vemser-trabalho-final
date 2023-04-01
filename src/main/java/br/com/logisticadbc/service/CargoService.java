@@ -28,16 +28,12 @@ public class CargoService {
 
     public CargoDTO criar(CargoCreateDTO cargoCreateDTO) throws RegraDeNegocioException {
         CargoEntity cargoEntity = objectMapper.convertValue(cargoCreateDTO, CargoEntity.class);
-
+        UsuarioDTO loggedUser = usuarioService.getLoggedUser();
         try {
             cargoRepository.save(cargoEntity);
-            UsuarioEntity usuarioEncontrado =
-                    (UsuarioEntity) usuarioService
-                            .listar()
-                            .stream()
-                            .map(usuario -> objectMapper.convertValue(usuario, UsuarioEntity.class));
-            logService.gerarLog(usuarioEncontrado,
-                    "Operação de Cadastro de Cargos", TipoOperacao.CADASTRO);
+
+            String descricao = "Operação de Cadastro de Cargo | " + cargoEntity.getNome();
+            logService.gerarLog(loggedUser.getLogin(), descricao, TipoOperacao.CADASTRO);
 
             return objectMapper.convertValue(cargoEntity, CargoDTO.class);
 
@@ -95,7 +91,8 @@ public class CargoService {
 
             cargoRepository.save(cargoEncontrado);
             logService.gerarLog(usuarioEncontrado,
-                    "Operação de Cadastro de Usuário em Cargos", TipoOperacao.CADASTRO);
+                    "Operação de Cadastro de Usuário " + usuarioEncontrado.getIdUsuario() + " em Cargo " + cargoEncontrado.getIdCargo()
+                    , TipoOperacao.CADASTRO);
             return usuarioService.listarPorId(idUsuario);
 
         } catch (DataAccessException e) {

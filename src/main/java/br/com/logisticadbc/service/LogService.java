@@ -47,12 +47,10 @@ public class LogService {
 
     }
 
-    public void gerarLog(UsuarioEntity usuario, String descricao, TipoOperacao tipoOperacao) throws RegraDeNegocioException {
-        Integer idUsuario = usuario.getIdUsuario();
-        UsuarioEntity usuarioEntity = usuarioService.buscarPorId(idUsuario);
+    public void gerarLog(String loginOperador, String descricao, TipoOperacao tipoOperacao) throws RegraDeNegocioException {
 
         LogEntity log = new LogEntity();
-        log.setLoginOperador(usuarioEntity.getLogin());
+        log.setLoginOperador(loginOperador);
         log.setDescricao(descricao);
         log.setTipoOperacao(tipoOperacao);
 
