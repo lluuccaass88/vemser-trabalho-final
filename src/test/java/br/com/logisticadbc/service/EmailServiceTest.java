@@ -18,9 +18,11 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import javax.validation.constraints.Null;
 import java.io.IOException;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
@@ -58,14 +60,19 @@ public class EmailServiceTest {
     }
 
     @Test(expected = RegraDeNegocioException.class)
-    public void deveFalharAoEnviarEmailDeBoasVindas() throws MessagingException, IOException, TemplateException, RegraDeNegocioException {
+    public void deveFalharAoEnviarEmailDeBoasVindas() {
         //SETUP
         UsuarioEntity usuarioEntity = getUsuarioEntityMockado();
         //ACT
         doNothing().when(emailSender).send(mimeMessage);
+//        RegraDeNegocioException regraDeNegocioException =
+//                assertThrows(RegraDeNegocioException.class,
+//                        () -> emailService.enviarEmailBoasVindas(usuarioEntity));
+//        assertTrue(regraDeNegocioException.getMessage().contains("Erro ao enviar email para o motorsita: "));
+        verify(emailSender, times(0)).send(mimeMessage);
     }
 
-        @Test
+    @Test
     public void deveEnviarEmailDeViagemComSucesso() {
         //SETUP
         //ACT
