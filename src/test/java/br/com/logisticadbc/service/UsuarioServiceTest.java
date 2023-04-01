@@ -223,7 +223,12 @@ public class UsuarioServiceTest {
         Integer pagina = 0;
         Integer tamanho = 2;
 
-        List<UsuarioEntity> listaUsuarios = List.of(getUsuarioEntityMock(), getUsuarioEntityMock());
+        UsuarioEntity usuarioEntityMock = getUsuarioEntityMock();
+        CargoEntity cargoAdminMock = getCargoAdminMock();
+        usuarioEntityMock.getCargos().add(cargoAdminMock);
+
+        List<UsuarioEntity> listaUsuarios = List.of(usuarioEntityMock);
+
         Page<UsuarioEntity> pageUsuario =
                 new PageImpl<>(listaUsuarios, PageRequest.of(pagina, tamanho), listaUsuarios.size());
 
@@ -234,34 +239,56 @@ public class UsuarioServiceTest {
         assertNotNull(usuarioDTOPaginados);
         Assertions.assertEquals(pagina, usuarioDTOPaginados.getPagina());
         Assertions.assertEquals(tamanho, usuarioDTOPaginados.getTamanho());
+        Assertions.assertEquals(1, usuarioDTOPaginados.getElementos().size());
     }
 
     @Test
     public void deveListarPorCargoEStatus() {
         String cargo = "ROLE_ADMIN";
-        
         Integer pagina = 0;
         Integer tamanho = 2;
 
-        List<UsuarioEntity> listaUsuarios = List.of(getUsuarioEntityMock(), getUsuarioEntityMock());
+        UsuarioEntity usuarioEntityMock = getUsuarioEntityMock();
+        CargoEntity cargoAdminMock = getCargoAdminMock();
+        usuarioEntityMock.getCargos().add(cargoAdminMock);
+
+        UsuarioEntity usuarioEntityMock2 = getUsuarioEntityMock();
+        usuarioEntityMock.getCargos().add(cargoAdminMock);
+
+        List<UsuarioEntity> listaUsuarios =
+                List.of(usuarioEntityMock, usuarioEntityMock2);
+
         Page<UsuarioEntity> pageUsuario =
                 new PageImpl<>(listaUsuarios, PageRequest.of(pagina, tamanho), listaUsuarios.size());
 
-        when(usuarioRepository.findByCargoUsuario(any(), anyString())).thenReturn(pageUsuario);
+        when(usuarioRepository.findByCargosAndStatus(any(), anyString(), any())).thenReturn(pageUsuario);
 
-        PageDTO<UsuarioDTO> usuarioDTOPaginados = usuarioService.listarPorCargoEStatus(cargo, pagina, tamanho);
+        PageDTO<UsuarioDTO> usuarioDTOPaginados =
+                usuarioService.listarPorCargoEStatus(cargo, StatusGeral.ATIVO, pagina, tamanho);
 
         assertNotNull(usuarioDTOPaginados);
         Assertions.assertEquals(pagina, usuarioDTOPaginados.getPagina());
         Assertions.assertEquals(tamanho, usuarioDTOPaginados.getTamanho());
-    }
-
-    @Test
-    public void deveGerarRelatorioCompleto() {
+        Assertions.assertEquals(2, usuarioDTOPaginados.getElementos().size());
     }
 
     @Test
     public void deveListarMotoristasLivres() {
+        Integer pagina = 0;
+        Integer tamanho = 2;
+
+        List<UsuarioEntity> listaUsuarios = List.of(getUsuarioEntityMock());
+        Page<UsuarioEntity> pageUsuario =
+                new PageImpl<>(listaUsuarios, PageRequest.of(pagina, tamanho), listaUsuarios.size());
+
+        when(usuarioRepository.findByMotoristasLivres(any())).thenReturn(pageUsuario);
+
+        PageDTO<UsuarioDTO> usuarioDTOPaginados = usuarioService.listarMotoristasLivres(pagina, tamanho);
+
+        assertNotNull(usuarioDTOPaginados);
+        Assertions.assertEquals(pagina, usuarioDTOPaginados.getPagina());
+        Assertions.assertEquals(tamanho, usuarioDTOPaginados.getTamanho());
+        Assertions.assertEquals(1, usuarioDTOPaginados.getElementos().size());
     }
 
     @Test
@@ -272,6 +299,15 @@ public class UsuarioServiceTest {
 
         assertNotNull(usuarioEntity);
         assertEquals(1, usuarioEntity.getIdUsuario());
+    }
+
+    @Test(expected = RegraDeNegocioException.class)
+    public void deveTestarIdNaoEncontrado() throws RegraDeNegocioException {
+        //SETUP
+        Integer idProcurado = 5;
+
+        //ACT
+        usuarioService.buscarPorId(idProcurado);
     }
 
     @Test
@@ -321,6 +357,22 @@ public class UsuarioServiceTest {
         loginDTO.setSenha("abc123");
 
         UsuarioEntity usuarioEntityMock = getUsuarioEntityMock();
+
+        when(usuarioRepository.findByLogin(anyString())).thenReturn(Optional.of(usuarioEntityMock));
+
+        // Action
+        usuarioService.ativo(loginDTO);
+    }
+
+    @Test(expected = RegraDeNegocioException.class)
+    public void deveRetornarInativo() throws RegraDeNegocioException {
+        // Setup
+        LoginDTO loginDTO = new LoginDTO();
+        loginDTO.setLogin("maicon");
+        loginDTO.setSenha("abc123");
+
+        UsuarioEntity usuarioEntityMock = getUsuarioEntityMock();
+        usuarioEntityMock.setStatus(StatusGeral.INATIVO);
 
         when(usuarioRepository.findByLogin(anyString())).thenReturn(Optional.of(usuarioEntityMock));
 
