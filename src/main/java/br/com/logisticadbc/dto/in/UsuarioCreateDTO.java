@@ -5,6 +5,7 @@ import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 @Data
@@ -34,6 +35,8 @@ public class UsuarioCreateDTO {
     @NotBlank
     @Size(min = 11, max = 11, message = "Deve conter 11 caracteres")
     @Schema(description = "Documento de identificação(CPF/CNH)", example = "12345678910")
+    @Pattern(regexp = "[0-9]*", message = "Deve conter apenas números")
+    @Pattern(regexp = "[a-zA-Z]*", message = "Não deve conter letras")
     private String documento;
 
     @NotNull
