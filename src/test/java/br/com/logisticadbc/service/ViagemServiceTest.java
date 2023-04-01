@@ -20,7 +20,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -133,30 +132,20 @@ public class ViagemServiceTest {
         cargo.setNome("ROLE_AMIN");
         listacargo.add(cargo);
 
-        ViagemEntity viagemMockadoDoBanco = getViagemEntityMock();
-
         UsuarioEntity usuarioMockadoDoBanco = getUsuarioEntityMock();
         usuarioMockadoDoBanco.setViagens(listaViagem);
         usuarioMockadoDoBanco.setCargos(listacargo);
 
         CaminhaoEntity caminhaoEntityMockadoDoBanco = getCaminhaoEntityMock();
-        caminhaoEntityMockadoDoBanco.setViagens(listaViagem);
 
         RotaEntity rotaEntityMockadoDoBanco = getRotaEntityMock();
-        rotaEntityMockadoDoBanco.setViagens(listaViagem);
 
         when(usuarioService.buscarPorId(anyInt())).thenReturn(usuarioMockadoDoBanco);
         when(caminhaoService.buscarPorId(anyInt())).thenReturn(caminhaoEntityMockadoDoBanco);
         when(rotaService.buscarPorId(anyInt())).thenReturn(rotaEntityMockadoDoBanco);
-        when(viagemRepository.save(any())).thenReturn(viagemMockadoDoBanco);
 
         //Action
         ViagemDTO viagemRetornada = viagemService.criar(idMotorista, novaViagem);
-
-        //Assert
-        assertNotNull(viagemRetornada);
-        Assertions.assertEquals(StatusViagem.EM_ANDAMENTO, viagemRetornada.getStatusViagem());
-        //TODO DESCOBRIR COMO PEGA O STATUS DE CAMINHÃO PARA VER SE REALMENTE ELE ESTA EM VIAGEM
     }
 
     @Test(expected = RegraDeNegocioException.class)
@@ -179,29 +168,19 @@ public class ViagemServiceTest {
         Set<CargoEntity> listacargo = new HashSet<>();
         listacargo.add(getCargoEntityMock());
 
-        ViagemEntity viagemMockadoDoBanco = getViagemEntityMock();
-
         UsuarioEntity usuarioMockadoDoBanco = getUsuarioEntityMock();
         usuarioMockadoDoBanco.setViagens(listaViagem);
         usuarioMockadoDoBanco.setCargos(listacargo);
 
         CaminhaoEntity caminhaoEntityMockadoDoBanco = getCaminhaoEntityMock();
-        caminhaoEntityMockadoDoBanco.setViagens(listaViagem);
-
         RotaEntity rotaEntityMockadoDoBanco = getRotaEntityMock();
-        rotaEntityMockadoDoBanco.setViagens(listaViagem);
 
-        Mockito.when(usuarioService.buscarPorId(anyInt())).thenReturn(usuarioMockadoDoBanco);
+        when(usuarioService.buscarPorId(anyInt())).thenReturn(usuarioMockadoDoBanco);
         when(caminhaoService.buscarPorId(anyInt())).thenReturn(caminhaoEntityMockadoDoBanco);
         when(rotaService.buscarPorId(anyInt())).thenReturn(rotaEntityMockadoDoBanco);
-        when(viagemRepository.save(any())).thenReturn(viagemMockadoDoBanco);
 
         //Action
         ViagemDTO viagemRetornada = viagemService.criar(idMotorista, novaViagem);
-
-        //Assert
-        assertNotNull(viagemRetornada);
-        Assertions.assertEquals(StatusViagem.EM_ANDAMENTO, viagemRetornada.getStatusViagem());
     }
 
     @Test(expected = RegraDeNegocioException.class)
@@ -240,14 +219,9 @@ public class ViagemServiceTest {
         when(usuarioService.buscarPorId(anyInt())).thenReturn(usuarioMockadoDoBanco);
         when(caminhaoService.buscarPorId(anyInt())).thenReturn(caminhaoEntityMockadoDoBanco);
         when(rotaService.buscarPorId(anyInt())).thenReturn(rotaEntityMockadoDoBanco);
-        when(viagemRepository.save(any())).thenReturn(viagemMockadoDoBanco);
 
         //Action
         ViagemDTO viagemRetornada = viagemService.criar(idMotorista, novaViagem);
-
-        //Assert
-        assertNotNull(viagemRetornada);
-        Assertions.assertEquals(StatusViagem.EM_ANDAMENTO, viagemRetornada.getStatusViagem());
     }
 
     @Test(expected = RegraDeNegocioException.class)
@@ -286,14 +260,9 @@ public class ViagemServiceTest {
         when(usuarioService.buscarPorId(anyInt())).thenReturn(usuarioMockadoDoBanco);
         when(caminhaoService.buscarPorId(anyInt())).thenReturn(caminhaoEntityMockadoDoBanco);
         when(rotaService.buscarPorId(anyInt())).thenReturn(rotaEntityMockadoDoBanco);
-        when(viagemRepository.save(any())).thenReturn(viagemMockadoDoBanco);
 
         //Action
         ViagemDTO viagemRetornada = viagemService.criar(idMotorista, novaViagem);
-
-        //Assert
-        assertNotNull(viagemRetornada);
-        Assertions.assertEquals(StatusViagem.EM_ANDAMENTO, viagemRetornada.getStatusViagem());
     }
 
     @Test(expected = RegraDeNegocioException.class)
@@ -331,16 +300,9 @@ public class ViagemServiceTest {
         when(usuarioService.buscarPorId(anyInt())).thenReturn(usuarioMockadoDoBanco);
         when(caminhaoService.buscarPorId(anyInt())).thenReturn(caminhaoEntityMockadoDoBanco);
         when(rotaService.buscarPorId(anyInt())).thenReturn(rotaEntityMockadoDoBanco);
-        when(viagemRepository.save(any())).thenReturn(viagemMockadoDoBanco);
-
-        //TODO VERIFICAR AMANHA COM O RESTO DO GRUPO DE CHEGA ATÉ AQUI (EU ACHO QUE NÃO)
 
         //Action
         ViagemDTO viagemRetornada = viagemService.criar(idMotorista, novaViagem);
-
-        //Assert
-        assertNotNull(viagemRetornada);
-        Assertions.assertEquals(StatusViagem.EM_ANDAMENTO, viagemRetornada.getStatusViagem());
     }
 
     //Testar Finalizar Viagem
@@ -358,27 +320,10 @@ public class ViagemServiceTest {
         ViagemEntity viagemMockadoBanco = getViagemEntityMock();
         viagemMockadoBanco.getUsuario().setIdUsuario(2);
 
-        UsuarioEntity usuarioMockadoBanco = getUsuarioEntityMock();
-        usuarioMockadoBanco.setViagens(listaViagem);
-
-        CaminhaoEntity caminhaoMockadoBanco = getCaminhaoEntityMock();
-        caminhaoMockadoBanco.setViagens(listaViagem);
-
-        RotaEntity rotaMockadoBanco = getRotaEntityMock();
-        rotaMockadoBanco.setViagens(listaViagem);
-
         when(viagemRepository.findById(anyInt())).thenReturn(Optional.of(viagemMockadoBanco));
-        when(usuarioService.buscarPorId(anyInt())).thenReturn(usuarioMockadoBanco);
-        when(caminhaoService.buscarPorId(anyInt())).thenReturn(caminhaoMockadoBanco);
-        when(rotaService.buscarPorId(anyInt())).thenReturn(rotaMockadoBanco);
-        when(viagemRepository.save(any())).thenReturn(viagemMockadoBanco);
 
         //Action
         viagemService.finalizar(idMotorista, idViagem);
-
-        //Assert
-        verify(viagemRepository, times(1)).save(any());
-        Assertions.assertEquals(StatusViagem.FINALIZADA, viagemMockadoBanco.getStatusViagem());
     }
 
     @Test
@@ -446,12 +391,10 @@ public class ViagemServiceTest {
         RotaEntity rotaMockadoBanco = getRotaEntityMock();
         rotaMockadoBanco.setViagens(listaViagem);
 
-
         when(viagemRepository.findById(anyInt())).thenReturn(Optional.of(viagemMockadoBanco));
         when(usuarioService.buscarPorId(anyInt())).thenReturn(usuarioMockadoBanco);
         when(caminhaoService.buscarPorId(anyInt())).thenReturn(caminhaoMockadoBanco);
         when(rotaService.buscarPorId(anyInt())).thenReturn(rotaMockadoBanco);
-
 
         // ACT
         ViagemDTO viagemEditadaDTO = viagemService.editar(idMotorista, idViagem, novaViagem);
@@ -481,30 +424,10 @@ public class ViagemServiceTest {
         ViagemEntity viagemMockadoBanco = getViagemEntityMock();
         viagemMockadoBanco.getUsuario().setIdUsuario(2);
 
-        UsuarioEntity usuarioMockadoBanco = getUsuarioEntityMock();
-        usuarioMockadoBanco.setViagens(listaViagem);
-
-        CaminhaoEntity caminhaoMockadoBanco = getCaminhaoEntityMock();
-        caminhaoMockadoBanco.setViagens(listaViagem);
-
-        RotaEntity rotaMockadoBanco = getRotaEntityMock();
-        rotaMockadoBanco.setViagens(listaViagem);
-
-
         when(viagemRepository.findById(anyInt())).thenReturn(Optional.of(viagemMockadoBanco));
-        when(usuarioService.buscarPorId(anyInt())).thenReturn(usuarioMockadoBanco);
-        when(caminhaoService.buscarPorId(anyInt())).thenReturn(caminhaoMockadoBanco);
-        when(rotaService.buscarPorId(anyInt())).thenReturn(rotaMockadoBanco);
-        when(viagemRepository.save(any())).thenReturn(viagemMockadoBanco);
-
-
 
         // ACT
         ViagemDTO viagemEditadaDTO = viagemService.editar(idMotorista, idViagem, novaViagem);
-
-        // ASSERT
-        assertNotNull(viagemEditadaDTO);
-        Assertions.assertEquals("Viagem longa com uma paradas", viagemEditadaDTO.getDescricao());
     }
 
     @Test(expected = RegraDeNegocioException.class)
@@ -526,28 +449,10 @@ public class ViagemServiceTest {
 
         ViagemEntity viagemMockadoBanco = getViagemEntityMock();
 
-        UsuarioEntity usuarioMockadoBanco = getUsuarioEntityMock();
-        usuarioMockadoBanco.setViagens(listaViagem);
-
-        CaminhaoEntity caminhaoMockadoBanco = getCaminhaoEntityMock();
-        caminhaoMockadoBanco.setViagens(listaViagem);
-
-        RotaEntity rotaMockadoBanco = getRotaEntityMock();
-        rotaMockadoBanco.setViagens(listaViagem);
-
-
         when(viagemRepository.findById(anyInt())).thenReturn(Optional.of(viagemMockadoBanco));
-        when(usuarioService.buscarPorId(anyInt())).thenReturn(usuarioMockadoBanco);
-        when(caminhaoService.buscarPorId(anyInt())).thenReturn(caminhaoMockadoBanco);
-        when(rotaService.buscarPorId(anyInt())).thenReturn(rotaMockadoBanco);
-
 
         // ACT
         ViagemDTO viagemEditadaDTO = viagemService.editar(idMotorista, idViagem, novaViagem);
-
-        // ASSERT
-        assertNotNull(viagemEditadaDTO);
-        Assertions.assertEquals("Viagem longa com uma paradas", viagemEditadaDTO.getDescricao());
     }
 
     @Test(expected = RegraDeNegocioException.class)
@@ -570,28 +475,10 @@ public class ViagemServiceTest {
         ViagemEntity viagemMockadoBanco = getViagemEntityMock();
         viagemMockadoBanco.setStatusViagem(StatusViagem.FINALIZADA);
 
-        UsuarioEntity usuarioMockadoBanco = getUsuarioEntityMock();
-        usuarioMockadoBanco.setViagens(listaViagem);
-
-        CaminhaoEntity caminhaoMockadoBanco = getCaminhaoEntityMock();
-        caminhaoMockadoBanco.setViagens(listaViagem);
-
-        RotaEntity rotaMockadoBanco = getRotaEntityMock();
-        rotaMockadoBanco.setViagens(listaViagem);
-
-
         when(viagemRepository.findById(anyInt())).thenReturn(Optional.of(viagemMockadoBanco));
-        when(usuarioService.buscarPorId(anyInt())).thenReturn(usuarioMockadoBanco);
-        when(caminhaoService.buscarPorId(anyInt())).thenReturn(caminhaoMockadoBanco);
-        when(rotaService.buscarPorId(anyInt())).thenReturn(rotaMockadoBanco);
-
 
         // ACT
         ViagemDTO viagemEditadaDTO = viagemService.editar(idMotorista, idViagem, novaViagem);
-
-        // ASSERT
-        assertNotNull(viagemEditadaDTO);
-        Assertions.assertEquals("Viagem longa com uma paradas", viagemEditadaDTO.getDescricao());
     }
 
     //Teste Listar
@@ -746,12 +633,7 @@ public class ViagemServiceTest {
         assertNotNull(viagensPaginadasDTO);
         Assertions.assertEquals(pagina, viagensPaginadasDTO.getPagina());
         Assertions.assertEquals(tamanho, viagensPaginadasDTO.getTamanho());
-
     }
-
-
-
-
 
     private static UsuarioEntity getUsuarioEntityMock() {
         UsuarioEntity usuarioMockado = new UsuarioEntity();
@@ -765,7 +647,6 @@ public class ViagemServiceTest {
 
         return usuarioMockado;
     }
-
 
     private static CaminhaoEntity getCaminhaoEntityMock() {
         CaminhaoEntity caminhaoMockado = new CaminhaoEntity();
@@ -782,7 +663,6 @@ public class ViagemServiceTest {
         return caminhaoMockado;
     }
 
-
     private static RotaEntity getRotaEntityMock() {
         RotaEntity rotaMockadaDoBanco = new RotaEntity();
         rotaMockadaDoBanco.setIdRota(1);
@@ -793,7 +673,6 @@ public class ViagemServiceTest {
         rotaMockadaDoBanco.setUsuario(getUsuarioEntityMock());
         return rotaMockadaDoBanco;
     }
-
 
     private static ViagemEntity getViagemEntityMock() {
         ViagemEntity viagemMockadaDoBanco = new ViagemEntity();
@@ -832,6 +711,4 @@ public class ViagemServiceTest {
         cargoMockado.setNome("ROLE_ADMIN");
         return cargoMockado;
     }
-
-
 }

@@ -3,6 +3,7 @@ package br.com.logisticadbc.service;
 import br.com.logisticadbc.dto.in.ViagemCreateDTO;
 import br.com.logisticadbc.dto.in.ViagemUpdateDTO;
 import br.com.logisticadbc.dto.out.PageDTO;
+import br.com.logisticadbc.dto.out.UsuarioDTO;
 import br.com.logisticadbc.dto.out.ViagemDTO;
 import br.com.logisticadbc.entity.CaminhaoEntity;
 import br.com.logisticadbc.entity.RotaEntity;
@@ -11,11 +12,13 @@ import br.com.logisticadbc.entity.ViagemEntity;
 import br.com.logisticadbc.entity.enums.StatusCaminhao;
 import br.com.logisticadbc.entity.enums.StatusGeral;
 import br.com.logisticadbc.entity.enums.StatusViagem;
+import br.com.logisticadbc.entity.enums.TipoOperacao;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.repository.ViagemRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -33,11 +36,14 @@ public class ViagemService {
     private final EmailService emailService;
     private final RotaService rotaService;
     private final ObjectMapper objectMapper;
+    private final LogService logService;
+
 
     public ViagemDTO criar(Integer idMotorista, ViagemCreateDTO viagemCreateDTO) throws RegraDeNegocioException {
         UsuarioEntity usuarioEncontrado = usuarioService.buscarPorId(idMotorista);
         CaminhaoEntity caminhaoEncontrado = caminhaoService.buscarPorId(viagemCreateDTO.getIdCaminhao());
         RotaEntity rotaEncontrada = rotaService.buscarPorId(viagemCreateDTO.getIdRota());
+        UsuarioDTO loggedUser = usuarioService.getLoggedUser();
 
         // Verificações
         boolean motoristaJaEmViagem = usuarioEncontrado.getViagens()
@@ -78,6 +84,9 @@ public class ViagemService {
 
             viagemRepository.save(viagemEntity);
 
+            String descricao = "Operação de Cadastro de Viagem | " + viagemEntity.getDescricao();
+            logService.gerarLog(loggedUser.getLogin(), descricao, TipoOperacao.CADASTRO);
+
             ViagemDTO viagemDTO = objectMapper.convertValue(viagemEntity, ViagemDTO.class);
             viagemDTO.setIdUsuario(idMotorista);
             viagemDTO.setIdCaminhao(caminhaoEncontrado.getIdCaminhao());
@@ -87,7 +96,7 @@ public class ViagemService {
 
             return viagemDTO;
 
-        } catch (Exception e) {
+        } catch (DataAccessException e) {
             e.printStackTrace();
             throw new RegraDeNegocioException("Aconteceu algum problema durante a criação.");
         }
@@ -96,6 +105,7 @@ public class ViagemService {
     public ViagemDTO editar(Integer idMotorista, Integer idViagem, ViagemUpdateDTO viagemUpdateDTO)
             throws RegraDeNegocioException {
         ViagemEntity viagemEncontrada = buscarPorId(idViagem);
+        UsuarioDTO loggedUser = usuarioService.getLoggedUser();
 
         if (viagemEncontrada.getStatusViagem().equals(StatusViagem.FINALIZADA)) {
             throw new RegraDeNegocioException("Permissão negada, não pode editar viagem já finalizada!");
@@ -125,13 +135,16 @@ public class ViagemService {
 
             viagemRepository.save(viagemEncontrada);
 
+            String descricao = "Operação de Alteração de Viagem | " + viagemEncontrada.getDescricao();
+            logService.gerarLog(loggedUser.getLogin(), descricao, TipoOperacao.ALTERACAO);
+
             ViagemDTO viagemDTO = objectMapper.convertValue(viagemEncontrada, ViagemDTO.class);
             viagemDTO.setIdUsuario(motoristaEncontrado.getIdUsuario());
             viagemDTO.setIdCaminhao(caminhaoEncontrado.getIdCaminhao());
             viagemDTO.setIdRota(rotaEncontrada.getIdRota());
             return viagemDTO;
 
-        } catch (Exception e) {
+        } catch (DataAccessException e) {
             e.printStackTrace();
             throw new RegraDeNegocioException("Aconteceu algum problema durante a edição.");
         }
@@ -139,6 +152,7 @@ public class ViagemService {
 
     public void finalizar(Integer idMotorista, Integer idViagem) throws RegraDeNegocioException {
         ViagemEntity viagemEncontrada = buscarPorId(idViagem);
+        UsuarioDTO loggedUser = usuarioService.getLoggedUser();
 
         if (!viagemEncontrada.getUsuario().getIdUsuario().equals(idMotorista)){
             throw new RegraDeNegocioException("Permissão negada, motorista não criou a viagem!");
@@ -161,7 +175,10 @@ public class ViagemService {
 
             viagemRepository.save(viagemEncontrada);
 
-        } catch (Exception e) {
+            String descricao = "Operação de Finalização de Viagem | " + viagemEncontrada.getDescricao();
+            logService.gerarLog(loggedUser.getLogin(), descricao, TipoOperacao.OUTROS);
+
+        } catch (DataAccessException e) {
             throw new RegraDeNegocioException("Aconteceu algum problema durante a finalização.");
         }
     }
