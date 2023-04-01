@@ -98,6 +98,39 @@ public class EmailService {
         return FreeMarkerTemplateUtils.processTemplateIntoString(template, dados);
     }
 
+    public void enviarEmailRecuperarSenha(UsuarioEntity usuario, String senhaTemporaria) throws RegraDeNegocioException {
+        MimeMessage mimeMessage = emailSender.createMimeMessage();
+        Integer op = 2;
+        try {
+            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
+            mimeMessageHelper.setFrom(from);
+            mimeMessageHelper.setTo(usuario.getEmail());
+            mimeMessageHelper.setSubject("Recuperação de senha");
+
+            mimeMessageHelper.setText(geRecuperarSenhaTemplate(usuario, senhaTemporaria), true);
+
+            emailSender.send(mimeMessageHelper.getMimeMessage());
+
+        } catch (MessagingException | IOException | TemplateException e) {
+            e.printStackTrace();
+            throw new RegraDeNegocioException("Erro ao enviar email de recuperação de senha");
+        }
+    }
+
+    private String geRecuperarSenhaTemplate(UsuarioEntity usuario, String senhaTemporaria)
+            throws IOException, TemplateException {
+
+        Map<String, Object> dados = new HashMap<>();
+        dados.put("senhaTemporaria", senhaTemporaria);
+        dados.put("usuarioNome", usuario.getNome());
+        dados.put("emailContato", EMAIL_LOG);
+        dados.put("nome", NOME_LOG);
+
+        Template template = fmConfiguration.getTemplate("email-template-recupera-senha.ftl"); //TODO trocar o template
+        String html = FreeMarkerTemplateUtils.processTemplateIntoString(template, dados);
+        return html;
+    }
+
 }
 
 
