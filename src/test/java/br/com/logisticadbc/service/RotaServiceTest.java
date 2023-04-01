@@ -323,26 +323,13 @@ public class RotaServiceTest {
         // SETUP
         int idRota = 6;
 
-        UsuarioEntity usuarioMockadoBanco = getUsuarioEntityMock();
-
-        Set<RotaEntity> rotaEntities = new HashSet<>();
-        rotaEntities.add(getRotaEntityMock());
-        rotaEntities.add(getRotaEntityMock());
-        usuarioMockadoBanco.setRotas(rotaEntities);
-
         RotaEntity rotaInativa = new RotaEntity();
         rotaInativa.setStatus(StatusGeral.INATIVO);
 
         Mockito.when(rotaRepository.findById(Mockito.anyInt())).thenReturn(Optional.of(rotaInativa));
-//        Mockito.when(usuarioService.buscarPorId(Mockito.anyInt())).thenReturn(usuarioMockadoBanco);
-//        Mockito.when(rotaRepository.save(Mockito.any())).thenReturn(rotaInativa);
 
         // ACT
         rotaService.deletar(idRota);
-
-        // ASSERT
-        Assertions.assertEquals(StatusGeral.INATIVO, rotaInativa.getStatus());
-//        Assertions.assertEquals(idRota, rotaInativa.getIdRota());
     }
 
     //Testes editar
