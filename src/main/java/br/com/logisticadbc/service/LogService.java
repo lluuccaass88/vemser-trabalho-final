@@ -2,13 +2,13 @@ package br.com.logisticadbc.service;
 
 import br.com.logisticadbc.dto.out.LogDTO;
 import br.com.logisticadbc.dto.out.PageDTO;
-import br.com.logisticadbc.entity.UsuarioEntity;
 import br.com.logisticadbc.entity.enums.TipoOperacao;
 import br.com.logisticadbc.entity.mongodb.LogEntity;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.repository.LogRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -22,10 +22,7 @@ public class LogService {
 
     private final LogRepository logRepository;
     private final ObjectMapper objectMapper;
-    private final UsuarioService usuarioService;
 
-
-    // TODO - METODO CRIADO PORÉM NAO SEI SE SERÁ UTILIZADO
     public PageDTO<LogDTO> listAllLogs(Integer pagina, Integer tamanho) {
         Pageable solicitacaoPagina = PageRequest.of(pagina, tamanho);
 
@@ -44,7 +41,6 @@ public class LogService {
                 tamanho,
                 logDTOList
         );
-
     }
 
     public void gerarLog(String loginOperador, String descricao, TipoOperacao tipoOperacao) throws RegraDeNegocioException {
@@ -56,7 +52,7 @@ public class LogService {
 
         try {
             logRepository.save(log);
-        } catch (Exception e) {
+        } catch (DataAccessException e) {
             throw new RegraDeNegocioException("Aconteceu algum problema durante a criação do log.");
         }
     }

@@ -2,24 +2,19 @@ package br.com.logisticadbc.service;
 
 import br.com.logisticadbc.dto.in.PostoCreateDTO;
 import br.com.logisticadbc.dto.out.PostoDTO;
-import br.com.logisticadbc.entity.UsuarioEntity;
 import br.com.logisticadbc.entity.enums.StatusGeral;
 import br.com.logisticadbc.entity.mongodb.PostoEntity;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.repository.PostoRepository;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import org.junit.Before;
 import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -27,7 +22,8 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 
@@ -189,6 +185,43 @@ public class PostoServiceTest {
         when(postoRepository.findById(anyString())).thenReturn(Optional.of(postoEntityMock));
 
         postoService.deletar("1");
+    }
+
+    @Test
+    public void deveListarAtivosComSucesso() {
+        // SETUP
+
+        List<PostoEntity> postoEntityList = List.of(
+                getPostoEntityMock() , getPostoEntityMock());
+
+        when(postoRepository.findByStatusEquals(any())).thenReturn(postoEntityList);
+        when(objectMapper.convertValue(getPostoEntityMock(), PostoDTO.class)).thenReturn(getPostoDTOMock());
+
+        // ACT
+        List<PostoDTO> postoDTOS = postoService.listarPostosAtivos();
+
+        // ASSERT
+        Assertions.assertNotNull(postoDTOS);
+        Assertions.assertEquals(2, postoDTOS.size());
+    }
+
+    @Test
+    public void deveListarInativosComSucesso() {
+        // SETUP
+        PostoEntity postoEntityMock = getPostoEntityMock();
+        postoEntityMock.setStatus(StatusGeral.INATIVO);
+
+        List<PostoEntity> postoEntityList = List.of(postoEntityMock, postoEntityMock);
+
+        when(postoRepository.findByStatusEquals(any())).thenReturn(postoEntityList);
+        when(objectMapper.convertValue(getPostoEntityMock(), PostoDTO.class)).thenReturn(getPostoDTOMock());
+
+        // ACT
+        List<PostoDTO> postoDTOS = postoService.listarPostosInativos();
+
+        // ASSERT
+        Assertions.assertNotNull(postoDTOS);
+        Assertions.assertEquals(2, postoDTOS.size());
     }
 
     @NotNull

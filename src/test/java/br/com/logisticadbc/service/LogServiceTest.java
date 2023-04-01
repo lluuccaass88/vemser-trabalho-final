@@ -54,7 +54,6 @@ public class LogServiceTest {
     @Test
     public void deveListarLogsComSucesso(){
         //SETUP
-        StatusViagem statusViagem = StatusViagem.EM_ANDAMENTO;
         Integer pagina = 0;
         Integer tamanho = 2;
 
@@ -81,7 +80,7 @@ public class LogServiceTest {
 //        LogEntity logEntity = getLogEntityMockado();
         when(usuarioService.buscarPorId(anyInt())).thenReturn(usuarioEntity);
         //ACT
-        logService.gerarLog(usuarioEntity, "Operação de Cadastrar Algo", TipoOperacao.CADASTRO);
+        logService.gerarLog(usuarioEntity.getLogin(), "Operação de Cadastrar Algo", TipoOperacao.CADASTRO);
         //ASSERT
         verify(logRepository, times(1)).save(any());
     }

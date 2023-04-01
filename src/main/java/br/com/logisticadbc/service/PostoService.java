@@ -131,8 +131,7 @@ public class PostoService {
                 .stream()
                 .map(posto -> {
                     PostoDTO postoDTO = objectMapper.convertValue(posto, PostoDTO.class);
-                    return postoDTO;
-                })
+                    return postoDTO;})
                 .toList();
     }
 
@@ -142,8 +141,7 @@ public class PostoService {
                 .stream()
                 .map(posto -> {
                     PostoDTO postoDTO = objectMapper.convertValue(posto, PostoDTO.class);
-                    return postoDTO;
-                })
+                    return postoDTO;})
                 .toList();
     }
 
