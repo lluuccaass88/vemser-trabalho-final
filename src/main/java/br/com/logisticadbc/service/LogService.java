@@ -1,6 +1,8 @@
 package br.com.logisticadbc.service;
 
 import br.com.logisticadbc.dto.out.LogDTO;
+import br.com.logisticadbc.dto.out.PageDTO;
+import br.com.logisticadbc.dto.out.UsuarioDTO;
 import br.com.logisticadbc.entity.UsuarioEntity;
 import br.com.logisticadbc.entity.enums.TipoOperacao;
 import br.com.logisticadbc.entity.mongodb.LogEntity;
@@ -8,6 +10,9 @@ import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.repository.LogRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,12 +28,25 @@ public class LogService {
 
 
     // TODO - METODO CRIADO PORÉM NAO SEI SE SERÁ UTILIZADO
-    public List<LogDTO> listAllLogs() {
-        return logRepository
-                .findAll()
+    public PageDTO<LogDTO> listAllLogs(Integer pagina, Integer tamanho) {
+        Pageable solicitacaoPagina = PageRequest.of(pagina, tamanho);
+
+        Page<LogEntity> paginacaoLog = logRepository.findAll(solicitacaoPagina);
+
+        List<LogDTO> logDTOList = paginacaoLog
+                .getContent()
                 .stream()
                 .map(log -> objectMapper.convertValue(log, LogDTO.class))
-                .collect(Collectors.toList());
+                .toList();
+
+        return new PageDTO<>(
+                paginacaoLog.getTotalElements(),
+                paginacaoLog.getTotalPages(),
+                pagina,
+                tamanho,
+                logDTOList
+        );
+
     }
 
     public void gerarLog(UsuarioEntity usuario, String descricao, TipoOperacao tipoOperacao) throws RegraDeNegocioException {

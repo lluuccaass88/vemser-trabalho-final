@@ -53,6 +53,8 @@ public class SecurityConfiguration {
 
                         .antMatchers("/cargo/**").hasRole("ADMIN")
 
+                        .antMatchers("/log/**").hasRole("ADMIN")
+
                         .antMatchers(HttpMethod.GET, "/caminhao/**").hasAnyRole("ADMIN", "MOTORISTA", "COLABORADOR")
                         .antMatchers(HttpMethod.POST, "/caminhao/**").hasAnyRole("ADMIN", "COLABORADOR")
                         .antMatchers(HttpMethod.PUT, "/caminhao/**").hasAnyRole("ADMIN", "MOTORISTA")
