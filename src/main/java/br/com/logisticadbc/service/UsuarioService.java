@@ -41,7 +41,7 @@ public class UsuarioService {
     private final CargoService cargoService;
     public final AuthenticationManager authenticationManager;
     private final ObjectMapper objectMapper;
-    private  PasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder;
 
     public UsuarioService(UsuarioRepository usuarioRepository,
                           EmailService emailService,
@@ -104,7 +104,7 @@ public class UsuarioService {
                 throw new RegraDeNegocioException("Não é possível editar um admin.");
             }
 
-        // se nao tiver parâmetro, usa o proprio usuario logado
+            // se nao tiver parâmetro, usa o proprio usuario logado
         } else {
             usuarioEncontrado = usuarioLogado;
         }
@@ -119,7 +119,7 @@ public class UsuarioService {
 
             return transformaEmUsuarioDTO(usuarioEditado);
 
-        } catch (Exception e) {
+        } catch (DataAccessException e) {
             throw new RegraDeNegocioException("Aconteceu algum problema durante a edição.");
         }
     }
@@ -135,7 +135,7 @@ public class UsuarioService {
             usuarioEncontrado.setStatus(StatusGeral.INATIVO);
             usuarioRepository.save(usuarioEncontrado);
 
-        } catch (Exception e) {
+        } catch (DataAccessException e) {
             throw new RegraDeNegocioException("Aconteceu algum problema durante a exclusão.");
         }
     }
@@ -249,7 +249,7 @@ public class UsuarioService {
         return usuarioRepository.findByLogin(login);
     }
 
-    public String autenticar (LoginDTO loginDTO) throws RegraDeNegocioException {
+    public String autenticar(LoginDTO loginDTO) throws RegraDeNegocioException {
         ativo(loginDTO);
         try {
             // cria dto do spring
@@ -286,11 +286,12 @@ public class UsuarioService {
         UsuarioEntity usuarioLogado = buscarPorId(getIdLoggedUser());
         return transformaEmUsuarioDTO(usuarioLogado);
     }
+
     public void ativo(LoginDTO loginDTO) throws RegraDeNegocioException {
         UsuarioEntity usuarioEntity = usuarioRepository.findByLogin(loginDTO.getLogin())
                 .orElseThrow(() -> new RegraDeNegocioException("Usuário não encontrado!"));
 
-         if (usuarioEntity.getStatus().equals(StatusGeral.INATIVO)) {
+        if (usuarioEntity.getStatus().equals(StatusGeral.INATIVO)) {
             throw new RegraDeNegocioException("Usuário inativo!");
         }
     }
