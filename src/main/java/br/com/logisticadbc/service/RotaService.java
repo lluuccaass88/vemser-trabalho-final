@@ -11,6 +11,7 @@ import br.com.logisticadbc.repository.RotaRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,7 +23,6 @@ public class RotaService {
 
     private final RotaRepository rotaRepository;
     private final UsuarioService usuarioService;
-    //    private final PostoService postoService;
     private final ObjectMapper objectMapper;
     private final LogService logService;
 
@@ -45,7 +45,7 @@ public class RotaService {
             rotaDTO.setIdUsuario(idUsuario);
             return rotaDTO;
 
-        } catch (Exception e) {
+        } catch (DataAccessException e) {
             throw new RegraDeNegocioException("Aconteceu algum problema durante a criação.");
         }
     }
@@ -72,7 +72,7 @@ public class RotaService {
             RotaDTO rotaDTO = objectMapper.convertValue(rotaEncontrada, RotaDTO.class);
             rotaDTO.setIdUsuario(usuarioEncontrado.getIdUsuario());
             return rotaDTO;
-        } catch (Exception e) {
+        } catch (DataAccessException e) {
             throw new RegraDeNegocioException("Aconteceu algum problema durante a edição.");
         }
     }
@@ -92,7 +92,7 @@ public class RotaService {
             logService.gerarLog(usuarioEncontrado, "Operação de Inativação de Rotas",
                     TipoOperacao.EXCLUSAO);
 
-        } catch (Exception e) {
+        } catch (DataAccessException e) {
             throw new RegraDeNegocioException("Aconteceu algum problema durante a exclusão.");
         }
     }

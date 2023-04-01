@@ -16,6 +16,7 @@ import br.com.logisticadbc.repository.ViagemRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -87,7 +88,7 @@ public class ViagemService {
 
             return viagemDTO;
 
-        } catch (Exception e) {
+        } catch (DataAccessException e) {
             e.printStackTrace();
             throw new RegraDeNegocioException("Aconteceu algum problema durante a criação.");
         }
@@ -131,7 +132,7 @@ public class ViagemService {
             viagemDTO.setIdRota(rotaEncontrada.getIdRota());
             return viagemDTO;
 
-        } catch (Exception e) {
+        } catch (DataAccessException e) {
             e.printStackTrace();
             throw new RegraDeNegocioException("Aconteceu algum problema durante a edição.");
         }
@@ -161,7 +162,7 @@ public class ViagemService {
 
             viagemRepository.save(viagemEncontrada);
 
-        } catch (Exception e) {
+        } catch (DataAccessException e) {
             throw new RegraDeNegocioException("Aconteceu algum problema durante a finalização.");
         }
     }
