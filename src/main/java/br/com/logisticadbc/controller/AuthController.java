@@ -13,6 +13,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Email;
 
 @Validated
 @RequiredArgsConstructor
@@ -27,6 +28,13 @@ public class AuthController implements AuthControllerDoc {
     public ResponseEntity<String> auth(@RequestBody @Valid LoginDTO loginDTO) throws RegraDeNegocioException {
         // adiciona mecanismo de autenticação para verificar se o usuário é válido e retornar o token
         return new ResponseEntity<>(usuarioService.autenticar(loginDTO), HttpStatus.ACCEPTED);
+    }
+
+    @PostMapping("recuperar-senha")
+    public ResponseEntity<Void> recoverPassword(@Email @RequestParam("emailUsuario") String emailUsuario) throws RegraDeNegocioException {
+        // adiciona mecanismo de autenticação para verificar se o usuário é válido e retornar o token
+        usuarioService.recuperarSenha(emailUsuario);
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 
     @GetMapping("/usuario-logado")

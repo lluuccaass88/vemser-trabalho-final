@@ -273,6 +273,54 @@ public class UsuarioService {
         }
     }
 
+    public void recuperarSenha (String emailUsuario) throws RegraDeNegocioException {
+        int tamSenhaAleatoria = 10;
+        String senhaTemporaria = gerarSenhaAleatoria(tamSenhaAleatoria);
+        UsuarioEntity usuarioRecuperado = usuarioRepository.findByEmail(emailUsuario);
+
+        try {
+            if(usuarioRecuperado == null){
+                throw new RegraDeNegocioException ("Email não cadastrado no sistema.");
+            }else if(usuarioRecuperado.getStatus() == StatusGeral.INATIVO){
+                throw new RegraDeNegocioException ("Não é possivel recuperar a senha de um usuario inativo.");
+            }
+
+            usuarioRecuperado.setSenha(passwordEncoder.encode(senhaTemporaria));
+
+            usuarioRepository.save(usuarioRecuperado);
+
+            emailService.enviarEmailRecuperarSenha(usuarioRecuperado, senhaTemporaria);
+
+        } catch (NoSuchElementException | BadCredentialsException e) {
+            e.printStackTrace();
+            throw new RegraDeNegocioException("Ocorreu um erro durante a recuperação da senha");
+        }
+    }
+
+    //TODO função para trocar a senha
+
+    static String gerarSenhaAleatoria(int n){
+
+            String AlphaNumericString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                    + "0123456789"
+                    + "abcdefghijklmnopqrstuvxyz";
+
+            StringBuilder sb = new StringBuilder(n);
+
+            for (int i = 0; i < n; i++) {
+
+                int index
+                        = (int)(AlphaNumericString.length()
+                        * Math.random());
+
+                sb.append(AlphaNumericString
+                        .charAt(index));
+            }
+
+            return sb.toString();
+        }
+
+
     // recupera id do usuário do Token
     public Integer getIdLoggedUser() {
         return Integer.parseInt(SecurityContextHolder.getContext()

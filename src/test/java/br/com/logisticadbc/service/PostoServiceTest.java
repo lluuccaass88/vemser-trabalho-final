@@ -1,5 +1,6 @@
 package br.com.logisticadbc.service;
 
+import br.com.logisticadbc.dto.out.PostoDTO;
 import br.com.logisticadbc.entity.enums.StatusGeral;
 import br.com.logisticadbc.entity.mongodb.PostoEntity;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
@@ -18,9 +19,11 @@ import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import javax.validation.constraints.NotNull;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -34,16 +37,16 @@ public class PostoServiceTest {
     private PostoRepository postoRepository;
     @Mock
     private GeoJsonPoint geoJsonPoint;
-
+    @Mock
     private ObjectMapper objectMapper = new ObjectMapper();
 
-    @Before
-    public void init() {
-        objectMapper.registerModule(new JavaTimeModule());
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-        ReflectionTestUtils.setField(postoService, "objectMapper", objectMapper);
-    }
+//    @Before
+//    public void init() {
+//        objectMapper.registerModule(new JavaTimeModule());
+//        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+//        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+//        ReflectionTestUtils.setField(postoService, "objectMapper", objectMapper);
+//    }
 
     /*@Test
     public void deveCriarPostoComSucesso() throws RegraDeNegocioException {
@@ -76,15 +79,20 @@ public class PostoServiceTest {
     @Test
     public void deveListarComSucesso() {
         // SETUP
-//        List<PostoEntity> listaDePostoMockado = List.of(getPostoEntityMock());
-//        when(postoRepository.findAll()).thenReturn(listaDePostoMockado);
+        List<PostoEntity> listaDePostoMockado = List.of(getPostoEntityMock());
+
+        PostoDTO postoConvertidoDTO = getPostoDTOMock();
+
+        when(postoRepository.findAll()).thenReturn(listaDePostoMockado);
+        when(objectMapper.convertValue(any(), PostoDTO.class)).thenReturn(postoConvertidoDTO);
+
 
         // ACTION
-//        List<PostoDTO> listaDePostoRetornado = postoService.listar();
+        List<PostoDTO> listaDePostoRetornado = postoService.listar();
 
         // ASSERT
-//        assertNotNull(listaDePostoRetornado);
-//        assertEquals(1, listaDePostoRetornado.size());
+        assertNotNull(listaDePostoRetornado);
+        assertEquals(1, listaDePostoRetornado.size());
     }
 
     @Test
@@ -100,18 +108,37 @@ public class PostoServiceTest {
 //        assertEquals("1", postoRetornado.getId());
     }
 
+
+    //Testar deletar
     @Test
     public void deveDeletarComSucesso() throws RegraDeNegocioException {
         // SETUP
-        PostoEntity postoInativo = new PostoEntity();
-        postoInativo.setStatus(StatusGeral.INATIVO);
+        String idPosto = "1";
+        PostoEntity postoMockadoBanco = getPostoEntityMock();
 
-        when(postoRepository.findById(anyString())).thenReturn(Optional.of(getPostoEntityMock()));
-        when(postoRepository.save(any())).thenReturn(postoInativo);
+        when(postoRepository.findById(anyString())).thenReturn(Optional.of(postoMockadoBanco));
+        when(postoRepository.save(any())).thenReturn(postoMockadoBanco);
+
         // ACTION
-        postoService.deletar("1");
+        postoService.deletar(idPosto);
+
         // ASSERT
-        assertEquals(StatusGeral.INATIVO, postoInativo.getStatus());
+        assertEquals(StatusGeral.INATIVO, postoMockadoBanco.getStatus());
+    }
+    @Test(expected = RegraDeNegocioException.class)
+    public void deveDeletarComUsuarioInativo() throws RegraDeNegocioException {
+        // SETUP
+        String idPosto = "1";
+        PostoEntity postoMockadoBanco = getPostoEntityMock();
+        postoMockadoBanco.setStatus(StatusGeral.INATIVO);
+
+        when(postoRepository.findById(anyString())).thenReturn(Optional.of(postoMockadoBanco));
+
+        // ACTION
+        postoService.deletar(idPosto);
+
+        // ASSERT
+        assertEquals(StatusGeral.INATIVO, postoMockadoBanco.getStatus());
     }
 
 
@@ -125,6 +152,18 @@ public class PostoServiceTest {
         postoMock.setValorCombustivel(4.50);
         postoMock.setStatus(StatusGeral.ATIVO);
         return postoMock;
+    }
+
+    @NotNull
+    private PostoDTO getPostoDTOMock() {
+        PostoDTO postoTOMock = new PostoDTO();
+        postoTOMock.setId("1");
+        postoTOMock.setNome("Posto Ipiranga");
+        postoTOMock.setCidade("Fortaleza");
+        postoTOMock.setLocation(getGeoJsonPointMock());
+        postoTOMock.setValorCombustivel(4.50);
+        postoTOMock.setStatus(StatusGeral.ATIVO);
+        return postoTOMock;
     }
 
     @NotNull

@@ -89,6 +89,7 @@ public class PostoService {
         return postoRepository.findAll()
                 .stream()
                 .map(posto -> {
+//                   PostoDTO postoDTO = new PostoDTO(posto.getId(), posto.getNome(), posto.getLocation(), posto.getCidade(), posto.getValorCombustivel(), posto.getStatus());
                     PostoDTO postoDTO = objectMapper.convertValue(posto, PostoDTO.class);
                     return postoDTO;
                 })

@@ -75,7 +75,8 @@ public class SecurityConfiguration {
                 "/v3/api-docs",
                 "/v3/api-docs/**",
                 "/swagger-resources/**",
-                "/swagger-ui/**");
+                "/swagger-ui/**",
+                "/auth/recuperar-senha");
     }
 
     @Bean
