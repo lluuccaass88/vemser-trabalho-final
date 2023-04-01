@@ -1,8 +1,11 @@
 package br.com.logisticadbc.service;
 
 
+import br.com.logisticadbc.entity.RotaEntity;
 import br.com.logisticadbc.entity.UsuarioEntity;
+import br.com.logisticadbc.entity.ViagemEntity;
 import br.com.logisticadbc.entity.enums.StatusGeral;
+import br.com.logisticadbc.entity.enums.StatusViagem;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -20,6 +23,7 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import javax.validation.constraints.Null;
 import java.io.IOException;
+import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -73,10 +77,19 @@ public class EmailServiceTest {
     }
 
     @Test
-    public void deveEnviarEmailDeViagemComSucesso() {
+    public void deveEnviarEmailDeViagemComSucesso() throws RegraDeNegocioException {
         //SETUP
+        UsuarioEntity usuarioEntity = getUsuarioEntityMockado();
+        RotaEntity rotaEntity = getRotaEntityMockado();
+        ViagemEntity viagemEntity = getViagemEntityMockado();
+
+        when(emailSender.createMimeMessage()).thenReturn(mimeMessage);
         //ACT
+        emailService.enviarEmailViagem(rotaEntity, viagemEntity, usuarioEntity);
         //ASSERT
+        verify(emailSender).send(mimeMessage);
+        verify(emailSender).createMimeMessage();
+        verify(emailSender, times(1)).send(mimeMessage);
     }
 
 
@@ -90,5 +103,25 @@ public class EmailServiceTest {
         usuarioEntity.setDocumento("12345678910");
         usuarioEntity.setStatus(StatusGeral.ATIVO);
         return usuarioEntity;
+    }
+
+    private RotaEntity getRotaEntityMockado() {
+        RotaEntity rotaEntity = new RotaEntity();
+        rotaEntity.setIdRota(1);
+        rotaEntity.setDescricao("Rota de São Paulo até Brasília");
+        rotaEntity.setLocalPartida("São Paulo");
+        rotaEntity.setLocalDestino("Brasília");
+        rotaEntity.setStatus(StatusGeral.ATIVO);
+        return rotaEntity;
+    }
+
+    private ViagemEntity getViagemEntityMockado() {
+        ViagemEntity viagemEntity = new ViagemEntity();
+        viagemEntity.setIdViagem(1);
+        viagemEntity.setDescricao("viagem longa com 2 paradas");
+        viagemEntity.setDataInicio(LocalDate.parse("2020-03-03"));
+        viagemEntity.setDataFim(LocalDate.parse("2020-03-04"));
+        viagemEntity.setStatusViagem(StatusViagem.EM_ANDAMENTO);
+        return viagemEntity;
     }
 }
