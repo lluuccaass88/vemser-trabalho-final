@@ -18,6 +18,8 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -42,17 +44,22 @@ public class LogServiceTest {
         ReflectionTestUtils.setField(logService, "objectMapper", objectMapper);
     }
 
-    // TODO - TESTES A SEREM CRIADOS
-    // listAllLogs AND gerarLog
-
+    @Test
     public void deveListarLogsComSucesso(){
+        //SETUP
+        List<LogEntity> logEntityList = List.of(getLogEntityMockado());
+        when(logRepository.findAll()).thenReturn(logEntityList);
+        //ACT
+        logService.listAllLogs();
+        //ASSERT
+        verify(logRepository, times(1)).findAll();
     }
 
     @Test
     public void deveGerarLogComSucesso() throws RegraDeNegocioException {
         //SETUP
         UsuarioEntity usuarioEntity = getUsuarioEntityMockado();
-        LogEntity logEntity = getLogEntityMockado();
+//        LogEntity logEntity = getLogEntityMockado();
         when(usuarioService.buscarPorId(anyInt())).thenReturn(usuarioEntity);
         //ACT
         logService.gerarLog(usuarioEntity, "Operação de Cadastrar Algo", TipoOperacao.CADASTRO);
