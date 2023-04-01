@@ -22,8 +22,6 @@ public class LogService {
 
     private final LogRepository logRepository;
     private final ObjectMapper objectMapper;
-    private final UsuarioService usuarioService;
-
 
     // TODO - METODO CRIADO PORÉM NAO SEI SE SERÁ UTILIZADO
     public PageDTO<LogDTO> listAllLogs(Integer pagina, Integer tamanho) {

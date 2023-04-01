@@ -36,7 +36,7 @@ public class UsuarioCreateDTO {
     @Size(min = 11, max = 11, message = "Deve conter 11 caracteres")
     @Schema(description = "Documento de identificação(CPF/CNH)", example = "12345678910")
     @Pattern(regexp = "[0-9]*", message = "Deve conter apenas números")
-    @Pattern(regexp = "[a-zA-Z]*", message = "Não deve conter letras")
+    @Pattern(regexp = "[^a-zA-Z]*", message = "Não deve conter letras")
     private String documento;
 
     @NotNull
