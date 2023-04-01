@@ -290,9 +290,9 @@ public class UsuarioService {
     }
 
     // recupera usuário do Token
-    public UsuarioDTO getLoggedUser() {
-        Optional<UsuarioEntity> usuarioOptional = usuarioRepository.findById(getIdLoggedUser());
-        return transformaEmUsuarioDTO(usuarioOptional.get());
+    public UsuarioDTO getLoggedUser() throws RegraDeNegocioException {
+        UsuarioEntity usuarioLogado = buscarPorId(getIdLoggedUser());
+        return transformaEmUsuarioDTO(usuarioLogado);
     }
     public void ativo(LoginDTO loginDTO) throws RegraDeNegocioException {
         UsuarioEntity usuarioEntity = usuarioRepository.findByLogin(loginDTO.getLogin()).get();

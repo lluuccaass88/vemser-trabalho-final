@@ -70,7 +70,7 @@ public class PostoController /*implements PostoControllerDoc*/ {
     @GetMapping("/listar-por-localizacao")
     public ResponseEntity<List<PostoDTO>> listByLocation(@RequestParam String longitude,
                                                          @RequestParam String latitude,
-                                                         @RequestParam Double distancia) {
+                                                         @RequestParam("distancia(km)") Double distancia) {
 
         return new ResponseEntity<>(postoService.listarPorLocalizacao(longitude, latitude, distancia), HttpStatus.OK);
     }

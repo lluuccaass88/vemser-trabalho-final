@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -119,17 +120,16 @@ public class CaminhaoServiceTest {
     @Test
     public void deveTestarRemoverComSucesso() throws RegraDeNegocioException {
         // SETUP
-        CaminhaoEntity caminhaoInativo = new CaminhaoEntity();
-        caminhaoInativo.setStatus(StatusGeral.INATIVO);
+        CaminhaoEntity caminhaoEntityMock = getCaminhaoEntityMock();
 
-        Mockito.when(caminhaoRepository.findById(Mockito.anyInt())).thenReturn(Optional.of(getCaminhaoEntityMock()));
-        Mockito.when(caminhaoRepository.save(Mockito.any())).thenReturn(caminhaoInativo);
+        Mockito.when(caminhaoRepository.findById(Mockito.anyInt())).thenReturn(Optional.of(caminhaoEntityMock));
 
         // ACT
         caminhaoService.deletar(1);
 
         // ASSERT
-        Assertions.assertEquals(StatusGeral.INATIVO, caminhaoInativo.getStatus());
+        Mockito.verify(caminhaoRepository, times(1)).save(any());
+        Assertions.assertEquals(StatusGeral.INATIVO, caminhaoEntityMock.getStatus());
 
     }
 
