@@ -5,7 +5,6 @@ import br.com.logisticadbc.dto.in.LoginDTO;
 import br.com.logisticadbc.dto.in.UsuarioCreateDTO;
 import br.com.logisticadbc.dto.in.UsuarioUpdateDTO;
 import br.com.logisticadbc.dto.out.UsuarioDTO;
-import br.com.logisticadbc.entity.CaminhaoEntity;
 import br.com.logisticadbc.entity.CargoEntity;
 import br.com.logisticadbc.entity.UsuarioEntity;
 import br.com.logisticadbc.entity.enums.StatusGeral;
@@ -31,13 +30,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import javax.validation.constraints.NotNull;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import static org.bouncycastle.asn1.iana.IANAObjectIdentifiers.security;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.*;
@@ -93,7 +90,7 @@ public class UsuarioServiceTest {
         usuarioCreateDTO.setNomeCargo("ROLE_ADMIN");
 
         UsuarioEntity usuarioEntityMock = getUsuarioEntityMock();
-        CargoEntity cargoMock = getCargoMock();
+        CargoEntity cargoMock = getCargoAdminMock();
 
         when(cargoService.buscarPorNome(anyString())).thenReturn(cargoMock);
         when(passwordEncoder.encode(anyString())).thenReturn(usuarioEntityMock.getSenha());
@@ -124,7 +121,7 @@ public class UsuarioServiceTest {
         usuarioUpdateDTO.setSenha("abc");
 
         UsuarioEntity usuarioLogadoMock = getUsuarioEntityMock();
-        CargoEntity cargoMock = getCargoMock();
+        CargoEntity cargoMock = getCargoAdminMock();
         usuarioLogadoMock.getCargos().add(cargoMock);
 
         getSecurityContextMock();
@@ -146,49 +143,53 @@ public class UsuarioServiceTest {
     @Test
     public void deveEditarComParametroComSucesso() throws RegraDeNegocioException {
         // SETUP
-        Integer id = null;
+        Integer id = 2;
         UsuarioUpdateDTO usuarioUpdateDTO = new UsuarioUpdateDTO();
         usuarioUpdateDTO.setNome("Joao");
         usuarioUpdateDTO.setDocumento("12345678901");
         usuarioUpdateDTO.setEmail("joao@email.com");
         usuarioUpdateDTO.setSenha("abc");
 
-        UsuarioEntity usuarioLogadoMock = getUsuarioEntityMock();
-        CargoEntity cargoMock = getCargoMock();
-        usuarioLogadoMock.getCargos().add(cargoMock);
+        UsuarioEntity usuarioAdmin = getUsuarioEntityMock();
+        CargoEntity cargoMock = getCargoAdminMock();
+        usuarioAdmin.getCargos().add(cargoMock);
+
+        UsuarioEntity usuarioMotorista = getUsuarioEntityMotoMock();
+        CargoEntity cargoMotoMock = getCargoMotoMock();
+        usuarioMotorista.getCargos().add(cargoMotoMock);
 
         getSecurityContextMock();
-        when(usuarioRepository.findById(anyInt())).thenReturn(Optional.of(usuarioLogadoMock));
+        when(usuarioRepository.findById(anyInt())).thenReturn(Optional.of(usuarioAdmin), Optional.of(usuarioMotorista));
         when(passwordEncoder.encode(anyString())).thenReturn(usuarioUpdateDTO.getSenha());
-        when(usuarioRepository.save(any())).thenReturn(usuarioLogadoMock);
+        when(usuarioRepository.save(any())).thenReturn(usuarioMotorista);
 
         //ACT
         UsuarioDTO usuarioDTO = usuarioService.editar(id, usuarioUpdateDTO);
 
         //ASSERT
         assertNotNull(usuarioDTO);
-        assertEquals(usuarioLogadoMock.getNome(), usuarioDTO.getNome());
-        assertEquals(usuarioLogadoMock.getEmail(), usuarioDTO.getEmail());
-        assertEquals(usuarioLogadoMock.getDocumento(), usuarioDTO.getDocumento());
-        assertEquals(usuarioUpdateDTO.getSenha(), usuarioLogadoMock.getSenha());
+        assertEquals(usuarioMotorista.getNome(), usuarioDTO.getNome());
+        assertEquals(usuarioMotorista.getEmail(), usuarioDTO.getEmail());
+        assertEquals(usuarioMotorista.getDocumento(), usuarioDTO.getDocumento());
+        assertEquals(usuarioUpdateDTO.getSenha(), usuarioMotorista.getSenha());
     }
 
     @Test
     public void deveDeletarComSucesso() throws RegraDeNegocioException {
-        UsuarioEntity usuarioInativo = new UsuarioEntity();
-        usuarioInativo.setStatus(StatusGeral.INATIVO);
+        UsuarioEntity usuarioEntityMotoMock = getUsuarioEntityMotoMock();
 
-        when(usuarioRepository.findById(anyInt())).thenReturn(Optional.of(getUsuarioEntityMock()));
-        when(usuarioRepository.save(usuarioInativo)).thenReturn(usuarioInativo);
+        when(usuarioRepository.findById(anyInt())).thenReturn(Optional.of(usuarioEntityMotoMock));
 
-        usuarioService.deletar(1);
+        usuarioService.deletar(2);
 
-        assertEquals(StatusGeral.INATIVO, usuarioInativo.getStatus());
+        Mockito.verify(usuarioRepository, times(1)).save(any());
+        assertEquals(StatusGeral.INATIVO, usuarioEntityMotoMock.getStatus());
     }
 
     @Test
     public void deveListarTodosComSucesso() {
         List<UsuarioEntity> listaUsuarios = List.of(getUsuarioEntityMock());
+
         when(usuarioRepository.findAll()).thenReturn(listaUsuarios);
 
         List<UsuarioDTO> listaUsuariosDTO = usuarioService.listar();
@@ -249,20 +250,26 @@ public class UsuarioServiceTest {
 
     @Test
     public void deveRetornargetIdLoggedUser() {
-//        when(usuarioRepository.findById(anyInt())).thenReturn(Optional.of(getUsuarioEntityMock()));
-//
-//        Integer idUsuario = Integer.parseInt(SecurityContextHolder.getContext()
-//                .getAuthentication()
-//                .getPrincipal()
-//                .toString());
-//
-//        assertNotNull(idUsuario);
-//        assertEquals(1, idUsuario);
+        UsuarioEntity usuarioLogado = getUsuarioEntityMock();
+
+        getSecurityContextMock();
+
+        Integer idLoggedUser = usuarioService.getIdLoggedUser();
+
+        assertNotNull(idLoggedUser);
+        assertEquals(1, idLoggedUser);
     }
 
     @Test
-    public void deveRetornargetLoggedUser() {
+    public void deveRetornargetLoggedUser() throws RegraDeNegocioException {
+        UsuarioEntity usuarioLogado = getUsuarioEntityMock();
 
+        getSecurityContextMock();
+        when(usuarioRepository.findById(anyInt())).thenReturn(Optional.of(usuarioLogado));
+
+        UsuarioDTO usuarioDTO = usuarioService.getLoggedUser();
+
+        assertNotNull(usuarioDTO);
     }
 
     @SneakyThrows
@@ -297,10 +304,36 @@ public class UsuarioServiceTest {
         return usuarioMockado;
     }
 
-    private static CargoEntity getCargoMock() {
+    private static UsuarioEntity getUsuarioEntityMotoMock() {
+        UsuarioEntity usuarioMockado = new UsuarioEntity();
+        usuarioMockado.setIdUsuario(2);
+        usuarioMockado.setLogin("rafa");
+        usuarioMockado.setSenha("abc123");
+        usuarioMockado.setEmail("rafa@email.com");
+        usuarioMockado.setNome("Rafa");
+        usuarioMockado.setDocumento("12345678911");
+        usuarioMockado.setStatus(StatusGeral.ATIVO);
+
+        Set<CargoEntity> cargoEntitySet = new HashSet<>();
+        usuarioMockado.setCargos(cargoEntitySet);
+
+        return usuarioMockado;
+    }
+
+    private static CargoEntity getCargoAdminMock() {
         CargoEntity cargoMockado = new CargoEntity();
         cargoMockado.setIdCargo(1);
         cargoMockado.setNome("ROLE_ADMIN");
+
+        Set<UsuarioEntity> usuarioEntitySet = new HashSet<>();
+        cargoMockado.setUsuarios(usuarioEntitySet);
+
+        return cargoMockado;
+    }
+    private static CargoEntity getCargoMotoMock() {
+        CargoEntity cargoMockado = new CargoEntity();
+        cargoMockado.setIdCargo(2);
+        cargoMockado.setNome("ROLE_MOTORISTA");
 
         Set<UsuarioEntity> usuarioEntitySet = new HashSet<>();
         cargoMockado.setUsuarios(usuarioEntitySet);
