@@ -1,11 +1,8 @@
 package br.com.logisticadbc.service;
 
-import br.com.logisticadbc.dto.in.RotaCreateDTO;
 import br.com.logisticadbc.dto.in.ViagemCreateDTO;
 import br.com.logisticadbc.dto.in.ViagemUpdateDTO;
 import br.com.logisticadbc.dto.out.PageDTO;
-import br.com.logisticadbc.dto.out.RotaDTO;
-
 import br.com.logisticadbc.dto.out.ViagemDTO;
 import br.com.logisticadbc.entity.*;
 import br.com.logisticadbc.entity.enums.StatusCaminhao;
@@ -28,10 +25,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;

@@ -3,7 +3,6 @@ package br.com.logisticadbc.service;
 import br.com.logisticadbc.dto.out.LogDTO;
 import br.com.logisticadbc.dto.out.PageDTO;
 import br.com.logisticadbc.entity.UsuarioEntity;
-import br.com.logisticadbc.entity.ViagemEntity;
 import br.com.logisticadbc.entity.enums.StatusGeral;
 import br.com.logisticadbc.entity.enums.StatusViagem;
 import br.com.logisticadbc.entity.enums.TipoOperacao;
@@ -29,7 +28,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;

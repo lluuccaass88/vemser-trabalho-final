@@ -3,16 +3,13 @@ package br.com.logisticadbc.service;
 
 import br.com.logisticadbc.dto.in.CaminhaoCreateDTO;
 import br.com.logisticadbc.dto.out.CaminhaoDTO;
-import br.com.logisticadbc.dto.out.LogDTO;
 import br.com.logisticadbc.entity.CaminhaoEntity;
 import br.com.logisticadbc.entity.UsuarioEntity;
 import br.com.logisticadbc.entity.enums.StatusCaminhao;
 import br.com.logisticadbc.entity.enums.StatusGeral;
 import br.com.logisticadbc.entity.enums.TipoOperacao;
-import br.com.logisticadbc.entity.mongodb.LogEntity;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.repository.CaminhaoRepository;
-import br.com.logisticadbc.repository.LogRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -4,13 +4,10 @@ package br.com.logisticadbc.service;
 import br.com.logisticadbc.dto.in.LoginDTO;
 import br.com.logisticadbc.dto.in.UsuarioCreateDTO;
 import br.com.logisticadbc.dto.in.UsuarioUpdateDTO;
-import br.com.logisticadbc.dto.out.CaminhaoDTO;
 import br.com.logisticadbc.dto.out.PageDTO;
 import br.com.logisticadbc.dto.out.UsuarioDTO;
-import br.com.logisticadbc.entity.CaminhaoEntity;
 import br.com.logisticadbc.entity.CargoEntity;
 import br.com.logisticadbc.entity.UsuarioEntity;
-import br.com.logisticadbc.entity.ViagemEntity;
 import br.com.logisticadbc.entity.enums.StatusGeral;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.repository.UsuarioRepository;
@@ -19,7 +16,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import lombok.SneakyThrows;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
@@ -28,7 +24,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -223,7 +218,12 @@ public class UsuarioServiceTest {
         Integer pagina = 0;
         Integer tamanho = 2;
 
-        List<UsuarioEntity> listaUsuarios = List.of(getUsuarioEntityMock(), getUsuarioEntityMock());
+        UsuarioEntity usuarioEntityMock = getUsuarioEntityMock();
+        CargoEntity cargoAdminMock = getCargoAdminMock();
+        usuarioEntityMock.getCargos().add(cargoAdminMock);
+
+        List<UsuarioEntity> listaUsuarios = List.of(usuarioEntityMock);
+
         Page<UsuarioEntity> pageUsuario =
                 new PageImpl<>(listaUsuarios, PageRequest.of(pagina, tamanho), listaUsuarios.size());
 
@@ -234,16 +234,57 @@ public class UsuarioServiceTest {
         assertNotNull(usuarioDTOPaginados);
         Assertions.assertEquals(pagina, usuarioDTOPaginados.getPagina());
         Assertions.assertEquals(tamanho, usuarioDTOPaginados.getTamanho());
+        Assertions.assertEquals(1, usuarioDTOPaginados.getElementos().size());
     }
-
-
-
+    
     @Test
-    public void deveGerarRelatorioCompleto() {
+    public void deveListarPorCargoEStatus() {
+        String cargo = "ROLE_ADMIN";
+        Integer pagina = 0;
+        Integer tamanho = 2;
+
+        UsuarioEntity usuarioEntityMock = getUsuarioEntityMock();
+        CargoEntity cargoAdminMock = getCargoAdminMock();
+        usuarioEntityMock.getCargos().add(cargoAdminMock);
+
+        UsuarioEntity usuarioEntityMock2 = getUsuarioEntityMock();
+        usuarioEntityMock.getCargos().add(cargoAdminMock);
+
+        List<UsuarioEntity> listaUsuarios =
+                List.of(usuarioEntityMock, usuarioEntityMock2);
+
+        Page<UsuarioEntity> pageUsuario =
+                new PageImpl<>(listaUsuarios, PageRequest.of(pagina, tamanho), listaUsuarios.size());
+
+        when(usuarioRepository.findByCargosAndStatus(any(), anyString(), any())).thenReturn(pageUsuario);
+
+        PageDTO<UsuarioDTO> usuarioDTOPaginados =
+                usuarioService.listarPorCargoEStatus(cargo, StatusGeral.ATIVO, pagina, tamanho);
+
+        assertNotNull(usuarioDTOPaginados);
+        Assertions.assertEquals(pagina, usuarioDTOPaginados.getPagina());
+        Assertions.assertEquals(tamanho, usuarioDTOPaginados.getTamanho());
+        Assertions.assertEquals(2, usuarioDTOPaginados.getElementos().size());
+
     }
 
     @Test
     public void deveListarMotoristasLivres() {
+        Integer pagina = 0;
+        Integer tamanho = 2;
+
+        List<UsuarioEntity> listaUsuarios = List.of(getUsuarioEntityMock());
+        Page<UsuarioEntity> pageUsuario =
+                new PageImpl<>(listaUsuarios, PageRequest.of(pagina, tamanho), listaUsuarios.size());
+
+        when(usuarioRepository.findByMotoristasLivres(any())).thenReturn(pageUsuario);
+
+        PageDTO<UsuarioDTO> usuarioDTOPaginados = usuarioService.listarMotoristasLivres(pagina, tamanho);
+
+        assertNotNull(usuarioDTOPaginados);
+        Assertions.assertEquals(pagina, usuarioDTOPaginados.getPagina());
+        Assertions.assertEquals(tamanho, usuarioDTOPaginados.getTamanho());
+        Assertions.assertEquals(1, usuarioDTOPaginados.getElementos().size());
     }
 
     @Test
@@ -254,6 +295,15 @@ public class UsuarioServiceTest {
 
         assertNotNull(usuarioEntity);
         assertEquals(1, usuarioEntity.getIdUsuario());
+    }
+
+    @Test(expected = RegraDeNegocioException.class)
+    public void deveTestarIdNaoEncontrado() throws RegraDeNegocioException {
+        //SETUP
+        Integer idProcurado = 5;
+
+        //ACT
+        usuarioService.buscarPorId(idProcurado);
     }
 
     @Test
@@ -303,6 +353,22 @@ public class UsuarioServiceTest {
         loginDTO.setSenha("abc123");
 
         UsuarioEntity usuarioEntityMock = getUsuarioEntityMock();
+
+        when(usuarioRepository.findByLogin(anyString())).thenReturn(Optional.of(usuarioEntityMock));
+
+        // Action
+        usuarioService.ativo(loginDTO);
+    }
+
+    @Test(expected = RegraDeNegocioException.class)
+    public void deveRetornarInativo() throws RegraDeNegocioException {
+        // Setup
+        LoginDTO loginDTO = new LoginDTO();
+        loginDTO.setLogin("maicon");
+        loginDTO.setSenha("abc123");
+
+        UsuarioEntity usuarioEntityMock = getUsuarioEntityMock();
+        usuarioEntityMock.setStatus(StatusGeral.INATIVO);
 
         when(usuarioRepository.findByLogin(anyString())).thenReturn(Optional.of(usuarioEntityMock));
 
