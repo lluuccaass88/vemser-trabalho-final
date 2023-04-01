@@ -2,6 +2,7 @@ package br.com.logisticadbc.service;
 
 import br.com.logisticadbc.dto.in.RotaCreateDTO;
 import br.com.logisticadbc.dto.out.RotaDTO;
+import br.com.logisticadbc.dto.out.UsuarioDTO;
 import br.com.logisticadbc.entity.RotaEntity;
 import br.com.logisticadbc.entity.UsuarioEntity;
 import br.com.logisticadbc.entity.enums.StatusGeral;
@@ -29,6 +30,7 @@ public class RotaService {
 
     public RotaDTO criar(Integer idUsuario, RotaCreateDTO rotaCreateDTO) throws RegraDeNegocioException {
         UsuarioEntity usuarioEncontrado = usuarioService.buscarPorId(idUsuario);
+        UsuarioDTO loggedUser = usuarioService.getLoggedUser();
 
         try {
             RotaEntity rotaEntity = objectMapper.convertValue(rotaCreateDTO, RotaEntity.class);
@@ -37,9 +39,9 @@ public class RotaService {
 
             usuarioEncontrado.getRotas().add(rotaEntity); // Atribui rota criada ao Colaborador //TODO DESCOBRIR COMO TESTA A RELAÇÃO
 
-            logService.gerarLog(usuarioEncontrado, "Operação de Cadastro de Rotas",
-                    TipoOperacao.CADASTRO);
             rotaRepository.save(rotaEntity);
+            String descricao = "Operação de Cadastro de Rota | " + rotaEntity.getDescricao();
+            logService.gerarLog(loggedUser.getLogin(), descricao, TipoOperacao.CADASTRO);
 
             RotaDTO rotaDTO = objectMapper.convertValue(rotaEntity, RotaDTO.class);
             rotaDTO.setIdUsuario(idUsuario);
@@ -52,6 +54,7 @@ public class RotaService {
 
     public RotaDTO editar(Integer idRota, RotaCreateDTO rotaCreateDTO) throws RegraDeNegocioException {
         RotaEntity rotaEncontrada = buscarPorId(idRota);
+        UsuarioDTO loggedUser = usuarioService.getLoggedUser();
 
         if (rotaEncontrada.getStatus().equals(StatusGeral.INATIVO)) {
             throw new RegraDeNegocioException("Rota inativa!");
@@ -65,10 +68,11 @@ public class RotaService {
                     rotaEncontrada.getUsuario().getIdUsuario());
             usuarioEncontrado.getRotas().add(rotaEncontrada);
 
-            logService.gerarLog(usuarioEncontrado, "Operação de Alteração de Rotas",
-                    TipoOperacao.ALTERACAO);
-
             rotaRepository.save(rotaEncontrada);
+
+            String descricao = "Operação de Cadastro de Rota | " + rotaEncontrada.getDescricao();
+            logService.gerarLog(loggedUser.getLogin(), descricao, TipoOperacao.CADASTRO);
+
             RotaDTO rotaDTO = objectMapper.convertValue(rotaEncontrada, RotaDTO.class);
             rotaDTO.setIdUsuario(usuarioEncontrado.getIdUsuario());
             return rotaDTO;
@@ -79,6 +83,8 @@ public class RotaService {
 
     public void deletar(Integer idRota) throws RegraDeNegocioException {
         RotaEntity rotaEncontrada = buscarPorId(idRota);
+        UsuarioDTO loggedUser = usuarioService.getLoggedUser();
+
         if (rotaEncontrada.getStatus().equals(StatusGeral.INATIVO)) {
             throw new RegraDeNegocioException("Rota já inativa!");
         }
@@ -89,8 +95,8 @@ public class RotaService {
                     rotaEncontrada.getUsuario().getIdUsuario());
             usuarioEncontrado.getRotas().add(rotaEncontrada);
 
-            logService.gerarLog(usuarioEncontrado, "Operação de Inativação de Rotas",
-                    TipoOperacao.EXCLUSAO);
+            String descricao = "Operação de Cadastro de Rota | " + rotaEncontrada.getDescricao();
+            logService.gerarLog(loggedUser.getLogin(), descricao, TipoOperacao.CADASTRO);
 
         } catch (DataAccessException e) {
             throw new RegraDeNegocioException("Aconteceu algum problema durante a exclusão.");

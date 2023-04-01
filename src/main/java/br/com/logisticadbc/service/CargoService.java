@@ -44,18 +44,12 @@ public class CargoService {
 
     public CargoDTO editar(Integer idCargo, CargoCreateDTO cargoCreateDTO) throws RegraDeNegocioException {
         CargoEntity cargoEncontrado = buscarPorId(idCargo);
-
+        UsuarioDTO loggedUser = usuarioService.getLoggedUser();
         try {
             cargoEncontrado.setNome(cargoCreateDTO.getNome());
 
-            cargoRepository.save(cargoEncontrado);
-            UsuarioEntity usuarioEncontrado =
-                    (UsuarioEntity) usuarioService
-                            .listar()
-                            .stream()
-                            .map(usuario -> objectMapper.convertValue(usuario, UsuarioEntity.class));
-            logService.gerarLog(usuarioEncontrado,
-                    "Operação de Edição de Cargos", TipoOperacao.ALTERACAO);
+            String descricao = "Operação de Alteração de Cargo | " + cargoEncontrado.getNome();
+            logService.gerarLog(loggedUser.getLogin(), descricao, TipoOperacao.ALTERACAO);
 
             return objectMapper.convertValue(cargoEncontrado, CargoDTO.class);
 
@@ -80,6 +74,8 @@ public class CargoService {
     public UsuarioDTO cadastrarUsuario(Integer idCargo, Integer idUsuario) throws RegraDeNegocioException {
         CargoEntity cargoEncontrado = buscarPorId(idCargo);
         UsuarioEntity usuarioEncontrado = usuarioService.buscarPorId(idUsuario);
+        UsuarioDTO loggedUser = usuarioService.getLoggedUser();
+
 
         if (usuarioEncontrado.getStatus().equals(StatusGeral.INATIVO)) {
             throw new RegraDeNegocioException("Usuário informado inativo!");
@@ -90,9 +86,9 @@ public class CargoService {
             usuarioEncontrado.getCargos().add(cargoEncontrado);
 
             cargoRepository.save(cargoEncontrado);
-            logService.gerarLog(usuarioEncontrado,
-                    "Operação de Cadastro de Usuário " + usuarioEncontrado.getIdUsuario() + " em Cargo " + cargoEncontrado.getIdCargo()
-                    , TipoOperacao.CADASTRO);
+            String descricao = "Operação de Cadastro de Usuário em Cargo | " + cargoEncontrado.getNome();
+            logService.gerarLog(loggedUser.getLogin(), descricao, TipoOperacao.ALTERACAO);
+
             return usuarioService.listarPorId(idUsuario);
 
         } catch (DataAccessException e) {
