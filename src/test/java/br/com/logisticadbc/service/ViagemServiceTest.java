@@ -57,6 +57,9 @@ public class ViagemServiceTest {
     private CaminhaoService caminhaoService;
     @Mock
     private RotaService rotaService;
+
+    @Mock
+    private EmailService emailService;
     private ObjectMapper objectMapper = new ObjectMapper();
 
     @Before

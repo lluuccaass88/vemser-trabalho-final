@@ -133,32 +133,40 @@ public class CargoServiceTest {
         Integer idUsuario = 1;
         Integer idCargo = 1;
 
-        CargoDTO cargoDTO = new CargoDTO();
-        cargoDTO.setNome("ROLE_ADMIN");
-
-        Set<UsuarioEntity> listaUsuario = new HashSet<>();
-        listaUsuario.add(getUsuarioEntityMock());
-
-        Set<CargoEntity> listaCargo = new HashSet<>();
-        listaCargo.add(getCargoEntityMock());
-
-        Set<CargoDTO> listaCargoDTO = new HashSet<>();
-        listaCargoDTO.add(cargoDTO);
-
-
         CargoEntity cargoMockadoDoBanco = getCargoEntityMock();
-        cargoMockadoDoBanco.setUsuarios(listaUsuario);
-
         UsuarioEntity usuarioMockadoBanco = getUsuarioEntityMock();
-        usuarioMockadoBanco.setCargos(listaCargo);
-
-        UsuarioDTO usuarioEncontrado = new UsuarioDTO();
-        usuarioEncontrado.setCargos(listaCargoDTO);
 
         when(cargoRepository.findById(any())).thenReturn(Optional.of(cargoMockadoDoBanco));
         when(usuarioService.buscarPorId(any())).thenReturn(usuarioMockadoBanco);
-        when(cargoRepository.save(any())).thenReturn(cargoMockadoDoBanco);
-        when(usuarioService.listarPorId(anyInt())).thenReturn(usuarioEncontrado);
+
+//Definir
+
+//
+//        CargoDTO cargoDTO = new CargoDTO();
+//        cargoDTO.setNome("ROLE_ADMIN");
+//
+//        Set<UsuarioEntity> listaUsuario = new HashSet<>();
+//        listaUsuario.add(getUsuarioEntityMock());
+//
+//        Set<CargoEntity> listaCargo = new HashSet<>();
+//        listaCargo.add(getCargoEntityMock());
+//
+//        Set<CargoDTO> listaCargoDTO = new HashSet<>();
+//        listaCargoDTO.add(cargoDTO);
+//
+//
+//
+//        cargoMockadoDoBanco.setUsuarios(listaUsuario);
+//
+//
+//        usuarioMockadoBanco.setCargos(listaCargo);
+//
+//        UsuarioDTO usuarioEncontrado = new UsuarioDTO();
+//        usuarioEncontrado.setCargos(listaCargoDTO);
+//
+//
+//        when(cargoRepository.save(any())).thenReturn(cargoMockadoDoBanco);
+//        when(usuarioService.listarPorId(anyInt())).thenReturn(usuarioEncontrado);
 
         //Action
         UsuarioDTO usuarioRelacionadoComCargo = cargoService.cadastrarUsuario(idCargo, idUsuario);
