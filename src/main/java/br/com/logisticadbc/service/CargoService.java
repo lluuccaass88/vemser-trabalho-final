@@ -6,6 +6,7 @@ import br.com.logisticadbc.dto.out.UsuarioDTO;
 import br.com.logisticadbc.entity.CargoEntity;
 import br.com.logisticadbc.entity.UsuarioEntity;
 import br.com.logisticadbc.entity.enums.StatusGeral;
+import br.com.logisticadbc.entity.enums.TipoOperacao;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.repository.CargoRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,12 +23,21 @@ public class CargoService {
     private final CargoRepository cargoRepository;
     private final UsuarioService usuarioService;
     private final ObjectMapper objectMapper;
+    private final LogService logService;
+
 
     public CargoDTO criar(CargoCreateDTO cargoCreateDTO) throws RegraDeNegocioException {
         CargoEntity cargoEntity = objectMapper.convertValue(cargoCreateDTO, CargoEntity.class);
 
         try {
             cargoRepository.save(cargoEntity);
+            UsuarioEntity usuarioEncontrado =
+                    (UsuarioEntity) usuarioService
+                            .listar()
+                            .stream()
+                            .map(usuario -> objectMapper.convertValue(usuario, UsuarioEntity.class));
+            logService.gerarLog(usuarioEncontrado,
+                    "Operação de Cadastro de Cargos", TipoOperacao.CADASTRO);
 
             return objectMapper.convertValue(cargoEntity, CargoDTO.class);
 
@@ -43,6 +53,13 @@ public class CargoService {
             cargoEncontrado.setNome(cargoCreateDTO.getNome());
 
             cargoRepository.save(cargoEncontrado);
+            UsuarioEntity usuarioEncontrado =
+                    (UsuarioEntity) usuarioService
+                            .listar()
+                            .stream()
+                            .map(usuario -> objectMapper.convertValue(usuario, UsuarioEntity.class));
+            logService.gerarLog(usuarioEncontrado,
+                    "Operação de Edição de Cargos", TipoOperacao.ALTERACAO);
 
             return objectMapper.convertValue(cargoEncontrado, CargoDTO.class);
 
@@ -77,7 +94,8 @@ public class CargoService {
             usuarioEncontrado.getCargos().add(cargoEncontrado);
 
             cargoRepository.save(cargoEncontrado);
-
+            logService.gerarLog(usuarioEncontrado,
+                    "Operação de Cadastro de Usuário em Cargos", TipoOperacao.CADASTRO);
             return usuarioService.listarPorId(idUsuario);
 
         } catch (DataAccessException e) {
