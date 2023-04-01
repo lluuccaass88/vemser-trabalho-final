@@ -119,14 +119,52 @@ public class PostoServiceTest {
     @Test
     public void deveListarPorIdComSucesso() throws RegraDeNegocioException {
         // SETUP
-//        when(postoRepository.findById(anyString())).thenReturn(Optional.of(getPostoEntityMock()));
+        String id = "1";
+        PostoEntity postoEntityMock = getPostoEntityMock();
+
+        when(postoRepository.findById(anyString())).thenReturn(Optional.of(postoEntityMock));
+        when(objectMapper.convertValue(postoEntityMock, PostoDTO.class)).thenReturn(getPostoDTOMock());
 
         // ACTION
-//        PostoDTO postoRetornado = postoService.listarPorId("1");
+        PostoDTO postoDTO = postoService.listarPorId(id);
 
         // ASSERT
-//        assertNotNull(postoRetornado);
-//        assertEquals("1", postoRetornado.getId());
+        assertNotNull(postoDTO);
+        assertEquals(id, postoDTO.getId());
+    }
+
+    @Test(expected = RegraDeNegocioException.class)
+    public void deveFalharListarPorId() throws RegraDeNegocioException {
+        // SETUP
+        String id = "2";
+
+        // ACTION
+        postoService.listarPorId(id);
+    }
+
+    @Test
+    public void deveBuscarPorIdComSucesso() throws RegraDeNegocioException {
+        // SETUP
+        String id = "1";
+        PostoEntity postoEntityMock = getPostoEntityMock();
+
+        when(postoRepository.findById(anyString())).thenReturn(Optional.of(postoEntityMock));
+
+        // ACTION
+        PostoEntity postoEntity = postoService.buscarPorId(id);
+
+        // ASSERT
+        assertNotNull(postoEntity);
+        assertEquals(id, postoEntity.getId());
+    }
+
+    @Test(expected = RegraDeNegocioException.class)
+    public void deveFalharBuscarPorId() throws RegraDeNegocioException {
+        // SETUP
+        String id = "2";
+
+        // ACTION
+        postoService.buscarPorId(id);
     }
 
     @Test

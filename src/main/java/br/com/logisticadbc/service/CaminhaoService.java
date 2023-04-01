@@ -41,10 +41,11 @@ public class CaminhaoService {
 
             usuarioEntity.getCaminhoes().add(caminhaoEntity);
 
-            logService.gerarLog(usuarioEntity, "Operação de Cadastro de Caminhões",
-                    TipoOperacao.CADASTRO);
-
             CaminhaoEntity caminhaoCriado = caminhaoRepository.save(caminhaoEntity);
+
+            logService.gerarLog(usuarioEntity,
+                    "Operação de Cadastro | Caminhão: " + caminhaoCriado.getIdCaminhao(),
+                    TipoOperacao.CADASTRO);
 
             CaminhaoDTO caminhaoDTO = objectMapper.convertValue(caminhaoCriado, CaminhaoDTO.class);
             caminhaoDTO.setIdUsuario(idUsuario);
