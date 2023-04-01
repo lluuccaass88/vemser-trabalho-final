@@ -55,6 +55,7 @@ public class RotaServiceTest {
         ReflectionTestUtils.setField(rotaService, "objectMapper", objectMapper);
     }
 
+    //Testa o criar
     @Test
     public void deveCriarComSucesso() throws RegraDeNegocioException {
         //Setup
@@ -88,6 +89,7 @@ public class RotaServiceTest {
         Assertions.assertEquals(StatusGeral.ATIVO, rotaRetornada.getStatus());
     }
 
+    //Testa listar todas as toras
     @Test
     public void deveListarRotasComSucesso(){
         // SETUP
@@ -201,7 +203,7 @@ public class RotaServiceTest {
 
         List<RotaEntity> listaRota = List.of();
 
-        when(rotaRepository.findBylocalPartidaIgnoreCase(any())).thenReturn(listaRota);
+//        when(rotaRepository.findBylocalPartidaIgnoreCase(any())).thenReturn(listaRota);
 
         // ACT
         List<RotaDTO> listaRotaRetornadaDTO = rotaService.listarPorLocalDestino(localDestino);
@@ -332,8 +334,8 @@ public class RotaServiceTest {
         rotaInativa.setStatus(StatusGeral.INATIVO);
 
         Mockito.when(rotaRepository.findById(Mockito.anyInt())).thenReturn(Optional.of(rotaInativa));
-        Mockito.when(usuarioService.buscarPorId(Mockito.anyInt())).thenReturn(usuarioMockadoBanco);
-        Mockito.when(rotaRepository.save(Mockito.any())).thenReturn(rotaInativa);
+//        Mockito.when(usuarioService.buscarPorId(Mockito.anyInt())).thenReturn(usuarioMockadoBanco);
+//        Mockito.when(rotaRepository.save(Mockito.any())).thenReturn(rotaInativa);
 
         // ACT
         rotaService.deletar(idRota);
@@ -375,9 +377,8 @@ public class RotaServiceTest {
         Assertions.assertEquals("Salvador", rotaEditadaDTO.getLocalPartida());
     }
 
-    //Testar Get Log
-    @Test
-    public void deveTestarGetLog() throws RegraDeNegocioException {
+    @Test(expected = RegraDeNegocioException.class)
+    public void deveTestarEditarComRotaInativo() throws RegraDeNegocioException {
         // SETUP
         int idRota = 1;
         RotaCreateDTO rotaEditada = new RotaCreateDTO(
@@ -386,17 +387,17 @@ public class RotaServiceTest {
                 "São Paulo"
         );
 
-
         UsuarioEntity usuarioMockadoBanco = new UsuarioEntity();
-        String descricao = "Log de criacao";
-
 
         Set<RotaEntity> rotaEntities = new HashSet<>();
         rotaEntities.add(getRotaEntityMock());
         rotaEntities.add(getRotaEntityMock());
         usuarioMockadoBanco.setRotas(rotaEntities);
 
-        when(rotaRepository.findById(Mockito.anyInt())).thenReturn(Optional.of(getRotaEntityMock()));
+        RotaEntity rotaMockadoBanco = getRotaEntityMock();
+        rotaMockadoBanco.setStatus(StatusGeral.INATIVO);
+
+        when(rotaRepository.findById(Mockito.anyInt())).thenReturn(Optional.of(rotaMockadoBanco));
         when(usuarioService.buscarPorId(anyInt())).thenReturn(usuarioMockadoBanco);
 
         when(rotaRepository.save(any())).thenReturn(getRotaEntityMock());

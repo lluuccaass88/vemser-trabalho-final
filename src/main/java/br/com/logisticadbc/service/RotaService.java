@@ -48,7 +48,6 @@ public class RotaService {
             return rotaDTO;
 
         } catch (Exception e) {
-            e.printStackTrace();
             throw new RegraDeNegocioException("Aconteceu algum problema durante a criação.");
         }
     }
@@ -76,7 +75,6 @@ public class RotaService {
             rotaDTO.setIdUsuario(usuarioEncontrado.getIdUsuario());
             return rotaDTO;
         } catch (Exception e) {
-            e.printStackTrace();
             throw new RegraDeNegocioException("Aconteceu algum problema durante a edição.");
         }
     }

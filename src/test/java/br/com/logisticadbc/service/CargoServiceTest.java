@@ -59,30 +59,6 @@ public class CargoServiceTest {
         ReflectionTestUtils.setField(cargoService, "objectMapper", objectMapper);
     }
 
-//    @Test
-//    public void deveListarPorUsuarioComSucesso() throws RegraDeNegocioException {
-//        // SETUP
-//        UsuarioEntity usuarioEntityMock = getUsuarioEntityMock();
-//        CargoEntity cargoEntityMock = getCargoEntityMock();
-//
-//        Set<CargoEntity> cargoEntities = new HashSet<>();
-//        cargoEntities.add(cargoEntityMock);
-//
-//        Set<UsuarioEntity> usuarioEntities = new HashSet<>();
-//        usuarioEntities.add(usuarioEntityMock);
-//
-//        usuarioEntityMock.setCargos(cargoEntities);
-//        cargoEntityMock.setUsuarios(usuarioEntities);
-//
-//        Mockito.when(usuarioService.buscarPorId(Mockito.anyInt())).thenReturn(usuarioEntityMock);
-//
-//        // ACT
-//        CargosDeUsuarioDTO cargosDeUsuarioDTO = cargoService.listarPorUsuario(1);
-//
-//        // ASSERT
-//        Assertions.assertNotNull(cargosDeUsuarioDTO);
-//        Assertions.assertEquals(usuarioEntityMock.getIdUsuario(), cargosDeUsuarioDTO.getUsuario().getIdUsuario());
-//    }
 
     //Testa criar
     @Test
@@ -160,6 +136,50 @@ public class CargoServiceTest {
         when(cargoRepository.findById(any())).thenReturn(Optional.of(cargoMockadoDoBanco));
         when(usuarioService.buscarPorId(any())).thenReturn(usuarioMockadoBanco);
         when(usuarioService.listarPorId(anyInt())).thenReturn(usuarioEncontradoDTO);
+
+        //Action
+        UsuarioDTO usuarioRelacionadoComCargo = cargoService.cadastrarUsuario(idCargo, idUsuario);
+
+        //Assert
+        assertNotNull(usuarioRelacionadoComCargo);
+        Assertions.assertEquals(1, usuarioRelacionadoComCargo.getCargos().size());
+    }
+
+    @Test(expected = RegraDeNegocioException.class)
+    public void deveTestarCadatrarusuarioEmRotaComUsuarioInativo() throws RegraDeNegocioException {
+        //Setup
+        Integer idUsuario = 1;
+        Integer idCargo = 1;
+
+        Set<CargoEntity> listaCargo = new HashSet<>();
+        Set<UsuarioEntity> listaUsuario = new HashSet<>();
+
+        CargoEntity cargoMockadoDoBanco = getCargoEntityMock();
+        cargoMockadoDoBanco.setUsuarios(listaUsuario);
+
+        UsuarioEntity usuarioMockadoBanco = getUsuarioEntityMock();
+        usuarioMockadoBanco.setCargos(listaCargo);
+        usuarioMockadoBanco.setStatus(StatusGeral.INATIVO);
+
+        CargoDTO cargoDTO = new CargoDTO();
+        cargoDTO.setNome(cargoMockadoDoBanco.getNome());
+
+        Set<CargoDTO> listaCargoDTO = new HashSet<>();
+        listaCargoDTO.add(getCargoDTOMock());
+
+        UsuarioDTO usuarioEncontradoDTO = getUsuarioDTOMock();
+        usuarioEncontradoDTO.setCargos(listaCargoDTO);
+
+
+        Set<CargoDTO> listaCargoEsperadoDTO = new HashSet<>();
+        listaCargoDTO.add(getCargoDTOMock());
+
+        UsuarioDTO usuarioEsperadoDTO = getUsuarioDTOMock();
+        usuarioEsperadoDTO.setCargos(listaCargoEsperadoDTO);
+
+        when(cargoRepository.findById(any())).thenReturn(Optional.of(cargoMockadoDoBanco));
+        when(usuarioService.buscarPorId(any())).thenReturn(usuarioMockadoBanco);
+        //when(usuarioService.listarPorId(anyInt())).thenReturn(usuarioEncontradoDTO);
 
         //Action
         UsuarioDTO usuarioRelacionadoComCargo = cargoService.cadastrarUsuario(idCargo, idUsuario);
