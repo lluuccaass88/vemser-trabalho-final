@@ -57,7 +57,6 @@ public class ViagemServiceTest {
     private CaminhaoService caminhaoService;
     @Mock
     private RotaService rotaService;
-
     @Mock
     private EmailService emailService;
     private ObjectMapper objectMapper = new ObjectMapper();
@@ -112,6 +111,7 @@ public class ViagemServiceTest {
 
         //Assert
         assertNotNull(viagemRetornada);
+        verify(emailService, times(1)).enviarEmailViagem(any(), any(), any());
         Assertions.assertEquals(StatusViagem.EM_ANDAMENTO, viagemRetornada.getStatusViagem());
         //TODO DESCOBRIR COMO PEGA O STATUS DE CAMINHÃO PARA VER SE REALMENTE ELE ESTA EM VIAGEM
     }

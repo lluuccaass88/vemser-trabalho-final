@@ -128,52 +128,45 @@ public class CargoServiceTest {
 
     //Testa cadastrar Usuario em cargo
     @Test
-    public void deveTestarCadatrarusuarioEmRota() throws RegraDeNegocioException { //TODO verificar o erro depos
+    public void deveTestarCadatrarusuarioEmRota() throws RegraDeNegocioException {
         //Setup
         Integer idUsuario = 1;
         Integer idCargo = 1;
 
+        Set<CargoEntity> listaCargo = new HashSet<>();
+        Set<UsuarioEntity> listaUsuario = new HashSet<>();
+
         CargoEntity cargoMockadoDoBanco = getCargoEntityMock();
+        cargoMockadoDoBanco.setUsuarios(listaUsuario);
         UsuarioEntity usuarioMockadoBanco = getUsuarioEntityMock();
+        usuarioMockadoBanco.setCargos(listaCargo);
+
+        CargoDTO cargoDTO = new CargoDTO();
+        cargoDTO.setNome(cargoMockadoDoBanco.getNome());
+
+        Set<CargoDTO> listaCargoDTO = new HashSet<>();
+        listaCargoDTO.add(getCargoDTOMock());
+
+        UsuarioDTO usuarioEncontradoDTO = getUsuarioDTOMock();
+        usuarioEncontradoDTO.setCargos(listaCargoDTO);
+
+
+        Set<CargoDTO> listaCargoEsperadoDTO = new HashSet<>();
+        listaCargoDTO.add(getCargoDTOMock());
+
+        UsuarioDTO usuarioEsperadoDTO = getUsuarioDTOMock();
+        usuarioEsperadoDTO.setCargos(listaCargoEsperadoDTO);
 
         when(cargoRepository.findById(any())).thenReturn(Optional.of(cargoMockadoDoBanco));
         when(usuarioService.buscarPorId(any())).thenReturn(usuarioMockadoBanco);
-
-//Definir
-
-//
-//        CargoDTO cargoDTO = new CargoDTO();
-//        cargoDTO.setNome("ROLE_ADMIN");
-//
-//        Set<UsuarioEntity> listaUsuario = new HashSet<>();
-//        listaUsuario.add(getUsuarioEntityMock());
-//
-//        Set<CargoEntity> listaCargo = new HashSet<>();
-//        listaCargo.add(getCargoEntityMock());
-//
-//        Set<CargoDTO> listaCargoDTO = new HashSet<>();
-//        listaCargoDTO.add(cargoDTO);
-//
-//
-//
-//        cargoMockadoDoBanco.setUsuarios(listaUsuario);
-//
-//
-//        usuarioMockadoBanco.setCargos(listaCargo);
-//
-//        UsuarioDTO usuarioEncontrado = new UsuarioDTO();
-//        usuarioEncontrado.setCargos(listaCargoDTO);
-//
-//
-//        when(cargoRepository.save(any())).thenReturn(cargoMockadoDoBanco);
-//        when(usuarioService.listarPorId(anyInt())).thenReturn(usuarioEncontrado);
+        when(usuarioService.listarPorId(anyInt())).thenReturn(usuarioEncontradoDTO);
 
         //Action
         UsuarioDTO usuarioRelacionadoComCargo = cargoService.cadastrarUsuario(idCargo, idUsuario);
 
         //Assert
         assertNotNull(usuarioRelacionadoComCargo);
-        Assertions.assertEquals(cargoMockadoDoBanco.getNome(), usuarioRelacionadoComCargo.getNome());
+        Assertions.assertEquals(1, usuarioRelacionadoComCargo.getCargos().size());
     }
 
     //Testat listar
@@ -246,6 +239,16 @@ public class CargoServiceTest {
     }
 
     @NotNull
+    private static CargoDTO getCargoDTOMock() {
+        CargoDTO cargoDTOMockado = new CargoDTO();
+        cargoDTOMockado.setIdCargo(1);
+        cargoDTOMockado.setNome("ROLE_ADMIN");
+
+        return cargoDTOMockado;
+    }
+
+
+    @NotNull
     private static UsuarioEntity getUsuarioEntityMock() {
         UsuarioEntity usuarioMockado = new UsuarioEntity();
         usuarioMockado.setIdUsuario(1);
@@ -257,5 +260,18 @@ public class CargoServiceTest {
         usuarioMockado.setStatus(StatusGeral.ATIVO);
 
         return usuarioMockado;
+    }
+
+    @NotNull
+    private static UsuarioDTO getUsuarioDTOMock() {
+        UsuarioDTO usuarioDTOMockado = new UsuarioDTO();
+        usuarioDTOMockado.setIdUsuario(1);
+        usuarioDTOMockado.setLogin("maicon");
+        usuarioDTOMockado.setEmail("maicon@email.com");
+        usuarioDTOMockado.setNome("Maicon");
+        usuarioDTOMockado.setDocumento("12345678910");
+        usuarioDTOMockado.setStatus(StatusGeral.ATIVO);
+
+        return usuarioDTOMockado;
     }
 }
