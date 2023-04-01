@@ -3,6 +3,7 @@ package br.com.logisticadbc.service;
 import br.com.logisticadbc.dto.in.ViagemCreateDTO;
 import br.com.logisticadbc.dto.in.ViagemUpdateDTO;
 import br.com.logisticadbc.dto.out.PageDTO;
+import br.com.logisticadbc.dto.out.UsuarioDTO;
 import br.com.logisticadbc.dto.out.ViagemDTO;
 import br.com.logisticadbc.entity.*;
 import br.com.logisticadbc.entity.enums.StatusCaminhao;
@@ -20,6 +21,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -53,6 +55,8 @@ public class ViagemServiceTest {
     private RotaService rotaService;
     @Mock
     private EmailService emailService;
+    @Mock
+    private LogService logService;
     private ObjectMapper objectMapper = new ObjectMapper();
 
     @Before
@@ -382,6 +386,8 @@ public class ViagemServiceTest {
 
         ViagemEntity viagemMockadoBanco = getViagemEntityMock();
 
+        UsuarioDTO usuarioDTOMockadoBanco = getUsuarioDTOMock();
+
         UsuarioEntity usuarioMockadoBanco = getUsuarioEntityMock();
         usuarioMockadoBanco.setViagens(listaViagem);
 
@@ -394,6 +400,7 @@ public class ViagemServiceTest {
         when(viagemRepository.findById(anyInt())).thenReturn(Optional.of(viagemMockadoBanco));
         when(usuarioService.buscarPorId(anyInt())).thenReturn(usuarioMockadoBanco);
         when(caminhaoService.buscarPorId(anyInt())).thenReturn(caminhaoMockadoBanco);
+        Mockito.when(usuarioService.getLoggedUser()).thenReturn(usuarioDTOMockadoBanco);
         when(rotaService.buscarPorId(anyInt())).thenReturn(rotaMockadoBanco);
 
         // ACT
@@ -646,6 +653,18 @@ public class ViagemServiceTest {
         usuarioMockado.setStatus(StatusGeral.ATIVO);
 
         return usuarioMockado;
+    }
+
+    private static UsuarioDTO getUsuarioDTOMock() {
+        UsuarioDTO usuarioDTOMockado = new UsuarioDTO();
+        usuarioDTOMockado.setIdUsuario(1);
+        usuarioDTOMockado.setLogin("maicon");
+        usuarioDTOMockado.setEmail("maicon@email.com");
+        usuarioDTOMockado.setNome("Maicon");
+        usuarioDTOMockado.setDocumento("12345678910");
+        usuarioDTOMockado.setStatus(StatusGeral.ATIVO);
+
+        return usuarioDTOMockado;
     }
 
     private static CaminhaoEntity getCaminhaoEntityMock() {

@@ -2,6 +2,7 @@ package br.com.logisticadbc.service;
 
 import br.com.logisticadbc.dto.in.CaminhaoCreateDTO;
 import br.com.logisticadbc.dto.out.CaminhaoDTO;
+import br.com.logisticadbc.dto.out.UsuarioDTO;
 import br.com.logisticadbc.entity.CaminhaoEntity;
 import br.com.logisticadbc.entity.UsuarioEntity;
 import br.com.logisticadbc.entity.enums.StatusCaminhao;
@@ -66,6 +67,8 @@ public class CaminhaoServiceTest {
         caminhaoNovo.setPlaca("ABC1D23");
         caminhaoNovo.setNivelCombustivel(50);
 
+        UsuarioDTO usuarioDTOMockadoBanco = getUsuarioDTOMock();
+
         UsuarioEntity usuarioEntityMock = getUsuarioEntityMock();
         CaminhaoEntity caminhaoEntityMock = getCaminhaoEntityMock();
 
@@ -74,6 +77,7 @@ public class CaminhaoServiceTest {
         usuarioEntityMock.setCaminhoes(caminhaoEntities);
 
         Mockito.when(usuarioService.buscarPorId(Mockito.anyInt())).thenReturn(usuarioEntityMock);
+        Mockito.when(usuarioService.getLoggedUser()).thenReturn(usuarioDTOMockadoBanco);
         Mockito.when(caminhaoRepository.save(Mockito.any())).thenReturn(caminhaoEntityMock);
 
         // ACT
@@ -94,7 +98,10 @@ public class CaminhaoServiceTest {
     public void deveTestarAbastecerComSucesso() throws RegraDeNegocioException {
         // SETUP
         Integer combustivel = 20;
+
         CaminhaoEntity caminhaoEntityMock = getCaminhaoEntityMock();
+
+        UsuarioDTO usuarioDTOMockadoBanco = getUsuarioDTOMock();
 
         CaminhaoEntity caminhaoAbastecido = new CaminhaoEntity();
         caminhaoAbastecido.setIdCaminhao(1);
@@ -103,9 +110,11 @@ public class CaminhaoServiceTest {
         caminhaoAbastecido.setNivelCombustivel(50);
         caminhaoAbastecido.setStatusCaminhao(StatusCaminhao.ESTACIONADO);
         caminhaoAbastecido.setStatus(StatusGeral.ATIVO);
+        caminhaoAbastecido.setUsuario(getUsuarioEntityMock());
         caminhaoAbastecido.setNivelCombustivel(caminhaoAbastecido.getNivelCombustivel() + combustivel);
 
         Mockito.when(caminhaoRepository.findById(Mockito.anyInt())).thenReturn(Optional.of(caminhaoEntityMock));
+        Mockito.when(usuarioService.getLoggedUser()).thenReturn(usuarioDTOMockadoBanco);
         Mockito.when(caminhaoRepository.save(Mockito.any())).thenReturn(caminhaoAbastecido);
 
         // ACT
@@ -162,7 +171,11 @@ public class CaminhaoServiceTest {
         // SETUP
         CaminhaoEntity caminhaoEntityMock = getCaminhaoEntityMock();
 
+        UsuarioDTO usuarioDTOMockadoBanco = getUsuarioDTOMock();
+
         Mockito.when(caminhaoRepository.findById(Mockito.anyInt())).thenReturn(Optional.of(caminhaoEntityMock));
+        Mockito.when(usuarioService.getLoggedUser()).thenReturn(usuarioDTOMockadoBanco);
+
 
         // ACT
         caminhaoService.deletar(1);
@@ -357,4 +370,18 @@ public class CaminhaoServiceTest {
 
         return usuarioMockado;
     }
+
+    private static UsuarioDTO getUsuarioDTOMock() {
+        UsuarioDTO usuarioDTOMockado = new UsuarioDTO();
+        usuarioDTOMockado.setIdUsuario(1);
+        usuarioDTOMockado.setLogin("maicon");
+        usuarioDTOMockado.setEmail("maicon@email.com");
+        usuarioDTOMockado.setNome("Maicon");
+        usuarioDTOMockado.setDocumento("12345678910");
+        usuarioDTOMockado.setStatus(StatusGeral.ATIVO);
+
+        return usuarioDTOMockado;
+    }
+
+
 }

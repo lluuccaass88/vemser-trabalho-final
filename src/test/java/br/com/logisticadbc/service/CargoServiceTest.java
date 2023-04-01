@@ -46,6 +46,9 @@ public class CargoServiceTest {
     @Mock
     private UsuarioService usuarioService;
 
+    @Mock
+    private LogService logService;
+
     @Before
     public void init() {
         // Configurações do ObjectMapper
@@ -66,6 +69,9 @@ public class CargoServiceTest {
 
         CargoEntity cargoMockadoDoBanco = getCargoEntityMock();
 
+        UsuarioDTO usuarioDTOMockadoBanco = getUsuarioDTOMock();
+
+        when(usuarioService.getLoggedUser()).thenReturn(usuarioDTOMockadoBanco);
         when(cargoRepository.save(any())).thenReturn(cargoMockadoDoBanco);
 
         //Action
@@ -87,6 +93,9 @@ public class CargoServiceTest {
 
         CargoEntity cargoMockadoDoBanco = getCargoEntityMock();
 
+        UsuarioDTO usuarioDTOMockadoBanco = getUsuarioDTOMock();
+
+        when(usuarioService.getLoggedUser()).thenReturn(usuarioDTOMockadoBanco);
         when(cargoRepository.findById(anyInt())).thenReturn(Optional.of(cargoMockadoDoBanco));
         when(cargoRepository.save(any())).thenReturn(cargoMockadoDoBanco);
 
@@ -113,6 +122,8 @@ public class CargoServiceTest {
         UsuarioEntity usuarioMockadoBanco = getUsuarioEntityMock();
         usuarioMockadoBanco.setCargos(listaCargo);
 
+        UsuarioDTO usuarioDTOMockadoBanco = getUsuarioDTOMock();
+
         CargoDTO cargoDTO = new CargoDTO();
         cargoDTO.setNome(cargoMockadoDoBanco.getNome());
 
@@ -130,6 +141,7 @@ public class CargoServiceTest {
         usuarioEsperadoDTO.setCargos(listaCargoEsperadoDTO);
 
         when(cargoRepository.findById(any())).thenReturn(Optional.of(cargoMockadoDoBanco));
+        when(usuarioService.getLoggedUser()).thenReturn(usuarioDTOMockadoBanco);
         when(usuarioService.buscarPorId(any())).thenReturn(usuarioMockadoBanco);
         when(usuarioService.listarPorId(anyInt())).thenReturn(usuarioEncontradoDTO);
 
