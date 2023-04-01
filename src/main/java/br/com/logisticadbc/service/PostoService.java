@@ -11,7 +11,6 @@ import br.com.logisticadbc.repository.PostoRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.ObjectNotFoundException;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.geo.Distance;
 import org.springframework.data.geo.Metrics;
@@ -44,14 +43,13 @@ public class PostoService {
 
             PostoEntity postoCriado = postoRepository.save(postoEntity);
 
-            String descricao = "Operação de Cadastro de Rota | " + postoCriado.getNome();
+            String descricao = "Operação em Posto: " + postoCriado.getNome();
             logService.gerarLog(loggedUser.getLogin(), descricao, TipoOperacao.CADASTRO);
 
-            PostoDTO postoDTO = objectMapper.convertValue(postoCriado, PostoDTO.class);
-            return postoDTO;
+            return objectMapper.convertValue(postoCriado, PostoDTO.class);
 
         } catch (DataAccessException e) {
-            throw new RegraDeNegocioException("Aconteceu algum problema durante a criação.");
+            throw new RegraDeNegocioException("Erro ao salvar no banco.");
         }
     }
 
@@ -73,14 +71,13 @@ public class PostoService {
 
             PostoEntity postoEditado = postoRepository.save(postoEncontrado);
 
-            String descricao = "Operação de Cadastro de Rota | " + postoEncontrado.getNome();
+            String descricao = "Operação em Posto: " + postoEncontrado.getNome();
             logService.gerarLog(loggedUser.getLogin(), descricao, TipoOperacao.ALTERACAO);
 
-            PostoDTO postoDTO = objectMapper.convertValue(postoEditado, PostoDTO.class);
-            return postoDTO;
+            return objectMapper.convertValue(postoEditado, PostoDTO.class);
 
         } catch (DataAccessException e) {
-            throw new RegraDeNegocioException("Aconteceu algum problema durante a edição.");
+            throw new RegraDeNegocioException("Erro ao salvar no banco.");
         }
     }
 
@@ -95,11 +92,11 @@ public class PostoService {
             postoEncontrado.setStatus(StatusGeral.INATIVO);
             postoRepository.save(postoEncontrado);
 
-            String descricao = "Operação de Cadastro de Rota | " + postoEncontrado.getNome();
+            String descricao = "Operação em Posto: " + postoEncontrado.getNome();
             logService.gerarLog(loggedUser.getLogin(), descricao, TipoOperacao.EXCLUSAO);
 
         } catch (DataAccessException e) {
-            throw new RegraDeNegocioException("Aconteceu algum problema durante a exclusão.");
+            throw new RegraDeNegocioException("Erro ao salvar no banco.");
         }
     }
 
@@ -108,8 +105,7 @@ public class PostoService {
                 .stream()
                 .map(posto -> {
                     PostoDTO postoDTO = objectMapper.convertValue(posto, PostoDTO.class);
-                    return postoDTO;
-                })
+                    return postoDTO;})
                 .toList();
     }
 
@@ -120,8 +116,8 @@ public class PostoService {
             postoDTO.setId(idPosto);
             return postoDTO;
 
-        } catch (ObjectNotFoundException e) {
-            throw new RegraDeNegocioException("Aconteceu algum problema durante a listagem.");
+        } catch (Exception e) {
+            throw new RegraDeNegocioException("Erro de conversão.");
         }
     }
 

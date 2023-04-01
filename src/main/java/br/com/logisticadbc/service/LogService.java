@@ -4,11 +4,9 @@ import br.com.logisticadbc.dto.out.LogDTO;
 import br.com.logisticadbc.dto.out.PageDTO;
 import br.com.logisticadbc.entity.enums.TipoOperacao;
 import br.com.logisticadbc.entity.mongodb.LogEntity;
-import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.repository.LogRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -43,17 +41,12 @@ public class LogService {
         );
     }
 
-    public void gerarLog(String loginOperador, String descricao, TipoOperacao tipoOperacao) throws RegraDeNegocioException {
-
+    public void gerarLog(String loginOperador, String descricao, TipoOperacao tipoOperacao) {
         LogEntity log = new LogEntity();
         log.setLoginOperador(loginOperador);
         log.setDescricao(descricao);
         log.setTipoOperacao(tipoOperacao);
 
-        try {
-            logRepository.save(log);
-        } catch (DataAccessException e) {
-            throw new RegraDeNegocioException("Aconteceu algum problema durante a criação do log.");
-        }
+        logRepository.save(log);
     }
 }

@@ -80,7 +80,7 @@ public class UsuarioService {
 
             UsuarioEntity usuarioCriado = usuarioRepository.save(usuarioEntity);
 
-            String descricao = "Operação de Cadastro de Usuário | " + usuarioEntity.getNome();
+            String descricao = "Operação em Usuário: " + usuarioEntity.getLogin();
             logService.gerarLog(usuarioEntity.getLogin(), descricao, TipoOperacao.CADASTRO);
 
             emailService.enviarEmailBoasVindas(usuarioCriado);
@@ -116,7 +116,6 @@ public class UsuarioService {
         } else {
             usuarioEncontrado = usuarioLogado;
         }
-
         try {
             usuarioEncontrado.setNome(usuarioUpdateDTO.getNome());
             usuarioEncontrado.setEmail(usuarioUpdateDTO.getEmail());
@@ -125,13 +124,13 @@ public class UsuarioService {
 
             UsuarioEntity usuarioEditado = usuarioRepository.save(usuarioEncontrado);
 
-            String descricao = "Operação de Alteração de Usuário | " + usuarioEncontrado.getNome();
+            String descricao = "Operação em Usuário: " + usuarioEncontrado.getLogin();
             logService.gerarLog(usuarioEncontrado.getLogin(), descricao, TipoOperacao.ALTERACAO);
 
             return transformaEmUsuarioDTO(usuarioEditado);
 
         } catch (DataAccessException e) {
-            throw new RegraDeNegocioException("Aconteceu algum problema durante a edição.");
+            throw new RegraDeNegocioException("Erro ao salvar no banco.");
         }
     }
 
@@ -146,11 +145,11 @@ public class UsuarioService {
             usuarioEncontrado.setStatus(StatusGeral.INATIVO);
             usuarioRepository.save(usuarioEncontrado);
 
-            String descricao = "Operação de Inativação de Usuário | " + usuarioEncontrado.getNome();
+            String descricao = "Operação em Usuário: " + usuarioEncontrado.getLogin();
             logService.gerarLog(usuarioEncontrado.getLogin(), descricao, TipoOperacao.EXCLUSAO);
 
         } catch (DataAccessException e) {
-            throw new RegraDeNegocioException("Aconteceu algum problema durante a exclusão.");
+            throw new RegraDeNegocioException("Erro ao salvar no banco.");
         }
     }
 
@@ -168,7 +167,7 @@ public class UsuarioService {
             return transformaEmUsuarioDTO(usuarioEncontrado);
 
         } catch (Exception e) {
-            throw new RegraDeNegocioException("Aconteceu algum problema durante a listagem.");
+            throw new RegraDeNegocioException("Erro de conversão.");
         }
     }
 
@@ -213,7 +212,6 @@ public class UsuarioService {
     }
 
     public PageDTO<UsuarioCompletoDTO> gerarRelatorioCompleto(Integer pagina, Integer tamanho) { //ORDENAR POR CARGO
-
         Pageable solicitacaoPagina = PageRequest.of(pagina, tamanho);
 
         Page<UsuarioCompletoDTO> paginacaoMotorista = usuarioRepository.relatorio(solicitacaoPagina);

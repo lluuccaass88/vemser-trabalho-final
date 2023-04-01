@@ -35,12 +35,13 @@ public class RotaService {
         try {
             RotaEntity rotaEntity = objectMapper.convertValue(rotaCreateDTO, RotaEntity.class);
             rotaEntity.setStatus(StatusGeral.ATIVO);
-            rotaEntity.setUsuario(usuarioEncontrado); // Atribui idusuario a rota criada
+            rotaEntity.setUsuario(usuarioEncontrado);
 
-            usuarioEncontrado.getRotas().add(rotaEntity); // Atribui rota criada ao Colaborador //TODO DESCOBRIR COMO TESTA A RELAÇÃO
+            usuarioEncontrado.getRotas().add(rotaEntity);
 
             rotaRepository.save(rotaEntity);
-            String descricao = "Operação de Cadastro de Rota | " + rotaEntity.getDescricao();
+
+            String descricao = "Operação em Rota: " + rotaEntity.getDescricao();
             logService.gerarLog(loggedUser.getLogin(), descricao, TipoOperacao.CADASTRO);
 
             RotaDTO rotaDTO = objectMapper.convertValue(rotaEntity, RotaDTO.class);
@@ -48,7 +49,7 @@ public class RotaService {
             return rotaDTO;
 
         } catch (DataAccessException e) {
-            throw new RegraDeNegocioException("Aconteceu algum problema durante a criação.");
+            throw new RegraDeNegocioException("Erro ao salvar no banco.");
         }
     }
 
@@ -64,20 +65,19 @@ public class RotaService {
             rotaEncontrada.setLocalPartida(rotaCreateDTO.getLocalPartida());
             rotaEncontrada.setLocalDestino(rotaCreateDTO.getLocalDestino());
 
-            UsuarioEntity usuarioEncontrado = usuarioService.buscarPorId(
-                    rotaEncontrada.getUsuario().getIdUsuario());
+            UsuarioEntity usuarioEncontrado = usuarioService.buscarPorId(rotaEncontrada.getUsuario().getIdUsuario());
             usuarioEncontrado.getRotas().add(rotaEncontrada);
 
             rotaRepository.save(rotaEncontrada);
 
-            String descricao = "Operação de Cadastro de Rota | " + rotaEncontrada.getDescricao();
-            logService.gerarLog(loggedUser.getLogin(), descricao, TipoOperacao.CADASTRO);
+            String descricao = "Operação em Rota: " + rotaEncontrada.getDescricao();
+            logService.gerarLog(loggedUser.getLogin(), descricao, TipoOperacao.ALTERACAO);
 
             RotaDTO rotaDTO = objectMapper.convertValue(rotaEncontrada, RotaDTO.class);
             rotaDTO.setIdUsuario(usuarioEncontrado.getIdUsuario());
             return rotaDTO;
         } catch (DataAccessException e) {
-            throw new RegraDeNegocioException("Aconteceu algum problema durante a edição.");
+            throw new RegraDeNegocioException("Erro ao salvar no banco.");
         }
     }
 
@@ -91,20 +91,21 @@ public class RotaService {
         try {
             rotaEncontrada.setStatus(StatusGeral.INATIVO);
             rotaRepository.save(rotaEncontrada);
+
             UsuarioEntity usuarioEncontrado = usuarioService.buscarPorId(
                     rotaEncontrada.getUsuario().getIdUsuario());
             usuarioEncontrado.getRotas().add(rotaEncontrada);
 
-            String descricao = "Operação de Cadastro de Rota | " + rotaEncontrada.getDescricao();
-            logService.gerarLog(loggedUser.getLogin(), descricao, TipoOperacao.CADASTRO);
+            String descricao = "Operação em Rota: " + rotaEncontrada.getDescricao();
+            logService.gerarLog(loggedUser.getLogin(), descricao, TipoOperacao.EXCLUSAO);
 
         } catch (DataAccessException e) {
-            throw new RegraDeNegocioException("Aconteceu algum problema durante a exclusão.");
+            throw new RegraDeNegocioException("Erro ao salvar no banco.");
         }
     }
 
     public List<RotaDTO> listar() {
-        List<RotaDTO> rotasDTO = rotaRepository.findAll()
+        return rotaRepository.findAll()
                 .stream()
                 .map(rota -> {
                     RotaDTO rotaDTO = objectMapper.convertValue(rota, RotaDTO.class);
@@ -112,7 +113,6 @@ public class RotaService {
                     return rotaDTO;
                 })
                 .toList();
-        return rotasDTO;
     }
 
     public RotaDTO listarPorId(Integer idRota) throws RegraDeNegocioException {
@@ -123,46 +123,42 @@ public class RotaService {
             rotaDTO.setIdUsuario(rotaRecuperado.getUsuario().getIdUsuario());
             return rotaDTO;
         } catch (Exception e) {
-            throw new RegraDeNegocioException("Aconteceu algum problema durante a listagem.");
+            throw new RegraDeNegocioException("Erro de conversão.");
         }
     }
 
     public List<RotaDTO> listarPorLocalPartida(String localPartida) throws RegraDeNegocioException {
-        try {
-            List<RotaEntity> rotasPartida = rotaRepository.findBylocalPartidaIgnoreCase(localPartida);
-            if (rotasPartida.size() == 0) {
-                throw new RegraDeNegocioException("Local de partida não encontrado.");
-            }
-            return rotasPartida
-                    .stream()
-                    .map(rota -> {
-                        RotaDTO rotaDTO = objectMapper.convertValue(rota, RotaDTO.class);
-                        rotaDTO.setIdUsuario(rota.getUsuario().getIdUsuario());
-                        return rotaDTO;
-                    })
-                    .toList();
-        } catch (Exception e) {
-            throw new RegraDeNegocioException(e.getMessage());
+        List<RotaEntity> rotasPartida = rotaRepository.findBylocalPartidaIgnoreCase(localPartida);
+
+        if (rotasPartida.size() == 0) {
+            throw new RegraDeNegocioException("Local de partida não encontrado.");
         }
+        List<RotaDTO> rotaDTOS = rotasPartida
+                .stream()
+                .map(rota -> {
+                    RotaDTO rotaDTO = objectMapper.convertValue(rota, RotaDTO.class);
+                    rotaDTO.setIdUsuario(rota.getUsuario().getIdUsuario());
+                    return rotaDTO;
+                })
+                .toList();
+        return rotaDTOS;
     }
 
     public List<RotaDTO> listarPorLocalDestino(String localDestino) throws RegraDeNegocioException {
-        try {
-            List<RotaEntity> rotasDestino = rotaRepository.findBylocalDestinoIgnoreCase(localDestino);
-            if (rotasDestino.size() == 0) {
-                throw new RegraDeNegocioException("Local de destino não encontrado.");
-            }
-            return rotasDestino
-                    .stream()
-                    .map(rota -> {
-                        RotaDTO rotaDTO = objectMapper.convertValue(rota, RotaDTO.class);
-                        rotaDTO.setIdUsuario(rota.getUsuario().getIdUsuario());
-                        return rotaDTO;
-                    })
-                    .toList();
-        } catch (Exception e) {
-            throw new RegraDeNegocioException(e.getMessage());
+        List<RotaEntity> rotasDestino = rotaRepository.findBylocalDestinoIgnoreCase(localDestino);
+
+        if (rotasDestino.size() == 0) {
+            throw new RegraDeNegocioException("Local de destino não encontrado.");
         }
+        List<RotaDTO> rotaDTOS = rotasDestino
+                .stream()
+                .map(rota -> {
+                    RotaDTO rotaDTO = objectMapper.convertValue(rota, RotaDTO.class);
+                    rotaDTO.setIdUsuario(rota.getUsuario().getIdUsuario());
+                    return rotaDTO;
+                })
+                .toList();
+        return rotaDTOS;
     }
 
     public List<RotaDTO> listarRotasAtivas() {

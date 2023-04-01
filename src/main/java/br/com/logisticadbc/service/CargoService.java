@@ -25,36 +25,39 @@ public class CargoService {
     private final ObjectMapper objectMapper;
     private final LogService logService;
 
-
     public CargoDTO criar(CargoCreateDTO cargoCreateDTO) throws RegraDeNegocioException {
         CargoEntity cargoEntity = objectMapper.convertValue(cargoCreateDTO, CargoEntity.class);
         UsuarioDTO loggedUser = usuarioService.getLoggedUser();
+
         try {
             cargoRepository.save(cargoEntity);
 
-            String descricao = "Operação de Cadastro de Cargo | " + cargoEntity.getNome();
+            String descricao = "Operação em Cargo: " + cargoEntity.getNome();
             logService.gerarLog(loggedUser.getLogin(), descricao, TipoOperacao.CADASTRO);
 
             return objectMapper.convertValue(cargoEntity, CargoDTO.class);
 
         } catch (DataAccessException e) {
-            throw new RegraDeNegocioException("Aconteceu algum problema durante a criação.");
+            throw new RegraDeNegocioException("Erro ao salvar no banco.");
         }
     }
 
     public CargoDTO editar(Integer idCargo, CargoCreateDTO cargoCreateDTO) throws RegraDeNegocioException {
         CargoEntity cargoEncontrado = buscarPorId(idCargo);
         UsuarioDTO loggedUser = usuarioService.getLoggedUser();
+
         try {
             cargoEncontrado.setNome(cargoCreateDTO.getNome());
 
-            String descricao = "Operação de Alteração de Cargo | " + cargoEncontrado.getNome();
+            CargoEntity cargoEditado = cargoRepository.save(cargoEncontrado);
+
+            String descricao = "Operação em Cargo: " + cargoEditado.getNome();
             logService.gerarLog(loggedUser.getLogin(), descricao, TipoOperacao.ALTERACAO);
 
-            return objectMapper.convertValue(cargoEncontrado, CargoDTO.class);
+            return objectMapper.convertValue(cargoEditado, CargoDTO.class);
 
-        } catch (DataAccessException e) {
-            throw new RegraDeNegocioException("Aconteceu algum problema durante a edição.");
+        } catch (Exception e) {
+            throw new RegraDeNegocioException("Erro ao salvar no banco.");
         }
     }
 
@@ -67,7 +70,6 @@ public class CargoService {
 
     public CargoDTO listarPorId(Integer idCargo) throws RegraDeNegocioException {
         CargoEntity cargoEncontrado = buscarPorId(idCargo);
-
         return objectMapper.convertValue(cargoEncontrado, CargoDTO.class);
     }
 
@@ -76,23 +78,23 @@ public class CargoService {
         UsuarioEntity usuarioEncontrado = usuarioService.buscarPorId(idUsuario);
         UsuarioDTO loggedUser = usuarioService.getLoggedUser();
 
-
         if (usuarioEncontrado.getStatus().equals(StatusGeral.INATIVO)) {
             throw new RegraDeNegocioException("Usuário informado inativo!");
         }
-
         try {
             cargoEncontrado.getUsuarios().add(usuarioEncontrado);
             usuarioEncontrado.getCargos().add(cargoEncontrado);
 
             cargoRepository.save(cargoEncontrado);
-            String descricao = "Operação de Cadastro de Usuário em Cargo | " + cargoEncontrado.getNome();
-            logService.gerarLog(loggedUser.getLogin(), descricao, TipoOperacao.ALTERACAO);
 
-            return usuarioService.listarPorId(idUsuario);
+            String descricao = "Operação em Usuário: " + usuarioEncontrado.getIdUsuario() +
+                    " | Cargo: " + cargoEncontrado.getNome();
+            logService.gerarLog(loggedUser.getLogin(), descricao, TipoOperacao.CADASTRO);
+
+            return usuarioService.transformaEmUsuarioDTO(usuarioEncontrado);
 
         } catch (DataAccessException e) {
-            throw new RegraDeNegocioException("Aconteceu algum problema durante o cadastro de cargo.");
+            throw new RegraDeNegocioException("Erro ao salvar no banco");
         }
     }
 

@@ -17,7 +17,7 @@ public class CaminhaoCreateDTO {
 
     @NotNull
     @NotBlank
-    @Schema(description = "Placa do caminhao ( UNICA )", example = "ABC1234")
+    @Schema(description = "Placa do caminhao", example = "ABC1234")
     private String placa;
 
     @NotNull
