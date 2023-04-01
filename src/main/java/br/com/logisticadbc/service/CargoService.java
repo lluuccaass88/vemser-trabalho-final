@@ -6,6 +6,7 @@ import br.com.logisticadbc.dto.out.UsuarioDTO;
 import br.com.logisticadbc.entity.CargoEntity;
 import br.com.logisticadbc.entity.UsuarioEntity;
 import br.com.logisticadbc.entity.enums.StatusGeral;
+import br.com.logisticadbc.entity.enums.TipoOperacao;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.repository.CargoRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,12 +23,17 @@ public class CargoService {
     private final CargoRepository cargoRepository;
     private final UsuarioService usuarioService;
     private final ObjectMapper objectMapper;
+    private final LogService logService;
+
 
     public CargoDTO criar(CargoCreateDTO cargoCreateDTO) throws RegraDeNegocioException {
         CargoEntity cargoEntity = objectMapper.convertValue(cargoCreateDTO, CargoEntity.class);
-
+        UsuarioDTO loggedUser = usuarioService.getLoggedUser();
         try {
             cargoRepository.save(cargoEntity);
+
+            String descricao = "Operação de Cadastro de Cargo | " + cargoEntity.getNome();
+            logService.gerarLog(loggedUser.getLogin(), descricao, TipoOperacao.CADASTRO);
 
             return objectMapper.convertValue(cargoEntity, CargoDTO.class);
 
@@ -38,11 +44,12 @@ public class CargoService {
 
     public CargoDTO editar(Integer idCargo, CargoCreateDTO cargoCreateDTO) throws RegraDeNegocioException {
         CargoEntity cargoEncontrado = buscarPorId(idCargo);
-
+        UsuarioDTO loggedUser = usuarioService.getLoggedUser();
         try {
             cargoEncontrado.setNome(cargoCreateDTO.getNome());
 
-            cargoRepository.save(cargoEncontrado);
+            String descricao = "Operação de Alteração de Cargo | " + cargoEncontrado.getNome();
+            logService.gerarLog(loggedUser.getLogin(), descricao, TipoOperacao.ALTERACAO);
 
             return objectMapper.convertValue(cargoEncontrado, CargoDTO.class);
 
@@ -67,6 +74,8 @@ public class CargoService {
     public UsuarioDTO cadastrarUsuario(Integer idCargo, Integer idUsuario) throws RegraDeNegocioException {
         CargoEntity cargoEncontrado = buscarPorId(idCargo);
         UsuarioEntity usuarioEncontrado = usuarioService.buscarPorId(idUsuario);
+        UsuarioDTO loggedUser = usuarioService.getLoggedUser();
+
 
         if (usuarioEncontrado.getStatus().equals(StatusGeral.INATIVO)) {
             throw new RegraDeNegocioException("Usuário informado inativo!");
@@ -77,6 +86,8 @@ public class CargoService {
             usuarioEncontrado.getCargos().add(cargoEncontrado);
 
             cargoRepository.save(cargoEncontrado);
+            String descricao = "Operação de Cadastro de Usuário em Cargo | " + cargoEncontrado.getNome();
+            logService.gerarLog(loggedUser.getLogin(), descricao, TipoOperacao.ALTERACAO);
 
             return usuarioService.listarPorId(idUsuario);
 

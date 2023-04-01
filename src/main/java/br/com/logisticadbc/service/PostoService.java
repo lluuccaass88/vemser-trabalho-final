@@ -2,13 +2,17 @@ package br.com.logisticadbc.service;
 
 import br.com.logisticadbc.dto.in.PostoCreateDTO;
 import br.com.logisticadbc.dto.out.PostoDTO;
+import br.com.logisticadbc.dto.out.UsuarioDTO;
 import br.com.logisticadbc.entity.enums.StatusGeral;
+import br.com.logisticadbc.entity.enums.TipoOperacao;
 import br.com.logisticadbc.entity.mongodb.PostoEntity;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.repository.PostoRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.ObjectNotFoundException;
+import org.springframework.dao.DataAccessException;
 import org.springframework.data.geo.Distance;
 import org.springframework.data.geo.Metrics;
 import org.springframework.data.geo.Point;
@@ -24,12 +28,15 @@ public class PostoService {
 
     private final PostoRepository postoRepository;
     private final ObjectMapper objectMapper;
+    private final UsuarioService usuarioService;
+    private final LogService logService;
 
     public PostoDTO criar(PostoCreateDTO postoCreateDTO) throws RegraDeNegocioException {
+        UsuarioDTO loggedUser = usuarioService.getLoggedUser();
 
         try {
             GeoJsonPoint locationPoint = new GeoJsonPoint(Double.parseDouble(postoCreateDTO.getLongitude()),
-                                                          Double.parseDouble(postoCreateDTO.getLongitude()));
+                    Double.parseDouble(postoCreateDTO.getLongitude()));
 
             PostoEntity postoEntity = objectMapper.convertValue(postoCreateDTO, PostoEntity.class);
             postoEntity.setLocation(locationPoint);
@@ -37,23 +44,27 @@ public class PostoService {
 
             PostoEntity postoCriado = postoRepository.save(postoEntity);
 
+            String descricao = "Operação de Cadastro de Rota | " + postoCriado.getNome();
+            logService.gerarLog(loggedUser.getLogin(), descricao, TipoOperacao.CADASTRO);
+
             PostoDTO postoDTO = objectMapper.convertValue(postoCriado, PostoDTO.class);
             return postoDTO;
 
-        } catch (Exception e) {
+        } catch (DataAccessException e) {
             throw new RegraDeNegocioException("Aconteceu algum problema durante a criação.");
         }
     }
 
     public PostoDTO editar(String idPosto, PostoCreateDTO postoCreateDTO) throws RegraDeNegocioException {
         PostoEntity postoEncontrado = buscarPorId(idPosto);
+        UsuarioDTO loggedUser = usuarioService.getLoggedUser();
 
         if (postoEncontrado.getStatus().equals(StatusGeral.INATIVO)) {
             throw new RegraDeNegocioException("Posto inativo!");
         }
         try {
             GeoJsonPoint locationPoint = new GeoJsonPoint(Double.parseDouble(postoCreateDTO.getLongitude()),
-                                                          Double.parseDouble(postoCreateDTO.getLongitude()));
+                    Double.parseDouble(postoCreateDTO.getLongitude()));
 
             postoEncontrado.setNome(postoCreateDTO.getNome());
             postoEncontrado.setValorCombustivel(postoCreateDTO.getValorCombustivel());
@@ -62,17 +73,20 @@ public class PostoService {
 
             PostoEntity postoEditado = postoRepository.save(postoEncontrado);
 
+            String descricao = "Operação de Cadastro de Rota | " + postoEncontrado.getNome();
+            logService.gerarLog(loggedUser.getLogin(), descricao, TipoOperacao.ALTERACAO);
+
             PostoDTO postoDTO = objectMapper.convertValue(postoEditado, PostoDTO.class);
             return postoDTO;
 
-        } catch (Exception e) {
+        } catch (DataAccessException e) {
             throw new RegraDeNegocioException("Aconteceu algum problema durante a edição.");
         }
     }
 
-    // TODO REVISAR
     public void deletar(String idPosto) throws RegraDeNegocioException {
         PostoEntity postoEncontrado = buscarPorId(idPosto);
+        UsuarioDTO loggedUser = usuarioService.getLoggedUser();
 
         if (postoEncontrado.getStatus().equals(StatusGeral.INATIVO)) {
             throw new RegraDeNegocioException("Posto já inativo!");
@@ -81,7 +95,10 @@ public class PostoService {
             postoEncontrado.setStatus(StatusGeral.INATIVO);
             postoRepository.save(postoEncontrado);
 
-        } catch (Exception e) {
+            String descricao = "Operação de Cadastro de Rota | " + postoEncontrado.getNome();
+            logService.gerarLog(loggedUser.getLogin(), descricao, TipoOperacao.EXCLUSAO);
+
+        } catch (DataAccessException e) {
             throw new RegraDeNegocioException("Aconteceu algum problema durante a exclusão.");
         }
     }
@@ -98,13 +115,12 @@ public class PostoService {
 
     public PostoDTO listarPorId(String idPosto) throws RegraDeNegocioException {
         PostoEntity postoRecuperado = buscarPorId(idPosto);
-
         try {
             PostoDTO postoDTO = objectMapper.convertValue(postoRecuperado, PostoDTO.class);
             postoDTO.setId(idPosto);
             return postoDTO;
 
-        } catch (Exception e) {
+        } catch (ObjectNotFoundException e) {
             throw new RegraDeNegocioException("Aconteceu algum problema durante a listagem.");
         }
     }
@@ -115,19 +131,18 @@ public class PostoService {
                 .stream()
                 .map(posto -> {
                     PostoDTO postoDTO = objectMapper.convertValue(posto, PostoDTO.class);
-                    return postoDTO;
-                })
+                    return postoDTO;})
                 .toList();
     }
 
-    public List<PostoDTO> listarPostosInativos() {return postoRepository
-            .findByStatusEquals(StatusGeral.INATIVO)
-            .stream()
-            .map(posto -> {
-                PostoDTO postoDTO = objectMapper.convertValue(posto, PostoDTO.class);
-                return postoDTO;
-            })
-            .toList();
+    public List<PostoDTO> listarPostosInativos() {
+        return postoRepository
+                .findByStatusEquals(StatusGeral.INATIVO)
+                .stream()
+                .map(posto -> {
+                    PostoDTO postoDTO = objectMapper.convertValue(posto, PostoDTO.class);
+                    return postoDTO;})
+                .toList();
     }
 
     public List<PostoDTO> listarPorLocalizacao(String longitude, String latitude, Double distancia) {
@@ -141,7 +156,7 @@ public class PostoService {
                 .toList();
     }
 
-    public List<PostoDTO> listByCidade (String cidade) {
+    public List<PostoDTO> listByCidade(String cidade) {
         List<PostoEntity> postos = postoRepository.findByCidadeIgnoreCase(cidade);
 
         return postos

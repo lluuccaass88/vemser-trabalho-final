@@ -10,6 +10,7 @@ import br.com.logisticadbc.dto.out.UsuarioDTO;
 import br.com.logisticadbc.entity.CargoEntity;
 import br.com.logisticadbc.entity.UsuarioEntity;
 import br.com.logisticadbc.entity.enums.StatusGeral;
+import br.com.logisticadbc.entity.enums.TipoOperacao;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.repository.UsuarioRepository;
 import br.com.logisticadbc.security.TokenService;
@@ -41,7 +42,8 @@ public class UsuarioService {
     private final CargoService cargoService;
     public final AuthenticationManager authenticationManager;
     private final ObjectMapper objectMapper;
-    private  PasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder;
+    private final LogService logService;
 
     public UsuarioService(UsuarioRepository usuarioRepository,
                           EmailService emailService,
@@ -49,7 +51,9 @@ public class UsuarioService {
                           @Lazy CargoService cargoService,
                           @Lazy AuthenticationManager authenticationManager,
                           ObjectMapper objectMapper,
-                          PasswordEncoder passwordEncoder) {
+                          PasswordEncoder passwordEncoder,
+                          LogService logService
+                          ) {
         this.usuarioRepository = usuarioRepository;
         this.emailService = emailService;
         this.cargoService = cargoService;
@@ -57,6 +61,7 @@ public class UsuarioService {
         this.authenticationManager = authenticationManager;
         this.objectMapper = objectMapper;
         this.passwordEncoder = passwordEncoder;
+        this.logService = logService;
     }
 
     public UsuarioDTO criar(UsuarioCreateDTO usuarioCreateDTO) throws RegraDeNegocioException {
@@ -74,6 +79,9 @@ public class UsuarioService {
             usuarioEntity.setCargos(cargos);
 
             UsuarioEntity usuarioCriado = usuarioRepository.save(usuarioEntity);
+
+            String descricao = "Operação de Cadastro de Usuário | " + usuarioEntity.getNome();
+            logService.gerarLog(usuarioEntity.getLogin(), descricao, TipoOperacao.CADASTRO);
 
             emailService.enviarEmailBoasVindas(usuarioCriado);
 
@@ -104,7 +112,7 @@ public class UsuarioService {
                 throw new RegraDeNegocioException("Não é possível editar um admin.");
             }
 
-        // se nao tiver parâmetro, usa o proprio usuario logado
+            // se nao tiver parâmetro, usa o proprio usuario logado
         } else {
             usuarioEncontrado = usuarioLogado;
         }
@@ -117,9 +125,12 @@ public class UsuarioService {
 
             UsuarioEntity usuarioEditado = usuarioRepository.save(usuarioEncontrado);
 
+            String descricao = "Operação de Alteração de Usuário | " + usuarioEncontrado.getNome();
+            logService.gerarLog(usuarioEncontrado.getLogin(), descricao, TipoOperacao.ALTERACAO);
+
             return transformaEmUsuarioDTO(usuarioEditado);
 
-        } catch (Exception e) {
+        } catch (DataAccessException e) {
             throw new RegraDeNegocioException("Aconteceu algum problema durante a edição.");
         }
     }
@@ -135,7 +146,10 @@ public class UsuarioService {
             usuarioEncontrado.setStatus(StatusGeral.INATIVO);
             usuarioRepository.save(usuarioEncontrado);
 
-        } catch (Exception e) {
+            String descricao = "Operação de Inativação de Usuário | " + usuarioEncontrado.getNome();
+            logService.gerarLog(usuarioEncontrado.getLogin(), descricao, TipoOperacao.EXCLUSAO);
+
+        } catch (DataAccessException e) {
             throw new RegraDeNegocioException("Aconteceu algum problema durante a exclusão.");
         }
     }
@@ -249,7 +263,7 @@ public class UsuarioService {
         return usuarioRepository.findByLogin(login);
     }
 
-    public String autenticar (LoginDTO loginDTO) throws RegraDeNegocioException {
+    public String autenticar(LoginDTO loginDTO) throws RegraDeNegocioException {
         ativo(loginDTO);
         try {
             // cria dto do spring
@@ -286,11 +300,12 @@ public class UsuarioService {
         UsuarioEntity usuarioLogado = buscarPorId(getIdLoggedUser());
         return transformaEmUsuarioDTO(usuarioLogado);
     }
+
     public void ativo(LoginDTO loginDTO) throws RegraDeNegocioException {
         UsuarioEntity usuarioEntity = usuarioRepository.findByLogin(loginDTO.getLogin())
                 .orElseThrow(() -> new RegraDeNegocioException("Usuário não encontrado!"));
 
-         if (usuarioEntity.getStatus().equals(StatusGeral.INATIVO)) {
+        if (usuarioEntity.getStatus().equals(StatusGeral.INATIVO)) {
             throw new RegraDeNegocioException("Usuário inativo!");
         }
     }
