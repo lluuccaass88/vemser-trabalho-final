@@ -1,9 +1,5 @@
 package br.com.logisticadbc.service;
 
-<<<<<<< HEAD
-=======
-import br.com.logisticadbc.dto.in.PostoCreateDTO;
->>>>>>> 5a20e6cb3a348856f79c4f38f5ba526f5ed53d1b
 import br.com.logisticadbc.dto.out.PostoDTO;
 import br.com.logisticadbc.entity.enums.StatusGeral;
 import br.com.logisticadbc.entity.mongodb.PostoEntity;
@@ -15,11 +11,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 
-import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,7 +21,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -40,7 +33,6 @@ public class PostoServiceTest {
     @Mock
     private GeoJsonPoint geoJsonPoint;
     @Mock
-<<<<<<< HEAD
     private ObjectMapper objectMapper = new ObjectMapper();
 
 //    @Before
@@ -117,31 +109,19 @@ public class PostoServiceTest {
     @Test
     public void deveListarComSucesso() {
         // SETUP
-<<<<<<< HEAD
         List<PostoEntity> listaDePostoMockado = List.of(getPostoEntityMock());
 
         PostoDTO postoConvertidoDTO = getPostoDTOMock();
 
         when(postoRepository.findAll()).thenReturn(listaDePostoMockado);
         when(objectMapper.convertValue(any(), PostoDTO.class)).thenReturn(postoConvertidoDTO);
-=======
-        List<PostoEntity> listaDePostoMockado = List.of(getPostoEntityMock(), getPostoEntityMock());
-
-        when(postoRepository.findAll()).thenReturn(listaDePostoMockado);
-        when(objectMapper.convertValue(getPostoEntityMock(), PostoDTO.class)).thenReturn(getPostoDTOMock());
->>>>>>> 5a20e6cb3a348856f79c4f38f5ba526f5ed53d1b
-
 
         // ACTION
         List<PostoDTO> listaDePostoRetornado = postoService.listar();
 
         // ASSERT
         assertNotNull(listaDePostoRetornado);
-<<<<<<< HEAD
         assertEquals(1, listaDePostoRetornado.size());
-=======
-        assertEquals(2, listaDePostoRetornado.size());
->>>>>>> 5a20e6cb3a348856f79c4f38f5ba526f5ed53d1b
     }
 
     @Test
@@ -199,7 +179,6 @@ public class PostoServiceTest {
     //Testar deletar
     @Test
     public void deveDeletarComSucesso() throws RegraDeNegocioException {
-<<<<<<< HEAD
         // SETUP
         String idPosto = "1";
         PostoEntity postoMockadoBanco = getPostoEntityMock();
@@ -227,16 +206,6 @@ public class PostoServiceTest {
 
         // ASSERT
         assertEquals(StatusGeral.INATIVO, postoMockadoBanco.getStatus());
-=======
-        PostoEntity postoEntityMock = getPostoEntityMock();
-
-        when(postoRepository.findById(anyString())).thenReturn(Optional.of(postoEntityMock));
-
-        postoService.deletar("1");
-
-        Mockito.verify(postoRepository, times(1)).save(any());
-        assertEquals(StatusGeral.INATIVO, postoEntityMock.getStatus());
->>>>>>> 5a20e6cb3a348856f79c4f38f5ba526f5ed53d1b
     }
 
     @Test(expected = RegraDeNegocioException.class)
@@ -286,7 +255,6 @@ public class PostoServiceTest {
         Assertions.assertEquals(2, postoDTOS.size());
     }
 
-    @NotNull
     private PostoEntity getPostoEntityMock() {
         PostoEntity postoMock = new PostoEntity();
         postoMock.setId("1");
@@ -298,7 +266,6 @@ public class PostoServiceTest {
         return postoMock;
     }
 
-    @NotNull
     private PostoDTO getPostoDTOMock() {
         PostoDTO postoTOMock = new PostoDTO();
         postoTOMock.setId("1");
@@ -310,19 +277,7 @@ public class PostoServiceTest {
         return postoTOMock;
     }
 
-    @NotNull
     private GeoJsonPoint getGeoJsonPointMock() {
         return new GeoJsonPoint(3.123456, 4.123456);
-    }
-
-    private PostoDTO getPostoDTOMock() {
-        PostoDTO postoDTO = new PostoDTO();
-        postoDTO.setId("1");
-        postoDTO.setNome("Posto Ipiranga");
-        postoDTO.setCidade("Fortaleza");
-        postoDTO.setLocation(getGeoJsonPointMock());
-        postoDTO.setValorCombustivel(4.50);
-        postoDTO.setStatus(StatusGeral.ATIVO);
-        return postoDTO;
     }
 }
