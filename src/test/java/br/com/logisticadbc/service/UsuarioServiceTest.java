@@ -4,13 +4,10 @@ package br.com.logisticadbc.service;
 import br.com.logisticadbc.dto.in.LoginDTO;
 import br.com.logisticadbc.dto.in.UsuarioCreateDTO;
 import br.com.logisticadbc.dto.in.UsuarioUpdateDTO;
-import br.com.logisticadbc.dto.out.CaminhaoDTO;
 import br.com.logisticadbc.dto.out.PageDTO;
 import br.com.logisticadbc.dto.out.UsuarioDTO;
-import br.com.logisticadbc.entity.CaminhaoEntity;
 import br.com.logisticadbc.entity.CargoEntity;
 import br.com.logisticadbc.entity.UsuarioEntity;
-import br.com.logisticadbc.entity.ViagemEntity;
 import br.com.logisticadbc.entity.enums.StatusGeral;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.repository.UsuarioRepository;
@@ -19,7 +16,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import lombok.SneakyThrows;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
@@ -28,7 +24,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -241,7 +236,7 @@ public class UsuarioServiceTest {
         Assertions.assertEquals(tamanho, usuarioDTOPaginados.getTamanho());
         Assertions.assertEquals(1, usuarioDTOPaginados.getElementos().size());
     }
-
+    
     @Test
     public void deveListarPorCargoEStatus() {
         String cargo = "ROLE_ADMIN";
@@ -270,6 +265,7 @@ public class UsuarioServiceTest {
         Assertions.assertEquals(pagina, usuarioDTOPaginados.getPagina());
         Assertions.assertEquals(tamanho, usuarioDTOPaginados.getTamanho());
         Assertions.assertEquals(2, usuarioDTOPaginados.getElementos().size());
+
     }
 
     @Test

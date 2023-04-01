@@ -1,7 +1,10 @@
 package br.com.logisticadbc.service;
 
+import br.com.logisticadbc.dto.out.LogDTO;
+import br.com.logisticadbc.dto.out.PageDTO;
 import br.com.logisticadbc.entity.UsuarioEntity;
 import br.com.logisticadbc.entity.enums.StatusGeral;
+import br.com.logisticadbc.entity.enums.StatusViagem;
 import br.com.logisticadbc.entity.enums.TipoOperacao;
 import br.com.logisticadbc.entity.mongodb.LogEntity;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
@@ -12,15 +15,19 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
@@ -44,16 +51,28 @@ public class LogServiceTest {
         ReflectionTestUtils.setField(logService, "objectMapper", objectMapper);
     }
 
-/*    @Test
+    @Test
     public void deveListarLogsComSucesso(){
         //SETUP
-        List<LogEntity> logEntityList = List.of(getLogEntityMockado());
-        when(logRepository.findAll()).thenReturn(logEntityList);
+        StatusViagem statusViagem = StatusViagem.EM_ANDAMENTO;
+        Integer pagina = 0;
+        Integer tamanho = 2;
+
+        List<LogEntity> listaLog = List.of(
+                getLogEntityMockado(), getLogEntityMockado(), getLogEntityMockado());
+
+        Page<LogEntity> pageLog = new PageImpl<>(listaLog, PageRequest.of(pagina, tamanho), listaLog.size());
+
+        when(logRepository.findAll(PageRequest.of(pagina, tamanho))).thenReturn(pageLog);
+
         //ACT
-        logService.listAllLogs();
+        PageDTO<LogDTO> logPaginadasDTO =  logService.listAllLogs(pagina, tamanho);
+
         //ASSERT
-        verify(logRepository, times(1)).findAll();
-    }*/
+        assertNotNull(logPaginadasDTO);
+        Assertions.assertEquals(pagina, logPaginadasDTO.getPagina());
+        Assertions.assertEquals(tamanho, logPaginadasDTO.getTamanho());
+    }
 
     @Test
     public void deveGerarLogComSucesso() throws RegraDeNegocioException {

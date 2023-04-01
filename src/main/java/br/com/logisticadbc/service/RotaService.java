@@ -1,13 +1,11 @@
 package br.com.logisticadbc.service;
 
 import br.com.logisticadbc.dto.in.RotaCreateDTO;
-import br.com.logisticadbc.dto.out.LogDTO;
 import br.com.logisticadbc.dto.out.RotaDTO;
 import br.com.logisticadbc.entity.RotaEntity;
 import br.com.logisticadbc.entity.UsuarioEntity;
 import br.com.logisticadbc.entity.enums.StatusGeral;
 import br.com.logisticadbc.entity.enums.TipoOperacao;
-import br.com.logisticadbc.entity.mongodb.LogEntity;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.repository.RotaRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;

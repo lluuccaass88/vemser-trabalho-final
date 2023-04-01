@@ -1,7 +1,5 @@
 package br.com.logisticadbc.service;
 
-import br.com.logisticadbc.dto.in.PostoCreateDTO;
-import br.com.logisticadbc.dto.out.PostoDTO;
 import br.com.logisticadbc.entity.enums.StatusGeral;
 import br.com.logisticadbc.entity.mongodb.PostoEntity;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
@@ -23,7 +21,6 @@ import javax.validation.constraints.NotNull;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
