@@ -83,7 +83,7 @@ public class ViagemService {
             viagemDTO.setIdCaminhao(caminhaoEncontrado.getIdCaminhao());
             viagemDTO.setIdRota(rotaEncontrada.getIdRota());
 
-            //emailService.enviarEmailViagem(rotaEncontrada,viagemEntity, usuarioEncontrado);
+            emailService.enviarEmailViagem(rotaEncontrada,viagemEntity, usuarioEncontrado);
 
             return viagemDTO;
 

@@ -16,6 +16,7 @@ import br.com.logisticadbc.security.TokenService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -78,7 +79,7 @@ public class UsuarioService {
 
             return transformaEmUsuarioDTO(usuarioCriado);
 
-        } catch (Exception e) {
+        } catch (DataAccessException e) {
             throw new RegraDeNegocioException("Aconteceu algum problema durante a criação.");
         }
     }
@@ -197,34 +198,26 @@ public class UsuarioService {
         );
     }
 
-    public List<UsuarioDTO> listarAtivos() {
-        return usuarioRepository.findAll()
+    public PageDTO<UsuarioCompletoDTO> gerarRelatorioCompleto(Integer pagina, Integer tamanho) { //ORDENAR POR CARGO
+
+        Pageable solicitacaoPagina = PageRequest.of(pagina, tamanho);
+
+        Page<UsuarioCompletoDTO> paginacaoMotorista = usuarioRepository.relatorio(solicitacaoPagina);
+
+        List<UsuarioCompletoDTO> usuarioDTOList = paginacaoMotorista
+                .getContent()
                 .stream()
-                .filter(usuario -> usuario.getStatus().equals(StatusGeral.ATIVO))
-                .map(usuario -> transformaEmUsuarioDTO(usuario))
+                .map(usuario -> objectMapper.convertValue(usuario, UsuarioCompletoDTO.class))
                 .toList();
+
+        return new PageDTO<>(
+                paginacaoMotorista.getTotalElements(),
+                paginacaoMotorista.getTotalPages(),
+                pagina,
+                tamanho,
+                usuarioDTOList
+        );
     }
-
-        public PageDTO<UsuarioCompletoDTO> gerarRelatorioCompleto(Integer pagina, Integer tamanho) { //ORDENAR POR CARGO
-
-            Pageable solicitacaoPagina = PageRequest.of(pagina, tamanho);
-
-            Page<UsuarioCompletoDTO> paginacaoMotorista = usuarioRepository.relatorio(solicitacaoPagina);
-
-            List<UsuarioCompletoDTO> usuarioDTOList = paginacaoMotorista
-                    .getContent()
-                    .stream()
-                    .map(usuario -> objectMapper.convertValue(usuario, UsuarioCompletoDTO.class))
-                    .toList();
-
-            return new PageDTO<>(
-                    paginacaoMotorista.getTotalElements(),
-                    paginacaoMotorista.getTotalPages(),
-                    pagina,
-                    tamanho,
-                    usuarioDTOList
-            );
-        }
 
     public PageDTO<UsuarioDTO> listarMotoristasLivres(Integer pagina, Integer tamanho) {
         Pageable solicitacaoPagina = PageRequest.of(pagina, tamanho);
@@ -257,9 +250,8 @@ public class UsuarioService {
     }
 
     public String autenticar (LoginDTO loginDTO) throws RegraDeNegocioException {
+        ativo(loginDTO);
         try {
-            ativo(loginDTO);
-
             // cria dto do spring
             UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
                     new UsernamePasswordAuthenticationToken(
@@ -290,16 +282,15 @@ public class UsuarioService {
     }
 
     // recupera usuário do Token
-    public UsuarioDTO getLoggedUser() {
-        Optional<UsuarioEntity> usuarioOptional = usuarioRepository.findById(getIdLoggedUser());
-        return transformaEmUsuarioDTO(usuarioOptional.get());
+    public UsuarioDTO getLoggedUser() throws RegraDeNegocioException {
+        UsuarioEntity usuarioLogado = buscarPorId(getIdLoggedUser());
+        return transformaEmUsuarioDTO(usuarioLogado);
     }
     public void ativo(LoginDTO loginDTO) throws RegraDeNegocioException {
-        UsuarioEntity usuarioEntity = usuarioRepository.findByLogin(loginDTO.getLogin()).get();
+        UsuarioEntity usuarioEntity = usuarioRepository.findByLogin(loginDTO.getLogin())
+                .orElseThrow(() -> new RegraDeNegocioException("Usuário não encontrado!"));
 
-        if (usuarioEntity.getIdUsuario() == null) {
-            throw new RegraDeNegocioException("Usuário não encontrado!");
-        } else if (usuarioEntity.getStatus().equals(StatusGeral.INATIVO)) {
+         if (usuarioEntity.getStatus().equals(StatusGeral.INATIVO)) {
             throw new RegraDeNegocioException("Usuário inativo!");
         }
     }

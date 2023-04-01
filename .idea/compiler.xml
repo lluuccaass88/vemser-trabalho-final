@@ -8,11 +8,9 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="logistica-dbc" />
+        <module name="vemser-trabalho-final" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="vemser-trabalho-final" target="17" />
-    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">

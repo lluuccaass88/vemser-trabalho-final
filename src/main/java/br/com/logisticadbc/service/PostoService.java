@@ -28,26 +28,23 @@ public class PostoService {
     public PostoDTO criar(PostoCreateDTO postoCreateDTO) throws RegraDeNegocioException {
 
         try {
-            GeoJsonPoint locationPoint = new GeoJsonPoint(
-                    Double.parseDouble(postoCreateDTO.getLongitude()),
-                    Double.parseDouble(postoCreateDTO.getLatitude()));
+            GeoJsonPoint locationPoint = new GeoJsonPoint(Double.parseDouble(postoCreateDTO.getLongitude()),
+                                                          Double.parseDouble(postoCreateDTO.getLongitude()));
 
             PostoEntity postoEntity = objectMapper.convertValue(postoCreateDTO, PostoEntity.class);
             postoEntity.setLocation(locationPoint);
             postoEntity.setStatus(StatusGeral.ATIVO);
 
-            postoRepository.save(postoEntity);
+            PostoEntity postoCriado = postoRepository.save(postoEntity);
 
-            PostoDTO postoDTO = objectMapper.convertValue(postoEntity, PostoDTO.class);
+            PostoDTO postoDTO = objectMapper.convertValue(postoCriado, PostoDTO.class);
             return postoDTO;
 
         } catch (Exception e) {
-            e.printStackTrace();
             throw new RegraDeNegocioException("Aconteceu algum problema durante a criação.");
         }
     }
 
-    // TODO REVISAR
     public PostoDTO editar(String idPosto, PostoCreateDTO postoCreateDTO) throws RegraDeNegocioException {
         PostoEntity postoEncontrado = buscarPorId(idPosto);
 
@@ -55,12 +52,17 @@ public class PostoService {
             throw new RegraDeNegocioException("Posto inativo!");
         }
         try {
+            GeoJsonPoint locationPoint = new GeoJsonPoint(Double.parseDouble(postoCreateDTO.getLongitude()),
+                                                          Double.parseDouble(postoCreateDTO.getLongitude()));
+
             postoEncontrado.setNome(postoCreateDTO.getNome());
             postoEncontrado.setValorCombustivel(postoCreateDTO.getValorCombustivel());
+            postoEncontrado.setCidade(postoCreateDTO.getCidade());
+            postoEncontrado.setLocation(locationPoint);
 
-            postoRepository.save(postoEncontrado);
+            PostoEntity postoEditado = postoRepository.save(postoEncontrado);
 
-            PostoDTO postoDTO = objectMapper.convertValue(postoEncontrado, PostoDTO.class);
+            PostoDTO postoDTO = objectMapper.convertValue(postoEditado, PostoDTO.class);
             return postoDTO;
 
         } catch (Exception e) {

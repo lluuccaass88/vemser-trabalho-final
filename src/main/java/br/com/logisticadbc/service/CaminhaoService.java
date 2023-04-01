@@ -3,19 +3,18 @@ package br.com.logisticadbc.service;
 
 import br.com.logisticadbc.dto.in.CaminhaoCreateDTO;
 import br.com.logisticadbc.dto.out.CaminhaoDTO;
-import br.com.logisticadbc.dto.out.LogDTO;
 import br.com.logisticadbc.entity.CaminhaoEntity;
 import br.com.logisticadbc.entity.UsuarioEntity;
 import br.com.logisticadbc.entity.enums.StatusCaminhao;
 import br.com.logisticadbc.entity.enums.StatusGeral;
 import br.com.logisticadbc.entity.enums.TipoOperacao;
-import br.com.logisticadbc.entity.mongodb.LogEntity;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.repository.CaminhaoRepository;
-import br.com.logisticadbc.repository.LogRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.ObjectNotFoundException;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -42,16 +41,17 @@ public class CaminhaoService {
 
             usuarioEntity.getCaminhoes().add(caminhaoEntity);
 
-            logService.gerarLog(usuarioEntity, "Operação de Cadastro de Caminhões",
-                    TipoOperacao.CADASTRO);
-
             CaminhaoEntity caminhaoCriado = caminhaoRepository.save(caminhaoEntity);
+
+            logService.gerarLog(usuarioEntity,
+                    "Operação de Cadastro | Caminhão: " + caminhaoCriado.getIdCaminhao(),
+                    TipoOperacao.CADASTRO);
 
             CaminhaoDTO caminhaoDTO = objectMapper.convertValue(caminhaoCriado, CaminhaoDTO.class);
             caminhaoDTO.setIdUsuario(idUsuario);
             return caminhaoDTO;
 
-        } catch (Exception e) {
+        } catch (DataAccessException e) {
             throw new RegraDeNegocioException("Aconteceu algum problema durante a criação.");
         }
     }
@@ -82,7 +82,7 @@ public class CaminhaoService {
             caminhaoDTO.setIdUsuario(idUsuario);
             return caminhaoDTO;
 
-        } catch (Exception e) {
+        } catch (DataAccessException e) {
             throw new RegraDeNegocioException(e.getMessage());
         }
     }
@@ -101,7 +101,7 @@ public class CaminhaoService {
             logService.gerarLog(usuarioEntity, "Operação de Inativação de Caminhões",
                     TipoOperacao.EXCLUSAO);
 
-        } catch (Exception e) {
+        } catch (DataAccessException e) {
             throw new RegraDeNegocioException("Aconteceu algum problema durante a exclusão");
         }
     }

@@ -1,13 +1,11 @@
 package br.com.logisticadbc.service;
 
 import br.com.logisticadbc.dto.in.RotaCreateDTO;
-import br.com.logisticadbc.dto.out.LogDTO;
 import br.com.logisticadbc.dto.out.RotaDTO;
 import br.com.logisticadbc.entity.RotaEntity;
 import br.com.logisticadbc.entity.UsuarioEntity;
 import br.com.logisticadbc.entity.enums.StatusGeral;
 import br.com.logisticadbc.entity.enums.TipoOperacao;
-import br.com.logisticadbc.entity.mongodb.LogEntity;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.repository.RotaRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -48,7 +46,6 @@ public class RotaService {
             return rotaDTO;
 
         } catch (Exception e) {
-            e.printStackTrace();
             throw new RegraDeNegocioException("Aconteceu algum problema durante a criação.");
         }
     }
@@ -76,7 +73,6 @@ public class RotaService {
             rotaDTO.setIdUsuario(usuarioEncontrado.getIdUsuario());
             return rotaDTO;
         } catch (Exception e) {
-            e.printStackTrace();
             throw new RegraDeNegocioException("Aconteceu algum problema durante a edição.");
         }
     }
@@ -205,16 +201,4 @@ public class RotaService {
                 .orElseThrow(() -> new RegraDeNegocioException("Rota não encontrada"));
     }
 
-    public LogEntity getLog(UsuarioEntity usuario, String descricao, TipoOperacao tipoOperacao) throws RegraDeNegocioException {
-        Integer idUsuario = usuario.getIdUsuario();
-        UsuarioEntity usuarioEntity = usuarioService.buscarPorId(idUsuario);
-
-        LogEntity log = new LogEntity();
-        log.setId(usuarioEntity.getIdUsuario().toString());
-        log.setLoginOperador(usuarioEntity.getLogin());
-        log.setDescricao(descricao);
-        log.setTipoOperacao(tipoOperacao);
-
-        return log;
-    }
 }
