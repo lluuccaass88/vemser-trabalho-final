@@ -90,6 +90,7 @@ public class CaminhaoServiceTest {
         Assertions.assertEquals(1, caminhaoDTORetornado.getIdUsuario());
     }
 
+    //Testar abastecer
     @Test
     public void deveTestarAbastecerComSucesso() throws RegraDeNegocioException {
         // SETUP
@@ -117,6 +118,48 @@ public class CaminhaoServiceTest {
 
     }
 
+    @Test(expected = RegraDeNegocioException.class)
+    public void deveTestarAbastecerComCaminhaoInativo() throws RegraDeNegocioException {
+        // SETUP
+        Integer combustivel = 20;
+        CaminhaoEntity caminhaoEntityMock = getCaminhaoEntityMock();
+        caminhaoEntityMock.setStatus(StatusGeral.INATIVO);
+
+        Mockito.when(caminhaoRepository.findById(Mockito.anyInt())).thenReturn(Optional.of(caminhaoEntityMock));
+
+        // ACT
+        CaminhaoDTO caminhaoDTOAbastecido = caminhaoService.abastecer(1, combustivel);
+
+    }
+
+    @Test(expected = RegraDeNegocioException.class)
+    public void deveTestarAbastecerComGasolinaInformadaMenorOuIgualAZaro() throws RegraDeNegocioException {
+        // SETUP
+        Integer idCaminhao = 1;
+        Integer combustivel = -20;
+        CaminhaoEntity caminhaoEntityMock = getCaminhaoEntityMock();
+
+        Mockito.when(caminhaoRepository.findById(Mockito.anyInt())).thenReturn(Optional.of(caminhaoEntityMock));
+
+        // ACT
+        CaminhaoDTO caminhaoDTOAbastecido = caminhaoService.abastecer(idCaminhao, combustivel);
+    }
+    @Test(expected = RegraDeNegocioException.class)
+    public void deveTestarAbastecerComLimiteDeGasolinaExcedido() throws RegraDeNegocioException {
+        // SETUP
+        Integer idCaminhao = 1;
+        Integer combustivel = 20;
+        CaminhaoEntity caminhaoEntityMock = getCaminhaoEntityMock();
+        caminhaoEntityMock.setNivelCombustivel(90);
+
+        Mockito.when(caminhaoRepository.findById(Mockito.anyInt())).thenReturn(Optional.of(caminhaoEntityMock));
+
+        // ACT
+        CaminhaoDTO caminhaoDTOAbastecido = caminhaoService.abastecer(idCaminhao, combustivel);
+    }
+
+
+    //Testar remover
     @Test
     public void deveTestarRemoverComSucesso() throws RegraDeNegocioException {
         // SETUP
