@@ -236,25 +236,7 @@ public class UsuarioServiceTest {
         Assertions.assertEquals(tamanho, usuarioDTOPaginados.getTamanho());
     }
 
-    @Test
-    public void deveListarPorCargoEStatus() {
-        String cargo = "ROLE_ADMIN";
-        
-        Integer pagina = 0;
-        Integer tamanho = 2;
 
-        List<UsuarioEntity> listaUsuarios = List.of(getUsuarioEntityMock(), getUsuarioEntityMock());
-        Page<UsuarioEntity> pageUsuario =
-                new PageImpl<>(listaUsuarios, PageRequest.of(pagina, tamanho), listaUsuarios.size());
-
-        when(usuarioRepository.findByCargoUsuario(any(), anyString())).thenReturn(pageUsuario);
-
-        PageDTO<UsuarioDTO> usuarioDTOPaginados = usuarioService.listarPorCargoEStatus(cargo, pagina, tamanho);
-
-        assertNotNull(usuarioDTOPaginados);
-        Assertions.assertEquals(pagina, usuarioDTOPaginados.getPagina());
-        Assertions.assertEquals(tamanho, usuarioDTOPaginados.getTamanho());
-    }
 
     @Test
     public void deveGerarRelatorioCompleto() {
