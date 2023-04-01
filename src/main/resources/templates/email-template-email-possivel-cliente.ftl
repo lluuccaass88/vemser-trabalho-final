@@ -13,18 +13,16 @@
     <div style="background-color: #f2f2f2; padding: 20px; font-family:courier;">
         <h2 align=center>Olá, ${usuarioNome}!</h2>
         <br>
-        <br>Aqui esta sua nova senha:
-        <br>
-        <br><h2>${senhaTemporaria}</h2>
+        <br>Gostaríamos de expressar nossa alegria pelo seu interesse em nossos serviços.
         <br>
         <br>
-        <br>
-        <br>
-        <br>Esta senha é provisórria, por favor acesse á area de edição do perfil para atualizar sua senha.
+        <br>Estamos animados com a possibilidade dajudar você a alcançar seus objetivos. Em breve um de nossos funcionários entrará em contato
+        <br>responder quaisquer perguntas ou dúvidas que você possa ter sobre nossos serviços.
         <br>
         <br>
         <br>
         <br>Qualquer duvida é só contatar o suporte pelo email ->  ${emailContato}
+        <br>
         <br>
         <br>
         <br>

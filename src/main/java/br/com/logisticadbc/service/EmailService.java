@@ -136,6 +136,39 @@ public class EmailService {
         return html;
     }
 
+    public void enviarEmailPossivelCliente(String email, String nome) throws RegraDeNegocioException {
+        MimeMessage mimeMessage = emailSender.createMimeMessage();
+        Integer op = 2;
+        try {
+            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
+            mimeMessageHelper.setFrom(from);
+            mimeMessageHelper.setTo(email);
+            mimeMessageHelper.setSubject("Contato com o clinte");
+
+            mimeMessageHelper.setText(geEmailPossivelClienteTemplate(email, nome), true);
+
+            emailSender.send(mimeMessageHelper.getMimeMessage());
+
+        } catch (MessagingException | IOException | TemplateException e) {
+            e.printStackTrace();
+            throw new RegraDeNegocioException("Erro ao enviar email de recuperação de senha");
+        }
+    }
+
+    private String geEmailPossivelClienteTemplate(String email, String nome)
+            throws IOException, TemplateException {
+
+        Map<String, Object> dados = new HashMap<>();
+        dados.put("usuarioNome", nome);
+        dados.put("usuarioEmail", email);
+        dados.put("emailContato", EMAIL_LOG);
+        dados.put("nome", NOME_LOG);
+
+        Template template = fmConfiguration.getTemplate("email-template-email-possivel-cliente.ftl"); //TODO trocar o template
+        String html = FreeMarkerTemplateUtils.processTemplateIntoString(template, dados);
+        return html;
+    }
+
 }
 
 
