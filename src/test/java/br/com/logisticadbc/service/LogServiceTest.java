@@ -4,7 +4,6 @@ import br.com.logisticadbc.dto.out.LogDTO;
 import br.com.logisticadbc.dto.out.PageDTO;
 import br.com.logisticadbc.entity.UsuarioEntity;
 import br.com.logisticadbc.entity.enums.StatusGeral;
-import br.com.logisticadbc.entity.enums.StatusViagem;
 import br.com.logisticadbc.entity.enums.TipoOperacao;
 import br.com.logisticadbc.entity.mongodb.LogEntity;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
