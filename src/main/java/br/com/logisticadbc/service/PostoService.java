@@ -28,10 +28,8 @@ public class PostoService {
     public PostoDTO criar(PostoCreateDTO postoCreateDTO) throws RegraDeNegocioException {
 
         try {
-            Point point = new Point(Double.parseDouble(postoCreateDTO.getLongitude()),
-                                    Double.parseDouble(postoCreateDTO.getLongitude()));
-
-            GeoJsonPoint locationPoint = new GeoJsonPoint(point);
+            GeoJsonPoint locationPoint = new GeoJsonPoint(Double.parseDouble(postoCreateDTO.getLongitude()),
+                                                          Double.parseDouble(postoCreateDTO.getLongitude()));
 
             PostoEntity postoEntity = objectMapper.convertValue(postoCreateDTO, PostoEntity.class);
             postoEntity.setLocation(locationPoint);
@@ -54,8 +52,13 @@ public class PostoService {
             throw new RegraDeNegocioException("Posto inativo!");
         }
         try {
+            GeoJsonPoint locationPoint = new GeoJsonPoint(Double.parseDouble(postoCreateDTO.getLongitude()),
+                                                          Double.parseDouble(postoCreateDTO.getLongitude()));
+
             postoEncontrado.setNome(postoCreateDTO.getNome());
             postoEncontrado.setValorCombustivel(postoCreateDTO.getValorCombustivel());
+            postoEncontrado.setCidade(postoCreateDTO.getCidade());
+            postoEncontrado.setLocation(locationPoint);
 
             PostoEntity postoEditado = postoRepository.save(postoEncontrado);
 

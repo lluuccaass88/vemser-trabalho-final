@@ -72,18 +72,31 @@ public class PostoServiceTest {
         //SETUP
         String id = "1";
         PostoCreateDTO postoCreateDTO = new PostoCreateDTO();
-        postoCreateDTO.setNome("Posto Ipiranga");
-        postoCreateDTO.setCidade("Fortaleza");
-        postoCreateDTO.setLongitude("3.123456");
-        postoCreateDTO.setLatitude("4.123456");
-        postoCreateDTO.setValorCombustivel(4.50);
+        postoCreateDTO.setNome("Posto");
+        postoCreateDTO.setCidade("Caucaia");
+        postoCreateDTO.setLongitude("3.12345");
+        postoCreateDTO.setLatitude("4.123455");
+        postoCreateDTO.setValorCombustivel(4.00);
 
-        when(postoRepository.findById(anyString())).thenReturn(Optional.of(getPostoEntityMock()));
+        PostoEntity postoEntityMock = getPostoEntityMock();
+
+        PostoDTO postoDTOEditado = new PostoDTO(postoEntityMock.getId(), postoEntityMock.getNome(), postoEntityMock.getLocation(),
+                postoEntityMock.getCidade(), postoEntityMock.getValorCombustivel(),
+                postoEntityMock.getStatus());
+
+        when(postoRepository.findById(anyString())).thenReturn(Optional.of(postoEntityMock));
+        when(postoRepository.save(any())).thenReturn(postoEntityMock);
+        when(objectMapper.convertValue(postoEntityMock, PostoDTO.class)).thenReturn(postoDTOEditado);
 
         // ACT
-        postoService.editar("id", postoCreateDTO);
+        PostoDTO postoDTO = postoService.editar("id", postoCreateDTO);
 
         //ASSERT
+        assertEquals(postoCreateDTO.getNome(), postoDTO.getNome());
+        assertEquals(postoCreateDTO.getValorCombustivel(), postoDTO.getValorCombustivel());
+        assertEquals(postoCreateDTO.getCidade(), postoDTO.getCidade());
+        assertEquals(postoCreateDTO.getLongitude(), postoDTO.getLocation().getX());
+        assertEquals(postoCreateDTO.getLatitude(), postoDTO.getLocation().getY());
     }
 
     @Test
