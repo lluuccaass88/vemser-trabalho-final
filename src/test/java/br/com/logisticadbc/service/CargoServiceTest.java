@@ -4,9 +4,11 @@ import br.com.logisticadbc.dto.in.CargoCreateDTO;
 import br.com.logisticadbc.dto.in.RotaCreateDTO;
 import br.com.logisticadbc.dto.out.CargoDTO;
 import br.com.logisticadbc.dto.out.RotaDTO;
+import br.com.logisticadbc.dto.out.UsuarioDTO;
 import br.com.logisticadbc.entity.CargoEntity;
 import br.com.logisticadbc.entity.RotaEntity;
 import br.com.logisticadbc.entity.UsuarioEntity;
+import br.com.logisticadbc.entity.ViagemEntity;
 import br.com.logisticadbc.entity.enums.StatusGeral;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.repository.CargoRepository;
@@ -31,8 +33,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -87,7 +88,6 @@ public class CargoServiceTest {
     @Test
     public void deveTestarCriar() throws RegraDeNegocioException {
         //Setup
-        Integer idUsuario = 1;
         CargoCreateDTO novoCargo = new CargoCreateDTO(
                 "ROLE_BACKEND"
         );
@@ -104,6 +104,71 @@ public class CargoServiceTest {
         Assertions.assertEquals(novoCargo.getNome(), cargoSalvo.getNome());
     }
 
+    //Testar editar
+    @Test
+    public void deveTestarEditar() throws RegraDeNegocioException {
+        //Setup
+        Integer idCargo = 1;
+        CargoCreateDTO ediatadoCargo = new CargoCreateDTO(
+                "ROLE_QA"
+        );
+
+        CargoEntity cargoMockadoDoBanco = getCargoEntityMock();
+
+        when(cargoRepository.findById(anyInt())).thenReturn(Optional.of(cargoMockadoDoBanco));
+        when(cargoRepository.save(any())).thenReturn(cargoMockadoDoBanco);
+
+        //Action
+        CargoDTO cargoEditado = cargoService.editar(idCargo, ediatadoCargo);
+
+        //Assert
+        assertNotNull(cargoEditado);
+        Assertions.assertEquals(ediatadoCargo.getNome(), cargoEditado.getNome());
+    }
+
+    //Testa cadastrar Usuario em cargo
+    @Test
+    public void deveTestarCadatrarusuarioEmRota() throws RegraDeNegocioException { //TODO verificar o erro depos
+        //Setup
+        Integer idUsuario = 1;
+        Integer idCargo = 1;
+
+        CargoDTO cargoDTO = new CargoDTO();
+        cargoDTO.setNome("ROLE_ADMIN");
+
+        Set<UsuarioEntity> listaUsuario = new HashSet<>();
+        listaUsuario.add(getUsuarioEntityMock());
+
+        Set<CargoEntity> listaCargo = new HashSet<>();
+        listaCargo.add(getCargoEntityMock());
+
+        Set<CargoDTO> listaCargoDTO = new HashSet<>();
+        listaCargoDTO.add(cargoDTO);
+
+
+        CargoEntity cargoMockadoDoBanco = getCargoEntityMock();
+        cargoMockadoDoBanco.setUsuarios(listaUsuario);
+
+        UsuarioEntity usuarioMockadoBanco = getUsuarioEntityMock();
+        usuarioMockadoBanco.setCargos(listaCargo);
+
+        UsuarioDTO usuarioEncontrado = new UsuarioDTO();
+        usuarioEncontrado.setCargos(listaCargoDTO);
+
+        when(cargoRepository.findById(any())).thenReturn(Optional.of(cargoMockadoDoBanco));
+        when(usuarioService.buscarPorId(any())).thenReturn(usuarioMockadoBanco);
+        when(cargoRepository.save(any())).thenReturn(cargoMockadoDoBanco);
+        when(usuarioService.listarPorId(anyInt())).thenReturn(usuarioEncontrado);
+
+        //Action
+        UsuarioDTO usuarioRelacionadoComCargo = cargoService.cadastrarUsuario(idCargo, idUsuario);
+
+        //Assert
+        assertNotNull(usuarioRelacionadoComCargo);
+        Assertions.assertEquals(cargoMockadoDoBanco.getNome(), usuarioRelacionadoComCargo.getNome());
+    }
+
+    //Testat listar
     @Test
     public void deveListarComSucesso() {
         // SETUP
@@ -121,6 +186,7 @@ public class CargoServiceTest {
 
     }
 
+    //Testar listar por id
     @Test
     public void deveListarPorIdComSucesso() throws RegraDeNegocioException {
         // SETUP
@@ -134,6 +200,7 @@ public class CargoServiceTest {
         Assertions.assertEquals(1, cargoDTO.getIdCargo());
     }
 
+    //Testar buscar por id
     @Test
     public void deveBuscarPorIdComSucesso() throws RegraDeNegocioException {
         // SETUP
@@ -147,6 +214,20 @@ public class CargoServiceTest {
         Assertions.assertEquals(1, cargoEntity.getIdCargo());
     }
 
+    //Testar buscar por nome
+    @Test
+    public void deveBuscarPorNomeSucesso() throws RegraDeNegocioException {
+        // SETUP
+        String nome = "ROLE_ADMIN";
+        Mockito.when(cargoRepository.findByNome(anyString())).thenReturn(Optional.of(getCargoEntityMock()));
+
+        // ACT
+        CargoEntity cargoRetornado = cargoService.buscarPorNome(nome);
+
+        // ASSERT
+        Assertions.assertNotNull(cargoRetornado);
+        Assertions.assertEquals(nome, cargoRetornado.getNome());
+    }
     @NotNull
     private static CargoEntity getCargoEntityMock() {
         CargoEntity cargoMockado = new CargoEntity();

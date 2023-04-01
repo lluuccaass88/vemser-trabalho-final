@@ -419,7 +419,6 @@ public class ViagemServiceTest {
         Assertions.assertEquals(StatusViagem.FINALIZADA, viagemMockadoBanco.getStatusViagem());
     }
 
-
     //Testar editar
     @Test
     public void deveEditarComSucesso() throws RegraDeNegocioException {
