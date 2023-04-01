@@ -236,7 +236,7 @@ public class UsuarioServiceTest {
         Assertions.assertEquals(tamanho, usuarioDTOPaginados.getTamanho());
         Assertions.assertEquals(1, usuarioDTOPaginados.getElementos().size());
     }
-    
+
     @Test
     public void deveListarPorCargoEStatus() {
         String cargo = "ROLE_ADMIN";
