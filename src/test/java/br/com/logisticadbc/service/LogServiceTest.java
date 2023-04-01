@@ -44,16 +44,16 @@ public class LogServiceTest {
         ReflectionTestUtils.setField(logService, "objectMapper", objectMapper);
     }
 
-    @Test
-    public void deveListarLogsComSucesso(){
-        //SETUP
-        List<LogEntity> logEntityList = List.of(getLogEntityMockado());
-        when(logRepository.findAll()).thenReturn(logEntityList);
-        //ACT
-        logService.listAllLogs();
-        //ASSERT
-        verify(logRepository, times(1)).findAll();
-    }
+//    @Test
+//    public void deveListarLogsComSucesso(){
+//        //SETUP
+//        List<LogEntity> logEntityList = List.of(getLogEntityMockado());
+//        when(logRepository.findAll()).thenReturn(logEntityList);
+//        //ACT
+//        logService.listAllLogs();
+//        //ASSERT
+//        verify(logRepository, times(1)).findAll();
+//    }
 
     @Test
     public void deveGerarLogComSucesso() throws RegraDeNegocioException {

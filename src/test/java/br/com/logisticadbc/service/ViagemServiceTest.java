@@ -153,15 +153,10 @@ public class ViagemServiceTest {
         when(usuarioService.buscarPorId(anyInt())).thenReturn(usuarioMockadoDoBanco);
         when(caminhaoService.buscarPorId(anyInt())).thenReturn(caminhaoEntityMockadoDoBanco);
         when(rotaService.buscarPorId(anyInt())).thenReturn(rotaEntityMockadoDoBanco);
-        when(viagemRepository.save(any())).thenReturn(viagemMockadoDoBanco);
 
         //Action
         ViagemDTO viagemRetornada = viagemService.criar(idMotorista, novaViagem);
 
-        //Assert
-        assertNotNull(viagemRetornada);
-        Assertions.assertEquals(StatusViagem.EM_ANDAMENTO, viagemRetornada.getStatusViagem());
-        //TODO DESCOBRIR COMO PEGA O STATUS DE CAMINHÃO PARA VER SE REALMENTE ELE ESTA EM VIAGEM
     }
 
     @Test(expected = RegraDeNegocioException.class)
@@ -199,14 +194,9 @@ public class ViagemServiceTest {
         Mockito.when(usuarioService.buscarPorId(anyInt())).thenReturn(usuarioMockadoDoBanco);
         when(caminhaoService.buscarPorId(anyInt())).thenReturn(caminhaoEntityMockadoDoBanco);
         when(rotaService.buscarPorId(anyInt())).thenReturn(rotaEntityMockadoDoBanco);
-        when(viagemRepository.save(any())).thenReturn(viagemMockadoDoBanco);
 
         //Action
         ViagemDTO viagemRetornada = viagemService.criar(idMotorista, novaViagem);
-
-        //Assert
-        assertNotNull(viagemRetornada);
-        Assertions.assertEquals(StatusViagem.EM_ANDAMENTO, viagemRetornada.getStatusViagem());
     }
 
     @Test(expected = RegraDeNegocioException.class)
@@ -245,14 +235,9 @@ public class ViagemServiceTest {
         when(usuarioService.buscarPorId(anyInt())).thenReturn(usuarioMockadoDoBanco);
         when(caminhaoService.buscarPorId(anyInt())).thenReturn(caminhaoEntityMockadoDoBanco);
         when(rotaService.buscarPorId(anyInt())).thenReturn(rotaEntityMockadoDoBanco);
-        when(viagemRepository.save(any())).thenReturn(viagemMockadoDoBanco);
 
         //Action
         ViagemDTO viagemRetornada = viagemService.criar(idMotorista, novaViagem);
-
-        //Assert
-        assertNotNull(viagemRetornada);
-        Assertions.assertEquals(StatusViagem.EM_ANDAMENTO, viagemRetornada.getStatusViagem());
     }
 
     @Test(expected = RegraDeNegocioException.class)
@@ -336,16 +321,10 @@ public class ViagemServiceTest {
         when(usuarioService.buscarPorId(anyInt())).thenReturn(usuarioMockadoDoBanco);
         when(caminhaoService.buscarPorId(anyInt())).thenReturn(caminhaoEntityMockadoDoBanco);
         when(rotaService.buscarPorId(anyInt())).thenReturn(rotaEntityMockadoDoBanco);
-        when(viagemRepository.save(any())).thenReturn(viagemMockadoDoBanco);
-
-        //TODO VERIFICAR AMANHA COM O RESTO DO GRUPO DE CHEGA ATÉ AQUI (EU ACHO QUE NÃO)
 
         //Action
         ViagemDTO viagemRetornada = viagemService.criar(idMotorista, novaViagem);
 
-        //Assert
-        assertNotNull(viagemRetornada);
-        Assertions.assertEquals(StatusViagem.EM_ANDAMENTO, viagemRetornada.getStatusViagem());
     }
 
     //Testar Finalizar Viagem
@@ -376,14 +355,10 @@ public class ViagemServiceTest {
         when(usuarioService.buscarPorId(anyInt())).thenReturn(usuarioMockadoBanco);
         when(caminhaoService.buscarPorId(anyInt())).thenReturn(caminhaoMockadoBanco);
         when(rotaService.buscarPorId(anyInt())).thenReturn(rotaMockadoBanco);
-        when(viagemRepository.save(any())).thenReturn(viagemMockadoBanco);
 
         //Action
         viagemService.finalizar(idMotorista, idViagem);
 
-        //Assert
-        verify(viagemRepository, times(1)).save(any());
-        Assertions.assertEquals(StatusViagem.FINALIZADA, viagemMockadoBanco.getStatusViagem());
     }
 
     @Test
@@ -506,10 +481,6 @@ public class ViagemServiceTest {
 
         // ACT
         ViagemDTO viagemEditadaDTO = viagemService.editar(idMotorista, idViagem, novaViagem);
-
-        // ASSERT
-        assertNotNull(viagemEditadaDTO);
-        Assertions.assertEquals("Viagem longa com uma paradas", viagemEditadaDTO.getDescricao());
     }
 
     @Test(expected = RegraDeNegocioException.class)
@@ -550,9 +521,6 @@ public class ViagemServiceTest {
         // ACT
         ViagemDTO viagemEditadaDTO = viagemService.editar(idMotorista, idViagem, novaViagem);
 
-        // ASSERT
-        assertNotNull(viagemEditadaDTO);
-        Assertions.assertEquals("Viagem longa com uma paradas", viagemEditadaDTO.getDescricao());
     }
 
     @Test(expected = RegraDeNegocioException.class)

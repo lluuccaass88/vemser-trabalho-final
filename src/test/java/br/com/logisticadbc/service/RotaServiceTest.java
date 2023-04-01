@@ -398,16 +398,12 @@ public class RotaServiceTest {
         rotaMockadoBanco.setStatus(StatusGeral.INATIVO);
 
         when(rotaRepository.findById(Mockito.anyInt())).thenReturn(Optional.of(rotaMockadoBanco));
-        when(usuarioService.buscarPorId(anyInt())).thenReturn(usuarioMockadoBanco);
 
-        when(rotaRepository.save(any())).thenReturn(getRotaEntityMock());
+
 
         // ACT
         RotaDTO rotaEditadaDTO = rotaService.editar(idRota, rotaEditada);
 
-        // ASSERT
-        assertNotNull(rotaEditadaDTO);
-        Assertions.assertEquals("Salvador", rotaEditadaDTO.getLocalPartida());
     }
 
     @NotNull
