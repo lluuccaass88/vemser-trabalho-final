@@ -90,7 +90,6 @@ public class CaminhaoServiceTest {
         Assertions.assertEquals(1, caminhaoDTORetornado.getIdUsuario());
     }
 
-    //Testar abastecer
     @Test
     public void deveTestarAbastecerComSucesso() throws RegraDeNegocioException {
         // SETUP
@@ -158,8 +157,6 @@ public class CaminhaoServiceTest {
         CaminhaoDTO caminhaoDTOAbastecido = caminhaoService.abastecer(idCaminhao, combustivel);
     }
 
-
-    //Testar remover
     @Test
     public void deveTestarRemoverComSucesso() throws RegraDeNegocioException {
         // SETUP
@@ -173,7 +170,6 @@ public class CaminhaoServiceTest {
         // ASSERT
         Mockito.verify(caminhaoRepository, times(1)).save(any());
         Assertions.assertEquals(StatusGeral.INATIVO, caminhaoEntityMock.getStatus());
-
     }
 
     @Test

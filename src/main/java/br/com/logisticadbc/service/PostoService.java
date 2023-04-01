@@ -43,12 +43,10 @@ public class PostoService {
             return postoDTO;
 
         } catch (Exception e) {
-            e.printStackTrace();
             throw new RegraDeNegocioException("Aconteceu algum problema durante a criação.");
         }
     }
 
-    // TODO REVISAR
     public PostoDTO editar(String idPosto, PostoCreateDTO postoCreateDTO) throws RegraDeNegocioException {
         PostoEntity postoEncontrado = buscarPorId(idPosto);
 
@@ -59,9 +57,9 @@ public class PostoService {
             postoEncontrado.setNome(postoCreateDTO.getNome());
             postoEncontrado.setValorCombustivel(postoCreateDTO.getValorCombustivel());
 
-            postoRepository.save(postoEncontrado);
+            PostoEntity postoEditado = postoRepository.save(postoEncontrado);
 
-            PostoDTO postoDTO = objectMapper.convertValue(postoEncontrado, PostoDTO.class);
+            PostoDTO postoDTO = objectMapper.convertValue(postoEditado, PostoDTO.class);
             return postoDTO;
 
         } catch (Exception e) {
@@ -89,9 +87,7 @@ public class PostoService {
         return postoRepository.findAll()
                 .stream()
                 .map(posto -> {
-                    PostoDTO postoDTO = new PostoDTO(posto.getId(), posto.getNome(), posto.getLocation(),
-                            posto.getCidade(), posto.getValorCombustivel(), posto.getStatus());
-//                    PostoDTO postoDTO = objectMapper.convertValue(posto, PostoDTO.class);
+                    PostoDTO postoDTO = objectMapper.convertValue(posto, PostoDTO.class);
                     return postoDTO;
                 })
                 .toList();
