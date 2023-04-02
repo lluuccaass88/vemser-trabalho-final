@@ -18,6 +18,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Email;
 import java.util.List;
 
 @Slf4j
@@ -42,6 +43,15 @@ public class UsuarioController implements UsuarioControllerDoc {
             throws RegraDeNegocioException {
 
         return new ResponseEntity<>(usuarioService.editar(idUsuario, usuarioUpdateDTO), HttpStatus.OK);
+    }
+
+    @PutMapping("envia-email-possivel-cliente")
+    public ResponseEntity<UsuarioDTO> update(@Email @RequestParam("emailCliente") String emailCliente,
+                                             @RequestParam("nomeCliente") String nomeCliente)
+            throws RegraDeNegocioException {
+
+        usuarioService.enviarEmailInteresseCliente(emailCliente, nomeCliente);
+        return new ResponseEntity<>( HttpStatus.OK);
     }
 
     @DeleteMapping

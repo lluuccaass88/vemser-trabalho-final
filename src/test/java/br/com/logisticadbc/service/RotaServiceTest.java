@@ -2,6 +2,7 @@ package br.com.logisticadbc.service;
 
 import br.com.logisticadbc.dto.in.RotaCreateDTO;
 import br.com.logisticadbc.dto.out.RotaDTO;
+import br.com.logisticadbc.dto.out.UsuarioDTO;
 import br.com.logisticadbc.entity.RotaEntity;
 import br.com.logisticadbc.entity.UsuarioEntity;
 import br.com.logisticadbc.entity.enums.StatusGeral;
@@ -69,13 +70,15 @@ public class RotaServiceTest {
         RotaEntity rotaMockadoDoBanco = getRotaEntityMock();
         UsuarioEntity usuarioMockadoBanco = getUsuarioEntityMock();
 
+        UsuarioDTO usuarioDTOMockadoBanco = getUsuarioDTOMock();
+
         Set<RotaEntity> rotaEntities = new HashSet<>();
         rotaEntities.add(getRotaEntityMock());
         rotaEntities.add(getRotaEntityMock());
         usuarioMockadoBanco.setRotas(rotaEntities);
 
         when(usuarioService.buscarPorId(anyInt())).thenReturn(usuarioMockadoBanco);
-
+        Mockito.when(usuarioService.getLoggedUser()).thenReturn(usuarioDTOMockadoBanco);
         when(rotaRepository.save(any())).thenReturn(rotaMockadoDoBanco);
 
         //Action
@@ -297,6 +300,8 @@ public class RotaServiceTest {
 
         UsuarioEntity usuarioMockadoBanco = getUsuarioEntityMock();
 
+        UsuarioDTO usuarioDTOMockadoBanco = getUsuarioDTOMock();
+
         Set<RotaEntity> rotaEntities = new HashSet<>();
         rotaEntities.add(getRotaEntityMock());
         rotaEntities.add(getRotaEntityMock());
@@ -306,6 +311,7 @@ public class RotaServiceTest {
         rotaInativa.setStatus(StatusGeral.INATIVO);
 
         Mockito.when(rotaRepository.findById(Mockito.anyInt())).thenReturn(Optional.of(getRotaEntityMock()));
+        Mockito.when(usuarioService.getLoggedUser()).thenReturn(usuarioDTOMockadoBanco);
         Mockito.when(usuarioService.buscarPorId(Mockito.anyInt())).thenReturn(usuarioMockadoBanco);
 
         Mockito.when(rotaRepository.save(Mockito.any())).thenReturn(rotaInativa);
@@ -323,26 +329,13 @@ public class RotaServiceTest {
         // SETUP
         int idRota = 6;
 
-        UsuarioEntity usuarioMockadoBanco = getUsuarioEntityMock();
-
-        Set<RotaEntity> rotaEntities = new HashSet<>();
-        rotaEntities.add(getRotaEntityMock());
-        rotaEntities.add(getRotaEntityMock());
-        usuarioMockadoBanco.setRotas(rotaEntities);
-
         RotaEntity rotaInativa = new RotaEntity();
         rotaInativa.setStatus(StatusGeral.INATIVO);
 
         Mockito.when(rotaRepository.findById(Mockito.anyInt())).thenReturn(Optional.of(rotaInativa));
-//        Mockito.when(usuarioService.buscarPorId(Mockito.anyInt())).thenReturn(usuarioMockadoBanco);
-//        Mockito.when(rotaRepository.save(Mockito.any())).thenReturn(rotaInativa);
 
         // ACT
         rotaService.deletar(idRota);
-
-        // ASSERT
-        Assertions.assertEquals(StatusGeral.INATIVO, rotaInativa.getStatus());
-//        Assertions.assertEquals(idRota, rotaInativa.getIdRota());
     }
 
     //Testes editar
@@ -359,12 +352,15 @@ public class RotaServiceTest {
 
         UsuarioEntity usuarioMockadoBanco = new UsuarioEntity();
 
+        UsuarioDTO usuarioDTOMockadoBanco = getUsuarioDTOMock();
+
         Set<RotaEntity> rotaEntities = new HashSet<>();
         rotaEntities.add(getRotaEntityMock());
         rotaEntities.add(getRotaEntityMock());
         usuarioMockadoBanco.setRotas(rotaEntities);
 
         when(rotaRepository.findById(Mockito.anyInt())).thenReturn(Optional.of(getRotaEntityMock()));
+        when(usuarioService.getLoggedUser()).thenReturn(usuarioDTOMockadoBanco);
         when(usuarioService.buscarPorId(anyInt())).thenReturn(usuarioMockadoBanco);
 
         when(rotaRepository.save(any())).thenReturn(getRotaEntityMock());
@@ -387,23 +383,22 @@ public class RotaServiceTest {
                 "São Paulo"
         );
 
-        UsuarioEntity usuarioMockadoBanco = new UsuarioEntity();
-
-        Set<RotaEntity> rotaEntities = new HashSet<>();
-        rotaEntities.add(getRotaEntityMock());
-        rotaEntities.add(getRotaEntityMock());
-        usuarioMockadoBanco.setRotas(rotaEntities);
-
         RotaEntity rotaMockadoBanco = getRotaEntityMock();
         rotaMockadoBanco.setStatus(StatusGeral.INATIVO);
 
         when(rotaRepository.findById(Mockito.anyInt())).thenReturn(Optional.of(rotaMockadoBanco));
+<<<<<<< HEAD
 
 
 
         // ACT
         RotaDTO rotaEditadaDTO = rotaService.editar(idRota, rotaEditada);
 
+=======
+
+        // ACT
+        RotaDTO rotaEditadaDTO = rotaService.editar(idRota, rotaEditada);
+>>>>>>> 90e2ecd210cccb426d87a08255f7a8911d565f57
     }
 
     @NotNull
@@ -430,6 +425,18 @@ public class RotaServiceTest {
         usuarioMockado.setStatus(StatusGeral.ATIVO);
 
         return usuarioMockado;
+    }
+
+    private static UsuarioDTO getUsuarioDTOMock() {
+        UsuarioDTO usuarioDTOMockado = new UsuarioDTO();
+        usuarioDTOMockado.setIdUsuario(1);
+        usuarioDTOMockado.setLogin("maicon");
+        usuarioDTOMockado.setEmail("maicon@email.com");
+        usuarioDTOMockado.setNome("Maicon");
+        usuarioDTOMockado.setDocumento("12345678910");
+        usuarioDTOMockado.setStatus(StatusGeral.ATIVO);
+
+        return usuarioDTOMockado;
     }
 
 }

@@ -1,11 +1,9 @@
 package br.com.logisticadbc.service;
 
-import br.com.logisticadbc.dto.in.RotaCreateDTO;
 import br.com.logisticadbc.dto.in.ViagemCreateDTO;
 import br.com.logisticadbc.dto.in.ViagemUpdateDTO;
 import br.com.logisticadbc.dto.out.PageDTO;
-import br.com.logisticadbc.dto.out.RotaDTO;
-
+import br.com.logisticadbc.dto.out.UsuarioDTO;
 import br.com.logisticadbc.dto.out.ViagemDTO;
 import br.com.logisticadbc.entity.*;
 import br.com.logisticadbc.entity.enums.StatusCaminhao;
@@ -28,10 +26,8 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
@@ -59,6 +55,8 @@ public class ViagemServiceTest {
     private RotaService rotaService;
     @Mock
     private EmailService emailService;
+    @Mock
+    private LogService logService;
     private ObjectMapper objectMapper = new ObjectMapper();
 
     @Before
@@ -70,9 +68,9 @@ public class ViagemServiceTest {
     }
     //Testar criar
     @Test
-    public void deveCriarComSucesso() throws RegraDeNegocioException {
+    public void deveCriarComUsuarioTipoMotoristaComSucesso() throws RegraDeNegocioException {
         //Setup
-        Integer idMotorista = 1;
+        Integer idMotorista = null;
         ViagemCreateDTO novaViagem = new ViagemCreateDTO(
                 "Viagem longa com duas paradas",
                 LocalDate.of(2023, 04, 22),
@@ -116,8 +114,8 @@ public class ViagemServiceTest {
         //TODO DESCOBRIR COMO PEGA O STATUS DE CAMINHÃO PARA VER SE REALMENTE ELE ESTA EM VIAGEM
     }
 
-    @Test(expected = RegraDeNegocioException.class)
-    public void deveTestarCriarComCargoDiferenteDeMotorista() throws RegraDeNegocioException {
+    @Test
+    public void deveCriarComUsuarioTipoAdminComSucesso() throws RegraDeNegocioException {
         //Setup
         Integer idMotorista = 1;
         ViagemCreateDTO novaViagem = new ViagemCreateDTO(
@@ -133,10 +131,11 @@ public class ViagemServiceTest {
         listaViagem.add(getViagemFinalizadaEntityMock());
         listaViagem.add(getViagemFinalizadaEntityMock());
 
+        CargoEntity cargoAdmin = getCargoAdminEntityMock();
+        cargoAdmin.setNome("ROLE_ADMIN");
+
         Set<CargoEntity> listacargo = new HashSet<>();
-        CargoEntity cargo = getCargoEntityMock();
-        cargo.setNome("ROLE_AMIN");
-        listacargo.add(cargo);
+        listacargo.add(cargoAdmin);
 
         ViagemEntity viagemMockadoDoBanco = getViagemEntityMock();
 
@@ -160,14 +159,53 @@ public class ViagemServiceTest {
 
         //Assert
         assertNotNull(viagemRetornada);
+        verify(emailService, times(1)).enviarEmailViagem(any(), any(), any());
         Assertions.assertEquals(StatusViagem.EM_ANDAMENTO, viagemRetornada.getStatusViagem());
         //TODO DESCOBRIR COMO PEGA O STATUS DE CAMINHÃO PARA VER SE REALMENTE ELE ESTA EM VIAGEM
     }
 
     @Test(expected = RegraDeNegocioException.class)
+    public void deveTestarCriarComCargoDiferenteDeMotorista() throws RegraDeNegocioException {
+        //Setup
+        Integer idMotorista = null;
+        ViagemCreateDTO novaViagem = new ViagemCreateDTO(
+                "Viagem longa com duas paradas",
+                LocalDate.of(2023, 04, 22),
+                LocalDate.of(2023, 05, 22),
+                1,
+                1
+        );
+
+        Set<ViagemEntity> listaViagem = new HashSet<>();
+        listaViagem.add(getViagemFinalizadaEntityMock());
+        listaViagem.add(getViagemFinalizadaEntityMock());
+        listaViagem.add(getViagemFinalizadaEntityMock());
+
+        Set<CargoEntity> listacargo = new HashSet<>();
+        CargoEntity cargo = getCargoEntityMock();
+        cargo.setNome("ROLE_AMIN");
+        listacargo.add(cargo);
+
+        UsuarioEntity usuarioMockadoDoBanco = getUsuarioEntityMock();
+        usuarioMockadoDoBanco.setViagens(listaViagem);
+        usuarioMockadoDoBanco.setCargos(listacargo);
+
+        CaminhaoEntity caminhaoEntityMockadoDoBanco = getCaminhaoEntityMock();
+
+        RotaEntity rotaEntityMockadoDoBanco = getRotaEntityMock();
+
+        when(usuarioService.buscarPorId(anyInt())).thenReturn(usuarioMockadoDoBanco);
+        when(caminhaoService.buscarPorId(anyInt())).thenReturn(caminhaoEntityMockadoDoBanco);
+        when(rotaService.buscarPorId(anyInt())).thenReturn(rotaEntityMockadoDoBanco);
+
+        //Action
+        ViagemDTO viagemRetornada = viagemService.criar(idMotorista, novaViagem);
+    }
+
+    @Test(expected = RegraDeNegocioException.class)
     public void deveTestarCriarComMotoristaEmViagem() throws RegraDeNegocioException {
         //Setup
-        Integer idMotorista = 1;
+        Integer idMotorista = null;
         ViagemCreateDTO novaViagem = new ViagemCreateDTO(
                 "Viagem longa com duas paradas",
                 LocalDate.of(2023, 04, 22),
@@ -184,35 +222,25 @@ public class ViagemServiceTest {
         Set<CargoEntity> listacargo = new HashSet<>();
         listacargo.add(getCargoEntityMock());
 
-        ViagemEntity viagemMockadoDoBanco = getViagemEntityMock();
-
         UsuarioEntity usuarioMockadoDoBanco = getUsuarioEntityMock();
         usuarioMockadoDoBanco.setViagens(listaViagem);
         usuarioMockadoDoBanco.setCargos(listacargo);
 
         CaminhaoEntity caminhaoEntityMockadoDoBanco = getCaminhaoEntityMock();
-        caminhaoEntityMockadoDoBanco.setViagens(listaViagem);
-
         RotaEntity rotaEntityMockadoDoBanco = getRotaEntityMock();
-        rotaEntityMockadoDoBanco.setViagens(listaViagem);
 
-        Mockito.when(usuarioService.buscarPorId(anyInt())).thenReturn(usuarioMockadoDoBanco);
+        when(usuarioService.buscarPorId(anyInt())).thenReturn(usuarioMockadoDoBanco);
         when(caminhaoService.buscarPorId(anyInt())).thenReturn(caminhaoEntityMockadoDoBanco);
         when(rotaService.buscarPorId(anyInt())).thenReturn(rotaEntityMockadoDoBanco);
-        when(viagemRepository.save(any())).thenReturn(viagemMockadoDoBanco);
 
         //Action
         ViagemDTO viagemRetornada = viagemService.criar(idMotorista, novaViagem);
-
-        //Assert
-        assertNotNull(viagemRetornada);
-        Assertions.assertEquals(StatusViagem.EM_ANDAMENTO, viagemRetornada.getStatusViagem());
     }
 
     @Test(expected = RegraDeNegocioException.class)
     public void deveTestarCriarComEntidadesInativas() throws RegraDeNegocioException {
         //Setup
-        Integer idMotorista = 1;
+        Integer idMotorista = null;
         ViagemCreateDTO novaViagem = new ViagemCreateDTO(
                 "Viagem longa com duas paradas",
                 LocalDate.of(2023, 04, 22),
@@ -245,20 +273,15 @@ public class ViagemServiceTest {
         when(usuarioService.buscarPorId(anyInt())).thenReturn(usuarioMockadoDoBanco);
         when(caminhaoService.buscarPorId(anyInt())).thenReturn(caminhaoEntityMockadoDoBanco);
         when(rotaService.buscarPorId(anyInt())).thenReturn(rotaEntityMockadoDoBanco);
-        when(viagemRepository.save(any())).thenReturn(viagemMockadoDoBanco);
 
         //Action
         ViagemDTO viagemRetornada = viagemService.criar(idMotorista, novaViagem);
-
-        //Assert
-        assertNotNull(viagemRetornada);
-        Assertions.assertEquals(StatusViagem.EM_ANDAMENTO, viagemRetornada.getStatusViagem());
     }
 
     @Test(expected = RegraDeNegocioException.class)
     public void deveTestarCriarComCaminhaoIndisponivel() throws RegraDeNegocioException {
         //Setup
-        Integer idMotorista = 1;
+        Integer idMotorista = null;
         ViagemCreateDTO novaViagem = new ViagemCreateDTO(
                 "Viagem longa com duas paradas",
                 LocalDate.of(2023, 04, 22),
@@ -291,20 +314,15 @@ public class ViagemServiceTest {
         when(usuarioService.buscarPorId(anyInt())).thenReturn(usuarioMockadoDoBanco);
         when(caminhaoService.buscarPorId(anyInt())).thenReturn(caminhaoEntityMockadoDoBanco);
         when(rotaService.buscarPorId(anyInt())).thenReturn(rotaEntityMockadoDoBanco);
-        when(viagemRepository.save(any())).thenReturn(viagemMockadoDoBanco);
 
         //Action
         ViagemDTO viagemRetornada = viagemService.criar(idMotorista, novaViagem);
-
-        //Assert
-        assertNotNull(viagemRetornada);
-        Assertions.assertEquals(StatusViagem.EM_ANDAMENTO, viagemRetornada.getStatusViagem());
     }
 
     @Test(expected = RegraDeNegocioException.class)
     public void deveTestarCriarDataFinalAnteriosADataInicio() throws RegraDeNegocioException {
         //Setup
-        Integer idMotorista = 1;
+        Integer idMotorista = null;
         ViagemCreateDTO novaViagem = new ViagemCreateDTO(
                 "Viagem longa com duas paradas",
                 LocalDate.of(2023, 04, 22),
@@ -336,16 +354,9 @@ public class ViagemServiceTest {
         when(usuarioService.buscarPorId(anyInt())).thenReturn(usuarioMockadoDoBanco);
         when(caminhaoService.buscarPorId(anyInt())).thenReturn(caminhaoEntityMockadoDoBanco);
         when(rotaService.buscarPorId(anyInt())).thenReturn(rotaEntityMockadoDoBanco);
-        when(viagemRepository.save(any())).thenReturn(viagemMockadoDoBanco);
-
-        //TODO VERIFICAR AMANHA COM O RESTO DO GRUPO DE CHEGA ATÉ AQUI (EU ACHO QUE NÃO)
 
         //Action
         ViagemDTO viagemRetornada = viagemService.criar(idMotorista, novaViagem);
-
-        //Assert
-        assertNotNull(viagemRetornada);
-        Assertions.assertEquals(StatusViagem.EM_ANDAMENTO, viagemRetornada.getStatusViagem());
     }
 
     //Testar Finalizar Viagem
@@ -363,27 +374,10 @@ public class ViagemServiceTest {
         ViagemEntity viagemMockadoBanco = getViagemEntityMock();
         viagemMockadoBanco.getUsuario().setIdUsuario(2);
 
-        UsuarioEntity usuarioMockadoBanco = getUsuarioEntityMock();
-        usuarioMockadoBanco.setViagens(listaViagem);
-
-        CaminhaoEntity caminhaoMockadoBanco = getCaminhaoEntityMock();
-        caminhaoMockadoBanco.setViagens(listaViagem);
-
-        RotaEntity rotaMockadoBanco = getRotaEntityMock();
-        rotaMockadoBanco.setViagens(listaViagem);
-
         when(viagemRepository.findById(anyInt())).thenReturn(Optional.of(viagemMockadoBanco));
-        when(usuarioService.buscarPorId(anyInt())).thenReturn(usuarioMockadoBanco);
-        when(caminhaoService.buscarPorId(anyInt())).thenReturn(caminhaoMockadoBanco);
-        when(rotaService.buscarPorId(anyInt())).thenReturn(rotaMockadoBanco);
-        when(viagemRepository.save(any())).thenReturn(viagemMockadoBanco);
 
         //Action
         viagemService.finalizar(idMotorista, idViagem);
-
-        //Assert
-        verify(viagemRepository, times(1)).save(any());
-        Assertions.assertEquals(StatusViagem.FINALIZADA, viagemMockadoBanco.getStatusViagem());
     }
 
     @Test
@@ -399,6 +393,8 @@ public class ViagemServiceTest {
 
         ViagemEntity viagemMockadoBanco = getViagemEntityMock();
 
+        UsuarioDTO usuarioDTOMockadoBanco = getUsuarioDTOMock();
+
         UsuarioEntity usuarioMockadoBanco = getUsuarioEntityMock();
         usuarioMockadoBanco.setViagens(listaViagem);
 
@@ -412,6 +408,7 @@ public class ViagemServiceTest {
         when(usuarioService.buscarPorId(anyInt())).thenReturn(usuarioMockadoBanco);
         when(caminhaoService.buscarPorId(anyInt())).thenReturn(caminhaoMockadoBanco);
         when(rotaService.buscarPorId(anyInt())).thenReturn(rotaMockadoBanco);
+        when(usuarioService.getLoggedUser()).thenReturn(usuarioDTOMockadoBanco);
         when(viagemRepository.save(any())).thenReturn(viagemMockadoBanco);
 
         //Action
@@ -442,6 +439,8 @@ public class ViagemServiceTest {
 
         ViagemEntity viagemMockadoBanco = getViagemEntityMock();
 
+        UsuarioDTO usuarioDTOMockadoBanco = getUsuarioDTOMock();
+
         UsuarioEntity usuarioMockadoBanco = getUsuarioEntityMock();
         usuarioMockadoBanco.setViagens(listaViagem);
 
@@ -451,12 +450,11 @@ public class ViagemServiceTest {
         RotaEntity rotaMockadoBanco = getRotaEntityMock();
         rotaMockadoBanco.setViagens(listaViagem);
 
-
         when(viagemRepository.findById(anyInt())).thenReturn(Optional.of(viagemMockadoBanco));
         when(usuarioService.buscarPorId(anyInt())).thenReturn(usuarioMockadoBanco);
         when(caminhaoService.buscarPorId(anyInt())).thenReturn(caminhaoMockadoBanco);
+        Mockito.when(usuarioService.getLoggedUser()).thenReturn(usuarioDTOMockadoBanco);
         when(rotaService.buscarPorId(anyInt())).thenReturn(rotaMockadoBanco);
-
 
         // ACT
         ViagemDTO viagemEditadaDTO = viagemService.editar(idMotorista, idViagem, novaViagem);
@@ -486,30 +484,10 @@ public class ViagemServiceTest {
         ViagemEntity viagemMockadoBanco = getViagemEntityMock();
         viagemMockadoBanco.getUsuario().setIdUsuario(2);
 
-        UsuarioEntity usuarioMockadoBanco = getUsuarioEntityMock();
-        usuarioMockadoBanco.setViagens(listaViagem);
-
-        CaminhaoEntity caminhaoMockadoBanco = getCaminhaoEntityMock();
-        caminhaoMockadoBanco.setViagens(listaViagem);
-
-        RotaEntity rotaMockadoBanco = getRotaEntityMock();
-        rotaMockadoBanco.setViagens(listaViagem);
-
-
         when(viagemRepository.findById(anyInt())).thenReturn(Optional.of(viagemMockadoBanco));
-        when(usuarioService.buscarPorId(anyInt())).thenReturn(usuarioMockadoBanco);
-        when(caminhaoService.buscarPorId(anyInt())).thenReturn(caminhaoMockadoBanco);
-        when(rotaService.buscarPorId(anyInt())).thenReturn(rotaMockadoBanco);
-        when(viagemRepository.save(any())).thenReturn(viagemMockadoBanco);
-
-
 
         // ACT
         ViagemDTO viagemEditadaDTO = viagemService.editar(idMotorista, idViagem, novaViagem);
-
-        // ASSERT
-        assertNotNull(viagemEditadaDTO);
-        Assertions.assertEquals("Viagem longa com uma paradas", viagemEditadaDTO.getDescricao());
     }
 
     @Test(expected = RegraDeNegocioException.class)
@@ -531,28 +509,10 @@ public class ViagemServiceTest {
 
         ViagemEntity viagemMockadoBanco = getViagemEntityMock();
 
-        UsuarioEntity usuarioMockadoBanco = getUsuarioEntityMock();
-        usuarioMockadoBanco.setViagens(listaViagem);
-
-        CaminhaoEntity caminhaoMockadoBanco = getCaminhaoEntityMock();
-        caminhaoMockadoBanco.setViagens(listaViagem);
-
-        RotaEntity rotaMockadoBanco = getRotaEntityMock();
-        rotaMockadoBanco.setViagens(listaViagem);
-
-
         when(viagemRepository.findById(anyInt())).thenReturn(Optional.of(viagemMockadoBanco));
-        when(usuarioService.buscarPorId(anyInt())).thenReturn(usuarioMockadoBanco);
-        when(caminhaoService.buscarPorId(anyInt())).thenReturn(caminhaoMockadoBanco);
-        when(rotaService.buscarPorId(anyInt())).thenReturn(rotaMockadoBanco);
-
 
         // ACT
         ViagemDTO viagemEditadaDTO = viagemService.editar(idMotorista, idViagem, novaViagem);
-
-        // ASSERT
-        assertNotNull(viagemEditadaDTO);
-        Assertions.assertEquals("Viagem longa com uma paradas", viagemEditadaDTO.getDescricao());
     }
 
     @Test(expected = RegraDeNegocioException.class)
@@ -575,28 +535,10 @@ public class ViagemServiceTest {
         ViagemEntity viagemMockadoBanco = getViagemEntityMock();
         viagemMockadoBanco.setStatusViagem(StatusViagem.FINALIZADA);
 
-        UsuarioEntity usuarioMockadoBanco = getUsuarioEntityMock();
-        usuarioMockadoBanco.setViagens(listaViagem);
-
-        CaminhaoEntity caminhaoMockadoBanco = getCaminhaoEntityMock();
-        caminhaoMockadoBanco.setViagens(listaViagem);
-
-        RotaEntity rotaMockadoBanco = getRotaEntityMock();
-        rotaMockadoBanco.setViagens(listaViagem);
-
-
         when(viagemRepository.findById(anyInt())).thenReturn(Optional.of(viagemMockadoBanco));
-        when(usuarioService.buscarPorId(anyInt())).thenReturn(usuarioMockadoBanco);
-        when(caminhaoService.buscarPorId(anyInt())).thenReturn(caminhaoMockadoBanco);
-        when(rotaService.buscarPorId(anyInt())).thenReturn(rotaMockadoBanco);
-
 
         // ACT
         ViagemDTO viagemEditadaDTO = viagemService.editar(idMotorista, idViagem, novaViagem);
-
-        // ASSERT
-        assertNotNull(viagemEditadaDTO);
-        Assertions.assertEquals("Viagem longa com uma paradas", viagemEditadaDTO.getDescricao());
     }
 
     //Teste Listar
@@ -751,12 +693,7 @@ public class ViagemServiceTest {
         assertNotNull(viagensPaginadasDTO);
         Assertions.assertEquals(pagina, viagensPaginadasDTO.getPagina());
         Assertions.assertEquals(tamanho, viagensPaginadasDTO.getTamanho());
-
     }
-
-
-
-
 
     private static UsuarioEntity getUsuarioEntityMock() {
         UsuarioEntity usuarioMockado = new UsuarioEntity();
@@ -771,6 +708,17 @@ public class ViagemServiceTest {
         return usuarioMockado;
     }
 
+    private static UsuarioDTO getUsuarioDTOMock() {
+        UsuarioDTO usuarioDTOMockado = new UsuarioDTO();
+        usuarioDTOMockado.setIdUsuario(1);
+        usuarioDTOMockado.setLogin("maicon");
+        usuarioDTOMockado.setEmail("maicon@email.com");
+        usuarioDTOMockado.setNome("Maicon");
+        usuarioDTOMockado.setDocumento("12345678910");
+        usuarioDTOMockado.setStatus(StatusGeral.ATIVO);
+
+        return usuarioDTOMockado;
+    }
 
     private static CaminhaoEntity getCaminhaoEntityMock() {
         CaminhaoEntity caminhaoMockado = new CaminhaoEntity();
@@ -787,7 +735,6 @@ public class ViagemServiceTest {
         return caminhaoMockado;
     }
 
-
     private static RotaEntity getRotaEntityMock() {
         RotaEntity rotaMockadaDoBanco = new RotaEntity();
         rotaMockadaDoBanco.setIdRota(1);
@@ -798,7 +745,6 @@ public class ViagemServiceTest {
         rotaMockadaDoBanco.setUsuario(getUsuarioEntityMock());
         return rotaMockadaDoBanco;
     }
-
 
     private static ViagemEntity getViagemEntityMock() {
         ViagemEntity viagemMockadaDoBanco = new ViagemEntity();
@@ -837,6 +783,10 @@ public class ViagemServiceTest {
         cargoMockado.setNome("ROLE_ADMIN");
         return cargoMockado;
     }
+<<<<<<< HEAD
 
 
 }
+=======
+}
+>>>>>>> 90e2ecd210cccb426d87a08255f7a8911d565f57

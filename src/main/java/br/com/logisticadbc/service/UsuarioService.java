@@ -10,6 +10,7 @@ import br.com.logisticadbc.dto.out.UsuarioDTO;
 import br.com.logisticadbc.entity.CargoEntity;
 import br.com.logisticadbc.entity.UsuarioEntity;
 import br.com.logisticadbc.entity.enums.StatusGeral;
+import br.com.logisticadbc.entity.enums.TipoOperacao;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.repository.UsuarioRepository;
 import br.com.logisticadbc.security.TokenService;
@@ -41,7 +42,8 @@ public class UsuarioService {
     private final CargoService cargoService;
     public final AuthenticationManager authenticationManager;
     private final ObjectMapper objectMapper;
-    private  PasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder;
+    private final LogService logService;
 
     public UsuarioService(UsuarioRepository usuarioRepository,
                           EmailService emailService,
@@ -49,7 +51,9 @@ public class UsuarioService {
                           @Lazy CargoService cargoService,
                           @Lazy AuthenticationManager authenticationManager,
                           ObjectMapper objectMapper,
-                          PasswordEncoder passwordEncoder) {
+                          PasswordEncoder passwordEncoder,
+                          LogService logService
+                          ) {
         this.usuarioRepository = usuarioRepository;
         this.emailService = emailService;
         this.cargoService = cargoService;
@@ -57,6 +61,7 @@ public class UsuarioService {
         this.authenticationManager = authenticationManager;
         this.objectMapper = objectMapper;
         this.passwordEncoder = passwordEncoder;
+        this.logService = logService;
     }
 
     public UsuarioDTO criar(UsuarioCreateDTO usuarioCreateDTO) throws RegraDeNegocioException {
@@ -69,11 +74,15 @@ public class UsuarioService {
 
         try {
             usuarioEntity.setStatus(StatusGeral.ATIVO);
+
             //criptografa senha
             usuarioEntity.setSenha(passwordEncoder.encode(usuarioEntity.getSenha()));
             usuarioEntity.setCargos(cargos);
 
             UsuarioEntity usuarioCriado = usuarioRepository.save(usuarioEntity);
+
+            String descricao = "Operação em Usuário: " + usuarioEntity.getLogin();
+            logService.gerarLog(usuarioEntity.getLogin(), descricao, TipoOperacao.CADASTRO);
 
             emailService.enviarEmailBoasVindas(usuarioCriado);
 
@@ -104,11 +113,10 @@ public class UsuarioService {
                 throw new RegraDeNegocioException("Não é possível editar um admin.");
             }
 
-        // se nao tiver parâmetro, usa o proprio usuario logado
+            // se nao tiver parâmetro, usa o proprio usuario logado
         } else {
             usuarioEncontrado = usuarioLogado;
         }
-
         try {
             usuarioEncontrado.setNome(usuarioUpdateDTO.getNome());
             usuarioEncontrado.setEmail(usuarioUpdateDTO.getEmail());
@@ -117,10 +125,13 @@ public class UsuarioService {
 
             UsuarioEntity usuarioEditado = usuarioRepository.save(usuarioEncontrado);
 
+            String descricao = "Operação em Usuário: " + usuarioEncontrado.getLogin();
+            logService.gerarLog(usuarioEncontrado.getLogin(), descricao, TipoOperacao.ALTERACAO);
+
             return transformaEmUsuarioDTO(usuarioEditado);
 
-        } catch (Exception e) {
-            throw new RegraDeNegocioException("Aconteceu algum problema durante a edição.");
+        } catch (DataAccessException e) {
+            throw new RegraDeNegocioException("Erro ao salvar no banco.");
         }
     }
 
@@ -135,8 +146,11 @@ public class UsuarioService {
             usuarioEncontrado.setStatus(StatusGeral.INATIVO);
             usuarioRepository.save(usuarioEncontrado);
 
-        } catch (Exception e) {
-            throw new RegraDeNegocioException("Aconteceu algum problema durante a exclusão.");
+            String descricao = "Operação em Usuário: " + usuarioEncontrado.getLogin();
+            logService.gerarLog(usuarioEncontrado.getLogin(), descricao, TipoOperacao.EXCLUSAO);
+
+        } catch (DataAccessException e) {
+            throw new RegraDeNegocioException("Erro ao salvar no banco.");
         }
     }
 
@@ -154,7 +168,7 @@ public class UsuarioService {
             return transformaEmUsuarioDTO(usuarioEncontrado);
 
         } catch (Exception e) {
-            throw new RegraDeNegocioException("Aconteceu algum problema durante a listagem.");
+            throw new RegraDeNegocioException("Erro de conversão.");
         }
     }
 
@@ -199,7 +213,6 @@ public class UsuarioService {
     }
 
     public PageDTO<UsuarioCompletoDTO> gerarRelatorioCompleto(Integer pagina, Integer tamanho) { //ORDENAR POR CARGO
-
         Pageable solicitacaoPagina = PageRequest.of(pagina, tamanho);
 
         Page<UsuarioCompletoDTO> paginacaoMotorista = usuarioRepository.relatorio(solicitacaoPagina);
@@ -249,7 +262,7 @@ public class UsuarioService {
         return usuarioRepository.findByLogin(login);
     }
 
-    public String autenticar (LoginDTO loginDTO) throws RegraDeNegocioException {
+    public String autenticar(LoginDTO loginDTO) throws RegraDeNegocioException {
         ativo(loginDTO);
         try {
             // cria dto do spring
@@ -273,6 +286,61 @@ public class UsuarioService {
         }
     }
 
+    public void recuperarSenha (String emailUsuario) throws RegraDeNegocioException {
+        int tamSenhaAleatoria = 10;
+        String senhaTemporaria = gerarSenhaAleatoria(tamSenhaAleatoria);
+        UsuarioEntity usuarioRecuperado = usuarioRepository.findByEmail(emailUsuario);
+
+        try {
+            if(usuarioRecuperado == null){
+                throw new RegraDeNegocioException ("Email não cadastrado no sistema.");
+            }else if(usuarioRecuperado.getStatus() == StatusGeral.INATIVO){
+                throw new RegraDeNegocioException ("Não é possivel recuperar a senha de um usuario inativo.");
+            }
+
+            usuarioRecuperado.setSenha(passwordEncoder.encode(senhaTemporaria));
+
+            usuarioRepository.save(usuarioRecuperado);
+
+            emailService.enviarEmailRecuperarSenha(usuarioRecuperado, senhaTemporaria);
+
+        } catch (NoSuchElementException | BadCredentialsException e) {
+            throw new RegraDeNegocioException("Ocorreu um erro durante a recuperação da senha");
+        }
+    }
+
+    public void enviarEmailInteresseCliente (String emailCliente, String nomeCliente) throws RegraDeNegocioException {
+
+        try {
+            emailService.enviarEmailPossivelCliente(emailCliente, nomeCliente);
+        } catch (NoSuchElementException | BadCredentialsException e) {
+            throw new RegraDeNegocioException("Ocorreu um erro durante o envio de email para o possivel cliente");
+        }
+    }
+
+
+    public String gerarSenhaAleatoria(int n){
+
+            String AlphaNumericString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                    + "0123456789"
+                    + "abcdefghijklmnopqrstuvxyz";
+
+            StringBuilder sb = new StringBuilder(n);
+
+            for (int i = 0; i < n; i++) {
+
+                int index
+                        = (int)(AlphaNumericString.length()
+                        * Math.random());
+
+                sb.append(AlphaNumericString
+                        .charAt(index));
+            }
+
+            return sb.toString();
+        }
+
+
     // recupera id do usuário do Token
     public Integer getIdLoggedUser() {
         return Integer.parseInt(SecurityContextHolder.getContext()
@@ -286,11 +354,12 @@ public class UsuarioService {
         UsuarioEntity usuarioLogado = buscarPorId(getIdLoggedUser());
         return transformaEmUsuarioDTO(usuarioLogado);
     }
+
     public void ativo(LoginDTO loginDTO) throws RegraDeNegocioException {
         UsuarioEntity usuarioEntity = usuarioRepository.findByLogin(loginDTO.getLogin())
                 .orElseThrow(() -> new RegraDeNegocioException("Usuário não encontrado!"));
 
-         if (usuarioEntity.getStatus().equals(StatusGeral.INATIVO)) {
+        if (usuarioEntity.getStatus().equals(StatusGeral.INATIVO)) {
             throw new RegraDeNegocioException("Usuário inativo!");
         }
     }

@@ -3,7 +3,6 @@ package br.com.logisticadbc.controller;
 import br.com.logisticadbc.controller.doc.LogControllerDoc;
 import br.com.logisticadbc.dto.out.LogDTO;
 import br.com.logisticadbc.dto.out.PageDTO;
-import br.com.logisticadbc.dto.out.UsuarioDTO;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.service.LogService;
 import io.swagger.v3.oas.annotations.tags.Tag;

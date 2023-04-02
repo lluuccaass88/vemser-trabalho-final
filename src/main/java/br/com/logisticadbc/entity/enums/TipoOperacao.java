@@ -5,6 +5,6 @@ public enum TipoOperacao {
     CADASTRO,
     ALTERACAO,
     EXCLUSAO,
-    CONSULTA,
+    FINALIZACAO,
     OUTROS;
 }
