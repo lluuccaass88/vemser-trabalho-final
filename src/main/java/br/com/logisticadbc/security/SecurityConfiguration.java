@@ -34,6 +34,7 @@ public class SecurityConfiguration {
                         .antMatchers(HttpMethod.POST, "/viagem/**").hasAnyRole("ADMIN", "MOTORISTA")
                         .antMatchers(HttpMethod.PUT, "/viagem/**").hasAnyRole("ADMIN", "MOTORISTA")
                         .antMatchers(HttpMethod.DELETE, "/viagem/**").hasRole("ADMIN")
+                        .antMatchers("/viagem/listar-por-idUsuario").hasRole("MOTORISTA")
 
                         .antMatchers(HttpMethod.GET, "/usuario/**").hasRole("ADMIN")
                         .antMatchers(HttpMethod.POST, "/usuario/**").hasRole("ADMIN")
@@ -51,6 +52,8 @@ public class SecurityConfiguration {
                         .antMatchers(HttpMethod.DELETE, "/posto/**").hasRole("ADMIN")
 
                         .antMatchers("/cargo/**").hasRole("ADMIN")
+
+                        .antMatchers("/log/**").hasRole("ADMIN")
 
                         .antMatchers(HttpMethod.GET, "/caminhao/**").hasAnyRole("ADMIN", "MOTORISTA", "COLABORADOR")
                         .antMatchers(HttpMethod.POST, "/caminhao/**").hasAnyRole("ADMIN", "COLABORADOR")
@@ -72,7 +75,9 @@ public class SecurityConfiguration {
                 "/v3/api-docs",
                 "/v3/api-docs/**",
                 "/swagger-resources/**",
-                "/swagger-ui/**");
+                "/swagger-ui/**",
+                "/auth/recuperar-senha",
+                "/usuario/envia-email-possivel-cliente");
     }
 
     @Bean

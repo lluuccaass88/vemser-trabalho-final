@@ -1,6 +1,6 @@
 package br.com.logisticadbc.controller;
 
-//import br.com.logisticadbc.controller.doc.UsuarioControllerDoc;
+import br.com.logisticadbc.controller.doc.UsuarioControllerDoc;
 import br.com.logisticadbc.dto.in.UsuarioCreateDTO;
 import br.com.logisticadbc.dto.in.UsuarioUpdateDTO;
 import br.com.logisticadbc.dto.out.PageDTO;
@@ -18,6 +18,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Email;
 import java.util.List;
 
 @Slf4j
@@ -26,7 +27,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Tag(name = "Usuário")
 @RequestMapping("/usuario")
-public class UsuarioController {//implements UsuarioControllerDoc {
+public class UsuarioController implements UsuarioControllerDoc {
 
     private final UsuarioService usuarioService;
 
@@ -42,6 +43,15 @@ public class UsuarioController {//implements UsuarioControllerDoc {
             throws RegraDeNegocioException {
 
         return new ResponseEntity<>(usuarioService.editar(idUsuario, usuarioUpdateDTO), HttpStatus.OK);
+    }
+
+    @PutMapping("envia-email-possivel-cliente")
+    public ResponseEntity<UsuarioDTO> update(@Email @RequestParam("emailCliente") String emailCliente,
+                                             @RequestParam("nomeCliente") String nomeCliente)
+            throws RegraDeNegocioException {
+
+        usuarioService.enviarEmailInteresseCliente(emailCliente, nomeCliente);
+        return new ResponseEntity<>( HttpStatus.OK);
     }
 
     @DeleteMapping

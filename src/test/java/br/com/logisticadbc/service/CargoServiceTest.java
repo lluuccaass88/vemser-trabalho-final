@@ -1,9 +1,8 @@
 package br.com.logisticadbc.service;
 
-import br.com.logisticadbc.dto.out.CaminhaoDTO;
+import br.com.logisticadbc.dto.in.CargoCreateDTO;
 import br.com.logisticadbc.dto.out.CargoDTO;
-import br.com.logisticadbc.dto.out.CargosDeUsuarioDTO;
-import br.com.logisticadbc.entity.CaminhaoEntity;
+import br.com.logisticadbc.dto.out.UsuarioDTO;
 import br.com.logisticadbc.entity.CargoEntity;
 import br.com.logisticadbc.entity.UsuarioEntity;
 import br.com.logisticadbc.entity.enums.StatusGeral;
@@ -29,6 +28,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.when;
+
 @RunWith(MockitoJUnitRunner.class)
 public class CargoServiceTest {
 
@@ -43,6 +46,9 @@ public class CargoServiceTest {
     @Mock
     private UsuarioService usuarioService;
 
+    @Mock
+    private LogService logService;
+
     @Before
     public void init() {
         // Configurações do ObjectMapper
@@ -52,31 +58,147 @@ public class CargoServiceTest {
         ReflectionTestUtils.setField(cargoService, "objectMapper", objectMapper);
     }
 
+
+    //Testa criar
     @Test
-    public void deveListarPorUsuarioComSucesso() throws RegraDeNegocioException {
-        // SETUP
-        UsuarioEntity usuarioEntityMock = getUsuarioEntityMock();
-        CargoEntity cargoEntityMock = getCargoEntityMock();
+    public void deveTestarCriar() throws RegraDeNegocioException {
+        //Setup
+        CargoCreateDTO novoCargo = new CargoCreateDTO(
+                "ROLE_BACKEND"
+        );
 
-        Set<CargoEntity> cargoEntities = new HashSet<>();
-        cargoEntities.add(cargoEntityMock);
+        CargoEntity cargoMockadoDoBanco = getCargoEntityMock();
 
-        Set<UsuarioEntity> usuarioEntities = new HashSet<>();
-        usuarioEntities.add(usuarioEntityMock);
+        UsuarioDTO usuarioDTOMockadoBanco = getUsuarioDTOMock();
 
-        usuarioEntityMock.setCargos(cargoEntities);
-        cargoEntityMock.setUsuarios(usuarioEntities);
+        when(usuarioService.getLoggedUser()).thenReturn(usuarioDTOMockadoBanco);
+        when(cargoRepository.save(any())).thenReturn(cargoMockadoDoBanco);
 
-        Mockito.when(usuarioService.buscarPorId(Mockito.anyInt())).thenReturn(usuarioEntityMock);
+        //Action
+        CargoDTO cargoSalvo = cargoService.criar(novoCargo);
 
-        // ACT
-        CargosDeUsuarioDTO cargosDeUsuarioDTO = cargoService.listarPorUsuario(1);
-
-        // ASSERT
-        Assertions.assertNotNull(cargosDeUsuarioDTO);
-        Assertions.assertEquals(usuarioEntityMock.getIdUsuario(), cargosDeUsuarioDTO.getUsuario().getIdUsuario());
+        //Assert
+        assertNotNull(cargoSalvo);
+        Assertions.assertEquals(novoCargo.getNome(), cargoSalvo.getNome());
     }
 
+    //Testar editar
+    @Test
+    public void deveTestarEditar() throws RegraDeNegocioException {
+        //Setup
+        Integer idCargo = 1;
+        CargoCreateDTO ediatadoCargo = new CargoCreateDTO(
+                "ROLE_QA"
+        );
+
+        CargoEntity cargoMockadoDoBanco = getCargoEntityMock();
+
+        UsuarioDTO usuarioDTOMockadoBanco = getUsuarioDTOMock();
+
+        when(usuarioService.getLoggedUser()).thenReturn(usuarioDTOMockadoBanco);
+        when(cargoRepository.findById(anyInt())).thenReturn(Optional.of(cargoMockadoDoBanco));
+        when(cargoRepository.save(any())).thenReturn(cargoMockadoDoBanco);
+
+        //Action
+        CargoDTO cargoEditado = cargoService.editar(idCargo, ediatadoCargo);
+
+        //Assert
+        assertNotNull(cargoEditado);
+        Assertions.assertEquals(ediatadoCargo.getNome(), cargoEditado.getNome());
+    }
+
+    //Testa cadastrar Usuario em cargo
+    @Test
+    public void deveTestarCadatrarusuarioEmRota() throws RegraDeNegocioException {
+        //Setup
+        Integer idUsuario = 1;
+        Integer idCargo = 1;
+
+        Set<CargoEntity> listaCargo = new HashSet<>();
+        Set<UsuarioEntity> listaUsuario = new HashSet<>();
+
+        CargoEntity cargoMockadoDoBanco = getCargoEntityMock();
+        cargoMockadoDoBanco.setUsuarios(listaUsuario);
+        UsuarioEntity usuarioMockadoBanco = getUsuarioEntityMock();
+        usuarioMockadoBanco.setCargos(listaCargo);
+
+        UsuarioDTO usuarioDTOMockadoBanco = getUsuarioDTOMock();
+
+        CargoDTO cargoDTO = new CargoDTO();
+        cargoDTO.setNome(cargoMockadoDoBanco.getNome());
+
+        Set<CargoDTO> listaCargoDTO = new HashSet<>();
+        listaCargoDTO.add(getCargoDTOMock());
+
+        UsuarioDTO usuarioEncontradoDTO = getUsuarioDTOMock();
+        usuarioEncontradoDTO.setCargos(listaCargoDTO);
+
+
+        Set<CargoDTO> listaCargoEsperadoDTO = new HashSet<>();
+        listaCargoDTO.add(getCargoDTOMock());
+
+        UsuarioDTO usuarioEsperadoDTO = getUsuarioDTOMock();
+        usuarioEsperadoDTO.setCargos(listaCargoEsperadoDTO);
+
+        when(cargoRepository.findById(any())).thenReturn(Optional.of(cargoMockadoDoBanco));
+        when(usuarioService.getLoggedUser()).thenReturn(usuarioDTOMockadoBanco);
+        when(usuarioService.buscarPorId(any())).thenReturn(usuarioMockadoBanco);
+        when(usuarioService.listarPorId(anyInt())).thenReturn(usuarioEncontradoDTO);
+
+        //Action
+        UsuarioDTO usuarioRelacionadoComCargo = cargoService.cadastrarUsuario(idCargo, idUsuario);
+
+
+        //Assert
+        assertNotNull(usuarioRelacionadoComCargo);
+        Assertions.assertEquals(1, usuarioRelacionadoComCargo.getCargos().size());
+    }
+
+    @Test(expected = RegraDeNegocioException.class)
+    public void deveTestarCadatrarusuarioEmRotaComUsuarioInativo() throws RegraDeNegocioException {
+        //Setup
+        Integer idUsuario = 1;
+        Integer idCargo = 1;
+
+        Set<CargoEntity> listaCargo = new HashSet<>();
+        Set<UsuarioEntity> listaUsuario = new HashSet<>();
+
+        CargoEntity cargoMockadoDoBanco = getCargoEntityMock();
+        cargoMockadoDoBanco.setUsuarios(listaUsuario);
+
+        UsuarioEntity usuarioMockadoBanco = getUsuarioEntityMock();
+        usuarioMockadoBanco.setCargos(listaCargo);
+        usuarioMockadoBanco.setStatus(StatusGeral.INATIVO);
+
+        CargoDTO cargoDTO = new CargoDTO();
+        cargoDTO.setNome(cargoMockadoDoBanco.getNome());
+
+        Set<CargoDTO> listaCargoDTO = new HashSet<>();
+        listaCargoDTO.add(getCargoDTOMock());
+
+        UsuarioDTO usuarioEncontradoDTO = getUsuarioDTOMock();
+        usuarioEncontradoDTO.setCargos(listaCargoDTO);
+
+
+        Set<CargoDTO> listaCargoEsperadoDTO = new HashSet<>();
+        listaCargoDTO.add(getCargoDTOMock());
+
+        UsuarioDTO usuarioEsperadoDTO = getUsuarioDTOMock();
+        usuarioEsperadoDTO.setCargos(listaCargoEsperadoDTO);
+
+        when(cargoRepository.findById(any())).thenReturn(Optional.of(cargoMockadoDoBanco));
+        when(usuarioService.buscarPorId(any())).thenReturn(usuarioMockadoBanco);
+        //when(usuarioService.listarPorId(anyInt())).thenReturn(usuarioEncontradoDTO);
+
+        //Action
+        UsuarioDTO usuarioRelacionadoComCargo = cargoService.cadastrarUsuario(idCargo, idUsuario);
+
+        //Assert
+        assertNotNull(usuarioRelacionadoComCargo);
+        Assertions.assertEquals(1, usuarioRelacionadoComCargo.getCargos().size());
+    }
+
+    //Testat listar
     @Test
     public void deveListarComSucesso() {
         // SETUP
@@ -94,6 +216,7 @@ public class CargoServiceTest {
 
     }
 
+    //Testar listar por id
     @Test
     public void deveListarPorIdComSucesso() throws RegraDeNegocioException {
         // SETUP
@@ -107,6 +230,7 @@ public class CargoServiceTest {
         Assertions.assertEquals(1, cargoDTO.getIdCargo());
     }
 
+    //Testar buscar por id
     @Test
     public void deveBuscarPorIdComSucesso() throws RegraDeNegocioException {
         // SETUP
@@ -120,6 +244,20 @@ public class CargoServiceTest {
         Assertions.assertEquals(1, cargoEntity.getIdCargo());
     }
 
+    //Testar buscar por nome
+    @Test
+    public void deveBuscarPorNomeSucesso() throws RegraDeNegocioException {
+        // SETUP
+        String nome = "ROLE_ADMIN";
+        Mockito.when(cargoRepository.findByNome(anyString())).thenReturn(Optional.of(getCargoEntityMock()));
+
+        // ACT
+        CargoEntity cargoRetornado = cargoService.buscarPorNome(nome);
+
+        // ASSERT
+        Assertions.assertNotNull(cargoRetornado);
+        Assertions.assertEquals(nome, cargoRetornado.getNome());
+    }
     @NotNull
     private static CargoEntity getCargoEntityMock() {
         CargoEntity cargoMockado = new CargoEntity();
@@ -128,6 +266,16 @@ public class CargoServiceTest {
 
         return cargoMockado;
     }
+
+    @NotNull
+    private static CargoDTO getCargoDTOMock() {
+        CargoDTO cargoDTOMockado = new CargoDTO();
+        cargoDTOMockado.setIdCargo(1);
+        cargoDTOMockado.setNome("ROLE_ADMIN");
+
+        return cargoDTOMockado;
+    }
+
 
     @NotNull
     private static UsuarioEntity getUsuarioEntityMock() {
@@ -141,5 +289,18 @@ public class CargoServiceTest {
         usuarioMockado.setStatus(StatusGeral.ATIVO);
 
         return usuarioMockado;
+    }
+
+    @NotNull
+    private static UsuarioDTO getUsuarioDTOMock() {
+        UsuarioDTO usuarioDTOMockado = new UsuarioDTO();
+        usuarioDTOMockado.setIdUsuario(1);
+        usuarioDTOMockado.setLogin("maicon");
+        usuarioDTOMockado.setEmail("maicon@email.com");
+        usuarioDTOMockado.setNome("Maicon");
+        usuarioDTOMockado.setDocumento("12345678910");
+        usuarioDTOMockado.setStatus(StatusGeral.ATIVO);
+
+        return usuarioDTOMockado;
     }
 }

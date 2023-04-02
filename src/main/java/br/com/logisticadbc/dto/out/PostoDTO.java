@@ -1,6 +1,5 @@
 package br.com.logisticadbc.dto.out;
 
-import br.com.logisticadbc.dto.in.PostoCreateDTO;
 import br.com.logisticadbc.entity.enums.StatusGeral;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;

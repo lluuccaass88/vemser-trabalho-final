@@ -3,17 +3,21 @@ package br.com.logisticadbc.service;
 import br.com.logisticadbc.dto.in.LoginDTO;
 import br.com.logisticadbc.dto.in.UsuarioCreateDTO;
 import br.com.logisticadbc.dto.in.UsuarioUpdateDTO;
+import br.com.logisticadbc.dto.out.CargoDTO;
 import br.com.logisticadbc.dto.out.PageDTO;
 import br.com.logisticadbc.dto.out.UsuarioCompletoDTO;
 import br.com.logisticadbc.dto.out.UsuarioDTO;
+import br.com.logisticadbc.entity.CargoEntity;
 import br.com.logisticadbc.entity.UsuarioEntity;
 import br.com.logisticadbc.entity.enums.StatusGeral;
+import br.com.logisticadbc.entity.enums.TipoOperacao;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.repository.UsuarioRepository;
 import br.com.logisticadbc.security.TokenService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -25,8 +29,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -35,40 +39,56 @@ public class UsuarioService {
     private final UsuarioRepository usuarioRepository;
     private final EmailService emailService;
     private final TokenService tokenService;
+    private final CargoService cargoService;
     public final AuthenticationManager authenticationManager;
     private final ObjectMapper objectMapper;
-    private  PasswordEncoder passwordEncoder;
+    private PasswordEncoder passwordEncoder;
+    private final LogService logService;
 
     public UsuarioService(UsuarioRepository usuarioRepository,
                           EmailService emailService,
                           TokenService tokenService,
+                          @Lazy CargoService cargoService,
                           @Lazy AuthenticationManager authenticationManager,
                           ObjectMapper objectMapper,
-                          PasswordEncoder passwordEncoder) {
+                          PasswordEncoder passwordEncoder,
+                          LogService logService
+                          ) {
         this.usuarioRepository = usuarioRepository;
         this.emailService = emailService;
+        this.cargoService = cargoService;
         this.tokenService = tokenService;
         this.authenticationManager = authenticationManager;
         this.objectMapper = objectMapper;
         this.passwordEncoder = passwordEncoder;
+        this.logService = logService;
     }
 
     public UsuarioDTO criar(UsuarioCreateDTO usuarioCreateDTO) throws RegraDeNegocioException {
         UsuarioEntity usuarioEntity = objectMapper.convertValue(usuarioCreateDTO, UsuarioEntity.class);
 
+        // retorna cargo informado no usuarioCreateDTO
+        CargoEntity cargoEntity = cargoService.buscarPorNome(usuarioCreateDTO.getNomeCargo());
+        Set<CargoEntity> cargos = new HashSet<>();
+        cargos.add(cargoEntity);
+
         try {
             usuarioEntity.setStatus(StatusGeral.ATIVO);
+
             //criptografa senha
             usuarioEntity.setSenha(passwordEncoder.encode(usuarioEntity.getSenha()));
+            usuarioEntity.setCargos(cargos);
 
-            usuarioRepository.save(usuarioEntity);
+            UsuarioEntity usuarioCriado = usuarioRepository.save(usuarioEntity);
 
-            emailService.enviarEmailBoasVindas(usuarioEntity);
+            String descricao = "Operação em Usuário: " + usuarioEntity.getLogin();
+            logService.gerarLog(usuarioEntity.getLogin(), descricao, TipoOperacao.CADASTRO);
 
-            return objectMapper.convertValue(usuarioEntity, UsuarioDTO.class);
+            emailService.enviarEmailBoasVindas(usuarioCriado);
 
-        } catch (Exception e) {
-            e.printStackTrace();
+            return transformaEmUsuarioDTO(usuarioCriado);
+
+        } catch (DataAccessException e) {
             throw new RegraDeNegocioException("Aconteceu algum problema durante a criação.");
         }
     }
@@ -82,51 +102,62 @@ public class UsuarioService {
 
         // se tiver parâmetro verifica se é admin
         if (idUsuario != null) {
-            boolean isAdmin = usuarioLogado.getCargos()
-                    .stream()
-                    .anyMatch(cargo -> cargo.getNome().equals("ROLE_ADMIN"));
 
-            if (!isAdmin) {
+            if (!isAdmin(usuarioLogado)) {
                 throw new RegraDeNegocioException("Só admin pode editar outros usuários.");
             }
+
             usuarioEncontrado = buscarPorId(idUsuario);
 
-        // se nao, usa o proprio usuario logado
+            if (isAdmin(usuarioEncontrado)) {
+                throw new RegraDeNegocioException("Não é possível editar um admin.");
+            }
+
+            // se nao tiver parâmetro, usa o proprio usuario logado
         } else {
             usuarioEncontrado = usuarioLogado;
         }
-
         try {
             usuarioEncontrado.setNome(usuarioUpdateDTO.getNome());
             usuarioEncontrado.setEmail(usuarioUpdateDTO.getEmail());
             usuarioEncontrado.setSenha(passwordEncoder.encode(usuarioUpdateDTO.getSenha()));
             usuarioEncontrado.setDocumento(usuarioUpdateDTO.getDocumento());
 
-            usuarioRepository.save(usuarioEncontrado);
+            UsuarioEntity usuarioEditado = usuarioRepository.save(usuarioEncontrado);
 
-            return objectMapper.convertValue(usuarioEncontrado, UsuarioDTO.class);
+            String descricao = "Operação em Usuário: " + usuarioEncontrado.getLogin();
+            logService.gerarLog(usuarioEncontrado.getLogin(), descricao, TipoOperacao.ALTERACAO);
 
-        } catch (Exception e) {
-            throw new RegraDeNegocioException("Aconteceu algum problema durante a edição.");
+            return transformaEmUsuarioDTO(usuarioEditado);
+
+        } catch (DataAccessException e) {
+            throw new RegraDeNegocioException("Erro ao salvar no banco.");
         }
     }
 
     public void deletar(Integer idUsuario) throws RegraDeNegocioException {
         UsuarioEntity usuarioEncontrado = buscarPorId(idUsuario);
 
+        if (isAdmin(usuarioEncontrado)) {
+            throw new RegraDeNegocioException("Não é possível deletar um admin.");
+        }
+
         try {
             usuarioEncontrado.setStatus(StatusGeral.INATIVO);
             usuarioRepository.save(usuarioEncontrado);
 
-        } catch (Exception e) {
-            throw new RegraDeNegocioException("Aconteceu algum problema durante a exclusão.");
+            String descricao = "Operação em Usuário: " + usuarioEncontrado.getLogin();
+            logService.gerarLog(usuarioEncontrado.getLogin(), descricao, TipoOperacao.EXCLUSAO);
+
+        } catch (DataAccessException e) {
+            throw new RegraDeNegocioException("Erro ao salvar no banco.");
         }
     }
 
     public List<UsuarioDTO> listar() {
         return usuarioRepository.findAll()
                 .stream()
-                .map(usuario -> objectMapper.convertValue(usuario, UsuarioDTO.class))
+                .map(usuario -> transformaEmUsuarioDTO(usuario))
                 .toList();
     }
 
@@ -134,12 +165,10 @@ public class UsuarioService {
         UsuarioEntity usuarioEncontrado = buscarPorId(idUsuario);
 
         try {
-            UsuarioDTO usuarioDTO = objectMapper.convertValue(usuarioEncontrado, UsuarioDTO.class);
-            usuarioDTO.setIdUsuario(idUsuario);
-            return usuarioDTO;
+            return transformaEmUsuarioDTO(usuarioEncontrado);
 
         } catch (Exception e) {
-            throw new RegraDeNegocioException("Aconteceu algum problema durante a listagem.");
+            throw new RegraDeNegocioException("Erro de conversão.");
         }
     }
 
@@ -151,7 +180,7 @@ public class UsuarioService {
         List<UsuarioDTO> usuarioDTOList = paginacaoUsuario
                 .getContent()
                 .stream()
-                .map(usuario -> objectMapper.convertValue(usuario, UsuarioDTO.class))
+                .map(usuario -> transformaEmUsuarioDTO(usuario))
                 .toList();
 
         return new PageDTO<>(
@@ -171,7 +200,7 @@ public class UsuarioService {
         List<UsuarioDTO> usuarioDTOList = paginacaoUsuario
                 .getContent()
                 .stream()
-                .map(usuario -> objectMapper.convertValue(usuario, UsuarioDTO.class))
+                .map(usuario -> transformaEmUsuarioDTO(usuario))
                 .toList();
 
         return new PageDTO<>(
@@ -183,34 +212,25 @@ public class UsuarioService {
         );
     }
 
-    public List<UsuarioDTO> listarAtivos() {
-        return usuarioRepository.findAll()
+    public PageDTO<UsuarioCompletoDTO> gerarRelatorioCompleto(Integer pagina, Integer tamanho) { //ORDENAR POR CARGO
+        Pageable solicitacaoPagina = PageRequest.of(pagina, tamanho);
+
+        Page<UsuarioCompletoDTO> paginacaoMotorista = usuarioRepository.relatorio(solicitacaoPagina);
+
+        List<UsuarioCompletoDTO> usuarioDTOList = paginacaoMotorista
+                .getContent()
                 .stream()
-                .filter(usuario -> usuario.getStatus().equals(StatusGeral.ATIVO))
-                .map(usuario -> objectMapper.convertValue(usuario, UsuarioDTO.class))
+                .map(usuario -> objectMapper.convertValue(usuario, UsuarioCompletoDTO.class))
                 .toList();
+
+        return new PageDTO<>(
+                paginacaoMotorista.getTotalElements(),
+                paginacaoMotorista.getTotalPages(),
+                pagina,
+                tamanho,
+                usuarioDTOList
+        );
     }
-
-        public PageDTO<UsuarioCompletoDTO> gerarRelatorioCompleto(Integer pagina, Integer tamanho) { //ORDENAR POR CARGO
-
-            Pageable solicitacaoPagina = PageRequest.of(pagina, tamanho);
-
-            Page<UsuarioCompletoDTO> paginacaoMotorista = usuarioRepository.relatorio(solicitacaoPagina);
-
-            List<UsuarioCompletoDTO> usuarioDTOList = paginacaoMotorista
-                    .getContent()
-                    .stream()
-                    .map(usuario -> objectMapper.convertValue(usuario, UsuarioCompletoDTO.class))
-                    .toList();
-
-            return new PageDTO<>(
-                    paginacaoMotorista.getTotalElements(),
-                    paginacaoMotorista.getTotalPages(),
-                    pagina,
-                    tamanho,
-                    usuarioDTOList
-            );
-        }
 
     public PageDTO<UsuarioDTO> listarMotoristasLivres(Integer pagina, Integer tamanho) {
         Pageable solicitacaoPagina = PageRequest.of(pagina, tamanho);
@@ -221,7 +241,7 @@ public class UsuarioService {
         List<UsuarioDTO> usuarioDTOList = paginacaoUsuario
                 .getContent()
                 .stream()
-                .map(usuario -> objectMapper.convertValue(usuario, UsuarioDTO.class))
+                .map(usuario -> transformaEmUsuarioDTO(usuario))
                 .toList();
 
         return new PageDTO<>(
@@ -238,11 +258,12 @@ public class UsuarioService {
                 .orElseThrow(() -> new RegraDeNegocioException("Usuário não encontrado"));
     }
 
-    public Optional <UsuarioEntity> buscarPorLogin(String login) {
+    public Optional<UsuarioEntity> buscarPorLogin(String login) {
         return usuarioRepository.findByLogin(login);
     }
 
-    public String autenticar (LoginDTO loginDTO) throws RegraDeNegocioException {
+    public String autenticar(LoginDTO loginDTO) throws RegraDeNegocioException {
+        ativo(loginDTO);
         try {
             // cria dto do spring
             UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken =
@@ -260,11 +281,65 @@ public class UsuarioService {
 
             return tokenService.gerarToken(usuarioEntity);
 
-        } catch (BadCredentialsException e) {
+        } catch (NoSuchElementException | BadCredentialsException e) {
             throw new RegraDeNegocioException("Credenciais inválidas");
         }
-
     }
+
+    public void recuperarSenha (String emailUsuario) throws RegraDeNegocioException {
+        int tamSenhaAleatoria = 10;
+        String senhaTemporaria = gerarSenhaAleatoria(tamSenhaAleatoria);
+        UsuarioEntity usuarioRecuperado = usuarioRepository.findByEmail(emailUsuario);
+
+        try {
+            if(usuarioRecuperado == null){
+                throw new RegraDeNegocioException ("Email não cadastrado no sistema.");
+            }else if(usuarioRecuperado.getStatus() == StatusGeral.INATIVO){
+                throw new RegraDeNegocioException ("Não é possivel recuperar a senha de um usuario inativo.");
+            }
+
+            usuarioRecuperado.setSenha(passwordEncoder.encode(senhaTemporaria));
+
+            usuarioRepository.save(usuarioRecuperado);
+
+            emailService.enviarEmailRecuperarSenha(usuarioRecuperado, senhaTemporaria);
+
+        } catch (NoSuchElementException | BadCredentialsException e) {
+            throw new RegraDeNegocioException("Ocorreu um erro durante a recuperação da senha");
+        }
+    }
+
+    public void enviarEmailInteresseCliente (String emailCliente, String nomeCliente) throws RegraDeNegocioException {
+
+        try {
+            emailService.enviarEmailPossivelCliente(emailCliente, nomeCliente);
+        } catch (NoSuchElementException | BadCredentialsException e) {
+            throw new RegraDeNegocioException("Ocorreu um erro durante o envio de email para o possivel cliente");
+        }
+    }
+
+
+    public String gerarSenhaAleatoria(int n){
+
+            String AlphaNumericString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                    + "0123456789"
+                    + "abcdefghijklmnopqrstuvxyz";
+
+            StringBuilder sb = new StringBuilder(n);
+
+            for (int i = 0; i < n; i++) {
+
+                int index
+                        = (int)(AlphaNumericString.length()
+                        * Math.random());
+
+                sb.append(AlphaNumericString
+                        .charAt(index));
+            }
+
+            return sb.toString();
+        }
+
 
     // recupera id do usuário do Token
     public Integer getIdLoggedUser() {
@@ -275,17 +350,41 @@ public class UsuarioService {
     }
 
     // recupera usuário do Token
-    public UsuarioDTO getLoggedUser() {
-        Optional<UsuarioEntity> usuarioOptional = usuarioRepository.findById(getIdLoggedUser());
-        return objectMapper.convertValue(usuarioOptional, UsuarioDTO.class);
+    public UsuarioDTO getLoggedUser() throws RegraDeNegocioException {
+        UsuarioEntity usuarioLogado = buscarPorId(getIdLoggedUser());
+        return transformaEmUsuarioDTO(usuarioLogado);
     }
 
     public void ativo(LoginDTO loginDTO) throws RegraDeNegocioException {
-        UsuarioEntity usuarioEntity = usuarioRepository.findByLogin(loginDTO.getLogin()).get();
+        UsuarioEntity usuarioEntity = usuarioRepository.findByLogin(loginDTO.getLogin())
+                .orElseThrow(() -> new RegraDeNegocioException("Usuário não encontrado!"));
 
         if (usuarioEntity.getStatus().equals(StatusGeral.INATIVO)) {
             throw new RegraDeNegocioException("Usuário inativo!");
         }
-    } 
+    }
 
+    // retorna usuarioDTO já com os cargos convertidos
+    public UsuarioDTO transformaEmUsuarioDTO(UsuarioEntity usuarioEntity) {
+        UsuarioDTO usuarioDTO = objectMapper.convertValue(usuarioEntity, UsuarioDTO.class);
+
+        Set<CargoDTO> cargoDTOSet = usuarioEntity.getCargos()
+                .stream()
+                .map(cargo -> {
+                    CargoDTO cargoDTO = objectMapper.convertValue(cargo, CargoDTO.class);
+                    return cargoDTO;
+                })
+                .collect(Collectors.toSet());
+
+        usuarioDTO.setCargos(cargoDTOSet);
+        return usuarioDTO;
+    }
+
+    // verifica se usuario é admin
+    public boolean isAdmin(UsuarioEntity usuarioEncontrado) {
+        boolean isAdmin = usuarioEncontrado.getCargos()
+                .stream()
+                .anyMatch(cargo -> cargo.getNome().equals("ROLE_ADMIN"));
+        return isAdmin;
+    }
 }

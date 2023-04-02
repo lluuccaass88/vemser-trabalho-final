@@ -16,6 +16,7 @@ public interface UsuarioRepository extends JpaRepository<UsuarioEntity, Integer>
 
     Optional<UsuarioEntity> findByLogin(String username);
     Optional<UsuarioEntity> findById(Integer id);
+    UsuarioEntity findByEmail(String email);
 
     @Query("  SELECT u " +
             "  from USUARIO u" +
@@ -79,4 +80,6 @@ public interface UsuarioRepository extends JpaRepository<UsuarioEntity, Integer>
             " OR (v.statusViagem = 'FINALIZADA' AND u.status = 'ATIVO')"
     )
     Page<UsuarioEntity> findByMotoristasLivres(Pageable pageable);
+
+
 }

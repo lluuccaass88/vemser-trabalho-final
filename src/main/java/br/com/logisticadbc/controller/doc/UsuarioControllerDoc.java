@@ -124,8 +124,8 @@ public interface UsuarioControllerDoc {
             @RequestParam(value = "page") Integer pagina,
             @RequestParam(value = "size") Integer tamanho);
 
-    @Operation(summary = "Listar usuários MOTORISTAS livres",
-            description = "Lista todos usuários MOTORISTAS livres")
+    @Operation(summary = "Listar Motoristas livres",
+            description = "Lista todos Motoristas livres")
     @ApiResponses(
             value = {
                     @ApiResponse(responseCode = "200", description = "Retorna lista com usuários"),

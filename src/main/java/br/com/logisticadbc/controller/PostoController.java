@@ -1,6 +1,5 @@
 package br.com.logisticadbc.controller;
 
-import br.com.logisticadbc.controller.doc.PostoControllerDoc;
 import br.com.logisticadbc.dto.in.PostoCreateDTO;
 import br.com.logisticadbc.dto.out.PostoDTO;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
@@ -71,7 +70,7 @@ public class PostoController /*implements PostoControllerDoc*/ {
     @GetMapping("/listar-por-localizacao")
     public ResponseEntity<List<PostoDTO>> listByLocation(@RequestParam String longitude,
                                                          @RequestParam String latitude,
-                                                         @RequestParam Double distancia) {
+                                                         @RequestParam("distancia(km)") Double distancia) {
 
         return new ResponseEntity<>(postoService.listarPorLocalizacao(longitude, latitude, distancia), HttpStatus.OK);
     }
