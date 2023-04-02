@@ -28,6 +28,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -64,6 +65,9 @@ public class UsuarioServiceTest {
 
     @Mock
     private PasswordEncoder passwordEncoder;
+
+    @Mock
+    private LogService logService;
 
     @Mock
     private CargoService cargoService;
@@ -343,7 +347,6 @@ public class UsuarioServiceTest {
 
         assertNotNull(usuarioDTO);
     }
-
 //    @SneakyThrows
     @Test
     public void deveRetornarAtivoComSucesso() throws RegraDeNegocioException {
@@ -375,6 +378,69 @@ public class UsuarioServiceTest {
         // Action
         usuarioService.ativo(loginDTO);
     }
+
+    //Testar atualzar senha
+    @Test
+    public void deveRecuperarSenhaComSucesso() throws RegraDeNegocioException {
+        // Setup
+        String email = "lucas.email@dbccompany.com.br";
+        String senhaAleatoria = "KJKsjs231w";
+
+        UsuarioEntity usuarioMockadoBanco = getUsuarioEntityMock();
+
+        when(usuarioRepository.findByEmail(anyString())).thenReturn(usuarioMockadoBanco);
+        when(passwordEncoder.encode(anyString())).thenReturn(usuarioMockadoBanco.getSenha());
+
+        // Action
+        usuarioService.recuperarSenha(email);
+
+        // ASSERT
+        Mockito.verify(emailService, times(1)).enviarEmailRecuperarSenha(any(), any());
+        Mockito.verify(usuarioRepository, times(1)).save(any());
+    }
+
+    @Test(expected = RegraDeNegocioException.class)
+    public void deveTestatRecuperarSenhaComEmailNaoCadastradoNoSistema() throws RegraDeNegocioException {
+        // Setup
+        String email = "lucas.email@dbccompany.com.br";
+
+        UsuarioEntity usuarioMockadoBanco = getUsuarioEntityMock();
+        usuarioMockadoBanco.setStatus(StatusGeral.INATIVO);
+
+        when(usuarioRepository.findByEmail(anyString())).thenReturn(usuarioMockadoBanco);
+        when(passwordEncoder.encode(anyString())).thenReturn(usuarioMockadoBanco.getSenha());
+
+        // Action
+        usuarioService.recuperarSenha(email);
+    }
+
+    @Test(expected = RegraDeNegocioException.class)
+    public void deveTestatRecuperarSenhaComUsuarioInativo() throws RegraDeNegocioException {
+        // Setup
+        String email = null;
+
+        UsuarioEntity usuarioMockadoBanco = getUsuarioEntityMock();
+
+        when(usuarioRepository.findByEmail(anyString())).thenReturn(usuarioMockadoBanco);
+        when(passwordEncoder.encode(anyString())).thenReturn(usuarioMockadoBanco.getSenha());
+
+        // Action
+        usuarioService.recuperarSenha(email);
+    }
+
+    @Test
+    public void deveEnviarEmailAoClienteComSucesso() throws RegraDeNegocioException {
+        // Setup
+        String email = "lucas.email@dbccompany.com.br";
+        String nome = "Maicon";
+
+        // Action
+        usuarioService.enviarEmailInteresseCliente(email, nome);
+
+        // ASSERT
+        Mockito.verify(emailService, times(1)).enviarEmailPossivelCliente(anyString(), anyString());
+    }
+
 
     private static UsuarioEntity getUsuarioEntityMock() {
         UsuarioEntity usuarioMockado = new UsuarioEntity();
@@ -438,5 +504,17 @@ public class UsuarioServiceTest {
 
         SecurityContextHolder.setContext(securityContext);
         when(authentication.getPrincipal()).thenReturn(idUsuarioToken);
+    }
+
+    private static UsuarioDTO getUsuarioDTOMock() {
+        UsuarioDTO usuarioDTOMockado = new UsuarioDTO();
+        usuarioDTOMockado.setIdUsuario(1);
+        usuarioDTOMockado.setLogin("maicon");
+        usuarioDTOMockado.setEmail("maicon@email.com");
+        usuarioDTOMockado.setNome("Maicon");
+        usuarioDTOMockado.setDocumento("12345678910");
+        usuarioDTOMockado.setStatus(StatusGeral.ATIVO);
+
+        return usuarioDTOMockado;
     }
 }

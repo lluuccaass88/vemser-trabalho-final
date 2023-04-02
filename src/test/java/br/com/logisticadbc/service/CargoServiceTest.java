@@ -148,6 +148,7 @@ public class CargoServiceTest {
         //Action
         UsuarioDTO usuarioRelacionadoComCargo = cargoService.cadastrarUsuario(idCargo, idUsuario);
 
+
         //Assert
         assertNotNull(usuarioRelacionadoComCargo);
         Assertions.assertEquals(1, usuarioRelacionadoComCargo.getCargos().size());

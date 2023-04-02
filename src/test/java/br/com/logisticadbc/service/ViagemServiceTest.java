@@ -68,9 +68,9 @@ public class ViagemServiceTest {
     }
     //Testar criar
     @Test
-    public void deveCriarComSucesso() throws RegraDeNegocioException {
+    public void deveCriarComUsuarioTipoMotoristaComSucesso() throws RegraDeNegocioException {
         //Setup
-        Integer idMotorista = 1;
+        Integer idMotorista = null;
         ViagemCreateDTO novaViagem = new ViagemCreateDTO(
                 "Viagem longa com duas paradas",
                 LocalDate.of(2023, 04, 22),
@@ -114,10 +114,60 @@ public class ViagemServiceTest {
         //TODO DESCOBRIR COMO PEGA O STATUS DE CAMINHÃO PARA VER SE REALMENTE ELE ESTA EM VIAGEM
     }
 
+    @Test
+    public void deveCriarComUsuarioTipoAdminComSucesso() throws RegraDeNegocioException {
+        //Setup
+        Integer idMotorista = 1;
+        ViagemCreateDTO novaViagem = new ViagemCreateDTO(
+                "Viagem longa com duas paradas",
+                LocalDate.of(2023, 04, 22),
+                LocalDate.of(2023, 05, 22),
+                1,
+                1
+        );
+
+        Set<ViagemEntity> listaViagem = new HashSet<>();
+        listaViagem.add(getViagemFinalizadaEntityMock());
+        listaViagem.add(getViagemFinalizadaEntityMock());
+        listaViagem.add(getViagemFinalizadaEntityMock());
+
+        CargoEntity cargoAdmin = getCargoAdminEntityMock();
+        cargoAdmin.setNome("ROLE_ADMIN");
+
+        Set<CargoEntity> listacargo = new HashSet<>();
+        listacargo.add(cargoAdmin);
+
+        ViagemEntity viagemMockadoDoBanco = getViagemEntityMock();
+
+        UsuarioEntity usuarioMockadoDoBanco = getUsuarioEntityMock();
+        usuarioMockadoDoBanco.setViagens(listaViagem);
+        usuarioMockadoDoBanco.setCargos(listacargo);
+
+        CaminhaoEntity caminhaoEntityMockadoDoBanco = getCaminhaoEntityMock();
+        caminhaoEntityMockadoDoBanco.setViagens(listaViagem);
+
+        RotaEntity rotaEntityMockadoDoBanco = getRotaEntityMock();
+        rotaEntityMockadoDoBanco.setViagens(listaViagem);
+
+        when(usuarioService.buscarPorId(anyInt())).thenReturn(usuarioMockadoDoBanco);
+        when(caminhaoService.buscarPorId(anyInt())).thenReturn(caminhaoEntityMockadoDoBanco);
+        when(rotaService.buscarPorId(anyInt())).thenReturn(rotaEntityMockadoDoBanco);
+        when(viagemRepository.save(any())).thenReturn(viagemMockadoDoBanco);
+
+        //Action
+        ViagemDTO viagemRetornada = viagemService.criar(idMotorista, novaViagem);
+
+        //Assert
+        assertNotNull(viagemRetornada);
+        verify(emailService, times(1)).enviarEmailViagem(any(), any(), any());
+        Assertions.assertEquals(StatusViagem.EM_ANDAMENTO, viagemRetornada.getStatusViagem());
+        //TODO DESCOBRIR COMO PEGA O STATUS DE CAMINHÃO PARA VER SE REALMENTE ELE ESTA EM VIAGEM
+    }
+
     @Test(expected = RegraDeNegocioException.class)
     public void deveTestarCriarComCargoDiferenteDeMotorista() throws RegraDeNegocioException {
         //Setup
-        Integer idMotorista = 1;
+        Integer idMotorista = null;
         ViagemCreateDTO novaViagem = new ViagemCreateDTO(
                 "Viagem longa com duas paradas",
                 LocalDate.of(2023, 04, 22),
@@ -155,7 +205,7 @@ public class ViagemServiceTest {
     @Test(expected = RegraDeNegocioException.class)
     public void deveTestarCriarComMotoristaEmViagem() throws RegraDeNegocioException {
         //Setup
-        Integer idMotorista = 1;
+        Integer idMotorista = null;
         ViagemCreateDTO novaViagem = new ViagemCreateDTO(
                 "Viagem longa com duas paradas",
                 LocalDate.of(2023, 04, 22),
@@ -190,7 +240,7 @@ public class ViagemServiceTest {
     @Test(expected = RegraDeNegocioException.class)
     public void deveTestarCriarComEntidadesInativas() throws RegraDeNegocioException {
         //Setup
-        Integer idMotorista = 1;
+        Integer idMotorista = null;
         ViagemCreateDTO novaViagem = new ViagemCreateDTO(
                 "Viagem longa com duas paradas",
                 LocalDate.of(2023, 04, 22),
@@ -231,7 +281,7 @@ public class ViagemServiceTest {
     @Test(expected = RegraDeNegocioException.class)
     public void deveTestarCriarComCaminhaoIndisponivel() throws RegraDeNegocioException {
         //Setup
-        Integer idMotorista = 1;
+        Integer idMotorista = null;
         ViagemCreateDTO novaViagem = new ViagemCreateDTO(
                 "Viagem longa com duas paradas",
                 LocalDate.of(2023, 04, 22),
@@ -272,7 +322,7 @@ public class ViagemServiceTest {
     @Test(expected = RegraDeNegocioException.class)
     public void deveTestarCriarDataFinalAnteriosADataInicio() throws RegraDeNegocioException {
         //Setup
-        Integer idMotorista = 1;
+        Integer idMotorista = null;
         ViagemCreateDTO novaViagem = new ViagemCreateDTO(
                 "Viagem longa com duas paradas",
                 LocalDate.of(2023, 04, 22),
@@ -343,6 +393,8 @@ public class ViagemServiceTest {
 
         ViagemEntity viagemMockadoBanco = getViagemEntityMock();
 
+        UsuarioDTO usuarioDTOMockadoBanco = getUsuarioDTOMock();
+
         UsuarioEntity usuarioMockadoBanco = getUsuarioEntityMock();
         usuarioMockadoBanco.setViagens(listaViagem);
 
@@ -356,6 +408,7 @@ public class ViagemServiceTest {
         when(usuarioService.buscarPorId(anyInt())).thenReturn(usuarioMockadoBanco);
         when(caminhaoService.buscarPorId(anyInt())).thenReturn(caminhaoMockadoBanco);
         when(rotaService.buscarPorId(anyInt())).thenReturn(rotaMockadoBanco);
+        when(usuarioService.getLoggedUser()).thenReturn(usuarioDTOMockadoBanco);
         when(viagemRepository.save(any())).thenReturn(viagemMockadoBanco);
 
         //Action

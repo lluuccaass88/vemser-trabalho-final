@@ -74,6 +74,7 @@ public class UsuarioService {
 
         try {
             usuarioEntity.setStatus(StatusGeral.ATIVO);
+
             //criptografa senha
             usuarioEntity.setSenha(passwordEncoder.encode(usuarioEntity.getSenha()));
             usuarioEntity.setCargos(cargos);
@@ -312,40 +313,13 @@ public class UsuarioService {
 
         try {
             emailService.enviarEmailPossivelCliente(emailCliente, nomeCliente);
-
         } catch (NoSuchElementException | BadCredentialsException e) {
-            e.printStackTrace();
             throw new RegraDeNegocioException("Ocorreu um erro durante o envio de email para o possivel cliente");
         }
     }
 
-    //TODO função para trocar a senha
 
-    public void atualizarSenha (String emailUsuario) throws RegraDeNegocioException {
-        int tamSenhaAleatoria = 10;
-        String senhaTemporaria = gerarSenhaAleatoria(tamSenhaAleatoria);
-        UsuarioEntity usuarioRecuperado = usuarioRepository.findByEmail(emailUsuario);
-
-        try {
-            if(usuarioRecuperado == null){
-                throw new RegraDeNegocioException ("Email não cadastrado no sistema.");
-            }else if(usuarioRecuperado.getStatus() == StatusGeral.INATIVO){
-                throw new RegraDeNegocioException ("Não é possivel recuperar a senha de um usuario inativo.");
-            }
-
-            usuarioRecuperado.setSenha(passwordEncoder.encode(senhaTemporaria));
-
-            usuarioRepository.save(usuarioRecuperado);
-
-            emailService.enviarEmailRecuperarSenha(usuarioRecuperado, senhaTemporaria);
-
-        } catch (NoSuchElementException | BadCredentialsException e) {
-            e.printStackTrace();
-            throw new RegraDeNegocioException("Ocorreu um erro durante a recuperação da senha");
-        }
-    }
-
-    static String gerarSenhaAleatoria(int n){
+    public String gerarSenhaAleatoria(int n){
 
             String AlphaNumericString = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
                     + "0123456789"

@@ -99,6 +99,66 @@ public class EmailServiceTest {
         verify(emailSender, times(0)).send((MimeMessage) Mockito.any());
     }
 
+    @Test
+    public void deveEnviarEmailDePossivelClienteComSucesso() throws RegraDeNegocioException {
+        //SETUP
+        String email = "email@gmail.com";
+        String nome = "Maicon";
+
+        when(emailSender.createMimeMessage()).thenReturn(mimeMessage);
+
+        //ACT
+        emailService.enviarEmailPossivelCliente(email, nome);
+
+        //ASSERT
+        verify(emailSender).send(mimeMessage);
+        verify(emailSender).createMimeMessage();
+        verify(emailSender, times(1)).send(mimeMessage);
+    }
+
+
+    @Test(expected = RegraDeNegocioException.class)
+    public void deveFalharAoEnviarEmailDePossivelCliente() throws RegraDeNegocioException {
+        //SETUP
+        //SETUP
+        UsuarioEntity usuarioEntity = getUsuarioEntityMockado();
+        RotaEntity rotaEntity = getRotaEntityMockado();
+        ViagemEntity viagemEntity = getViagemEntityMockado();
+
+        String email = "email@gmail.com";
+        String nome = "Maicon";
+
+        emailService.enviarEmailPossivelCliente(email, nome);
+    }
+
+    @Test
+    public void deveEnviarEmailRecuperarSenhaComSucesso() throws RegraDeNegocioException {
+        //SETUP
+        String senhaTemporaria = "Sjhkjs232";
+        UsuarioEntity usuarioMockadoBanco = getUsuarioEntityMockado();
+
+        when(emailSender.createMimeMessage()).thenReturn(mimeMessage);
+
+        //ACT
+        emailService.enviarEmailRecuperarSenha(usuarioMockadoBanco, senhaTemporaria);
+
+        //ASSERT
+        verify(emailSender).send(mimeMessage);
+        verify(emailSender).createMimeMessage();
+        verify(emailSender, times(1)).send(mimeMessage);
+    }
+
+    @Test(expected = RegraDeNegocioException.class)
+    public void deveFalharAoEmailRecuperarSenha() throws RegraDeNegocioException {
+        //SETUP
+        UsuarioEntity usuarioMockadoBanco = getUsuarioEntityMockado();
+        String senhaTemporaria = "lkksjlsLKJ1";
+        //ACT
+        emailService.enviarEmailRecuperarSenha(usuarioMockadoBanco, senhaTemporaria);
+
+        verify(emailSender, times(0)).send((MimeMessage) Mockito.any());
+    }
+
     private UsuarioEntity getUsuarioEntityMockado() {
         UsuarioEntity usuarioEntity = new UsuarioEntity();
         usuarioEntity.setIdUsuario(1);

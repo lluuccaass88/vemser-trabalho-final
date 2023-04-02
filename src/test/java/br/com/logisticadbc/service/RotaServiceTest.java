@@ -354,11 +354,11 @@ public class RotaServiceTest {
 
         UsuarioDTO usuarioDTOMockadoBanco = getUsuarioDTOMock();
 
-
         Set<RotaEntity> rotaEntities = new HashSet<>();
         rotaEntities.add(getRotaEntityMock());
         rotaEntities.add(getRotaEntityMock());
         usuarioMockadoBanco.setRotas(rotaEntities);
+
         when(rotaRepository.findById(Mockito.anyInt())).thenReturn(Optional.of(getRotaEntityMock()));
         when(usuarioService.getLoggedUser()).thenReturn(usuarioDTOMockadoBanco);
         when(usuarioService.buscarPorId(anyInt())).thenReturn(usuarioMockadoBanco);
