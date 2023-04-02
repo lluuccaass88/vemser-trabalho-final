@@ -4,9 +4,13 @@ package br.com.logisticadbc.service;
 import br.com.logisticadbc.dto.in.LoginDTO;
 import br.com.logisticadbc.dto.in.UsuarioCreateDTO;
 import br.com.logisticadbc.dto.in.UsuarioUpdateDTO;
+import br.com.logisticadbc.dto.out.CaminhaoDTO;
+import br.com.logisticadbc.dto.out.PageDTO;
 import br.com.logisticadbc.dto.out.UsuarioDTO;
+import br.com.logisticadbc.entity.CaminhaoEntity;
 import br.com.logisticadbc.entity.CargoEntity;
 import br.com.logisticadbc.entity.UsuarioEntity;
+import br.com.logisticadbc.entity.ViagemEntity;
 import br.com.logisticadbc.entity.enums.StatusGeral;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.repository.UsuarioRepository;
@@ -18,11 +22,16 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.SneakyThrows;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -210,11 +219,42 @@ public class UsuarioServiceTest {
 
     @Test
     public void deveListarPorCargoComSucesso() {
+        String cargo = "ROLE_ADMIN";
+        Integer pagina = 0;
+        Integer tamanho = 2;
+
+        List<UsuarioEntity> listaUsuarios = List.of(getUsuarioEntityMock(), getUsuarioEntityMock());
+        Page<UsuarioEntity> pageUsuario =
+                new PageImpl<>(listaUsuarios, PageRequest.of(pagina, tamanho), listaUsuarios.size());
+
+        when(usuarioRepository.findByCargoUsuario(any(), anyString())).thenReturn(pageUsuario);
+
+        PageDTO<UsuarioDTO> usuarioDTOPaginados = usuarioService.listarPorCargo(cargo, pagina, tamanho);
+
+        assertNotNull(usuarioDTOPaginados);
+        Assertions.assertEquals(pagina, usuarioDTOPaginados.getPagina());
+        Assertions.assertEquals(tamanho, usuarioDTOPaginados.getTamanho());
     }
 
-    @Test
-    public void deveListarPorCargoEStatus() {
-    }
+//    @Test
+//    public void deveListarPorCargoEStatus() {
+//        String cargo = "ROLE_ADMIN";
+//
+//        Integer pagina = 0;
+//        Integer tamanho = 2;
+//
+//        List<UsuarioEntity> listaUsuarios = List.of(getUsuarioEntityMock(), getUsuarioEntityMock());
+//        Page<UsuarioEntity> pageUsuario =
+//                new PageImpl<>(listaUsuarios, PageRequest.of(pagina, tamanho), listaUsuarios.size());
+//
+//        when(usuarioRepository.findByCargoUsuario(any(), anyString())).thenReturn(pageUsuario);
+//
+//        PageDTO<UsuarioDTO> usuarioDTOPaginados = usuarioService.listarPorCargoEStatus(cargo, pagina, tamanho);
+//
+//        assertNotNull(usuarioDTOPaginados);
+//        Assertions.assertEquals(pagina, usuarioDTOPaginados.getPagina());
+//        Assertions.assertEquals(tamanho, usuarioDTOPaginados.getTamanho());
+//    }
 
     @Test
     public void deveGerarRelatorioCompleto() {
@@ -272,20 +312,20 @@ public class UsuarioServiceTest {
         assertNotNull(usuarioDTO);
     }
 
-    @SneakyThrows
+//    @SneakyThrows
     @Test
-    public void deveRetornarAtivo() throws RegraDeNegocioException {
+    public void deveRetornarAtivoComSucesso() throws RegraDeNegocioException {
         // Setup
         LoginDTO loginDTO = new LoginDTO();
         loginDTO.setLogin("maicon");
-        UsuarioEntity usuarioAtivo = new UsuarioEntity();
-        usuarioAtivo.setStatus(StatusGeral.ATIVO);
+        loginDTO.setSenha("abc123");
 
-        when(usuarioRepository.findByLogin(anyString())).thenReturn(Optional.of(getUsuarioEntityMock()));
+        UsuarioEntity usuarioEntityMock = getUsuarioEntityMock();
+
+        when(usuarioRepository.findByLogin(anyString())).thenReturn(Optional.of(usuarioEntityMock));
+
         // Action
         usuarioService.ativo(loginDTO);
-        // Assertations
-        assertEquals(StatusGeral.ATIVO, usuarioAtivo.getStatus());
     }
 
     private static UsuarioEntity getUsuarioEntityMock() {

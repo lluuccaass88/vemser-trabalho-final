@@ -55,6 +55,7 @@ public class LogServiceTest {
 //        verify(logRepository, times(1)).findAll();
 //    }
 
+
     @Test
     public void deveGerarLogComSucesso() throws RegraDeNegocioException {
         //SETUP
