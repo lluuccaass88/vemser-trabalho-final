@@ -366,7 +366,10 @@ public class UsuarioService {
 
     // retorna usuarioDTO já com os cargos convertidos
     public UsuarioDTO transformaEmUsuarioDTO(UsuarioEntity usuarioEntity) {
+
+
         UsuarioDTO usuarioDTO = objectMapper.convertValue(usuarioEntity, UsuarioDTO.class);
+
 
         Set<CargoDTO> cargoDTOSet = usuarioEntity.getCargos()
                 .stream()
@@ -377,6 +380,7 @@ public class UsuarioService {
                 .collect(Collectors.toSet());
 
         usuarioDTO.setCargos(cargoDTOSet);
+
         return usuarioDTO;
     }
 
