@@ -2,6 +2,7 @@ package br.com.logisticadbc.entity;
 
 import br.com.logisticadbc.entity.enums.StatusGeral;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,6 +18,7 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Entity(name = "USUARIO")
 public class UsuarioEntity implements UserDetails {
 
