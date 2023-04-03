@@ -50,7 +50,6 @@ public class LogServiceTest {
         ReflectionTestUtils.setField(logService, "objectMapper", objectMapper);
     }
 
-<<<<<<< HEAD
 //    @Test
 //    public void deveListarLogsComSucesso(){
 //        //SETUP
@@ -62,7 +61,6 @@ public class LogServiceTest {
 //        verify(logRepository, times(1)).findAll();
 //    }
 
-=======
     @Test
     public void deveListarLogsComSucesso(){
         //SETUP
@@ -84,7 +82,6 @@ public class LogServiceTest {
         Assertions.assertEquals(pagina, logPaginadasDTO.getPagina());
         Assertions.assertEquals(tamanho, logPaginadasDTO.getTamanho());
     }
->>>>>>> 90e2ecd210cccb426d87a08255f7a8911d565f57
 
     @Test
     public void deveGerarLogComSucesso() throws RegraDeNegocioException {

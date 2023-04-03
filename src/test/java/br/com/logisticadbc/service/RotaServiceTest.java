@@ -387,18 +387,10 @@ public class RotaServiceTest {
         rotaMockadoBanco.setStatus(StatusGeral.INATIVO);
 
         when(rotaRepository.findById(Mockito.anyInt())).thenReturn(Optional.of(rotaMockadoBanco));
-<<<<<<< HEAD
-
-
 
         // ACT
         RotaDTO rotaEditadaDTO = rotaService.editar(idRota, rotaEditada);
 
-=======
-
-        // ACT
-        RotaDTO rotaEditadaDTO = rotaService.editar(idRota, rotaEditada);
->>>>>>> 90e2ecd210cccb426d87a08255f7a8911d565f57
     }
 
     @NotNull
