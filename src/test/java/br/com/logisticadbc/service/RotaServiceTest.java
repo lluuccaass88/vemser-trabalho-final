@@ -390,7 +390,6 @@ public class RotaServiceTest {
 
         // ACT
         RotaDTO rotaEditadaDTO = rotaService.editar(idRota, rotaEditada);
-
     }
 
     @NotNull

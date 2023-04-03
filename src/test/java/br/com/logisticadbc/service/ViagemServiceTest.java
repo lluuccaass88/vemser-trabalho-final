@@ -783,7 +783,5 @@ public class ViagemServiceTest {
         cargoMockado.setNome("ROLE_ADMIN");
         return cargoMockado;
     }
-
-
 }
 

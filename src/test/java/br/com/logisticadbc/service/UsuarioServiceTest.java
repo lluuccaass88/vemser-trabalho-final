@@ -241,7 +241,6 @@ public class UsuarioServiceTest {
         Assertions.assertEquals(1, usuarioDTOPaginados.getElementos().size());
     }
 
-
 //    @Test
 //    public void deveListarPorCargoEStatus() {
 //        String cargo = "ROLE_ADMIN";
@@ -261,7 +260,6 @@ public class UsuarioServiceTest {
 //        Assertions.assertEquals(pagina, usuarioDTOPaginados.getPagina());
 //        Assertions.assertEquals(tamanho, usuarioDTOPaginados.getTamanho());
 //    }
-
     @Test
     public void deveListarPorCargoEStatus() {
         String cargo = "ROLE_ADMIN";
@@ -290,7 +288,6 @@ public class UsuarioServiceTest {
         Assertions.assertEquals(pagina, usuarioDTOPaginados.getPagina());
         Assertions.assertEquals(tamanho, usuarioDTOPaginados.getTamanho());
         Assertions.assertEquals(2, usuarioDTOPaginados.getElementos().size());
-
 
     }
 
