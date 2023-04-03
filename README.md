@@ -3,7 +3,7 @@
         src="https://github.com/lluuccaass88/vemser-trabalho-final/blob/develop/images/trucklog-logo.png?raw=true" />
 </h1>
 
-<p align="center">Back-End | Java | Spring Boot | Oracle</p>
+<p align="center">Back-End | Java | Spring Boot | Oracle | MongoDB</p>
 
 # TruckLog
 > Sistema de logística
