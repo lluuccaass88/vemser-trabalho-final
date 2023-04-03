@@ -283,7 +283,6 @@ public class RotaServiceTest {
             Assertions.assertEquals(idColaborador, rota.getIdUsuario());
         }
         Assertions.assertEquals(2, listaRotaRetornadaDTO.size());
-//        Assertions.assertIterableEquals();
     }
 
     //Buscar por id testes
@@ -330,7 +329,6 @@ public class RotaServiceTest {
 
         // ASSERT
         Assertions.assertEquals(StatusGeral.INATIVO, rotaInativa.getStatus());
-//        Assertions.assertEquals(idRota, rotaInativa.getIdRota());
     }
 
     @Test(expected = RegraDeNegocioException.class)
@@ -357,7 +355,6 @@ public class RotaServiceTest {
                 "Salvador",
                 "São Paulo"
         );
-
 
         UsuarioEntity usuarioMockadoBanco = new UsuarioEntity();
 

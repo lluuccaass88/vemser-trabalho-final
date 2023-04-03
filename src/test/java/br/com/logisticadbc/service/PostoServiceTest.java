@@ -42,20 +42,6 @@ public class PostoServiceTest {
     @Mock
     private UsuarioService usuarioService;
 
-//    @Before
-//    public void init() {
-//        objectMapper.registerModule(new JavaTimeModule());
-//        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-//        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-//        ReflectionTestUtils.setField(postoService, "objectMapper", objectMapper);
-//    }
-
-    /*@Test
-=======
-    private ObjectMapper objectMapper;
-
->>>>>>> 5a20e6cb3a348856f79c4f38f5ba526f5ed53d1b
-     */
     @Test
     public void deveCriarPostoComSucesso() throws RegraDeNegocioException {
         // SETUP
@@ -92,13 +78,11 @@ public class PostoServiceTest {
         postoCreateDTO.setNome("Posto");
         postoCreateDTO.setCidade("Caucaia");
         postoCreateDTO.setLongitude("3.12345");
-        postoCreateDTO.setLatitude("4.123455");
+        postoCreateDTO.setLatitude("4.12345");
         postoCreateDTO.setValorCombustivel(4.00);
 
         PostoEntity postoEntityMock = getPostoEntityMock();
         UsuarioDTO usuarioDTOMockadoBanco = getUsuarioDTOMock();
-
-
 
         PostoDTO postoDTOEditado = new PostoDTO(
                 postoEntityMock.getId(), postoCreateDTO.getNome(), postoEntityMock.getLocation(),
@@ -117,8 +101,31 @@ public class PostoServiceTest {
         assertEquals(postoCreateDTO.getNome(), postoDTO.getNome());
         assertEquals(postoCreateDTO.getValorCombustivel(), postoDTO.getValorCombustivel());
         assertEquals(postoCreateDTO.getCidade(), postoDTO.getCidade());
-//        assertEquals(postoCreateDTO.getLongitude(), postoDTO.getLocation().getX()); Esperado tipo string, mas chega do tipo double
-//        assertEquals(postoCreateDTO.getLatitude(), postoDTO.getLocation().getY()); Esperado tipo string, mas chega do tipo double
+        assertEquals(postoCreateDTO.getLongitude(), String.valueOf(postoDTO.getLocation().getX()));
+        assertEquals(postoCreateDTO.getLatitude(), String.valueOf(postoDTO.getLocation().getY()));
+    }
+
+    @Test(expected = RegraDeNegocioException.class)
+    public void deveTestarEditarInativo() throws RegraDeNegocioException {
+        //SETUP
+        String id = "1";
+        PostoCreateDTO postoCreateDTO = new PostoCreateDTO();
+        postoCreateDTO.setNome("Posto");
+        postoCreateDTO.setCidade("Caucaia");
+        postoCreateDTO.setLongitude("3.12345");
+        postoCreateDTO.setLatitude("4.12345");
+        postoCreateDTO.setValorCombustivel(4.00);
+
+        PostoEntity postoEntityMock = getPostoEntityMock();
+        postoEntityMock.setStatus(StatusGeral.INATIVO);
+
+        UsuarioDTO usuarioDTOMockadoBanco = getUsuarioDTOMock();
+
+        when(postoRepository.findById(anyString())).thenReturn(Optional.of(postoEntityMock));
+        when(usuarioService.getLoggedUser()).thenReturn(usuarioDTOMockadoBanco);
+
+        // ACT
+        PostoDTO postoDTO = postoService.editar("id", postoCreateDTO);
     }
 
     @Test
@@ -231,7 +238,7 @@ public class PostoServiceTest {
                 getPostoEntityMock() , getPostoEntityMock());
 
         when(postoRepository.findByStatusEquals(any())).thenReturn(postoEntityList);
-        when(objectMapper.convertValue(getPostoEntityMock(), PostoDTO.class)).thenReturn(getPostoDTOMock());
+//        when(objectMapper.convertValue(getPostoEntityMock(), PostoDTO.class)).thenReturn(getPostoDTOMock());
 
         // ACT
         List<PostoDTO> postoDTOS = postoService.listarPostosAtivos();
@@ -250,7 +257,7 @@ public class PostoServiceTest {
         List<PostoEntity> postoEntityList = List.of(postoEntityMock, postoEntityMock);
 
         when(postoRepository.findByStatusEquals(any())).thenReturn(postoEntityList);
-        when(objectMapper.convertValue(getPostoEntityMock(), PostoDTO.class)).thenReturn(getPostoDTOMock());
+//        when(objectMapper.convertValue(getPostoEntityMock(), PostoDTO.class)).thenReturn(getPostoDTOMock());
 
         // ACT
         List<PostoDTO> postoDTOS = postoService.listarPostosInativos();
@@ -269,7 +276,7 @@ public class PostoServiceTest {
                 getPostoEntityMock() , getPostoEntityMock());
 
         when(postoRepository.findAll()).thenReturn(postoEntityList);
-        when(objectMapper.convertValue(getPostoEntityMock(), PostoDTO.class)).thenReturn(getPostoDTOMock());
+//        when(objectMapper.convertValue(getPostoEntityMock(), PostoDTO.class)).thenReturn(getPostoDTOMock());
 
         // ACT
         List<PostoDTO> postoDTOS = postoService.listar();
@@ -292,7 +299,7 @@ public class PostoServiceTest {
                 postoMockadoBanco , postoMockadoBanco);
 
         when(postoRepository.findByCidadeIgnoreCase(anyString())).thenReturn(postoEntityList);
-        when(objectMapper.convertValue(getPostoEntityMock(), PostoDTO.class)).thenReturn(getPostoDTOMock());
+//        when(objectMapper.convertValue(getPostoEntityMock(), PostoDTO.class)).thenReturn(getPostoDTOMock());
 
         // ACT
         List<PostoDTO> postoDTOS = postoService.listByCidade(cidade);
@@ -315,7 +322,7 @@ public class PostoServiceTest {
 
 
         when(postoRepository.findByLocationNear(any(), any())).thenReturn(postoEntityList);
-        when(objectMapper.convertValue(getPostoEntityMock(), PostoDTO.class)).thenReturn(getPostoDTOMock());
+//        when(objectMapper.convertValue(getPostoEntityMock(), PostoDTO.class)).thenReturn(getPostoDTOMock());
 
         // ACT
         List<PostoDTO> postoDTOS = postoService.listarPorLocalizacao(longitude, latitude, distancia);

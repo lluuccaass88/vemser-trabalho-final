@@ -408,7 +408,7 @@ public class UsuarioServiceTest {
         usuarioMockadoBanco.setStatus(StatusGeral.INATIVO);
 
         when(usuarioRepository.findByEmail(anyString())).thenReturn(usuarioMockadoBanco);
-        when(passwordEncoder.encode(anyString())).thenReturn(usuarioMockadoBanco.getSenha());
+//        when(passwordEncoder.encode(anyString())).thenReturn(usuarioMockadoBanco.getSenha());
 
         // Action
         usuarioService.recuperarSenha(email);
@@ -421,8 +421,8 @@ public class UsuarioServiceTest {
 
         UsuarioEntity usuarioMockadoBanco = getUsuarioEntityMock();
 
-        when(usuarioRepository.findByEmail(anyString())).thenReturn(usuarioMockadoBanco);
-        when(passwordEncoder.encode(anyString())).thenReturn(usuarioMockadoBanco.getSenha());
+//        when(usuarioRepository.findByEmail(anyString())).thenReturn(usuarioMockadoBanco);
+//        when(passwordEncoder.encode(anyString())).thenReturn(usuarioMockadoBanco.getSenha());
 
         // Action
         usuarioService.recuperarSenha(email);

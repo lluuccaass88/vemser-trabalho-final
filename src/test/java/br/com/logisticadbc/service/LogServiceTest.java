@@ -75,7 +75,6 @@ public class LogServiceTest {
     public void deveGerarLogComSucesso() throws RegraDeNegocioException {
         //SETUP
         UsuarioEntity usuarioEntity = getUsuarioEntityMockado();
-        when(usuarioService.buscarPorId(anyInt())).thenReturn(usuarioEntity);
 
         //ACT
         logService.gerarLog(usuarioEntity.getLogin(), "Operação de Cadastrar Algo", TipoOperacao.CADASTRO);
