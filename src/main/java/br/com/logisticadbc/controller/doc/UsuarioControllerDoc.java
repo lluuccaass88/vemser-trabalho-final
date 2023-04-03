@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Email;
 import java.util.List;
 
 public interface UsuarioControllerDoc {
@@ -137,5 +138,20 @@ public interface UsuarioControllerDoc {
     public ResponseEntity<PageDTO<UsuarioDTO>> listAvailableDriver(
             @RequestParam(value = "page") Integer pagina,
             @RequestParam(value = "size") Integer tamanho);
+
+
+    @Operation(summary = "Enviar e-mail para usuário",
+            description = "Envia e-mail para usuário interessado")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "201", description = "Retorna status"),
+                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
+            }
+    )
+    @PostMapping("envia-email-possivel-cliente")
+    public ResponseEntity<Void> update(@Email @RequestParam("emailCliente") String emailCliente,
+                                             @RequestParam("nomeCliente") String nomeCliente)
+            throws RegraDeNegocioException;
 }
 
