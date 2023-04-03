@@ -25,7 +25,7 @@ public class ViagemCreateDTO {
 
     @NotNull
     @FutureOrPresent(message = "O campo dataFim deve ser atual ou futuro!")
-    @Schema(description = "data_fim", example = "2023-03-04")
+    @Schema(description = "Data de finalização da viagem", example = "2023-03-04")
     private LocalDate dataFim;
 
     @NotNull

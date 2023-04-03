@@ -45,13 +45,13 @@ public class UsuarioController implements UsuarioControllerDoc {
         return new ResponseEntity<>(usuarioService.editar(idUsuario, usuarioUpdateDTO), HttpStatus.OK);
     }
 
-    @PutMapping("envia-email-possivel-cliente")
-    public ResponseEntity<UsuarioDTO> update(@Email @RequestParam("emailCliente") String emailCliente,
+    @PostMapping("envia-email-possivel-cliente")
+    public ResponseEntity<Void> update(@Email @RequestParam("emailCliente") String emailCliente,
                                              @RequestParam("nomeCliente") String nomeCliente)
             throws RegraDeNegocioException {
 
         usuarioService.enviarEmailInteresseCliente(emailCliente, nomeCliente);
-        return new ResponseEntity<>( HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping

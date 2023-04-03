@@ -30,7 +30,7 @@ public class AuthController implements AuthControllerDoc {
         return new ResponseEntity<>(usuarioService.autenticar(loginDTO), HttpStatus.ACCEPTED);
     }
 
-    @PostMapping("recuperar-senha")
+    @PutMapping("recuperar-senha")
     public ResponseEntity<Void> recoverPassword(@Email @RequestParam("emailUsuario") String emailUsuario) throws RegraDeNegocioException {
         // adiciona mecanismo de autenticação para verificar se o usuário é válido e retornar o token
         usuarioService.recuperarSenha(emailUsuario);
