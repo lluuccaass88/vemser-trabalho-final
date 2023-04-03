@@ -49,18 +49,6 @@ public class LogServiceTest {
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         ReflectionTestUtils.setField(logService, "objectMapper", objectMapper);
     }
-
-//    @Test
-//    public void deveListarLogsComSucesso(){
-//        //SETUP
-//        List<LogEntity> logEntityList = List.of(getLogEntityMockado());
-//        when(logRepository.findAll()).thenReturn(logEntityList);
-//        //ACT
-//        logService.listAllLogs();
-//        //ASSERT
-//        verify(logRepository, times(1)).findAll();
-//    }
-
     @Test
     public void deveListarLogsComSucesso(){
         //SETUP
@@ -87,10 +75,11 @@ public class LogServiceTest {
     public void deveGerarLogComSucesso() throws RegraDeNegocioException {
         //SETUP
         UsuarioEntity usuarioEntity = getUsuarioEntityMockado();
-//        LogEntity logEntity = getLogEntityMockado();
         when(usuarioService.buscarPorId(anyInt())).thenReturn(usuarioEntity);
+
         //ACT
         logService.gerarLog(usuarioEntity.getLogin(), "Operação de Cadastrar Algo", TipoOperacao.CADASTRO);
+
         //ASSERT
         verify(logRepository, times(1)).save(any());
     }

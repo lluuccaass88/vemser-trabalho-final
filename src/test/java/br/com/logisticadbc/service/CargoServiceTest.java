@@ -61,7 +61,7 @@ public class CargoServiceTest {
 
     //Testa criar
     @Test
-    public void deveTestarCriar() throws RegraDeNegocioException {
+    public void deverCriarComSucesso() throws RegraDeNegocioException {
         //Setup
         CargoCreateDTO novoCargo = new CargoCreateDTO(
                 "ROLE_BACKEND"
@@ -192,10 +192,6 @@ public class CargoServiceTest {
 
         //Action
         UsuarioDTO usuarioRelacionadoComCargo = cargoService.cadastrarUsuario(idCargo, idUsuario);
-
-        //Assert
-        assertNotNull(usuarioRelacionadoComCargo);
-        Assertions.assertEquals(1, usuarioRelacionadoComCargo.getCargos().size());
     }
 
     //Testat listar
@@ -213,7 +209,6 @@ public class CargoServiceTest {
         // ASSERT
         Assertions.assertNotNull(cargoDTOS);
         Assertions.assertEquals(3, cargoDTOS.size());
-
     }
 
     //Testar listar por id

@@ -257,8 +257,6 @@ public class ViagemServiceTest {
         Set<CargoEntity> listacargo = new HashSet<>();
         listacargo.add(getCargoEntityMock());
 
-        ViagemEntity viagemMockadoDoBanco = getViagemEntityMock();
-
         UsuarioEntity usuarioMockadoDoBanco = getUsuarioEntityMock();
         usuarioMockadoDoBanco.setViagens(listaViagem);
         usuarioMockadoDoBanco.setCargos(listacargo);
