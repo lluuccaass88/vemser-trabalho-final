@@ -91,9 +91,7 @@ public class CargoService {
                     " | Cargo: " + cargoEncontrado.getNome();
             logService.gerarLog(loggedUser.getLogin(), descricao, TipoOperacao.CADASTRO);
 
-            UsuarioDTO usuarioDTO = usuarioService.transformaEmUsuarioDTO(usuarioEncontrado);
-
-            return usuarioDTO;
+            return usuarioService.transformaEmUsuarioDTO(usuarioEncontrado);
 
         } catch (DataAccessException e) {
             throw new RegraDeNegocioException("Erro ao salvar no banco");
