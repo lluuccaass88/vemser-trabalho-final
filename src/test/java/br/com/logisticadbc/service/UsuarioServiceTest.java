@@ -28,7 +28,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -241,27 +240,6 @@ public class UsuarioServiceTest {
         Assertions.assertEquals(1, usuarioDTOPaginados.getElementos().size());
     }
 
-<<<<<<< HEAD
-//    @Test
-//    public void deveListarPorCargoEStatus() {
-//        String cargo = "ROLE_ADMIN";
-//
-//        Integer pagina = 0;
-//        Integer tamanho = 2;
-//
-//        List<UsuarioEntity> listaUsuarios = List.of(getUsuarioEntityMock(), getUsuarioEntityMock());
-//        Page<UsuarioEntity> pageUsuario =
-//                new PageImpl<>(listaUsuarios, PageRequest.of(pagina, tamanho), listaUsuarios.size());
-//
-//        when(usuarioRepository.findByCargoUsuario(any(), anyString())).thenReturn(pageUsuario);
-//
-//        PageDTO<UsuarioDTO> usuarioDTOPaginados = usuarioService.listarPorCargoEStatus(cargo, pagina, tamanho);
-//
-//        assertNotNull(usuarioDTOPaginados);
-//        Assertions.assertEquals(pagina, usuarioDTOPaginados.getPagina());
-//        Assertions.assertEquals(tamanho, usuarioDTOPaginados.getTamanho());
-//    }
-=======
     @Test
     public void deveListarPorCargoEStatus() {
         String cargo = "ROLE_ADMIN";
@@ -290,7 +268,6 @@ public class UsuarioServiceTest {
         Assertions.assertEquals(pagina, usuarioDTOPaginados.getPagina());
         Assertions.assertEquals(tamanho, usuarioDTOPaginados.getTamanho());
         Assertions.assertEquals(2, usuarioDTOPaginados.getElementos().size());
->>>>>>> 90e2ecd210cccb426d87a08255f7a8911d565f57
 
     }
 
@@ -430,7 +407,7 @@ public class UsuarioServiceTest {
         usuarioMockadoBanco.setStatus(StatusGeral.INATIVO);
 
         when(usuarioRepository.findByEmail(anyString())).thenReturn(usuarioMockadoBanco);
-        when(passwordEncoder.encode(anyString())).thenReturn(usuarioMockadoBanco.getSenha());
+//        when(passwordEncoder.encode(anyString())).thenReturn(usuarioMockadoBanco.getSenha());
 
         // Action
         usuarioService.recuperarSenha(email);
@@ -443,8 +420,8 @@ public class UsuarioServiceTest {
 
         UsuarioEntity usuarioMockadoBanco = getUsuarioEntityMock();
 
-        when(usuarioRepository.findByEmail(anyString())).thenReturn(usuarioMockadoBanco);
-        when(passwordEncoder.encode(anyString())).thenReturn(usuarioMockadoBanco.getSenha());
+//        when(usuarioRepository.findByEmail(anyString())).thenReturn(usuarioMockadoBanco);
+//        when(passwordEncoder.encode(anyString())).thenReturn(usuarioMockadoBanco.getSenha());
 
         // Action
         usuarioService.recuperarSenha(email);

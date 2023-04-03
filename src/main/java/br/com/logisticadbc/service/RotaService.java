@@ -76,6 +76,7 @@ public class RotaService {
             RotaDTO rotaDTO = objectMapper.convertValue(rotaEncontrada, RotaDTO.class);
             rotaDTO.setIdUsuario(usuarioEncontrado.getIdUsuario());
             return rotaDTO;
+
         } catch (DataAccessException e) {
             throw new RegraDeNegocioException("Erro ao salvar no banco.");
         }
@@ -83,6 +84,7 @@ public class RotaService {
 
     public void deletar(Integer idRota) throws RegraDeNegocioException {
         RotaEntity rotaEncontrada = buscarPorId(idRota);
+
         UsuarioDTO loggedUser = usuarioService.getLoggedUser();
 
         if (rotaEncontrada.getStatus().equals(StatusGeral.INATIVO)) {
@@ -97,6 +99,7 @@ public class RotaService {
             usuarioEncontrado.getRotas().add(rotaEncontrada);
 
             String descricao = "Operação em Rota: " + rotaEncontrada.getDescricao();
+
             logService.gerarLog(loggedUser.getLogin(), descricao, TipoOperacao.EXCLUSAO);
 
         } catch (DataAccessException e) {

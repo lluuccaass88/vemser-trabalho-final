@@ -28,7 +28,6 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -49,20 +48,6 @@ public class LogServiceTest {
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         ReflectionTestUtils.setField(logService, "objectMapper", objectMapper);
     }
-
-<<<<<<< HEAD
-//    @Test
-//    public void deveListarLogsComSucesso(){
-//        //SETUP
-//        List<LogEntity> logEntityList = List.of(getLogEntityMockado());
-//        when(logRepository.findAll()).thenReturn(logEntityList);
-//        //ACT
-//        logService.listAllLogs();
-//        //ASSERT
-//        verify(logRepository, times(1)).findAll();
-//    }
-
-=======
     @Test
     public void deveListarLogsComSucesso(){
         //SETUP
@@ -84,16 +69,15 @@ public class LogServiceTest {
         Assertions.assertEquals(pagina, logPaginadasDTO.getPagina());
         Assertions.assertEquals(tamanho, logPaginadasDTO.getTamanho());
     }
->>>>>>> 90e2ecd210cccb426d87a08255f7a8911d565f57
 
     @Test
     public void deveGerarLogComSucesso() throws RegraDeNegocioException {
         //SETUP
         UsuarioEntity usuarioEntity = getUsuarioEntityMockado();
-//        LogEntity logEntity = getLogEntityMockado();
-        when(usuarioService.buscarPorId(anyInt())).thenReturn(usuarioEntity);
+
         //ACT
         logService.gerarLog(usuarioEntity.getLogin(), "Operação de Cadastrar Algo", TipoOperacao.CADASTRO);
+
         //ASSERT
         verify(logRepository, times(1)).save(any());
     }

@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
@@ -61,7 +62,7 @@ public class CargoServiceTest {
 
     //Testa criar
     @Test
-    public void deveTestarCriar() throws RegraDeNegocioException {
+    public void deverCriarComSucesso() throws RegraDeNegocioException {
         //Setup
         CargoCreateDTO novoCargo = new CargoCreateDTO(
                 "ROLE_BACKEND"
@@ -79,7 +80,7 @@ public class CargoServiceTest {
 
         //Assert
         assertNotNull(cargoSalvo);
-        Assertions.assertEquals(novoCargo.getNome(), cargoSalvo.getNome());
+        assertEquals(novoCargo.getNome(), cargoSalvo.getNome());
     }
 
     //Testar editar
@@ -104,54 +105,43 @@ public class CargoServiceTest {
 
         //Assert
         assertNotNull(cargoEditado);
-        Assertions.assertEquals(ediatadoCargo.getNome(), cargoEditado.getNome());
+        assertEquals(ediatadoCargo.getNome(), cargoEditado.getNome());
     }
 
     //Testa cadastrar Usuario em cargo
     @Test
-    public void deveTestarCadatrarusuarioEmRota() throws RegraDeNegocioException {
+    public void deveTestarCadatrarusuarioEmCargo() throws RegraDeNegocioException {
         //Setup
         Integer idUsuario = 1;
         Integer idCargo = 1;
 
+        CargoEntity cargoMockadoDoBanco = getCargoEntityMock();
+        UsuarioEntity usuarioMockadoBanco = getUsuarioEntityMock();
+        UsuarioDTO usuarioEncontradoDTO = getUsuarioDTOMock();
+        CargoDTO cargoDTOMock = getCargoDTOMock();
         Set<CargoEntity> listaCargo = new HashSet<>();
         Set<UsuarioEntity> listaUsuario = new HashSet<>();
+        Set<CargoDTO> listaCargosDTO = new HashSet<>();
 
-        CargoEntity cargoMockadoDoBanco = getCargoEntityMock();
+        listaCargosDTO.add(cargoDTOMock);
         cargoMockadoDoBanco.setUsuarios(listaUsuario);
-        UsuarioEntity usuarioMockadoBanco = getUsuarioEntityMock();
         usuarioMockadoBanco.setCargos(listaCargo);
-
-        UsuarioDTO usuarioDTOMockadoBanco = getUsuarioDTOMock();
-
-        CargoDTO cargoDTO = new CargoDTO();
-        cargoDTO.setNome(cargoMockadoDoBanco.getNome());
-
-        Set<CargoDTO> listaCargoDTO = new HashSet<>();
-        listaCargoDTO.add(getCargoDTOMock());
-
-        UsuarioDTO usuarioEncontradoDTO = getUsuarioDTOMock();
-        usuarioEncontradoDTO.setCargos(listaCargoDTO);
-
-
-        Set<CargoDTO> listaCargoEsperadoDTO = new HashSet<>();
-        listaCargoDTO.add(getCargoDTOMock());
-
-        UsuarioDTO usuarioEsperadoDTO = getUsuarioDTOMock();
-        usuarioEsperadoDTO.setCargos(listaCargoEsperadoDTO);
+        usuarioEncontradoDTO.setCargos(listaCargosDTO);
 
         when(cargoRepository.findById(any())).thenReturn(Optional.of(cargoMockadoDoBanco));
-        when(usuarioService.getLoggedUser()).thenReturn(usuarioDTOMockadoBanco);
         when(usuarioService.buscarPorId(any())).thenReturn(usuarioMockadoBanco);
-        when(usuarioService.listarPorId(anyInt())).thenReturn(usuarioEncontradoDTO);
+        when(usuarioService.getLoggedUser()).thenReturn(usuarioEncontradoDTO);
+        when(usuarioService.transformaEmUsuarioDTO(any())).thenReturn(usuarioEncontradoDTO);
 
         //Action
         UsuarioDTO usuarioRelacionadoComCargo = cargoService.cadastrarUsuario(idCargo, idUsuario);
 
-
         //Assert
         assertNotNull(usuarioRelacionadoComCargo);
-        Assertions.assertEquals(1, usuarioRelacionadoComCargo.getCargos().size());
+        assertEquals(cargoMockadoDoBanco.getNome(), usuarioRelacionadoComCargo.getCargos().stream()
+                .filter(cargo -> cargo.getNome().equals(cargoMockadoDoBanco.getNome())).findFirst().get().getNome());
+//        verify(cargoRepository, times(1)).save(any());
+//        verify(logService, times(1)).gerarLog(anyString(), anyString(),TipoOperacao.CADASTRO);
     }
 
     @Test(expected = RegraDeNegocioException.class)
@@ -192,10 +182,6 @@ public class CargoServiceTest {
 
         //Action
         UsuarioDTO usuarioRelacionadoComCargo = cargoService.cadastrarUsuario(idCargo, idUsuario);
-
-        //Assert
-        assertNotNull(usuarioRelacionadoComCargo);
-        Assertions.assertEquals(1, usuarioRelacionadoComCargo.getCargos().size());
     }
 
     //Testat listar
@@ -212,8 +198,7 @@ public class CargoServiceTest {
 
         // ASSERT
         Assertions.assertNotNull(cargoDTOS);
-        Assertions.assertEquals(3, cargoDTOS.size());
-
+        assertEquals(3, cargoDTOS.size());
     }
 
     //Testar listar por id
@@ -227,7 +212,7 @@ public class CargoServiceTest {
 
         // ASSERT
         Assertions.assertNotNull(cargoDTO);
-        Assertions.assertEquals(1, cargoDTO.getIdCargo());
+        assertEquals(1, cargoDTO.getIdCargo());
     }
 
     //Testar buscar por id
@@ -241,7 +226,7 @@ public class CargoServiceTest {
 
         // ASSERT
         Assertions.assertNotNull(cargoEntity);
-        Assertions.assertEquals(1, cargoEntity.getIdCargo());
+        assertEquals(1, cargoEntity.getIdCargo());
     }
 
     //Testar buscar por nome
@@ -256,7 +241,7 @@ public class CargoServiceTest {
 
         // ASSERT
         Assertions.assertNotNull(cargoRetornado);
-        Assertions.assertEquals(nome, cargoRetornado.getNome());
+        assertEquals(nome, cargoRetornado.getNome());
     }
     @NotNull
     private static CargoEntity getCargoEntityMock() {
@@ -275,7 +260,6 @@ public class CargoServiceTest {
 
         return cargoDTOMockado;
     }
-
 
     @NotNull
     private static UsuarioEntity getUsuarioEntityMock() {

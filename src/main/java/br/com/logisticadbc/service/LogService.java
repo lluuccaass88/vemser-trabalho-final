@@ -43,6 +43,7 @@ public class LogService {
 
     public void gerarLog(String loginOperador, String descricao, TipoOperacao tipoOperacao) {
         LogEntity log = new LogEntity();
+
         log.setLoginOperador(loginOperador);
         log.setDescricao(descricao);
         log.setTipoOperacao(tipoOperacao);

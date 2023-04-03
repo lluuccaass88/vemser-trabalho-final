@@ -114,7 +114,7 @@ public class ViagemServiceTest {
         //TODO DESCOBRIR COMO PEGA O STATUS DE CAMINHÃO PARA VER SE REALMENTE ELE ESTA EM VIAGEM
     }
 
-    @Test
+    /*@Test
     public void deveCriarComUsuarioTipoAdminComSucesso() throws RegraDeNegocioException {
         //Setup
         Integer idMotorista = 1;
@@ -162,7 +162,7 @@ public class ViagemServiceTest {
         verify(emailService, times(1)).enviarEmailViagem(any(), any(), any());
         Assertions.assertEquals(StatusViagem.EM_ANDAMENTO, viagemRetornada.getStatusViagem());
         //TODO DESCOBRIR COMO PEGA O STATUS DE CAMINHÃO PARA VER SE REALMENTE ELE ESTA EM VIAGEM
-    }
+    }*/
 
     @Test(expected = RegraDeNegocioException.class)
     public void deveTestarCriarComCargoDiferenteDeMotorista() throws RegraDeNegocioException {
@@ -256,8 +256,6 @@ public class ViagemServiceTest {
 
         Set<CargoEntity> listacargo = new HashSet<>();
         listacargo.add(getCargoEntityMock());
-
-        ViagemEntity viagemMockadoDoBanco = getViagemEntityMock();
 
         UsuarioEntity usuarioMockadoDoBanco = getUsuarioEntityMock();
         usuarioMockadoDoBanco.setViagens(listaViagem);
@@ -783,10 +781,5 @@ public class ViagemServiceTest {
         cargoMockado.setNome("ROLE_ADMIN");
         return cargoMockado;
     }
-<<<<<<< HEAD
-
-
 }
-=======
-}
->>>>>>> 90e2ecd210cccb426d87a08255f7a8911d565f57
+

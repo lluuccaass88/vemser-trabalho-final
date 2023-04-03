@@ -136,7 +136,7 @@ public class CaminhaoServiceTest {
         Mockito.when(caminhaoRepository.findById(Mockito.anyInt())).thenReturn(Optional.of(caminhaoEntityMock));
 
         // ACT
-        CaminhaoDTO caminhaoDTOAbastecido = caminhaoService.abastecer(1, combustivel);
+        caminhaoService.abastecer(1, combustivel);
 
     }
 
@@ -150,8 +150,9 @@ public class CaminhaoServiceTest {
         Mockito.when(caminhaoRepository.findById(Mockito.anyInt())).thenReturn(Optional.of(caminhaoEntityMock));
 
         // ACT
-        CaminhaoDTO caminhaoDTOAbastecido = caminhaoService.abastecer(idCaminhao, combustivel);
+        caminhaoService.abastecer(idCaminhao, combustivel);
     }
+
     @Test(expected = RegraDeNegocioException.class)
     public void deveTestarAbastecerComLimiteDeGasolinaExcedido() throws RegraDeNegocioException {
         // SETUP
@@ -163,7 +164,7 @@ public class CaminhaoServiceTest {
         Mockito.when(caminhaoRepository.findById(Mockito.anyInt())).thenReturn(Optional.of(caminhaoEntityMock));
 
         // ACT
-        CaminhaoDTO caminhaoDTOAbastecido = caminhaoService.abastecer(idCaminhao, combustivel);
+        caminhaoService.abastecer(idCaminhao, combustivel);
     }
 
     @Test
@@ -175,7 +176,6 @@ public class CaminhaoServiceTest {
 
         Mockito.when(caminhaoRepository.findById(Mockito.anyInt())).thenReturn(Optional.of(caminhaoEntityMock));
         Mockito.when(usuarioService.getLoggedUser()).thenReturn(usuarioDTOMockadoBanco);
-
 
         // ACT
         caminhaoService.deletar(1);
@@ -199,7 +199,6 @@ public class CaminhaoServiceTest {
         // ASSERT
         Assertions.assertNotNull(listaCaminhaoDTO);
         Assertions.assertEquals(3, listaCaminhaoDTO.size());
-
     }
 
     @Test
@@ -290,7 +289,6 @@ public class CaminhaoServiceTest {
         // ASSERT
         Mockito.verify(caminhaoRepository, times(1)).save(Mockito.any());
         Assertions.assertEquals(StatusCaminhao.EM_VIAGEM, caminhaoMudado.getStatusCaminhao());
-
     }
 
     @Test
