@@ -2,6 +2,7 @@ package br.com.logisticadbc.service;
 
 import br.com.logisticadbc.dto.kafka.PossiveisClientesDTO;
 import br.com.logisticadbc.dto.kafka.UsuarioBoasVindasDTO;
+import br.com.logisticadbc.dto.kafka.UsuarioRecuperaSenhaDTO;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -48,12 +49,12 @@ public class KafkaProdutorService {
         future.addCallback(new ListenableFutureCallback<>() {
             @Override
             public void onSuccess(SendResult result) {
-                log.info("Produzido com sucesso | {} ", email);
+                log.info("Produzido com sucesso | enviarEmailPossiveisClientes | {} ", email);
             }
 
             @Override
             public void onFailure(Throwable ex) {
-                log.error("Erro ao produzir | {}", email, ex);
+                log.error("Erro ao produzir | enviarEmailPossiveisClientes | {}", email, ex);
             }
         });
     }
@@ -77,12 +78,41 @@ public class KafkaProdutorService {
         future.addCallback(new ListenableFutureCallback<>() {
             @Override
             public void onSuccess(SendResult result) {
-                log.info("Produzido com sucesso | {} ", email);
+                log.info("Produzido com sucesso | enviarEmailBoasVindas | {} ", email);
             }
 
             @Override
             public void onFailure(Throwable ex) {
-                log.error("Erro ao produzir | {}", email, ex);
+                log.error("Erro ao produzir | enviarEmailBoasVindas | {}", email, ex);
+            }
+        });
+    }
+
+    public void enviarEmailRecuperarSenha(String email, String nome, String senha) throws JsonProcessingException {
+        Integer particao = 2;
+
+        UsuarioRecuperaSenhaDTO usuarioRecuperaSenhaDTO = new UsuarioRecuperaSenhaDTO(email, nome, senha);
+
+        String mensagem = objectMapper.writeValueAsString(usuarioRecuperaSenhaDTO);
+
+        MessageBuilder<String> stringMessageBuilder = MessageBuilder.withPayload(mensagem)
+                .setHeader(KafkaHeaders.TOPIC, topic)
+                .setHeader(KafkaHeaders.MESSAGE_KEY, UUID.randomUUID().toString());
+
+        stringMessageBuilder.setHeader(KafkaHeaders.PARTITION_ID, particao); //Partição
+
+        Message<String> message = stringMessageBuilder.build();
+
+        ListenableFuture<SendResult<String, String>> future = kafkaTemplate.send(message);
+        future.addCallback(new ListenableFutureCallback<>() {
+            @Override
+            public void onSuccess(SendResult result) {
+                log.info("Produzido com sucesso | enviarEmailRecuperarSenha | {} ", email);
+            }
+
+            @Override
+            public void onFailure(Throwable ex) {
+                log.error("Erro ao produzir | enviarEmailRecuperarSenha | {}", email, ex);
             }
         });
     }

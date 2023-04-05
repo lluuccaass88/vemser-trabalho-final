@@ -93,7 +93,7 @@ public class UsuarioService {
         } catch (DataAccessException e) {
             throw new RegraDeNegocioException("Erro ao salvar no banco.");
         } catch (JsonProcessingException e) {
-            throw new RegraDeNegocioException("Erro no produtor.");
+            throw new RegraDeNegocioException("Erro no produtor enviarEmailBoasVindas.");
         }
     }
 
@@ -306,10 +306,14 @@ public class UsuarioService {
 
             usuarioRepository.save(usuarioRecuperado);
 
-//            emailService.enviarEmailRecuperarSenha(usuarioRecuperado, senhaTemporaria);
+            kafkaProdutorService.enviarEmailRecuperarSenha(usuarioRecuperado.getEmail(),
+                    usuarioRecuperado.getNome(),
+                    senhaTemporaria);
 
         } catch (NoSuchElementException | BadCredentialsException e) {
             throw new RegraDeNegocioException("Ocorreu um erro durante a recuperação da senha");
+        } catch (JsonProcessingException e) {
+            throw new RegraDeNegocioException("Erro no produtor enviarEmailRecuperarSenha.");
         }
     }
 

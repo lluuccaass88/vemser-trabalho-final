@@ -31,36 +31,7 @@ public class EmailService {
     private static String NOME_LOG = "TruckLog";
     private static String EMAIL_LOG = "trucklog@email.com";
 
-    /*public void enviarEmailBoasVindas(UsuarioEntity usuario) throws RegraDeNegocioException {
-        MimeMessage mimeMessage = emailSender.createMimeMessage();
-        try {
-            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
-            mimeMessageHelper.setFrom(from);
-            mimeMessageHelper.setTo(usuario.getEmail());
-            mimeMessageHelper.setSubject("Bem vindo ao " + NOME_LOG);
-            mimeMessageHelper.setText(getBoasVindasTemplate(usuario), true);
 
-            emailSender.send(mimeMessageHelper.getMimeMessage());
-        } catch (MessagingException | IOException | TemplateException | NullPointerException e) {
-            throw new RegraDeNegocioException("Erro ao enviar email.");
-        }
-    }
-
-    private String getBoasVindasTemplate(UsuarioEntity usuario)
-            throws IOException, TemplateException {
-
-        Map<String, Object> dados = new HashMap<>();
-        dados.put("nomeUsuario", usuario.getNome());
-        dados.put("loginUsuario", usuario.getLogin());
-        dados.put("cargoUsuario", usuario.getCargos());
-        dados.put("emailContato", EMAIL_LOG);
-        dados.put("nome", NOME_LOG);
-
-        Template template = fmConfiguration.getTemplate("email-template-boas-vindas-usuario.ftl");
-
-        //html
-        return FreeMarkerTemplateUtils.processTemplateIntoString(template, dados);
-    }*/
 
     public void enviarEmailViagem(RotaEntity rota, ViagemEntity viagem, UsuarioEntity motorista) throws RegraDeNegocioException {
         MimeMessage mimeMessage = emailSender.createMimeMessage();
@@ -98,70 +69,7 @@ public class EmailService {
         return FreeMarkerTemplateUtils.processTemplateIntoString(template, dados);
     }
 
-    public void enviarEmailRecuperarSenha(UsuarioEntity usuario, String senhaTemporaria) throws RegraDeNegocioException {
-        MimeMessage mimeMessage = emailSender.createMimeMessage();
-        Integer op = 2;
-        try {
-            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
-            mimeMessageHelper.setFrom(from);
-            mimeMessageHelper.setTo(usuario.getEmail());
-            mimeMessageHelper.setSubject("Recuperação de senha");
 
-            mimeMessageHelper.setText(geRecuperarSenhaTemplate(usuario, senhaTemporaria), true);
-
-            emailSender.send(mimeMessageHelper.getMimeMessage());
-
-        } catch (MessagingException | IOException | TemplateException e) {
-            e.printStackTrace();
-            throw new RegraDeNegocioException("Erro ao enviar email de recuperação de senha");
-        }
-    }
-
-    private String geRecuperarSenhaTemplate(UsuarioEntity usuario, String senhaTemporaria)
-            throws IOException, TemplateException {
-
-        Map<String, Object> dados = new HashMap<>();
-        dados.put("senhaTemporaria", senhaTemporaria);
-        dados.put("usuarioNome", usuario.getNome());
-        dados.put("emailContato", EMAIL_LOG);
-        dados.put("nome", NOME_LOG);
-
-        Template template = fmConfiguration.getTemplate("email-template-recupera-senha.ftl"); //TODO trocar o template
-        String html = FreeMarkerTemplateUtils.processTemplateIntoString(template, dados);
-        return html;
-    }
-
-/*    public void enviarEmailPossivelCliente(String email, String nome) throws RegraDeNegocioException {
-        MimeMessage mimeMessage = emailSender.createMimeMessage();
-        Integer op = 2;
-        try {
-            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
-            mimeMessageHelper.setFrom(from);
-            mimeMessageHelper.setTo(email);
-            mimeMessageHelper.setSubject("Contato com o clinte");
-
-            mimeMessageHelper.setText(geEmailPossivelClienteTemplate(email, nome), true);
-
-            emailSender.send(mimeMessageHelper.getMimeMessage());
-
-        } catch (MessagingException | IOException | TemplateException e) {
-            throw new RegraDeNegocioException("Erro ao enviar email de recuperação de senha");
-        }
-    }
-
-    private String geEmailPossivelClienteTemplate(String email, String nome)
-            throws IOException, TemplateException {
-
-        Map<String, Object> dados = new HashMap<>();
-        dados.put("usuarioNome", nome);
-        dados.put("usuarioEmail", email);
-        dados.put("emailContato", EMAIL_LOG);
-        dados.put("nome", NOME_LOG);
-
-        Template template = fmConfiguration.getTemplate("email-template-email-possivel-cliente.ftl"); //TODO trocar o template
-        String html = FreeMarkerTemplateUtils.processTemplateIntoString(template, dados);
-        return html;
-    }*/
 
 }
 
