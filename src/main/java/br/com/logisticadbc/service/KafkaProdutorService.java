@@ -29,9 +29,9 @@ public class KafkaProdutorService {
     private String topic;
 
     public void enviarEmailPossiveisClientes(String email, String nome) throws JsonProcessingException {
+        Integer particao = 0;
 
         PossiveisClientesDTO possiveisClientesDTO = new PossiveisClientesDTO(email, nome);
-
 
         String mensagem = objectMapper.writeValueAsString(possiveisClientesDTO);
 
@@ -39,12 +39,8 @@ public class KafkaProdutorService {
                 .setHeader(KafkaHeaders.TOPIC, topic)
                 .setHeader(KafkaHeaders.MESSAGE_KEY, UUID.randomUUID().toString());
 
+        stringMessageBuilder.setHeader(KafkaHeaders.PARTITION_ID, particao); //Partição
 
-
-        if (nome != null) {
-            stringMessageBuilder
-                    .setHeader(KafkaHeaders.PARTITION_ID, 0); //Partição
-        }
         Message<String> message = stringMessageBuilder.build();
 
         ListenableFuture<SendResult<String, String>> future = kafkaTemplate.send(message);

@@ -52,7 +52,7 @@ public class UsuarioController implements UsuarioControllerDoc {
     }
 
     @PostMapping("envia-email-possivel-cliente")
-    public ResponseEntity<Void> update(@Email @NotBlank @NotNull @RequestParam("emailCliente") String emailCliente,
+    public ResponseEntity<Void> sendMail(@Email @NotBlank @NotNull @RequestParam("emailCliente") String emailCliente,
                                            @NotBlank @NotNull @RequestParam("nomeCliente") String nomeCliente)
             throws RegraDeNegocioException, JsonProcessingException {
 

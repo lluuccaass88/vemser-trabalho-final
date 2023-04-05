@@ -131,7 +131,7 @@ public class EmailService {
         return html;
     }
 
-    public void enviarEmailPossivelCliente(String email, String nome) throws RegraDeNegocioException {
+/*    public void enviarEmailPossivelCliente(String email, String nome) throws RegraDeNegocioException {
         MimeMessage mimeMessage = emailSender.createMimeMessage();
         Integer op = 2;
         try {
@@ -161,7 +161,7 @@ public class EmailService {
         Template template = fmConfiguration.getTemplate("email-template-email-possivel-cliente.ftl"); //TODO trocar o template
         String html = FreeMarkerTemplateUtils.processTemplateIntoString(template, dados);
         return html;
-    }
+    }*/
 
 }
 
