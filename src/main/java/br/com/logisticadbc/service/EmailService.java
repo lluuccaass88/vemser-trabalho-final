@@ -31,7 +31,7 @@ public class EmailService {
     private static String NOME_LOG = "TruckLog";
     private static String EMAIL_LOG = "trucklog@email.com";
 
-    public void enviarEmailBoasVindas(UsuarioEntity usuario) throws RegraDeNegocioException {
+    /*public void enviarEmailBoasVindas(UsuarioEntity usuario) throws RegraDeNegocioException {
         MimeMessage mimeMessage = emailSender.createMimeMessage();
         try {
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
@@ -51,7 +51,7 @@ public class EmailService {
 
         Map<String, Object> dados = new HashMap<>();
         dados.put("nomeUsuario", usuario.getNome());
-        dados.put("emailUsuario", usuario.getEmail());
+        dados.put("loginUsuario", usuario.getLogin());
         dados.put("cargoUsuario", usuario.getCargos());
         dados.put("emailContato", EMAIL_LOG);
         dados.put("nome", NOME_LOG);
@@ -60,7 +60,7 @@ public class EmailService {
 
         //html
         return FreeMarkerTemplateUtils.processTemplateIntoString(template, dados);
-    }
+    }*/
 
     public void enviarEmailViagem(RotaEntity rota, ViagemEntity viagem, UsuarioEntity motorista) throws RegraDeNegocioException {
         MimeMessage mimeMessage = emailSender.createMimeMessage();

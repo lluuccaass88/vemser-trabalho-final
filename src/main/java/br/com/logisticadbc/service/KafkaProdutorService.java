@@ -1,6 +1,7 @@
 package br.com.logisticadbc.service;
 
-import br.com.logisticadbc.dto.out.PossiveisClientesDTO;
+import br.com.logisticadbc.dto.kafka.PossiveisClientesDTO;
+import br.com.logisticadbc.dto.kafka.UsuarioBoasVindasDTO;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -23,8 +24,8 @@ import java.util.UUID;
 public class KafkaProdutorService {
 
     private final ObjectMapper objectMapper;
-
     private final KafkaTemplate<String, String> kafkaTemplate;
+
     @Value(value = "${kafka.topic}")
     private String topic;
 
@@ -47,14 +48,45 @@ public class KafkaProdutorService {
         future.addCallback(new ListenableFutureCallback<>() {
             @Override
             public void onSuccess(SendResult result) {
-                log.info(" Log enviado para o kafka com o texto: {} ", mensagem);
+                log.info("Produzido com sucesso | {} ", email);
             }
 
             @Override
             public void onFailure(Throwable ex) {
-                log.error(" Erro ao publicar duvida no kafka com a mensagem: {}", mensagem, ex);
+                log.error("Erro ao produzir | {}", email, ex);
             }
         });
     }
+
+    public void enviarEmailBoasVindas(String email, String nome, String cargo, String login) throws JsonProcessingException {
+        Integer particao = 1;
+
+        UsuarioBoasVindasDTO usuarioBoasVindasDTO = new UsuarioBoasVindasDTO(email, nome, cargo, login);
+
+        String mensagem = objectMapper.writeValueAsString(usuarioBoasVindasDTO);
+
+        MessageBuilder<String> stringMessageBuilder = MessageBuilder.withPayload(mensagem)
+                .setHeader(KafkaHeaders.TOPIC, topic)
+                .setHeader(KafkaHeaders.MESSAGE_KEY, UUID.randomUUID().toString());
+
+        stringMessageBuilder.setHeader(KafkaHeaders.PARTITION_ID, particao); //Partição
+
+        Message<String> message = stringMessageBuilder.build();
+
+        ListenableFuture<SendResult<String, String>> future = kafkaTemplate.send(message);
+        future.addCallback(new ListenableFutureCallback<>() {
+            @Override
+            public void onSuccess(SendResult result) {
+                log.info("Produzido com sucesso | {} ", email);
+            }
+
+            @Override
+            public void onFailure(Throwable ex) {
+                log.error("Erro ao produzir | {}", email, ex);
+            }
+        });
+    }
+
+
 
 }
