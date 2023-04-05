@@ -8,7 +8,9 @@ import br.com.logisticadbc.dto.out.UsuarioCompletoDTO;
 import br.com.logisticadbc.dto.out.UsuarioDTO;
 import br.com.logisticadbc.entity.enums.StatusGeral;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
+import br.com.logisticadbc.service.KafkaProdutorService;
 import br.com.logisticadbc.service.UsuarioService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +21,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Slf4j
@@ -30,6 +34,8 @@ import java.util.List;
 public class UsuarioController implements UsuarioControllerDoc {
 
     private final UsuarioService usuarioService;
+
+    private final KafkaProdutorService kafkaProdutorService;
 
     @PostMapping
     public ResponseEntity<UsuarioDTO> create(@Valid @RequestBody UsuarioCreateDTO usuarioCreateDTO)
@@ -46,11 +52,11 @@ public class UsuarioController implements UsuarioControllerDoc {
     }
 
     @PostMapping("envia-email-possivel-cliente")
-    public ResponseEntity<Void> update(@Email @RequestParam("emailCliente") String emailCliente,
-                                             @RequestParam("nomeCliente") String nomeCliente)
-            throws RegraDeNegocioException {
+    public ResponseEntity<Void> update(@Email @NotBlank @NotNull @RequestParam("emailCliente") String emailCliente,
+                                           @NotBlank @NotNull @RequestParam("nomeCliente") String nomeCliente)
+            throws RegraDeNegocioException, JsonProcessingException {
 
-        usuarioService.enviarEmailInteresseCliente(emailCliente, nomeCliente);
+        kafkaProdutorService.enviarEmailPossiveisClientes(emailCliente, nomeCliente);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

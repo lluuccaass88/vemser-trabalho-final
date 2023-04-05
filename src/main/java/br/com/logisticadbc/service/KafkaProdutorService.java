@@ -1,11 +1,21 @@
 package br.com.logisticadbc.service;
 
+import br.com.logisticadbc.dto.out.PossiveisClientesDTO;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.support.KafkaHeaders;
+import org.springframework.kafka.support.SendResult;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.concurrent.ListenableFuture;
+import org.springframework.util.concurrent.ListenableFutureCallback;
+
+import java.util.UUID;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -18,15 +28,37 @@ public class KafkaProdutorService {
     @Value(value = "${kafka.topic}")
     private String topic;
 
-    public void sendTo(String mensagem) {
-        kafkaTemplate.send(topic, mensagem);
+    public void enviarEmailPossiveisClientes(String email, String nome) throws JsonProcessingException {
+
+        PossiveisClientesDTO possiveisClientesDTO = new PossiveisClientesDTO(email, nome);
+
+
+        String mensagem = objectMapper.writeValueAsString(possiveisClientesDTO);
+
+        MessageBuilder<String> stringMessageBuilder = MessageBuilder.withPayload(mensagem)
+                .setHeader(KafkaHeaders.TOPIC, topic)
+                .setHeader(KafkaHeaders.MESSAGE_KEY, UUID.randomUUID().toString());
+
+
+
+        if (nome != null) {
+            stringMessageBuilder
+                    .setHeader(KafkaHeaders.PARTITION_ID, 0); //Partição
+        }
+        Message<String> message = stringMessageBuilder.build();
+
+        ListenableFuture<SendResult<String, String>> future = kafkaTemplate.send(message);
+        future.addCallback(new ListenableFutureCallback<>() {
+            @Override
+            public void onSuccess(SendResult result) {
+                log.info(" Log enviado para o kafka com o texto: {} ", mensagem);
+            }
+
+            @Override
+            public void onFailure(Throwable ex) {
+                log.error(" Erro ao publicar duvida no kafka com a mensagem: {}", mensagem, ex);
+            }
+        });
     }
 
-    public void sendTo(String mensagem, String key) {
-        kafkaTemplate.send(topic, key, mensagem);
-    }
-
-    public void sendTo(String mensagem, String key, int partition) {
-        kafkaTemplate.send(topic, partition, key, mensagem);
-    }
 }

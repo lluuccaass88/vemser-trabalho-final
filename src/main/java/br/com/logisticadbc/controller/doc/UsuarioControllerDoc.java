@@ -7,6 +7,7 @@ import br.com.logisticadbc.dto.out.UsuarioCompletoDTO;
 import br.com.logisticadbc.dto.out.UsuarioDTO;
 import br.com.logisticadbc.entity.enums.StatusGeral;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -152,6 +153,6 @@ public interface UsuarioControllerDoc {
     @PostMapping("envia-email-possivel-cliente")
     public ResponseEntity<Void> update(@Email @RequestParam("emailCliente") String emailCliente,
                                              @RequestParam("nomeCliente") String nomeCliente)
-            throws RegraDeNegocioException;
+            throws RegraDeNegocioException, JsonProcessingException;
 }
 

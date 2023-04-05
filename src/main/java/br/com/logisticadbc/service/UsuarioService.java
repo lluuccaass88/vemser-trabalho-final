@@ -3,10 +3,7 @@ package br.com.logisticadbc.service;
 import br.com.logisticadbc.dto.in.LoginDTO;
 import br.com.logisticadbc.dto.in.UsuarioCreateDTO;
 import br.com.logisticadbc.dto.in.UsuarioUpdateDTO;
-import br.com.logisticadbc.dto.out.CargoDTO;
-import br.com.logisticadbc.dto.out.PageDTO;
-import br.com.logisticadbc.dto.out.UsuarioCompletoDTO;
-import br.com.logisticadbc.dto.out.UsuarioDTO;
+import br.com.logisticadbc.dto.out.*;
 import br.com.logisticadbc.entity.CargoEntity;
 import br.com.logisticadbc.entity.UsuarioEntity;
 import br.com.logisticadbc.entity.enums.StatusGeral;
@@ -43,6 +40,8 @@ public class UsuarioService {
     public final AuthenticationManager authenticationManager;
     private final ObjectMapper objectMapper;
     private PasswordEncoder passwordEncoder;
+
+    private KafkaProdutorService kafkaProdutorService;
     private final LogService logService;
 
     public UsuarioService(UsuarioRepository usuarioRepository,
@@ -308,16 +307,6 @@ public class UsuarioService {
             throw new RegraDeNegocioException("Ocorreu um erro durante a recuperação da senha");
         }
     }
-
-    public void enviarEmailInteresseCliente (String emailCliente, String nomeCliente) throws RegraDeNegocioException {
-
-        try {
-            emailService.enviarEmailPossivelCliente(emailCliente, nomeCliente);
-        } catch (NoSuchElementException | BadCredentialsException e) {
-            throw new RegraDeNegocioException("Ocorreu um erro durante o envio de email para o possivel cliente");
-        }
-    }
-
 
     public String gerarSenhaAleatoria(int n){
 
