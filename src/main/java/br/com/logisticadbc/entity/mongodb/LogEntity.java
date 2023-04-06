@@ -26,7 +26,7 @@ public class LogEntity {
 
     private String descricao;
 
-    private LocalDateTime data;
+    private String data;
     @Enumerated(EnumType.STRING)
     private TipoOperacao tipoOperacao;
 
