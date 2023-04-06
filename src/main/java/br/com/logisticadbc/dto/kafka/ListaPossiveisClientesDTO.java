@@ -11,5 +11,5 @@ import java.util.List;
 @AllArgsConstructor
 public class ListaPossiveisClientesDTO {
 
-    List<PossiveisClientesDTO> listaPossiveisClientes;
+    private List<PossiveisClientesDTO> listaPossiveisClientes;
 }

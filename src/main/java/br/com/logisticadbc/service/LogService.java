@@ -5,12 +5,14 @@ import br.com.logisticadbc.dto.out.PageDTO;
 import br.com.logisticadbc.entity.enums.TipoOperacao;
 import br.com.logisticadbc.entity.mongodb.LogEntity;
 import br.com.logisticadbc.repository.LogRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -23,6 +25,7 @@ import java.util.List;
 public class LogService {
 
     private final LogRepository logRepository;
+    private final KafkaProdutorService kafkaProdutorService;
     private final ObjectMapper objectMapper;
 
     public PageDTO<LogDTO> listAllLogs(Integer pagina, Integer tamanho) {
@@ -75,5 +78,16 @@ public class LogService {
         logRepository.save(log);
     }
 
+    // executa conta o tempo à partir do íncio da execução do método
+    @Scheduled(cron = "*/10 * * * * *")
+    public void reportCurrentTime() throws JsonProcessingException {
+        List<LogDTO> listaLogs = listAllLogsForDay();
+
+        if (listaLogs.isEmpty()) {
+            // não manda email
+        } else {
+            kafkaProdutorService.enviarLogPorDia(listaLogs);
+        }
+    }
 
 }

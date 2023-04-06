@@ -150,7 +150,6 @@ public class KafkaProdutorService {
         });
     }
 
-
     public void enviarEmailAdminPossiveisClientes(List<PossiveisClientesDTO> listaPossiveisClientes) throws JsonProcessingException {
         Integer particao = 4;
 
@@ -181,9 +180,7 @@ public class KafkaProdutorService {
         });
     }
 
-
     public void enviarLogPorDia(List<LogDTO> listaLog) throws JsonProcessingException {
-
         Integer particao = 5;
 
         LogPorDiaDTO logPorDiaDTO = new LogPorDiaDTO();
@@ -193,8 +190,8 @@ public class KafkaProdutorService {
 
         MessageBuilder<String> stringMessageBuilder = MessageBuilder.withPayload(mensagem)
                 .setHeader(KafkaHeaders.TOPIC, topic)
-
                 .setHeader(KafkaHeaders.MESSAGE_KEY, UUID.randomUUID().toString());
+
         stringMessageBuilder.setHeader(KafkaHeaders.PARTITION_ID, particao); //Partição
 
         Message<String> message = stringMessageBuilder.build();
