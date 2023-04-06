@@ -9,6 +9,7 @@ import br.com.logisticadbc.dto.out.UsuarioDTO;
 import br.com.logisticadbc.entity.enums.StatusGeral;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.service.KafkaProdutorService;
+import br.com.logisticadbc.service.PossiveisClientesService;
 import br.com.logisticadbc.service.UsuarioService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -37,6 +38,8 @@ public class UsuarioController implements UsuarioControllerDoc {
 
     private final KafkaProdutorService kafkaProdutorService;
 
+    private final PossiveisClientesService possiveisClientesService;
+
     @PostMapping
     public ResponseEntity<UsuarioDTO> create(@Valid @RequestBody UsuarioCreateDTO usuarioCreateDTO)
             throws RegraDeNegocioException {
@@ -53,11 +56,12 @@ public class UsuarioController implements UsuarioControllerDoc {
 
     @PostMapping("envia-email-possivel-cliente")
     public ResponseEntity<Void> sendMail(@Email @NotBlank @NotNull @RequestParam("emailCliente") String emailCliente,
-                                           @NotBlank @NotNull @RequestParam("nomeCliente") String nomeCliente)
+                                                         @NotBlank @NotNull @RequestParam("nomeCliente") String nomeCliente)
             throws RegraDeNegocioException, JsonProcessingException {
 
+        possiveisClientesService.criar(emailCliente, nomeCliente);
         kafkaProdutorService.enviarEmailPossiveisClientes(emailCliente, nomeCliente);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @DeleteMapping
