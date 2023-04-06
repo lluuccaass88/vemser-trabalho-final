@@ -25,6 +25,7 @@ public class LogEntity {
 
     private String descricao;
 
+    private String data;
     @Enumerated(EnumType.STRING)
     private TipoOperacao tipoOperacao;
 

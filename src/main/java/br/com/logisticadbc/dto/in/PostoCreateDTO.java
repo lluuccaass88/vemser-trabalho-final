@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 @Data
 @AllArgsConstructor
@@ -30,11 +31,12 @@ public class PostoCreateDTO {
 
     @NotNull
     @NotBlank
+    @Pattern(regexp = "[^0-9]*", message = "Deve conter apenas números")
+    @Pattern(regexp = "[a-zA-Z]*", message = "Não deve conter letras")
     @Schema(description = "Cidade em que está o posto", example = "Fortaleza")
     private String cidade;
 
     @NotNull
     @Schema(description = "Valor do combustivel no posto", example = "5.89")
     private Double valorCombustivel;
-
 }

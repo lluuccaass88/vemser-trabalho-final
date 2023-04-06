@@ -7,6 +7,7 @@ import br.com.logisticadbc.dto.out.UsuarioCompletoDTO;
 import br.com.logisticadbc.dto.out.UsuarioDTO;
 import br.com.logisticadbc.entity.enums.StatusGeral;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 public interface UsuarioControllerDoc {
@@ -150,8 +153,8 @@ public interface UsuarioControllerDoc {
             }
     )
     @PostMapping("envia-email-possivel-cliente")
-    public ResponseEntity<Void> update(@Email @RequestParam("emailCliente") String emailCliente,
-                                             @RequestParam("nomeCliente") String nomeCliente)
-            throws RegraDeNegocioException;
+    public ResponseEntity<Void> sendMail(@Email @NotBlank @NotNull @RequestParam("emailCliente") String emailCliente,
+                                         @NotBlank @NotNull @RequestParam("nomeCliente") String nomeCliente)
+            throws RegraDeNegocioException, JsonProcessingException ;
 }
 

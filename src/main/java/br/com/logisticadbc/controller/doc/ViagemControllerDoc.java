@@ -50,7 +50,7 @@ public interface ViagemControllerDoc {
             }
     )
     @PostMapping
-    public ResponseEntity<ViagemDTO> create(@RequestParam("idMotorista") Integer idMotorista,
+    public ResponseEntity<ViagemDTO> create(@RequestParam(value = "idMotorista", required = false) Integer idMotorista,
                                             @Valid @RequestBody ViagemCreateDTO viagemCreateDTO)
             throws RegraDeNegocioException;
 

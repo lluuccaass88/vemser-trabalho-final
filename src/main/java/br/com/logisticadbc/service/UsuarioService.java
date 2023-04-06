@@ -14,6 +14,7 @@ import br.com.logisticadbc.entity.enums.TipoOperacao;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.repository.UsuarioRepository;
 import br.com.logisticadbc.security.TokenService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
@@ -37,16 +38,16 @@ import java.util.stream.Collectors;
 public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
-    private final EmailService emailService;
     private final TokenService tokenService;
     private final CargoService cargoService;
     public final AuthenticationManager authenticationManager;
     private final ObjectMapper objectMapper;
+    private final KafkaProdutorService kafkaProdutorService;
     private PasswordEncoder passwordEncoder;
     private final LogService logService;
 
     public UsuarioService(UsuarioRepository usuarioRepository,
-                          EmailService emailService,
+                          KafkaProdutorService kafkaProdutorService,
                           TokenService tokenService,
                           @Lazy CargoService cargoService,
                           @Lazy AuthenticationManager authenticationManager,
@@ -55,7 +56,7 @@ public class UsuarioService {
                           LogService logService
                           ) {
         this.usuarioRepository = usuarioRepository;
-        this.emailService = emailService;
+        this.kafkaProdutorService = kafkaProdutorService;
         this.cargoService = cargoService;
         this.tokenService = tokenService;
         this.authenticationManager = authenticationManager;
@@ -84,12 +85,18 @@ public class UsuarioService {
             String descricao = "Operação em Usuário: " + usuarioEntity.getLogin();
             logService.gerarLog(usuarioEntity.getLogin(), descricao, TipoOperacao.CADASTRO);
 
-            emailService.enviarEmailBoasVindas(usuarioCriado);
+            kafkaProdutorService.enviarEmailBoasVindas(
+                    usuarioCriado.getEmail(),
+                    usuarioCriado.getNome(),
+                    usuarioCreateDTO.getNomeCargo(),
+                    usuarioCriado.getLogin());
 
             return transformaEmUsuarioDTO(usuarioCriado);
 
         } catch (DataAccessException e) {
-            throw new RegraDeNegocioException("Aconteceu algum problema durante a criação.");
+            throw new RegraDeNegocioException("Erro ao salvar no banco.");
+        } catch (JsonProcessingException e) {
+            throw new RegraDeNegocioException("Erro no produtor enviarEmailBoasVindas.");
         }
     }
 
@@ -302,22 +309,16 @@ public class UsuarioService {
 
             usuarioRepository.save(usuarioRecuperado);
 
-            emailService.enviarEmailRecuperarSenha(usuarioRecuperado, senhaTemporaria);
+            kafkaProdutorService.enviarEmailRecuperarSenha(usuarioRecuperado.getEmail(),
+                    usuarioRecuperado.getNome(),
+                    senhaTemporaria);
 
         } catch (NoSuchElementException | BadCredentialsException e) {
             throw new RegraDeNegocioException("Ocorreu um erro durante a recuperação da senha");
+        } catch (JsonProcessingException e) {
+            throw new RegraDeNegocioException("Erro no produtor enviarEmailRecuperarSenha.");
         }
     }
-
-    public void enviarEmailInteresseCliente (String emailCliente, String nomeCliente) throws RegraDeNegocioException {
-
-        try {
-            emailService.enviarEmailPossivelCliente(emailCliente, nomeCliente);
-        } catch (NoSuchElementException | BadCredentialsException e) {
-            throw new RegraDeNegocioException("Ocorreu um erro durante o envio de email para o possivel cliente");
-        }
-    }
-
 
     public String gerarSenhaAleatoria(int n){
 
