@@ -15,6 +15,7 @@ import br.com.logisticadbc.entity.enums.StatusViagem;
 import br.com.logisticadbc.entity.enums.TipoOperacao;
 import br.com.logisticadbc.exceptions.RegraDeNegocioException;
 import br.com.logisticadbc.repository.ViagemRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +25,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -33,9 +35,9 @@ public class ViagemService {
     private final ViagemRepository viagemRepository;
     private final UsuarioService usuarioService;
     private final CaminhaoService caminhaoService;
-    private final EmailService emailService;
     private final RotaService rotaService;
     private final ObjectMapper objectMapper;
+    private final KafkaProdutorService kafkaProdutorService;
     private final LogService logService;
 
     public ViagemDTO criar(Integer idMotorista, ViagemCreateDTO viagemCreateDTO) throws RegraDeNegocioException {
@@ -99,7 +101,14 @@ public class ViagemService {
             String descricao = "Operação em Viagem: " + viagemEntity.getDescricao();
             logService.gerarLog(motorista.getLogin(), descricao, TipoOperacao.CADASTRO);
 
-            emailService.enviarEmailViagem(rotaEncontrada, viagemEntity, motorista);
+            kafkaProdutorService.enviarEmailViagem(
+                    motorista.getEmail(),
+                    motorista.getNome(),
+                    rotaEncontrada.getLocalPartida(),
+                    rotaEncontrada.getLocalDestino(),
+                    viagemEntity.getDataInicio().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
+                    viagemEntity.getDataFim().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+            );
 
             ViagemDTO viagemDTO = objectMapper.convertValue(viagemEntity, ViagemDTO.class);
             viagemDTO.setIdUsuario(idMotorista);
@@ -109,6 +118,8 @@ public class ViagemService {
 
         } catch (DataAccessException e) {
             throw new RegraDeNegocioException("Erro ao salvar no banco.");
+        } catch (JsonProcessingException e) {
+            throw new RegraDeNegocioException("Erro no produtor enviarEmailViagem.");
         }
     }
 

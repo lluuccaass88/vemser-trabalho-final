@@ -3,6 +3,7 @@ package br.com.logisticadbc.service;
 import br.com.logisticadbc.dto.kafka.PossiveisClientesDTO;
 import br.com.logisticadbc.dto.kafka.UsuarioBoasVindasDTO;
 import br.com.logisticadbc.dto.kafka.UsuarioRecuperaSenhaDTO;
+import br.com.logisticadbc.dto.kafka.ViagemCriadaDTO;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -113,6 +114,38 @@ public class KafkaProdutorService {
             @Override
             public void onFailure(Throwable ex) {
                 log.error("Erro ao produzir | enviarEmailRecuperarSenha | {}", email, ex);
+            }
+        });
+    }
+
+    public void enviarEmailViagem(String email, String nome,
+                                  String partidaRota, String destinoRota,
+                                  String inicioViagem, String fimViagem) throws JsonProcessingException {
+        Integer particao = 3;
+
+        ViagemCriadaDTO viagemCriadaDTO = new ViagemCriadaDTO(
+                email, nome, partidaRota, destinoRota, inicioViagem, fimViagem);
+
+        String mensagem = objectMapper.writeValueAsString(viagemCriadaDTO);
+
+        MessageBuilder<String> stringMessageBuilder = MessageBuilder.withPayload(mensagem)
+                .setHeader(KafkaHeaders.TOPIC, topic)
+                .setHeader(KafkaHeaders.MESSAGE_KEY, UUID.randomUUID().toString());
+
+        stringMessageBuilder.setHeader(KafkaHeaders.PARTITION_ID, particao); //Partição
+
+        Message<String> message = stringMessageBuilder.build();
+
+        ListenableFuture<SendResult<String, String>> future = kafkaTemplate.send(message);
+        future.addCallback(new ListenableFutureCallback<>() {
+            @Override
+            public void onSuccess(SendResult result) {
+                log.info("Produzido com sucesso | enviarEmailViagem | {} ", email);
+            }
+
+            @Override
+            public void onFailure(Throwable ex) {
+                log.error("Erro ao produzir | enviarEmailViagem | {}", email, ex);
             }
         });
     }
