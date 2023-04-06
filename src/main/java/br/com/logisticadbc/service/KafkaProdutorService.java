@@ -1,9 +1,7 @@
 package br.com.logisticadbc.service;
 
-import br.com.logisticadbc.dto.kafka.PossiveisClientesDTO;
-import br.com.logisticadbc.dto.kafka.UsuarioBoasVindasDTO;
-import br.com.logisticadbc.dto.kafka.UsuarioRecuperaSenhaDTO;
-import br.com.logisticadbc.dto.kafka.ViagemCriadaDTO;
+import br.com.logisticadbc.dto.kafka.*;
+import br.com.logisticadbc.entity.mongodb.PossiveisClientesEntity;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 
+import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -150,6 +149,33 @@ public class KafkaProdutorService {
         });
     }
 
+    public void enviarEmailAdminPossiveisClientes(List<PossiveisClientesDTO> listaPossiveisClientes) throws JsonProcessingException {
+        Integer particao = 4;
 
+        ListaPossiveisClientesDTO listaPossiveisClientesDTO = new ListaPossiveisClientesDTO();
+        listaPossiveisClientesDTO.setListaPossiveisClientes(listaPossiveisClientes);
 
+        String mensagem = objectMapper.writeValueAsString(listaPossiveisClientesDTO);
+
+        MessageBuilder<String> stringMessageBuilder = MessageBuilder.withPayload(mensagem)
+                .setHeader(KafkaHeaders.TOPIC, topic)
+                .setHeader(KafkaHeaders.MESSAGE_KEY, UUID.randomUUID().toString());
+
+        stringMessageBuilder.setHeader(KafkaHeaders.PARTITION_ID, particao); //Partição
+
+        Message<String> message = stringMessageBuilder.build();
+
+        ListenableFuture<SendResult<String, String>> future = kafkaTemplate.send(message);
+        future.addCallback(new ListenableFutureCallback<>() {
+            @Override
+            public void onSuccess(SendResult result) {
+                log.info("Produzido com sucesso | enviarEmailAdminPossiveisClientes");
+            }
+
+            @Override
+            public void onFailure(Throwable ex) {
+                log.error("Erro ao produzir | enviarEmailAdminPossiveisClientes ", ex);
+            }
+        });
+    }
 }
