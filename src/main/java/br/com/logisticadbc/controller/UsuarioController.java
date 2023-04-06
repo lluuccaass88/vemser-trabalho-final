@@ -3,7 +3,6 @@ package br.com.logisticadbc.controller;
 import br.com.logisticadbc.controller.doc.UsuarioControllerDoc;
 import br.com.logisticadbc.dto.in.UsuarioCreateDTO;
 import br.com.logisticadbc.dto.in.UsuarioUpdateDTO;
-import br.com.logisticadbc.dto.kafka.PossiveisClientesDTO;
 import br.com.logisticadbc.dto.out.PageDTO;
 import br.com.logisticadbc.dto.out.UsuarioCompletoDTO;
 import br.com.logisticadbc.dto.out.UsuarioDTO;

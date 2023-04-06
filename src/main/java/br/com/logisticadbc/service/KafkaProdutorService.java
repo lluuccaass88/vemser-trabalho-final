@@ -1,15 +1,7 @@
 package br.com.logisticadbc.service;
 
-<<<<<<< HEAD
 import br.com.logisticadbc.dto.kafka.*;
-import br.com.logisticadbc.entity.mongodb.PossiveisClientesEntity;
-=======
-import br.com.logisticadbc.dto.kafka.PossiveisClientesDTO;
-import br.com.logisticadbc.dto.kafka.UsuarioBoasVindasDTO;
-import br.com.logisticadbc.dto.kafka.UsuarioRecuperaSenhaDTO;
-import br.com.logisticadbc.dto.kafka.ViagemCriadaDTO;
 import br.com.logisticadbc.dto.out.LogPorDiaDTO;
->>>>>>> 1227494379186f2fc042351287686da234122d04
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
