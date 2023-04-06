@@ -78,8 +78,7 @@ public class LogService {
         logRepository.save(log);
     }
 
-    // executa conta o tempo à partir do íncio da execução do método
-    @Scheduled(cron = "*/10 * * * * *")
+    @Scheduled(cron = "0 0 * * * *") // todo dia a meia noite
     public void reportCurrentTime() throws JsonProcessingException {
         List<LogDTO> listaLogs = listAllLogsForDay();
 
