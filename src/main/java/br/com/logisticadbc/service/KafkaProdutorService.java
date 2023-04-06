@@ -4,6 +4,7 @@ import br.com.logisticadbc.dto.kafka.PossiveisClientesDTO;
 import br.com.logisticadbc.dto.kafka.UsuarioBoasVindasDTO;
 import br.com.logisticadbc.dto.kafka.UsuarioRecuperaSenhaDTO;
 import br.com.logisticadbc.dto.kafka.ViagemCriadaDTO;
+import br.com.logisticadbc.dto.out.LogDTO;
 import br.com.logisticadbc.dto.out.LogPorDiaDTO;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 
+import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -151,8 +153,11 @@ public class KafkaProdutorService {
         });
     }
 
-    public void enviarLogPorDia(LogPorDiaDTO logPorDiaDTO) throws JsonProcessingException {
+    public void enviarLogPorDia(List<LogDTO> listLogDTO) throws JsonProcessingException {
         Integer particao = 5;
+
+        LogPorDiaDTO logPorDiaDTO = new LogPorDiaDTO();
+        logPorDiaDTO.setListDTo(listLogDTO);
 
         String mensagem = objectMapper.writeValueAsString(logPorDiaDTO);
 
@@ -168,12 +173,12 @@ public class KafkaProdutorService {
         future.addCallback(new ListenableFutureCallback<>() {
             @Override
             public void onSuccess(SendResult result) {
-                log.info("Produzido com sucesso | enviarLogPorDia ao administrador");
+                log.info("Produzido com sucesso | enviarEmailAdminPossiveisClientes");
             }
 
             @Override
             public void onFailure(Throwable ex) {
-                log.error("Erro ao produzir | enviarLogPorDia ao administrador ", ex);
+                log.error("Erro ao produzir | enviarEmailAdminPossiveisClientes ", ex);
             }
         });
     }

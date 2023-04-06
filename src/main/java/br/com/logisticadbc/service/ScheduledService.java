@@ -28,16 +28,17 @@ public class ScheduledService {
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 
     // executa conta o tempo à partir do íncio da execução do método
-    @Scheduled(fixedRate = 10000)
+    @Scheduled(cron = "*/10 * * * * *")
     public void reportCurrentTime() throws InterruptedException, JsonProcessingException {
         try{
             List<LogDTO> listaLogs = logService.listAllLogsForDay();
-            LogPorDiaDTO logPorDiaDTO = new LogPorDiaDTO(listaLogs);
 
-            kafkaProdutorService.enviarLogPorDia(logPorDiaDTO);
+
+            kafkaProdutorService.enviarLogPorDia(listaLogs);
 
             log.info("Email enviado com sucesso");
         }catch (Exception e){
+            e.printStackTrace();
             log.error("Erro ao enviar o email - Scheduled" + e.getMessage());
         }
 

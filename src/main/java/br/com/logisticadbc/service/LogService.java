@@ -60,8 +60,6 @@ public class LogService {
                 .map(log -> objectMapper.convertValue(log, LogDTO.class))
                 .toList();
 
-        log.info("Numero de dtos" + listDTo.size());
-
         return listDTo;
     }
 
