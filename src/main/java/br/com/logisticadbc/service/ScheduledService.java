@@ -1,7 +1,6 @@
 package br.com.logisticadbc.service;
 
 import br.com.logisticadbc.dto.out.LogDTO;
-import br.com.logisticadbc.dto.out.LogPorDiaDTO;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;

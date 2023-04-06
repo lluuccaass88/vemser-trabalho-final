@@ -1,12 +1,7 @@
 package br.com.logisticadbc.service;
 
-
-import br.com.logisticadbc.dto.kafka.PossiveisClientesDTO;
-import br.com.logisticadbc.dto.kafka.UsuarioBoasVindasDTO;
-import br.com.logisticadbc.dto.kafka.UsuarioRecuperaSenhaDTO;
-import br.com.logisticadbc.dto.kafka.ViagemCriadaDTO;
+import br.com.logisticadbc.dto.kafka.*;
 import br.com.logisticadbc.dto.out.LogDTO;
-
 import br.com.logisticadbc.dto.out.LogPorDiaDTO;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -156,13 +151,13 @@ public class KafkaProdutorService {
     }
 
 
-    public void enviarLogPorDia(List<LogDTO> listaLogDTO) throws JsonProcessingException {
-        Integer particao = 5;
+    public void enviarEmailAdminPossiveisClientes(List<PossiveisClientesDTO> listaPossiveisClientes) throws JsonProcessingException {
+        Integer particao = 4;
 
-        LogPorDiaDTO logPorDiaDTO = new LogPorDiaDTO();
-        logPorDiaDTO.setListDTo(listaLogDTO);
+        ListaPossiveisClientesDTO listaPossiveisClientesDTO = new ListaPossiveisClientesDTO();
+        listaPossiveisClientesDTO.setListaPossiveisClientes(listaPossiveisClientes);
 
-        String mensagem = objectMapper.writeValueAsString(logPorDiaDTO);
+        String mensagem = objectMapper.writeValueAsString(listaPossiveisClientesDTO);
 
         MessageBuilder<String> stringMessageBuilder = MessageBuilder.withPayload(mensagem)
                 .setHeader(KafkaHeaders.TOPIC, topic)
@@ -182,6 +177,38 @@ public class KafkaProdutorService {
             @Override
             public void onFailure(Throwable ex) {
                 log.error("Erro ao produzir | enviarEmailAdminPossiveisClientes ", ex);
+            }
+        });
+    }
+
+
+    public void enviarLogPorDia(List<LogDTO> listaLog) throws JsonProcessingException {
+
+        Integer particao = 5;
+
+        LogPorDiaDTO logPorDiaDTO = new LogPorDiaDTO();
+        logPorDiaDTO.setListDTo(listaLog);
+
+        String mensagem = objectMapper.writeValueAsString(logPorDiaDTO);
+
+        MessageBuilder<String> stringMessageBuilder = MessageBuilder.withPayload(mensagem)
+                .setHeader(KafkaHeaders.TOPIC, topic)
+
+                .setHeader(KafkaHeaders.MESSAGE_KEY, UUID.randomUUID().toString());
+        stringMessageBuilder.setHeader(KafkaHeaders.PARTITION_ID, particao); //Partição
+
+        Message<String> message = stringMessageBuilder.build();
+
+        ListenableFuture<SendResult<String, String>> future = kafkaTemplate.send(message);
+        future.addCallback(new ListenableFutureCallback<>() {
+            @Override
+            public void onSuccess(SendResult result) {
+                log.info("Produzido com sucesso | enviarLogPorDia");
+            }
+
+            @Override
+            public void onFailure(Throwable ex) {
+                log.error("Erro ao produzir | enviarLogPorDia ", ex);
             }
         });
     }
