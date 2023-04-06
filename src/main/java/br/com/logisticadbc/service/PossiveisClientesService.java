@@ -51,8 +51,7 @@ public class PossiveisClientesService {
         }
     }
 
-//    @Scheduled(cron = "0 0 * * * *") // todo dia a meia noite
-    @Scheduled(cron = "*/10 * * * * *")
+    @Scheduled(cron = "0 0 * * * *") // todo dia a meia noite
     public void enviarPossiveisClientesParaAdmin() throws JsonProcessingException {
         // verifica se tem dados do dia
         List<PossiveisClientesEntity> listaPossiveisClientesDoDia =
