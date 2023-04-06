@@ -1,7 +1,15 @@
 package br.com.logisticadbc.service;
 
+<<<<<<< HEAD
 import br.com.logisticadbc.dto.kafka.*;
 import br.com.logisticadbc.entity.mongodb.PossiveisClientesEntity;
+=======
+import br.com.logisticadbc.dto.kafka.PossiveisClientesDTO;
+import br.com.logisticadbc.dto.kafka.UsuarioBoasVindasDTO;
+import br.com.logisticadbc.dto.kafka.UsuarioRecuperaSenhaDTO;
+import br.com.logisticadbc.dto.kafka.ViagemCriadaDTO;
+import br.com.logisticadbc.dto.out.LogPorDiaDTO;
+>>>>>>> 1227494379186f2fc042351287686da234122d04
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -175,6 +183,33 @@ public class KafkaProdutorService {
             @Override
             public void onFailure(Throwable ex) {
                 log.error("Erro ao produzir | enviarEmailAdminPossiveisClientes ", ex);
+            }
+        });
+    }
+
+    public void enviarLogPorDia(LogPorDiaDTO logPorDiaDTO) throws JsonProcessingException {
+        Integer particao = 5;
+
+        String mensagem = objectMapper.writeValueAsString(logPorDiaDTO);
+
+        MessageBuilder<String> stringMessageBuilder = MessageBuilder.withPayload(mensagem)
+                .setHeader(KafkaHeaders.TOPIC, topic)
+                .setHeader(KafkaHeaders.MESSAGE_KEY, UUID.randomUUID().toString());
+
+        stringMessageBuilder.setHeader(KafkaHeaders.PARTITION_ID, particao); //Partição
+
+        Message<String> message = stringMessageBuilder.build();
+
+        ListenableFuture<SendResult<String, String>> future = kafkaTemplate.send(message);
+        future.addCallback(new ListenableFutureCallback<>() {
+            @Override
+            public void onSuccess(SendResult result) {
+                log.info("Produzido com sucesso | enviarLogPorDia ao administrador");
+            }
+
+            @Override
+            public void onFailure(Throwable ex) {
+                log.error("Erro ao produzir | enviarLogPorDia ao administrador ", ex);
             }
         });
     }

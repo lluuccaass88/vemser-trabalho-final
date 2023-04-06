@@ -7,16 +7,23 @@ import br.com.logisticadbc.entity.mongodb.LogEntity;
 import br.com.logisticadbc.repository.LogRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class LogService {
 
     private final LogRepository logRepository;
@@ -42,14 +49,37 @@ public class LogService {
         );
     }
 
+    public List<LogDTO> listAllLogsForDay() {
+        String dataAtual = DateTimeFormatter.ofPattern("MM dd yyyy")
+                .format(LocalDateTime.now());
+
+        List<LogEntity> logEntityData = logRepository.findByData(dataAtual);
+
+        List<LogDTO> listDTo = logEntityData
+                .stream()
+                .map(log -> objectMapper.convertValue(log, LogDTO.class))
+                .toList();
+
+        log.info("Numero de dtos" + listDTo.size());
+
+        return listDTo;
+    }
+
+
     public void gerarLog(String loginOperador, String descricao, TipoOperacao tipoOperacao) {
         LogEntity log = new LogEntity();
+
+        String dataAtual = DateTimeFormatter.ofPattern("MM dd yyyy")
+                .format(LocalDateTime.now());
 
         log.setLoginOperador(loginOperador);
         log.setDescricao(descricao);
         log.setTipoOperacao(tipoOperacao);
-        log.setData(LocalDateTime.now());
+
+        log.setData(dataAtual);
 
         logRepository.save(log);
     }
+
+
 }

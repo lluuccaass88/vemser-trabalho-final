@@ -18,7 +18,7 @@ public class LogDTO {
 
     private String descricao;
 
-    private LocalDateTime data;
+    private String data;
 
     private TipoOperacao tipoOperacao;
 }
